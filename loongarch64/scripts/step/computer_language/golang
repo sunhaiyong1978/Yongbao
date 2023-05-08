@@ -1,0 +1,46 @@
+source env/computer_language/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=computer_language
+export STEP_PACKAGENAME=golang
+export PACKAGE_VERSION=1.21.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/golang/1.21.0/
+rm -rf ${BUILD_DIRECTORY}/golang-1.21.0_git
+tar xvf ${DOWNLOADDIR}/golang-1.21.0_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/golang-1.21.0_git
+    
+    case "${ARCH_NAME}" in 
+    "loongarch64")
+	GO_ARCH_NAME=loong64
+	;;
+    *)
+	GO_ARCH_NAME=${ARCH_NAME}
+	;;
+    esac
+    pushd src
+        GOROOT_BOOTSTRAP=${CROSSTOOLS_DIR}/go-bootstrap \
+        GOOS=linux GOARCH=${GO_ARCH_NAME} GO_LDFLAGS="-linkmode internal" \
+        ./make.bash -v
+    popd
+    rm -v bin/go{,fmt}
+    mv -v bin/linux_${GO_ARCH_NAME}/go* bin/
+    rmdir -v bin/linux_${GO_ARCH_NAME}
+
+    find bin pkg -type f -exec ${CROSS_TARGET}-strip --strip-unneeded '{}' ';'
+
+    TAR_EXCLUDE=""
+    for i in $(find -name "linux_*" -type d | grep -v "linux_${GO_ARCH_NAME}")
+    do
+        TAR_EXCLUDE="${TAR_EXCLUDE} --exclude=$i"
+    done
+    tar -czf ${TEMP_DIRECTORY}/golang-dist.tar.gz ${TAR_EXCLUDE} --exclude=.git* ./
+    unset TAR_EXCLUDE
+
+    mkdir -p golang-$(echo "1.21.0" | sed "s@-default@@g")-${ARCH_NAME}
+    tar xf ${TEMP_DIRECTORY}/golang-dist.tar.gz -C golang-$(echo "1.21.0" | sed "s@-default@@g")-${ARCH_NAME}
+    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.21.0" | sed "s@-default@@g")/
+    tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.21.0" | sed "s@-default@@g")/golang-$(echo "1.21.0" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz golang-$(echo "1.21.0" | sed "s@-default@@g")-${ARCH_NAME}
+    rm ${TEMP_DIRECTORY}/golang-dist.tar.gz
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/golang-1.21.0_git

@@ -1,0 +1,18 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=gmp
+export PACKAGE_VERSION=6.2.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gmp/6.2.1/
+rm -rf ${BUILD_DIRECTORY}/gmp-6.2.1
+tar xvf ${DOWNLOADDIR}/gmp-6.2.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gmp-6.2.1
+	cp ${CROSSTOOLS_DIR}/share/automake*/config.* ./
+	ABI=standard ./configure --build=${CROSS_HOST} --host=${CROSS_TARGET} \
+                --prefix=/usr --libdir=/usr/lib64 --enable-cxx
+	make -j${JOBS}
+	make DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/gmp-6.2.1
+rm ${SYSROOT_DIR}/usr/lib64/*.la

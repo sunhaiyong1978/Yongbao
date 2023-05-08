@@ -1,0 +1,37 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=vim
+export PACKAGE_VERSION=9.0.1523
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/vim/9.0.1523/
+rm -rf ${BUILD_DIRECTORY}/vim-9.0.1523
+tar xvf ${DOWNLOADDIR}/vim-9.0.1523.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vim-9.0.1523
+	echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+cat > src/auto/config.cache << EOF
+	vim_cv_getcwd_broken=no
+	vim_cv_toupper_broken=no
+	vim_cv_terminfo=yes
+	vim_cv_tgetent=zero
+	vim_cv_stat_ignores_slash=no
+	vim_cv_memmove_handles_overlap=yes
+	ac_cv_small_wchar_t=no
+EOF
+	./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET}  --with-tlib=ncurses
+	make -j${JOBS}
+	make DESTDIR=${SYSROOT_DIR} STRIP=${CROSS_TARGET}-strip install
+	ln -sfv vim ${SYSROOT_DIR}/usr/bin/vi
+
+cat > ${SYSROOT_DIR}/etc/vimrc << "EOF"
+let skip_defaults_vim=1 
+set nocompatible
+set backspace=2
+set mouse=
+
+if (&term == "xterm") || (&term == "putty")
+  set background=dark
+endif
+EOF
+popd 
+rm -rf ${BUILD_DIRECTORY}/vim-9.0.1523

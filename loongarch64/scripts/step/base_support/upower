@@ -1,0 +1,28 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=upower
+export PACKAGE_VERSION=1.90.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/upower/1.90.0/
+rm -rf ${BUILD_DIRECTORY}/upower-v1.90.0-d4259c009b3ca1169dfd19231a040c233fc3b58d
+tar xvf ${DOWNLOADDIR}/upower-1.90.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/upower-v1.90.0-d4259c009b3ca1169dfd19231a040c233fc3b58d
+	
+	mkdir cross-prebuild
+	pushd cross-prebuild
+		meson ${MESON_CONFIG} -Dgtk-doc=false  -Dman=false -Dintrospection=disabled \
+		       ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} -Dgtk-doc=false  -Dman=false -Dintrospection=enabled \
+                      ..
+		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+                sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@\1bin/${CROSS_TARGET}-\2@g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/upower-v1.90.0-d4259c009b3ca1169dfd19231a040c233fc3b58d

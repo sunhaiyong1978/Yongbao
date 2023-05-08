@@ -1,0 +1,37 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=glibc
+export PACKAGE_VERSION=2.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.37/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.37
+tar xvf ${DOWNLOADDIR}/glibc-2.37.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.37
+    
+    cp ${CROSSTOOLS_DIR}/share/automake*/config.* ./
+    sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
+    mkdir -p build-64
+    pushd build-64
+        BUILD_CC="gcc" CC="${CROSS_TARGET}-gcc -mabi=${MABI}" \
+        CXX="${CROSS_TARGET}-gcc -mabi=${MABI}" \
+        AS="${CROSS_TARGET}-as" AR="${CROSS_TARGET}-ar" RANLIB="${CROSS_TARGET}-ranlib" \
+        ../configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
+	                 --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc \
+	                 --with-binutils=${CROSSTOOLS_DIR}/bin \
+	                 --with-headers=${SYSROOT_DIR}/usr/include \
+	                 --enable-stack-protector=strong --enable-add-ons \
+	                 --disable-werror libc_cv_slibdir=/usr/lib64 \
+	                 --enable-kernel=4.15
+		make -j${JOBS}
+		make DESTDIR=${SYSROOT_DIR} install
+		cp -v ../nscd/nscd.conf ${SYSROOT_DIR}/etc/nscd.conf
+		mkdir -pv ${SYSDIR}/sysroot/var/cache/nscd
+		install -v -Dm644 ../nscd/nscd.tmpfiles \
+		                  ${SYSROOT_DIR}/usr/lib/tmpfiles.d/nscd.conf
+		install -v -Dm644 ../nscd/nscd.service \
+		                  ${SYSROOT_DIR}/usr/lib/systemd/system/nscd.service
+		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${CROSS_TARGET}/glibc install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/glibc-2.37

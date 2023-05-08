@@ -1,0 +1,44 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=rustc
+export PACKAGE_VERSION=1.69.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.69.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.69.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.69.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.69.0-src
+    rm -rf src/llvm-project
+    tar xvf ${RESOURCEDIR}/files/llvm-project-16.0.3.src.tar.xz -C src/
+    mv src/llvm-project-16.0.3.src src/llvm-project
+    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.69.0/patches/0001-rustc-1.69.0-add-loongarch-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.69.0/patches/0001-linux-raw-sys-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.69.0/patches/0001-rustc-1.69.0-vendor-nix-add-loongarch64-support.patch 
+	 
+    sed -i "s@ifdef LLVM_RUSTLLVM@if 0@g" compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp
+    find vendor -name .cargo-checksum.json \
+          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
+    LDFLAGS="" \
+    PKG_CONFIG_SYSROOT_DIR="" \
+    ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} \
+                --host=${CROSS_TARGET} \
+                --local-rust-root=${CROSSTOOLS_DIR} \
+                --enable-extended --enable-vendor --release-channel=stable \
+                --disable-codegen-tests --experimental-targets="LoongArch"
+    LDFLAGS="" \
+    PKG_CONFIG_SYSROOT_DIR="" \
+    RUSTFLAGS="$RUSTFLAGS -C link-args=-lz" \
+    make -j${JOBS} HOST_CC="gcc" CC="${CROSS_TARGET}-gcc" \
+         HOST_CXX="g++" CXX="${CROSS_TARGET}-g++" \
+         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
+         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64
+    LDFLAGS="" \
+    PKG_CONFIG_SYSROOT_DIR="" \
+    RUSTFLAGS="$RUSTFLAGS -C link-args=-lz" \
+    make -j${JOBS} HOST_CC="gcc" CC="${CROSS_TARGET}-gcc" \
+         HOST_CXX="g++" CXX="${CROSS_TARGET}-g++" \
+         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
+         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
+         DESTDIR=${SYSROOT_DIR}/ install
+popd 
+rm -rf ${BUILD_DIRECTORY}/rustc-1.69.0-src

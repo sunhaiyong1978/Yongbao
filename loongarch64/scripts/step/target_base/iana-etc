@@ -1,0 +1,13 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=iana-etc
+export PACKAGE_VERSION=20230418
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/iana-etc/20230418/
+rm -rf ${BUILD_DIRECTORY}/iana-etc-20230418
+tar xvf ${DOWNLOADDIR}/iana-etc-20230418.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/iana-etc-20230418
+	cp -v services protocols ${SYSROOT_DIR}/etc
+popd 
+rm -rf ${BUILD_DIRECTORY}/iana-etc-20230418

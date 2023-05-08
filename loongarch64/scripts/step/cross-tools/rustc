@@ -1,0 +1,29 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=rustc
+export PACKAGE_VERSION=1.69.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/rustc/1.69.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.69.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.69.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.69.0-src
+	rm -rf src/llvm-project
+	tar xvf ${RESOURCEDIR}/files/llvm-project-16.0.3.src.tar.xz -C src/
+	mv src/llvm-project-16.0.3.src src/llvm-project
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/rustc/1.69.0/patches/0001-rustc-1.69.0-add-loongarch-support.patch 
+	 
+	sed -i "s@ifdef LLVM_RUSTLLVM@if 0@g" compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp
+	find vendor -name .cargo-checksum.json \
+          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
+	./configure --target=${CROSS_TARGET},$(echo ${CROSS_HOST} | sed 's@cross@unknown@g') \
+	            --prefix=${CROSSTOOLS_DIR} --sysconfdir=${SYSROOT_DIR}/etc \
+	            --local-rust-root=${CROSSTOOLS_DIR}/rust/usr/local \
+	            --enable-extended --enable-vendor --release-channel=stable \
+	            --disable-codegen-tests --experimental-targets=""
+	make -j${JOBS} TARGET_CC="${CROSS_TARGET}-gcc"
+	make TARGET_CC="${CROSS_TARGET}-gcc" install
+        mkdir -p ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.69.0" | sed "s@-default@@g")/
+        find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.69.0" | sed "s@-default@@g")/ ';'
+popd 
+rm -rf ${BUILD_DIRECTORY}/rustc-1.69.0-src

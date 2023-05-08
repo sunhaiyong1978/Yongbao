@@ -1,0 +1,22 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=colord
+export PACKAGE_VERSION=1.4.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/colord/1.4.6/
+rm -rf ${BUILD_DIRECTORY}/colord-1.4.6
+tar xvf ${DOWNLOADDIR}/colord-1.4.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/colord-1.4.6
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} -Ddaemon_user=colord -Dvapi=true -Dsystemd=false -Dlibcolordcompat=true -Dargyllcms_sensor=false -Dbash_completion=false -Ddocs=false -Dman=false \
+                      ..
+		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/colord-1.4.6

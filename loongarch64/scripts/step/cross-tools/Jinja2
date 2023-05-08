@@ -1,0 +1,14 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=Jinja2
+export PACKAGE_VERSION=3.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Jinja2/3.1.2/
+rm -rf ${BUILD_DIRECTORY}/Jinja2-3.1.2
+tar xvf ${DOWNLOADDIR}/Jinja2-3.1.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Jinja2-3.1.2
+	${CROSSTOOLS_DIR}/bin/python3 setup.py build
+        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+popd 
+rm -rf ${BUILD_DIRECTORY}/Jinja2-3.1.2

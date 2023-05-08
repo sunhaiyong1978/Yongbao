@@ -1,0 +1,20 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=wayland
+export PACKAGE_VERSION=1.22.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wayland/1.22.0/
+rm -rf ${BUILD_DIRECTORY}/wayland-1.22.0
+tar xvf ${DOWNLOADDIR}/wayland-1.22.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wayland-1.22.0
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${CROSSTOOLS_DIR} -Ddocumentation=false \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/wayland-1.22.0

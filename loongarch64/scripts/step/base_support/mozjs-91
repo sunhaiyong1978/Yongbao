@@ -1,0 +1,28 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=mozjs-91
+export PACKAGE_VERSION=firefox-91.13.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mozjs-91/firefox-91.13.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-91.13.0
+tar xvf ${DOWNLOADDIR}/firefox-91.13.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-91.13.0
+    patch -Np1 -i ${SYSDIR}/files/base_support/mozjs-91/firefox-91.13.0esr/patches/0001-Python-Build-Use-r-instead-of-rU-file-read-modes.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/mozjs-91/firefox-91.13.0esr/patches/0001-mozjs-91-add-loongarch64-supprot.patch 
+	 
+    cp -v ${SYSROOT_DIR}/usr/share/automake-*/config.* build/autoconf/
+    mkdir cross-build
+    pushd cross-build
+	chmod +x ../js/src/configure.in
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        ../js/src/configure.in --prefix=/usr --libdir=/usr/lib64 \
+                    --target=${CROSS_TARGET} \
+                    --with-intl-api --with-system-zlib --with-system-icu \
+                    --disable-jemalloc --disable-debug-symbols --enable-readline
+	eval ${MAKE_AND_INSTALL}
+        rm -v ${SYSROOT_DIR}/usr/lib64/libjs_static.ajs
+        sed -i '/@NSPR_CFLAGS@/d' ${SYSROOT_DIR}/usr/bin/js91-config
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/firefox-91.13.0

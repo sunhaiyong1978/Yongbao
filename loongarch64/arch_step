@@ -1,0 +1,13 @@
+
+%step/cross-tools/binutils|
+%step/cross-tools/gcc_nolibc|
+%step/cross-tools/gcc|
+%step/cross-tools/grub|
+%step/target_base/binutils|
+%step/target_base/gcc|
+%step/target_base/valgrind|
+%step/toolchain/cross-binutils|g_opt,
+%step/toolchain/cross-gcc|g_opt,
+%step/toolchain/cross-gcc-glibc|g_opt,
+%step/boot/grub|
+%step/computer_language/golang|g_opt,

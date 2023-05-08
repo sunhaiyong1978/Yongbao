@@ -1,0 +1,313 @@
+#!/bin/sh
+
+mount -t devtmpfs dev /dev
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+
+mkdir /ISOSYSTEM
+
+mkdir /rootfs
+mkdir -p /overlayfs
+# mount -t tmpfs tmpfs /overlayfs
+# mkdir -p /overlayfs/upper
+# mkdir -p /overlayfs/worker
+mkdir /images
+
+function get_all_disks()
+{
+    for i in $(find /sys/block/* | grep -v -e "loop" -e "ram")
+    do
+        RETURN_VAL="$RETURN_VAL $(basename $i)"
+    done
+    echo $RETURN_VAL
+    return
+}
+
+function get_removable_disks()
+{
+    for i in $(get_all_disks)
+    do
+        REMOVEABLE=$(cat /sys/block/$i/removable)
+        if [ "x${REMOVEABLE}" == "x1" ]; then
+                RETURN_VAL="$RETURN_VAL $i"
+        fi
+    done
+    echo $RETURN_VAL
+    return
+}
+
+function get_unmovable_disks()
+{
+    for i in $(get_all_disks)
+    do
+        REMOVEABLE=$(cat /sys/block/$i/removable)
+        if [ "x${REMOVEABLE}" == "x0" ]; then
+                RETURN_VAL="$RETURN_VAL $i"
+        fi
+    done
+    echo $RETURN_VAL
+    return
+}
+
+function get_disk_partions()
+{
+    for i in $(blkid /dev/${1}* | awk -F':' '{print $1}')
+    do
+        RETURN_VAL="$RETURN_VAL $(basename $i)"
+    done
+    echo $RETURN_VAL
+    return
+}
+
+function get_partion_form_attrib()
+{
+    for i in ${1}
+    do
+        ATTRIB_VAL=$(blkid /dev/$i | grep "${2}=\"${3}\"")
+        if [ "x${ATTRIB_VAL}" != "x" ]; then
+            echo "$i"
+            return
+        fi
+    done
+    echo ""
+    return
+}
+
+function get_partion_form_label_file()
+{
+    for i in ${1}
+    do
+        mount /dev/$i /mnt/usb 2>/dev/null
+        if test $? = 0 ; then
+            if [ -f /mnt/usb/LABEL ]; then
+                if grep -q "${2}" /mnt/usb/LABEL ; then
+                    umount /mnt/usb
+                    echo "$i"
+                    return
+                fi
+            fi
+            umount /mnt/usb
+        fi
+    done
+    echo ""
+    return
+}
+
+function get_partion_fstype()
+{
+    FSTYPE=$(blkid /dev/${1} | awk -F' TYPE=' '{print $2}' | awk -F' ' '{ print $1 }' | tr -d \")
+    echo "${FSTYPE}"
+    return
+}
+
+function get_partion_overlay_file()
+{
+    mount /dev/${1} /mnt/usb 2>/dev/null
+    if test $? = 0 ; then
+        if [ -f /mnt/usb/.userdata ]; then
+            FSTYPE=$(blkid /mnt/usb/.userdata | awk -F' TYPE=' '{print $2}' | awk -F' ' '{ print $1 }' | tr -d \")
+            case "with-${FSTYPE}" in
+            with-ext* | with-xfs)
+                 echo ".userdata"
+                 ;;
+            *)
+                 echo ""
+                 ;;
+            esac
+        fi
+        umount /mnt/usb
+    else
+        echo ""
+    fi
+    return
+}
+
+function get_partion_overlay_directory()
+{
+    mount /dev/${1} /mnt/usb 2>/dev/null
+    if test $? = 0 ; then
+        if [ -d /mnt/usb/.userdata ]; then
+            echo ".userdata"
+        else
+            echo ""
+        fi
+        umount /mnt/usb
+    else
+        echo ""
+    fi
+    return
+}
+
+
+function get_overlay_upper()
+{
+    OVERLAY_FILE=""
+    case "with-$(get_partion_fstype ${1})" in
+        with-iso9660)
+            echo ""
+            return
+            ;;
+        with-vfat)
+            OVERLAY_FILE=$(get_partion_overlay_file ${1})
+            if [ "x${OVERLAY_FILE}" == "x" ]; then
+                echo ""
+                return;
+            else
+                echo "file"
+                return;
+            fi
+            ;;
+        with-ext* | with-xfs)
+            OVERLAY_FILE=$(get_partion_overlay_directory ${1})
+            if [ "x${OVERLAY_FILE}" != "x" ]; then
+                echo "directory"
+                return
+            else
+                OVERLAY_FILE=$(get_partion_overlay_file ${1})
+                if [ "x${OVERLAY_FILE}" == "x" ]; then
+                    echo ""
+                    return;
+                else
+                    echo "file"
+                    return;
+                fi
+            fi
+            ;;
+        *)
+            echo "Unknown FSTYPE $(get_partion_fstype ${MOUNT_DISK})"
+            /bin/sh
+            exit 3
+            ;;
+    esac
+    echo ""
+    return
+}
+
+
+UNAME_STR=$(uname -a | awk -F' ' '{print $3}')
+mkdir -p /lib/modules/${UNAME_STR}
+mv /lib/*.ko /lib/modules/${UNAME_STR}
+modprobe vfat
+modprobe usb-storage
+
+
+MOUNT_DISK=""
+MOUNT_STR=""
+LABEL_FIND=0
+
+LABEL=$(cat /proc/cmdline | awk -F' LABEL=' '{print $2}' | awk -F' ' '{print $1}')
+ROOT_PARTION=$(cat /proc/cmdline | awk -F' root=' '{print $2}' | awk -F' ' '{print $1}')
+ROOT_ATTR_NAME=$(echo ${ROOT_PARTION} | awk -F'=' '{print $1}')
+ROOT_ATTR_VAL=$(echo ${ROOT_PARTION} | awk -F'=' '{print $2}')
+
+if [ "x${LABEL}" == "x" ] && [ "x${ROOT_PARTION}" == "x" ]; then
+    /bin/sh
+    exit 1
+fi
+
+if [ "x${ROOT_PARTION}" != "x" ]; then
+    GET_DISKS=$(get_unmovable_disks)
+    GET_PARTION=""
+    for i in ${GET_DISKS}
+    do
+        GET_PARTION=$(get_partion_form_attrib "$(get_disk_partions ${i})" "ROOT_ATTR_NAME" "${ROOT_ATTR_VAL}")
+        if [ "x${GET_PARTION}" != "x" ]; then
+            MOUNT_DISK=${GET_PARTION}
+            break;
+        fi
+    done
+fi
+
+if [ "x${MOUNT_DISK}" == "x" ]; then
+    sleep 5
+    GET_DISKS=$(get_removable_disks)
+    GET_PARTION=""
+    for i in ${GET_DISKS}
+    do
+        GET_PARTION=$(get_partion_form_attrib "$(get_disk_partions ${i})" "ROOT_ATTR_NAME" "${ROOT_ATTR_VAL}")
+        if [ "x${GET_PARTION}" != "x" ]; then
+            MOUNT_DISK=${GET_PARTION}
+            break;
+        fi
+    done
+fi
+
+if [ "x${MOUNT_DISK}" == "x" ]; then
+    if [ "x${LABEL}" != "x" ]; then
+        GET_DISKS=$(get_all_disks)
+        GET_PARTION=""
+        for i in ${GET_DISKS}
+        do
+echo "test $i ${LABEL}"
+            GET_PARTION=$(get_partion_form_label_file "$(get_disk_partions ${i})" "${LABEL}")
+            if [ "x${GET_PARTION}" != "x" ]; then
+                echo "found ${GET_PARTION}"
+                LABEL_FIND=1
+                MOUNT_DISK=${GET_PARTION}
+                break;
+            fi
+        done
+        if [ "x${GET_PARTION}" == "x" ]; then
+            /bin/sh
+            exit 2
+        fi
+    fi
+fi
+
+
+function get_images_list()
+{
+    IMAGE_LIST=$(cat /ISOSYSTEM/images/images.list | grep -v "^#" | sort -n | awk -F' ' '{ print $2 }')
+    echo ${IMAGE_LIST}
+    return
+}
+
+if [ "x${MOUNT_DISK}" != "x" ]; then
+    OVERLAY_DIR=""
+    case "with-$(get_partion_fstype ${MOUNT_DISK})" in
+        with-iso9660 | with-vfat | with-ext* | with-xfs)
+            OVERLAY_DIR=$(get_overlay_upper ${MOUNT_DISK})
+            ;;
+        *)
+            echo "Unknown FSTYPE $(get_partion_fstype ${MOUNT_DISK})"
+            /bin/sh
+            return
+            ;;
+    esac
+    mount /dev/$MOUNT_DISK /ISOSYSTEM
+    for i in $(get_images_list)
+    do
+        mkdir /images/$i
+        if [ -f /ISOSYSTEM/images/$i.squashfs ]; then
+            mount -t squashfs /ISOSYSTEM/images/$i.squashfs /images/$i
+        fi
+        if [ x"${MOUNT_STR}" == x ]; then
+            MOUNT_STR=/images/$i
+        else
+            MOUNT_STR="${MOUNT_STR}:/images/$i"
+        fi
+    done
+
+    if [ "x${OVERLAY_DIR}" == "xdirectory" ]; then
+        mount --bind /ISOSYSTEM/.userdata /overlayfs
+    else
+        if [ "x${OVERLAY_DIR}" == "xfile" ]; then
+            mount /ISOSYSTEM/.userdata /overlayfs
+        else
+            mount -t tmpfs tmpfs /overlayfs
+        fi
+    fi
+
+    mkdir -p /overlayfs/userdata
+    mkdir -p /overlayfs/.worker
+
+    if [ x"$MOUNT_STR" != x ]; then
+        mount -t overlay overlay -o lowerdir=${MOUNT_STR},upperdir=/overlayfs/userdata,workdir=/overlayfs/.worker /rootfs
+        exec switch_root /rootfs /sbin/init
+    else
+        /bin/sh
+    fi
+else
+    /bin/sh
+fi
+

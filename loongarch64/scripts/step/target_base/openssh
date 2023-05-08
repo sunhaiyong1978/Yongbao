@@ -1,0 +1,26 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=openssh
+export PACKAGE_VERSION=9.3p1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/openssh/9.3p1/
+rm -rf ${BUILD_DIRECTORY}/openssh-9.3p1
+tar xvf ${DOWNLOADDIR}/openssh-9.3p1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openssh-9.3p1
+        for config_i in $(find -name "config.sub")
+        do
+                cp ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+	./configure --prefix=/usr  --libdir=/usr/lib64 --sysconfdir=/etc/ssh \
+	            --build=${CROSS_HOST} --host=${CROSS_TARGET} \
+	            --disable-strip --with-md5-passwords \
+	            --with-privsep-path=/var/lib/sshd \
+	            --with-default-path=/usr/bin \
+ 	            --with-superuser-path=/usr/sbin:/usr/bin \
+	            --with-pid-dir=/run
+	make -j${JOBS}
+	make DESTDIR=${SYSROOT_DIR} install-nokeys host-key
+	install -v -m755 contrib/ssh-copy-id ${SYSROOT_DIR}/usr/bin
+popd 
+rm -rf ${BUILD_DIRECTORY}/openssh-9.3p1

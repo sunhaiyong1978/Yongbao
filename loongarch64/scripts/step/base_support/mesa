@@ -1,0 +1,25 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=mesa
+export PACKAGE_VERSION=23.0.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/23.0.3/
+rm -rf ${BUILD_DIRECTORY}/mesa-23.0.3
+tar xvf ${DOWNLOADDIR}/mesa-23.0.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa-23.0.3
+    sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
+           -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
+    mkdir cross-build
+    pushd cross-build
+        meson ${MESON_CONFIG} -Dcpp_std=c++17 \
+              -Dgallium-drivers="nouveau,r600,radeonsi,etnaviv,swrast,virgl" \
+              -Dplatforms=x11,wayland \
+              -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true \
+              -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled \
+              -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast, virtio-experimental" \
+               ..
+	eval ${NINJA_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/mesa-23.0.3

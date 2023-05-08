@@ -1,0 +1,14 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=pip
+export PACKAGE_VERSION=23.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pip/23.1.2/
+rm -rf ${BUILD_DIRECTORY}/pip-23.1.2
+tar xvf ${DOWNLOADDIR}/pip-23.1.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pip-23.1.2
+	${CROSSTOOLS_DIR}/bin/python3 setup.py build
+        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+popd 
+rm -rf ${BUILD_DIRECTORY}/pip-23.1.2

@@ -1,0 +1,17 @@
+source env/wm-lxde/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wm-lxde
+export STEP_PACKAGENAME=lxsession
+export PACKAGE_VERSION=0.5.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/lxsession/0.5.5/
+rm -rf ${BUILD_DIRECTORY}/lxsession-0.5.5
+tar xvf ${DOWNLOADDIR}/lxsession-0.5.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lxsession-0.5.5
+    sed -i "s@GtkObject@GtkWidget@g" lxsession-default-apps/{main,combobox}.c
+    sed -i "s@gtk_object_destroy@gtk_widget_destroy@g" lxsession-default-apps/combobox.c
+    ./configure ${COMMON_CONFIG} --enable-gtk --enable-gtk3 \
+                --enable-buildin-clipboard --enable-buildin-polkit
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/lxsession-0.5.5

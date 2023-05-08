@@ -1,0 +1,35 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=tcl
+export PACKAGE_VERSION=8.6.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/tcl/8.6.13/
+rm -rf ${BUILD_DIRECTORY}/tcl8.6.13
+tar xvf ${DOWNLOADDIR}/tcl8.6.13-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tcl8.6.13
+    SRCDIR=$(pwd)
+    pushd unix
+	    ./configure --prefix=/usr --libdir=/usr/lib64 --mandir=/usr/share/man \
+	                --build=${CROSS_HOST} --host=${CROSS_TARGET} --enable-64bit
+	    make -j${JOBS}
+	    sed -i -e "s|$SRCDIR/unix|${SYSROOT_DIR}/usr/lib64|" \
+	           -e "s|$SRCDIR|${SYSROOT_DIR}/usr/include|" \
+	           -e "/TCL_INCLUDE_SPEC/s|/usr/include|${SYSROOT_DIR}/usr/include|" \
+	           tclConfig.sh
+	    sed -i -e "s|$SRCDIR/unix/pkgs/tdbc1.1.5|${SYSROOT_DIR}/usr/lib64/tdbc1.1.5|" \
+               -e "s|$SRCDIR/pkgs/tdbc1.1.5/generic|${SYSROOT_DIR}/usr/include|"    \
+               -e "s|$SRCDIR/pkgs/tdbc1.1.5/library|${SYSROOT_DIR}/usr/lib64/tcl8.6|" \
+               -e "s|$SRCDIR/pkgs/tdbc1.1.5|${SYSROOT_DIR}/usr/include|"            \
+               pkgs/tdbc1.1.5/tdbcConfig.sh
+	    sed -i -e "s|$SRCDIR/unix/pkgs/itcl4.2.3|${SYSROOT_DIR}/usr/lib64/itcl4.2.3|" \
+               -e "s|$SRCDIR/pkgs/itcl4.2.3/generic|${SYSROOT_DIR}/usr/include|"    \
+               -e "s|$SRCDIR/pkgs/itcl4.2.3|${SYSROOT_DIR}/usr/include|"            \
+               pkgs/itcl4.2.3/itclConfig.sh
+	    unset SRCDIR
+	    make DESTDIR=${SYSROOT_DIR} install
+	    make DESTDIR=${SYSROOT_DIR} install-private-headers
+	    ln -sfv tclsh8.6 ${SYSROOT_DIR}/usr/bin/tclsh
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/tcl8.6.13

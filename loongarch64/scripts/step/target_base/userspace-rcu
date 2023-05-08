@@ -1,0 +1,17 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=userspace-rcu
+export PACKAGE_VERSION=0.14.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/userspace-rcu/0.14.0/
+rm -rf ${BUILD_DIRECTORY}/userspace-rcu-0.14.0
+tar xvf ${DOWNLOADDIR}/userspace-rcu-0.14.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/userspace-rcu-0.14.0
+    patch -Np1 -i ${SYSDIR}/files/target_base/userspace-rcu/0.14.0/patches/userspace-rcu-0.13.1-add-loongarch64.patch 
+	 
+    autoreconf -ifv
+    ./configure ${COMMON_CONFIG}
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/userspace-rcu-0.14.0

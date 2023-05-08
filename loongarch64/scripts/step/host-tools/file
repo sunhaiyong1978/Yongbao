@@ -1,0 +1,15 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=file
+export PACKAGE_VERSION=5.44
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/file/5.44/
+rm -rf ${BUILD_DIRECTORY}/file-5.44
+tar xvf ${DOWNLOADDIR}/file-5.44.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/file-5.44
+	
+	./configure --prefix=${CROSSTOOLS_DIR} 
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/file-5.44

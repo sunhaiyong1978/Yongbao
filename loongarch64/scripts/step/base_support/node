@@ -1,0 +1,36 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=node
+export PACKAGE_VERSION=20.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/node/20.1.0/
+rm -rf ${BUILD_DIRECTORY}/node-20.1.0
+tar xvf ${DOWNLOADDIR}/node-20.1.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/node-20.1.0
+    
+    sed -i "s@registry.npmjs.org@registry.loongnix.cn:5873@g" deps/npm/lib/utils/config/definitions.js
+    mkdir -pv out/Release
+    for i in bytecode_builtins_list_generator gen-regexp-special-case torque mksnapshot
+    do
+        sed -i "/EXECUTABLE_SUFFIX/s@$i<@$i.host<@g" tools/v8_gypfiles/v8.gyp
+        echo -e '#!/bin/bash -e \n' "qemu-${ARCH_NAME} ${PWD}/out/Release/$i \"\$@\"" > ${PWD}/out/Release/$i.host
+        chmod +x ${PWD}/out/Release/$i.host
+    done
+    PKG_CONFIG=${CROSS_TARGET}-pkg-config \
+    CC="clang" CXX="clang++" \
+    ./configure --prefix /usr --dest-cpu=$(echo ${ARCH_NAME} | sed 's@arch@@g') --shared-openssl \
+                --with-intl=system-icu --shared
+    make -j${JOBS} -C out bytecode_builtins_list_generator gen-regexp-special-case torque
+    make -j${JOBS} -C out mksnapshot
+    eval ${MAKE_AND_INSTALL}
+    cp -av out/Release/node ${SYSROOT_DIR}/usr/bin/
+    mv -v ${SYSROOT_DIR}/usr/lib/libnode.so* ${SYSROOT_DIR}/usr/lib64/
+    NODE_MODULE_VERSION=$(grep -r "#define NODE_MODULE_VERSION"  src/node_version.h | awk -F' ' '{ print $3 }')
+    if [ -f ${SYSROOT_DIR}/usr/lib64/libnode.so.${NODE_MODULE_VERSION} ]; then
+        ln -sfv libnode.so.${NODE_MODULE_VERSION} ${SYSROOT_DIR}/usr/lib64/libnode.so
+    else
+        exit 1
+    fi
+popd 
+rm -rf ${BUILD_DIRECTORY}/node-20.1.0

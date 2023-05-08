@@ -1,0 +1,22 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=e2fsprogs
+export PACKAGE_VERSION=1.47.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/e2fsprogs/1.47.0/
+rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.0
+tar xvf ${DOWNLOADDIR}/e2fsprogs-1.47.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.0
+	mkdir -v build
+	pushd build
+		../configure ${COMMON_CONFIG} \
+		             --enable-elf-shlibs --disable-libblkid \
+		             --disable-libuuid --disable-uuidd --disable-fsck
+		eval ${MAKE_AND_INSTALL}
+		rm -fv ${SYSROOT_DIR}/usr/lib64/{libcom_err,libe2p,libext2fs,libss}.la
+	popd
+	cp -av ${SYSROOT_DIR}/usr/bin/mk_cmds ${CROSSTOOLS_DIR}/bin/
+	sed -i "s@=/usr@=${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/mk_cmds
+popd 
+rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.0

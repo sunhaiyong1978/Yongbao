@@ -1,0 +1,36 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=Python
+export PACKAGE_VERSION=3.11.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Python/3.11.3/
+rm -rf ${BUILD_DIRECTORY}/Python-3.11.3
+tar xvf ${DOWNLOADDIR}/Python-3.11.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.11.3
+cat > config.cache << "EOF"
+    ac_cv_aligned_required=no
+    ac_cv_broken_sem_getvalue=no
+    ac_cv_computed_gotos=yes
+    ac_cv_pthread_is_default=yes
+    ac_cv_pthread_system_supported=yes
+    ac_cv_working_tzset=yes
+    ac_cv_buggy_getaddrinfo=no
+    ac_cv_file__dev_ptmx=yes
+    ac_cv_file__dev_ptc=no
+EOF
+	./configure ${COMMON_CONFIG} --enable-shared --with-build-python=${CROSSTOOLS_DIR}/bin/python3 \
+	            --with-system-expat --with-system-ffi --with-ensurepip=install \
+	            --enable-optimizations --with-platlibdir=lib64 \
+	            --cache-file=config.cache
+	eval ${MAKE_AND_INSTALL}
+ln -sfv python3 ${SYSROOT_DIR}/usr/bin/python
+sed -i -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSS_TARGET}-@@g" \
+       ${SYSROOT_DIR}/usr/lib64/python3.11/_sysconfigdata__linux_.py
+
+cp -v ${CROSSTOOLS_DIR}/bin/python3.11-config{,.tools}
+cp -v ${SYSROOT_DIR}/usr/bin/python3.11-config ${CROSSTOOLS_DIR}/bin/
+sed -i "/^prefix_real/s@=.*@=${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/python3.11-config
+popd 
+rm -rf ${BUILD_DIRECTORY}/Python-3.11.3

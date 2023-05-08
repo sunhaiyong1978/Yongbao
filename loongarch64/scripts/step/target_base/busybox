@@ -1,0 +1,18 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=busybox
+export PACKAGE_VERSION=1.36.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/busybox/1.36.0/
+rm -rf ${BUILD_DIRECTORY}/busybox-1.36.0
+tar xvf ${DOWNLOADDIR}/busybox-1.36.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/busybox-1.36.0
+    make mrproper
+    make defconfig
+    sed -i "/^# CONFIG_STATIC=/d" .config
+    echo "CONFIG_STATIC=y" >> .config
+    make -j${JOBS} CROSS_COMPILE=${CROSS_TARGET}-
+    cp -v busybox ${SYSROOT_DIR}/usr/bin/
+popd 
+rm -rf ${BUILD_DIRECTORY}/busybox-1.36.0

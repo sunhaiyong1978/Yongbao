@@ -1,0 +1,14 @@
+source env/bootstrap/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=bootstrap
+export STEP_PACKAGENAME=go-bootstrap
+export PACKAGE_VERSION=1.20.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/bootstrap/go-bootstrap/1.20.2/
+rm -rf ${BUILD_DIRECTORY}/go
+tar xvf ${DOWNLOADDIR}/go1.20.2.linux-amd64.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/go
+    mkdir -pv ${CROSSTOOLS_DIR}/go-bootstrap
+    cp -a * ${CROSSTOOLS_DIR}/go-bootstrap
+popd 
+rm -rf ${BUILD_DIRECTORY}/go

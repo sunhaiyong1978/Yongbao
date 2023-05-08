@@ -1,0 +1,22 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=freetype
+export PACKAGE_VERSION=2.13.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/freetype/2.13.0/
+rm -rf ${BUILD_DIRECTORY}/freetype-2.13.0
+tar xvf ${DOWNLOADDIR}/freetype-2.13.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/freetype-2.13.0
+    sed -ri "s:.*(AUX_MODULES.*valid):\1:" modules.cfg
+    sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" \
+           -i include/freetype/config/ftoption.h
+    ./configure ${COMMON_CONFIG} \
+                --enable-freetype-config
+    eval ${MAKE_AND_INSTALL}
+
+    sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
+           -e "s@${CROSS_TARGET}-@@g" \
+           ${SYSROOT_DIR}/usr/bin/freetype-config
+popd 
+rm -rf ${BUILD_DIRECTORY}/freetype-2.13.0

@@ -1,0 +1,15 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=xorriso
+export PACKAGE_VERSION=1.5.4.pl02
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/xorriso/1.5.4.pl02/
+rm -rf ${BUILD_DIRECTORY}/xorriso-1.5.4
+tar xvf ${DOWNLOADDIR}/xorriso-1.5.4.pl02.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xorriso-1.5.4
+	
+	./configure --prefix=${CROSSTOOLS_DIR} 
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/xorriso-1.5.4

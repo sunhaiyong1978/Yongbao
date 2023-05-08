@@ -1,0 +1,18 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=screen
+export PACKAGE_VERSION=4.9.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/screen/4.9.0/
+rm -rf ${BUILD_DIRECTORY}/screen-4.9.0
+tar xvf ${DOWNLOADDIR}/screen-4.9.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/screen-4.9.0
+    ./autogen.sh
+    ./configure ${COMMON_CONFIG} --with-socket-dir=/run/screen \
+            --with-pty-group=5 --with-sys-screenrc=/etc/screenrc
+    sed -i -e "s%/usr/local/etc/screenrc%/etc/screenrc%" {etc,doc}/*
+    eval ${MAKE_AND_INSTALL}
+    install -m 644 etc/etcscreenrc ${SYSROOT_DIR}/etc/screenrc
+popd 
+rm -rf ${BUILD_DIRECTORY}/screen-4.9.0

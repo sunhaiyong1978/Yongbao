@@ -1,0 +1,22 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=expect
+export PACKAGE_VERSION=5.45.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/expect/5.45.4/
+rm -rf ${BUILD_DIRECTORY}/expect5.45.4
+tar xvf ${DOWNLOADDIR}/expect5.45.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/expect5.45.4
+	patch -Np1 -i ${SYSDIR}/files/target_base/expect/5.45.4/patches/0001-enable-cross-compilation.patch 
+	 
+	autoreconf -ifv
+	./configure --prefix=/usr --libdir=/usr/lib64 \
+	            --build=${CROSS_HOST} --host=${CROSS_TARGET} \
+	            --with-tcl=${SYSROOT_DIR}/usr/lib64 \
+	            --enable-shared
+	make -j${JOBS}
+	make TCLSH_PROG=/usr/bin/tclsh DESTDIR=${SYSROOT_DIR} install
+	ln -svf expect5.45.4/libexpect5.45.4.so ${SYSROOT_DIR}/usr/lib64
+popd 
+rm -rf ${BUILD_DIRECTORY}/expect5.45.4

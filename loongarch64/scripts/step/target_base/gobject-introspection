@@ -1,0 +1,25 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=gobject-introspection
+export PACKAGE_VERSION=1.76.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gobject-introspection/1.76.1/
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
+tar xvf ${DOWNLOADDIR}/gobject-introspection-1.76.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
+    sed -i -e "/gircompiler_command/s@gircompiler,@'${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler',@g" \
+           -e "/g-ir-scanner/s@'g-ir-scanner'@'${CROSS_TARGET}-g-ir-scanner'@g" \
+           gir/meson.build
+    mkdir -v cross-build
+    pushd cross-build
+	PATH=${CROSSTOOLS_DIR}/tmp/bin:${PATH} \
+        PYTHON=${CROSSTOOLS_DIR}/bin/python3 \
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
+        meson ${MESON_CONFIG} \
+              --buildtype=release -Dgi_cross_use_prebuilt_gi=true \
+              ..
+	eval ${NINJA_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.76.1

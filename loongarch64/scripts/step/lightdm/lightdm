@@ -1,0 +1,42 @@
+source env/lightdm/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=lightdm
+export STEP_PACKAGENAME=lightdm
+export PACKAGE_VERSION=1.32.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/lightdm/lightdm/1.32.0/
+rm -rf ${BUILD_DIRECTORY}/lightdm-1.32.0
+tar xvf ${DOWNLOADDIR}/lightdm-1.32.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lightdm-1.32.0
+    mkdir cross-prebuild
+    pushd cross-prebuild
+        ../configure ${COMMON_CONFIG} --libexecdir=/usr/lib/lightdm \
+                     --sbindir=/usr/bin --disable-tests --with-greeter-user=lightdm \
+                     --with-greeter-session=lightdm-gtk-greeter --disable-introspection
+	eval ${MAKE_AND_INSTALL}
+    popd
+    mkdir cross-build
+    pushd cross-build
+         PKG_CONFIG=pkg-config \
+         ../configure ${COMMON_CONFIG} --libexecdir=/usr/lib/lightdm \
+                     --sbindir=/usr/bin --disable-tests --with-greeter-user=lightdm \
+                     --with-greeter-session=lightdm-gtk-greeter --enable-introspection
+        make -j${JOBS} INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
+             INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
+             VAPIGEN=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-vapigen
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -v ${SYSROOT_DIR}/usr/lib64/liblightdm*.la
+    popd
+
+    cp -av tests/src/lightdm-session ${SYSROOT_DIR}/usr/bin
+    sed -i '1 s/sh/bash --login/' ${SYSROOT_DIR}/usr/bin/lightdm-session
+    rm -rf ${SYSROOT_DIR}/etc/init
+    install -v -dm755 ${SYSROOT_DIR}/var/lib/lightdm
+    install -v -dm755 ${SYSROOT_DIR}/var/lib/lightdm-data
+    install -v -dm755 ${SYSROOT_DIR}/var/cache/lightdm
+    install -v -dm770 ${SYSROOT_DIR}/var/log/lightdm
+    chmod a+rw ${SYSROOT_DIR}/var/lib/lightdm{,-data} \
+               ${SYSROOT_DIR}/var/cache/lightdm \
+               ${SYSROOT_DIR}/var/log/lightdm
+popd 
+rm -rf ${BUILD_DIRECTORY}/lightdm-1.32.0

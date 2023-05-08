@@ -1,0 +1,25 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=gdk-pixbuf
+export PACKAGE_VERSION=2.42.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gdk-pixbuf/2.42.10/
+rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10
+tar xvf ${DOWNLOADDIR}/gdk-pixbuf-2.42.10.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10
+    mkdir cross-build
+    pushd cross-build
+        meson ${MESON_CONFIG} --wrap-mode=nofallback -Dintrospection=enabled -Dman=false ..
+	sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
+	eval ${NINJA_AND_INSTALL}
+    popd
+
+echo "qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/gdk-pixbuf-csource \"\$@\"" \
+                > ${CROSSTOOLS_DIR}/bin/gdk-pixbuf-csource
+chmod +x ${CROSSTOOLS_DIR}/bin/gdk-pixbuf-csource
+echo "qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/gdk-pixbuf-pixdata \"\$@\"" \
+                > ${CROSSTOOLS_DIR}/bin/gdk-pixbuf-pixdata
+chmod +x ${CROSSTOOLS_DIR}/bin/gdk-pixbuf-pixdata
+popd 
+rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10

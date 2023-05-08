@@ -1,0 +1,18 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=sudo
+export PACKAGE_VERSION=1.9.13p3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/sudo/1.9.13p3/
+rm -rf ${BUILD_DIRECTORY}/sudo-1.9.13p3
+tar xvf ${DOWNLOADDIR}/sudo-1.9.13p3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sudo-1.9.13p3
+    ./configure ${COMMON_CONFIG} \
+                --with-secure-path --with-all-insults --with-env-editor \
+                --with-passprompt="[sudo] password for %p: "
+    sed -i "/^install_uid/s@= 0@= $(id -u)@g" Makefile
+    sed -i "/^install_gid/s@= 0@= $(id -u)@g" Makefile
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/sudo-1.9.13p3

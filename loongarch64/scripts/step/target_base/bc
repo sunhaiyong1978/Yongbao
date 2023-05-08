@@ -1,0 +1,14 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=bc
+export PACKAGE_VERSION=6.5.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/bc/6.5.0/
+rm -rf ${BUILD_DIRECTORY}/bc-6.5.0
+tar xvf ${DOWNLOADDIR}/bc-6.5.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bc-6.5.0
+	CC="${CROSS_TARGET}-gcc" HOSTCC="gcc" ./configure --prefix=/usr
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/bc-6.5.0

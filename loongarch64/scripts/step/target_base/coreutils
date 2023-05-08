@@ -1,0 +1,20 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=coreutils
+export PACKAGE_VERSION=9.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/coreutils/9.3/
+rm -rf ${BUILD_DIRECTORY}/coreutils-9.3
+tar xvf ${DOWNLOADDIR}/coreutils-9.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/coreutils-9.3
+	FORCE_UNSAFE_CONFIGURE=1 \
+	./configure --prefix=/usr  --build=${CROSS_HOST} --host=${CROSS_TARGET} \
+				--enable-no-install-program=kill,uptime
+	eval ${MAKE_AND_INSTALL}
+	mv -v ${SYSROOT_DIR}/usr/bin/chroot ${SYSROOT_DIR}/usr/sbin
+	echo '#!/bin/bash -e
+	qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/uname "$@"' > ${CROSSTOOLS_DIR}/bin/cross-uname
+	chmod +x ${CROSSTOOLS_DIR}/bin/cross-uname
+popd 
+rm -rf ${BUILD_DIRECTORY}/coreutils-9.3

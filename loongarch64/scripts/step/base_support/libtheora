@@ -1,0 +1,15 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libtheora
+export PACKAGE_VERSION=1.1.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libtheora/1.1.1/
+rm -rf ${BUILD_DIRECTORY}/libtheora-1.1.1
+tar xvf ${DOWNLOADDIR}/libtheora-1.1.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libtheora-1.1.1
+    sed -i 's/png_\(sizeof\)/\1/g' examples/png2theora.c
+    ./configure ${COMMON_CONFIG}
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/libtheora-1.1.1

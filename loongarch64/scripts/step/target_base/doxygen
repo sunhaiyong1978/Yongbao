@@ -1,0 +1,20 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=doxygen
+export PACKAGE_VERSION=1.9.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/doxygen/1.9.6/
+rm -rf ${BUILD_DIRECTORY}/doxygen-1.9.6
+tar xvf ${DOWNLOADDIR}/doxygen-1.9.6.src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/doxygen-1.9.6
+    mkdir cross-build
+    pushd cross-build
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_INSTALL_PREFIX=/usr -Wno-dev ..
+	make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/doxygen-1.9.6

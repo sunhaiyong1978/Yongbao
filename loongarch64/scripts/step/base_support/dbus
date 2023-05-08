@@ -1,0 +1,20 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=dbus
+export PACKAGE_VERSION=1.15.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus/1.15.4/
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.4
+tar xvf ${DOWNLOADDIR}/dbus-1.15.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dbus-1.15.4
+	./configure ${COMMON_CONFIG} --runstatedir=/run \
+	            --enable-user-session \
+	            --disable-static --disable-doxygen-docs --disable-xml-docs \
+	            --with-console-auth-dir=/run/console \
+	            --with-system-socket=/run/dbus/system_bus_socket
+	eval ${MAKE_AND_INSTALL}
+	rm -f ${SYSROOT_DIR}/usr/lib64/libdbus*.la
+	chmod -v 4750 ${SYSROOT_DIR}/usr/libexec/dbus-daemon-launch-helper
+popd 
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.4

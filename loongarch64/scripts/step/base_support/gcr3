@@ -1,0 +1,30 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=gcr3
+export PACKAGE_VERSION=gcr-3.41.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gcr3/gcr-3.41.1/
+rm -rf ${BUILD_DIRECTORY}/gcr-3.41.1
+tar xvf ${DOWNLOADDIR}/gcr-3.41.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcr-3.41.1
+    sed -i 's:"/desktop:"/org:' schema/*.xml
+    mkdir cross-prebuild
+    pushd cross-prebuild
+        meson ${MESON_CONFIG} \
+              -Dgtk_doc=false -Dintrospection=false \
+              ..
+	eval ${NINJA_AND_INSTALL}
+    popd
+    mkdir cross-build
+    pushd cross-build
+        meson ${MESON_CONFIG} \
+              -Dgtk_doc=false \
+              ..
+        sed -i -e "s@\(${SYSDIR}/\)sysroot/usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@\1cross-tools\2${CROSS_TARGET}-\3@g" build.ninja
+	sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/vapigen@\1bin/${CROSS_TARGET}-vapigen@g" build.ninja
+        CC="${CROSS_TARGET}-gcc" ninja
+        DESTDIR=${SYSROOT_DIR} ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gcr-3.41.1

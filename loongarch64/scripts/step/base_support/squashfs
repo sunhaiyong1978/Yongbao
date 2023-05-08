@@ -1,0 +1,21 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=squashfs
+export PACKAGE_VERSION=4.6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/squashfs/4.6.1/
+rm -rf ${BUILD_DIRECTORY}/squashfs-tools-4.6.1
+tar xvf ${DOWNLOADDIR}/squashfs4.6.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/squashfs-tools-4.6.1
+	pushd squashfs-tools
+	    for i in mksquashfs unsquashfs sqfstar sqfscat
+	    do
+        	sed -i.orig "s@^\$1@qemu-${ARCH_NAME} \$1@g" ../generate-manpages/$i-manpage.sh
+	    done
+	    make -j${JOBS} CC="${CROSS_TARGET}-gcc"
+	    make CC="${CROSS_TARGET}-gcc" INSTALL_PREFIX=${SYSROOT_DIR}/usr \
+        	 INSTALL_MANPAGES_DIR=${SYSROOT_DIR}/usr/share/man/man1 install
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/squashfs-tools-4.6.1

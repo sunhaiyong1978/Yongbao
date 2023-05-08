@@ -1,0 +1,36 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=librsvg
+export PACKAGE_VERSION=2.54.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/librsvg/2.54.5/
+rm -rf ${BUILD_DIRECTORY}/librsvg-2.54.5
+tar xvf ${DOWNLOADDIR}/librsvg-2.54.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/librsvg-2.54.5
+    patch -Np1 -i ${SYSDIR}/files/base_support/librsvg/2.54.5/patches/0001-librsvg-2.54.5-fix-loongarch64-support.patch 
+	 
+    find vendor -name .cargo-checksum.json \
+          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
+    mkdir cross-prebuild
+    pushd cross-prebuild
+        ../configure ${COMMON_CONFIG} --disable-introspection --disable-gtk-doc
+        make -j${JOBS} RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc"
+        RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
+        make DESTDIR=${SYSROOT_DIR} install-exec
+    popd
+    sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
+    mkdir cross-build
+    pushd cross-build
+        PKG_CONFIG=${CROSS_TARGET}-pkg-config \
+        ../configure ${COMMON_CONFIG} --enable-vala
+        make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+             RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
+             INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+             VAPIGEN=vapigen
+        RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
+        make VAPIGEN=vapigen DESTDIR=${SYSROOT_DIR} install
+        rm -v ${SYSROOT_DIR}/usr/lib64/librsvg*.la
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/librsvg-2.54.5

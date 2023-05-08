@@ -1,0 +1,19 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=pkg-config
+export PACKAGE_VERSION=0.29.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/pkg-config/0.29.2/
+rm -rf ${BUILD_DIRECTORY}/pkg-config-0.29.2
+tar xvf ${DOWNLOADDIR}/pkg-config-0.29.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pkg-config-0.29.2
+        
+        ./configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} \
+                --host=${CROSS_HOST} --target=${CROSS_TARGET} \
+                --with-pc_path=${SYSROOT_DIR}/usr/lib64/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig --program-prefix=${CROSS_TARGET}- --with-internal-glib --disable-host-tool
+        eval ${MAKE_AND_INSTALL}
+	mkdir -p ${CROSSTOOLS_DIR}/tmp/bin
+	ln -sf /bin/pkg-config ${CROSSTOOLS_DIR}/tmp/bin/${CROSS_TARGET}-pkg-config
+popd 
+rm -rf ${BUILD_DIRECTORY}/pkg-config-0.29.2

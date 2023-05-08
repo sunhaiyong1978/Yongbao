@@ -1,0 +1,17 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=alsa-tools
+export PACKAGE_VERSION=1.2.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alsa-tools/1.2.5/
+rm -rf ${BUILD_DIRECTORY}/alsa-tools-1.2.5
+tar xvf ${DOWNLOADDIR}/alsa-tools-1.2.5.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/alsa-tools-1.2.5
+    cp ${SYSROOT_DIR}/usr/share/automake-*/config.* ld10k1/
+    sed -i.orig -e "s@envy24control@@g" -e "s@rmedigicontrol@@g" \
+                -e "s@seq@@g" -e "s@echomixer@@g" -e"s@qlo10k1@@g" Makefile
+    make -j${JOBS} configure CONFIGURE_ARGS="$COMMON_CONFIG"
+    make DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/alsa-tools-1.2.5

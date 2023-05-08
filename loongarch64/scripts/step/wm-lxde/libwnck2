@@ -1,0 +1,29 @@
+source env/wm-lxde/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wm-lxde
+export STEP_PACKAGENAME=libwnck2
+export PACKAGE_VERSION=2.31.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/libwnck2/2.31.0/
+rm -rf ${BUILD_DIRECTORY}/libwnck-2.31.0
+tar xvf ${DOWNLOADDIR}/libwnck-2.31.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libwnck-2.31.0
+    mkdir cross-prebuild
+    pushd cross-prebuild
+        ../configure ${COMMON_CONFIG} --program-suffix=-1 \
+                ac_cv_path_PKG_CONFIG=${CROSS_TARGET}-pkg-config --disable-introspection
+        make -j${JOBS} GETTEXT_PACKAGE=libwnck-1
+        make GETTEXT_PACKAGE=libwnck-1 DESTDIR=${SYSROOT_DIR} install-exec
+    popd
+    mkdir cross-build
+    pushd cross-build
+        ../configure ${COMMON_CONFIG} --program-suffix=-1 \
+                ac_cv_path_PKG_CONFIG=${CROSS_TARGET}-pkg-config --enable-introspection
+        make -j${JOBS} GETTEXT_PACKAGE=libwnck-1 \
+             INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
+             INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
+             INTROSPECTION_MAKEFILE=${SYSROOT_DIR}/usr/share/gobject-introspection-1.0/Makefile.introspection
+        make GETTEXT_PACKAGE=libwnck-1 DESTDIR=${SYSROOT_DIR} install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/libwnck-2.31.0

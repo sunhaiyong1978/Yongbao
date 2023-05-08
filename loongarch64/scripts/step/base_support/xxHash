@@ -1,0 +1,14 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=xxHash
+export PACKAGE_VERSION=0.8.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xxHash/0.8.1/
+rm -rf ${BUILD_DIRECTORY}/xxHash-0.8.1
+tar xvf ${DOWNLOADDIR}/xxHash-0.8.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xxHash-0.8.1
+    make -j${JOBS} CC=${CROSS_TARGET}-gcc PREFIX=/usr LIBDIR=/usr/lib64
+    make CC=${CROSS_TARGET}-gcc PREFIX=/usr LIBDIR=/usr/lib64 DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/xxHash-0.8.1

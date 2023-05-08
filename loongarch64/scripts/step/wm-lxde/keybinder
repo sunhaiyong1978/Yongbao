@@ -1,0 +1,36 @@
+source env/wm-lxde/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wm-lxde
+export STEP_PACKAGENAME=keybinder
+export PACKAGE_VERSION=0.3.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/keybinder/0.3.1/
+rm -rf ${BUILD_DIRECTORY}/keybinder-0.3.1
+tar xvf ${DOWNLOADDIR}/keybinder-0.3.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/keybinder-0.3.1
+	
+        for config_i in $(find -name "config.sub")
+        do
+                cp ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	mkdir cross-prebuild
+	pushd cross-prebuild
+	        ../configure ${COMMON_CONFIG} --disable-introspection  --disable-python --disable-lua
+		make -j${JOBS}
+	        make DESTDIR=${SYSROOT_DIR} install
+	popd
+	mkdir cross-build
+	pushd cross-build
+	        ../configure ${COMMON_CONFIG} --enable-introspection=yes  --disable-python --disable-lua
+        	make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+	             INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+        	     VAPIGEN=${CROSS_TARGET}-vapigen \
+		     INTROSPECTION_MAKEFILE=${SYSROOT_DIR}/usr/share/gobject-introspection-1.0/Makefile.introspection
+	        make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/keybinder-0.3.1

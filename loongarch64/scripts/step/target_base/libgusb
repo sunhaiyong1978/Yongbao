@@ -1,0 +1,22 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=libgusb
+export PACKAGE_VERSION=0.4.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libgusb/0.4.5/
+rm -rf ${BUILD_DIRECTORY}/libgusb-0.4.5
+tar xvf ${DOWNLOADDIR}/libgusb-0.4.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libgusb-0.4.5
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  -Ddocs=false \
+                      ..
+		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
+		sed -i -e "s@\(${SYSDIR}/\)cross-tools/bin/vapigen@\1cross-tools/bin/${CROSS_TARGET}-vapigen@g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libgusb-0.4.5

@@ -1,0 +1,22 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=jasper
+export PACKAGE_VERSION=4.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/jasper/4.0.0/
+rm -rf ${BUILD_DIRECTORY}/jasper-version-4.0.0
+tar xvf ${DOWNLOADDIR}/jasper-4.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jasper-version-4.0.0
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+       		      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_INSTALL_RPATH=YES -DJAS_CROSSCOMPILING=True -DJAS_STDC_VERSION=201710L -DJAS_ENABLE_DOC=NO -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/jasper-version-4.0.0

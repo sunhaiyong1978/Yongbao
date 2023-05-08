@@ -1,0 +1,20 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=elfutils
+export PACKAGE_VERSION=0.189
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/elfutils/0.189/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.189
+tar xvf ${DOWNLOADDIR}/elfutils-0.189.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.189
+	
+	./configure ${COMMON_CONFIG} --disable-debuginfod --enable-libdebuginfod=dummy \
+				ac_cv_null_dereference=no
+	eval ${MAKE_AND_INSTALL}
+
+echo '#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/eu-readelf "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
+chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
+popd 
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.189

@@ -1,0 +1,15 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=fpc
+export PACKAGE_VERSION=3.3.1-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/fpc/3.3.1-default/
+rm -rf ${BUILD_DIRECTORY}/fpc-3.3.1-default_git
+tar xvf ${DOWNLOADDIR}/fpc-3.3.1-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fpc-3.3.1-default_git
+    make -j${JOBS} FPC=/usr/bin/fpc CPU_TARGET=${TARGET_ARCH} OS_TARGET=linux BINUTILSPREFIX=${CROSS_TARGET}- crossall
+    make FPC=/usr/bin/fpc CPU_TARGET=${TARGET_ARCH} OS_TARGET=linux BINUTILSPREFIX=${CROSS_TARGET}- PREFIX=${CROSSTOOLS_DIR} crossinstall
+    mv -v ${CROSSTOOLS_DIR}/lib/fpc/*/ppcross${TARGET_ARCH} ${CROSSTOOLS_DIR}/bin/
+popd 
+rm -rf ${BUILD_DIRECTORY}/fpc-3.3.1-default_git

@@ -1,0 +1,28 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libnma
+export PACKAGE_VERSION=1.10.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libnma/1.10.6/
+rm -rf ${BUILD_DIRECTORY}/libnma-1.10.6
+tar xvf ${DOWNLOADDIR}/libnma-1.10.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libnma-1.10.6
+	
+	mkdir cross-prebuild
+	pushd cross-prebuild
+		meson ${MESON_CONFIG} -Dvapi=false -Dgtk_doc=false -Dlibnma_gtk4=true -Dmobile_broadband_provider_info=false -Dintrospection=false \
+		       ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} -Dvapi=false -Dgtk_doc=false -Dlibnma_gtk4=true -Dmobile_broadband_provider_info=false -Dintrospection=true \
+                      ..
+		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@\1bin/${CROSS_TARGET}-\2@g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libnma-1.10.6

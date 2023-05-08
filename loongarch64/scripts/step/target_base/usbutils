@@ -1,0 +1,17 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=usbutils
+export PACKAGE_VERSION=015
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/usbutils/015/
+rm -rf ${BUILD_DIRECTORY}/usbutils-015
+tar xvf ${DOWNLOADDIR}/usbutils-015.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/usbutils-015
+    ./configure ${COMMON_CONFIG} \
+                --datadir=/usr/share/hwdata
+    eval ${MAKE_AND_INSTALL}
+    mkdir -pv ${SYSROOT_DIR}/usr/share/hwdata/
+    cp -a ${RESOURCEDIR}/files/usb.ids ${SYSROOT_DIR}/usr/share/hwdata/usb.ids
+popd 
+rm -rf ${BUILD_DIRECTORY}/usbutils-015

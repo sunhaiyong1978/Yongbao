@@ -1,0 +1,26 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=m4
+export PACKAGE_VERSION=1.4.19
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/m4/1.4.19/
+rm -rf ${BUILD_DIRECTORY}/m4-1.4.19
+tar xvf ${DOWNLOADDIR}/m4-1.4.19.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/m4-1.4.19
+	patch -Np1 -i ${SYSDIR}/files/target_base/m4/1.4.19/patches/stack-direction-add-loongarch.patch 
+	 
+	for config_i in $(find -name "config.sub")
+	do
+		chmod 0644 $(dirname ${config_i})/config.{sub,guess}
+		cp ${CROSSTOOLS_DIR}/share/automake*/config.{sub,guess} $(dirname ${config_i})/
+	done
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} 
+	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/m4-1.4.19

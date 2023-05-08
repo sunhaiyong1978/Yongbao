@@ -1,0 +1,14 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=typogrify
+export PACKAGE_VERSION=2.0.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/typogrify/2.0.7/
+rm -rf ${BUILD_DIRECTORY}/typogrify-2.0.7
+tar xvf ${DOWNLOADDIR}/typogrify-2.0.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/typogrify-2.0.7
+	${CROSSTOOLS_DIR}/bin/python3 setup.py build
+        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+popd 
+rm -rf ${BUILD_DIRECTORY}/typogrify-2.0.7

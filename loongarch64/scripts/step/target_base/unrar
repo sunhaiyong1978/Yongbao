@@ -1,0 +1,14 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=unrar
+export PACKAGE_VERSION=6.2.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/unrar/6.2.6/
+rm -rf ${BUILD_DIRECTORY}/unrar
+tar xvf ${DOWNLOADDIR}/unrarsrc-6.2.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/unrar
+	make -j${JOBS} CXX="${CROSS_TARGET}-g++" STRIP=${CROSS_TARGET}-strip -f makefile
+	install -v -m755 unrar ${SYSROOT_DIR}/usr/bin
+popd 
+rm -rf ${BUILD_DIRECTORY}/unrar

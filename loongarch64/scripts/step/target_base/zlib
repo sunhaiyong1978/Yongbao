@@ -1,0 +1,16 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=zlib
+export PACKAGE_VERSION=1.2.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/zlib/1.2.13/
+rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13
+tar xvf ${DOWNLOADDIR}/zlib-1.2.13.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zlib-1.2.13
+	
+	CROSS_PREFIX=${CROSS_TARGET}- ./configure --prefix=/usr --libdir=/usr/lib64
+	make -j${JOBS}
+	make DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13

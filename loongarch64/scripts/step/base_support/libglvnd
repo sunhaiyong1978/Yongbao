@@ -1,0 +1,22 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libglvnd
+export PACKAGE_VERSION=1.6.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libglvnd/1.6.0/
+rm -rf ${BUILD_DIRECTORY}/libglvnd-v1.6.0
+tar xvf ${DOWNLOADDIR}/libglvnd-v1.6.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libglvnd-v1.6.0
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  \
+                      ..
+		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libglvnd-v1.6.0

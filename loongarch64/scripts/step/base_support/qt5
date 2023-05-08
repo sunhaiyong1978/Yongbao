@@ -1,0 +1,60 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=qt5
+export PACKAGE_VERSION=5.15.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt5/5.15.9/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.9
+tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.9
+    patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.9/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.9/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.9/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+	 
+    mkdir pre-build
+    pushd pre-build
+        PKG_CONFIG_LIBDIR=${SYSROOT_DIR}/usr/lib64/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig \
+        ../configure -hostprefix ${CROSSTOOLS_DIR} \
+                -prefix /usr -sysconfdir /etc/xdg \
+                -libdir /usr/lib64 -archdatadir /usr/lib64/qt5 \
+                -bindir /usr/bin \
+                -plugindir /usr/lib64/qt5/plugins \
+                -importdir /usr/lib64/qt5/imports \
+                -headerdir /usr/include/qt5 \
+                -datadir /usr/share/qt5 \
+                -docdir /usr/share/doc/qt5 \
+                -translationdir /usr/share/qt5/translations \
+                -confirm-license -opensource \
+                -system-sqlite \
+                -nomake examples -no-rpath \
+                -dbus-linked -journald \
+                -skip qtwebengine \
+                -sysroot ${SYSROOT_DIR} \
+                -xplatform linux-${ARCH_NAME}-gnu-g++
+        make -j${JOBS}
+        make install
+    popd
+    mkdir cross-build
+    pushd cross-build
+       ../configure -external-hostbindir ${CROSSTOOLS_DIR}/bin \
+                -prefix /usr -sysconfdir /etc/xdg \
+                -libdir /usr/lib64 -archdatadir /usr/lib64/qt5 \
+                -bindir /usr/bin \
+                -plugindir /usr/lib64/qt5/plugins \
+                -importdir /usr/lib64/qt5/imports \
+                -headerdir /usr/include/qt5 \
+                -datadir /usr/share/qt5 \
+                -docdir /usr/share/doc/qt5 \
+                -translationdir /usr/share/qt5/translations \
+                -confirm-license -opensource \
+                -openssl-linked -system-harfbuzz -system-sqlite \
+                -nomake examples -no-rpath \
+                -dbus-linked -journald \
+                -skip qtwebengine \
+                -platform linux-${ARCH_NAME}-gnu-g++
+	make -j${JOBS}
+        make INSTALL_ROOT=${SYSROOT_DIR} install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.9

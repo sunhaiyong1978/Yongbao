@@ -1,0 +1,13 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=man-pages
+export PACKAGE_VERSION=6.04
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/man-pages/6.04/
+rm -rf ${BUILD_DIRECTORY}/man-pages-6.04
+tar xvf ${DOWNLOADDIR}/man-pages-6.04.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/man-pages-6.04
+	make prefix=${PREFIX} DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/man-pages-6.04

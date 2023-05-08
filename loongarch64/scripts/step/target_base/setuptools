@@ -1,0 +1,14 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=setuptools
+export PACKAGE_VERSION=67.7.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/setuptools/67.7.2/
+rm -rf ${BUILD_DIRECTORY}/setuptools-67.7.2
+tar xvf ${DOWNLOADDIR}/setuptools-67.7.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/setuptools-67.7.2
+	${CROSSTOOLS_DIR}/bin/python3 setup.py build
+        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+popd 
+rm -rf ${BUILD_DIRECTORY}/setuptools-67.7.2

@@ -1,0 +1,14 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=requests
+export PACKAGE_VERSION=2.30.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/requests/2.30.0/
+rm -rf ${BUILD_DIRECTORY}/requests-2.30.0
+tar xvf ${DOWNLOADDIR}/requests-2.30.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/requests-2.30.0
+	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user requests
+popd 
+rm -rf ${BUILD_DIRECTORY}/requests-2.30.0

@@ -1,0 +1,25 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=xscreensaver
+export PACKAGE_VERSION=6.06
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xscreensaver/6.06/
+rm -rf ${BUILD_DIRECTORY}/xscreensaver-6.06
+tar xvf ${DOWNLOADDIR}/xscreensaver-6.06.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xscreensaver-6.06
+    cp ${SYSROOT_DIR}/usr/share/automake-*/config.* ./
+    ./configure $COMMON_CONFIG --includedir=${SYSROOT_DIR}/usr/include || true
+    make -j${JOBS}
+    make install_prefix=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/xscreensaver-6.06
+
+cat > ${SYSROOT_DIR}/etc/pam.d/xscreensaver << "EOF"
+# Begin /etc/pam.d/xscreensaver
+
+auth    include system-auth
+account include system-account
+
+# End /etc/pam.d/xscreensaver
+EOF

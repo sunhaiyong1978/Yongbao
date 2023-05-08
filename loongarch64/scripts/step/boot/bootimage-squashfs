@@ -1,0 +1,38 @@
+source env/boot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=boot
+export STEP_PACKAGENAME=bootimage-squashfs
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/bootimage-squashfs//
+rm -rf ${BUILD_DIRECTORY}/ISO-Build
+mkdir -pv ${BUILD_DIRECTORY}/ISO-Build/bootimage
+pushd ${BUILD_DIRECTORY}/ISO-Build/bootimage
+    mkdir -pv EFI/BOOT
+    mkdir -pv boot/grub
+    mkdir -pv images
+    ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-grub-mkimage \
+              --directory "${SYSROOT_DIR}/usr/lib64/grub/${ARCH_NAME}-efi" \
+              --prefix '/boot/grub' \
+              --output "EFI/BOOT/BOOTLOONGARCH64.EFI" \
+              --format "${ARCH_NAME}-efi" \
+              --compression 'auto' \
+              'iso9660' 'normal' 'echo' 'linux' 'ext2' 'fat' 'part_gpt' 'part_msdos'
+    cp -av EFI/BOOT/BOOTLOONGARCH{64,}.EFI
+    pushd boot
+        cp -v ${SYSROOT_DIR}/boot/vmlinux.efi ./
+        cp -v ${DIST_DIRECTORY}/os/initramfs-squashfs.img.gz ./initramfs.img.gz
+        cat > grub/grub.cfg << EOF
+menuentry '${DISTRO_NAME} ${DISTRO_VERSION} for ${DISTRO_ARCH_NAME}' {
+echo 'Loading Linux Kernel ...'
+linux /boot/vmlinux.efi LABEL=Sunhaiyong quiet
+echo 'Loading Initramfs ...'
+initrd /boot/initramfs.img.gz
+boot
+}
+EOF
+    popd
+popd
+rm -rf ${DIST_DIRECTORY}/os/bootimage-squashfs
+cp -av ${BUILD_DIRECTORY}/ISO-Build/bootimage ${DIST_DIRECTORY}/os/bootimage-squashfs
+rm -rf ${BUILD_DIRECTORY}/ISO-Build

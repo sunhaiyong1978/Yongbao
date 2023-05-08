@@ -1,0 +1,40 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=polkit
+export PACKAGE_VERSION=121
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/polkit/121/
+rm -rf ${BUILD_DIRECTORY}/polkit-v.121
+tar xvf ${DOWNLOADDIR}/polkit-121.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/polkit-v.121
+        
+        mkdir cross-prebuild
+        pushd cross-prebuild
+                meson ${MESON_CONFIG} -Dsession_tracking=libsystemd-login -Djs_engine=mozjs -Dintrospection=false \
+                       ..
+                eval ${NINJA_AND_INSTALL}
+        popd
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} -Dsession_tracking=libsystemd-login -Djs_engine=mozjs \
+                      ..
+                sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
+		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/vapigen@\1bin/${CROSS_TARGET}-vapigen@g" build.ninja
+                eval ${NINJA_AND_INSTALL}
+        popd
+
+cat > ${SYSROOT_DIR}/etc/pam.d/polkit-1 << "EOF"
+# Begin /etc/pam.d/polkit-1
+
+auth     include        system-auth
+account  include        system-account
+password include        system-password
+session  include        system-session
+
+# End /etc/pam.d/polkit-1
+EOF
+chmod +s ${SYSROOT_DIR}/usr/lib/polkit-1/polkit-agent-helper-1
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/polkit-v.121

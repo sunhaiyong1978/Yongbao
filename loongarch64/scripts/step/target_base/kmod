@@ -1,0 +1,21 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=kmod
+export PACKAGE_VERSION=30
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/kmod/30/
+rm -rf ${BUILD_DIRECTORY}/kmod-30
+tar xvf ${DOWNLOADDIR}/kmod-30.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kmod-30
+	./configure --prefix=/usr --libdir=/usr/lib64 --bindir=/bin \
+	            --sysconfdir=/etc --build=${CROSS_HOST} --host=${CROSS_TARGET} \
+	            --with-xz --with-zstd --with-zlib
+	eval ${MAKE_AND_INSTALL}
+	
+	for target in depmod insmod lsmod modinfo modprobe rmmod; do
+		ln -sfv ../bin/kmod ${SYSROOT_DIR}/sbin/$target
+	done
+	ln -sfv kmod ${SYSROOT_DIR}/bin/lsmod
+popd 
+rm -rf ${BUILD_DIRECTORY}/kmod-30

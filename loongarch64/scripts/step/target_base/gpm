@@ -1,0 +1,38 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=gpm
+export PACKAGE_VERSION=1.20.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gpm/1.20.7/
+rm -rf ${BUILD_DIRECTORY}/gpm-1.20.7
+tar xvf ${DOWNLOADDIR}/gpm-1.20.7.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gpm-1.20.7
+	patch -Np1 -i ${SYSDIR}/files/target_base/gpm/1.20.7/patches/gpm-1.20.7-consolidated-1.patch 
+	patch -Np1 -i ${SYSDIR}/files/target_base/gpm/1.20.7/patches/gpm-1.20.1-weak-wgetch.patch 
+	 
+	./autogen.sh
+	./configure ${COMMON_CONFIG}
+	eval ${MAKE_AND_INSTALL}
+	ln -sfv libgpm.so.2.1.0 ${SYSROOT_DIR}/usr/lib64/libgpm.so
+
+cat > ${SYSROOT_DIR}/etc/sysconfig/mouse << "EOF"
+MDEVICE="/dev/input/mice"
+PROTOCOL="imps2"
+GPMOPTS=""
+EOF
+
+cat > ${SYSROOT_DIR}/usr/lib/systemd/system/gpm.service << "EOF"
+[Unit]
+Description=Console Mouse manager
+
+[Service]
+ExecStart=/usr/sbin/gpm -m /dev/input/mice -t exps2
+Type=forking
+PIDFile=/run/gpm.pid
+
+[Install]
+WantedBy=multi-user.target
+EOF
+popd 
+rm -rf ${BUILD_DIRECTORY}/gpm-1.20.7

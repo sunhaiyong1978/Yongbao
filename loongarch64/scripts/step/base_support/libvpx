@@ -1,0 +1,20 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libvpx
+export PACKAGE_VERSION=1.13.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libvpx/1.13.0/
+rm -rf ${BUILD_DIRECTORY}/libvpx-1.13.0
+tar xvf ${DOWNLOADDIR}/libvpx-1.13.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libvpx-1.13.0
+    sed -i 's/cp -p/cp/' build/make/Makefile
+    mkdir cross-build
+    pushd cross-build
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        ../configure --prefix=/usr --libdir=/usr/lib64 \
+                     --target=generic-gnu --enable-shared
+	eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/libvpx-1.13.0

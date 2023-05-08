@@ -1,0 +1,24 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=icu4c
+export PACKAGE_VERSION=73_1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/icu4c/73_1/
+rm -rf ${BUILD_DIRECTORY}/icu
+tar xvf ${DOWNLOADDIR}/icu4c-73_1-src.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/icu
+    pushd source
+    touch config/icucross.mk
+    touch config/icucross.inc
+    sed -i '/^PKGDATA/s@$(TOOLBINDIR)@/bin@g' data/Makefile.in
+    sed -i '/INVOKE/s@$(TOOLBINDIR)@/bin@g' data/Makefile.in extra/uconv/Makefile.in
+    sed -i '/INVOKE/s@/bin/icupkg@/sbin/icupkg@g' data/Makefile.in
+    ./configure ${COMMON_CONFIG} --with-cross-build=${PWD}
+    sed -i '/INVOKE/s@$(TOOLBINDIR)@/bin@g' data/rules.mk
+    sed -i '/INVOKE/s@/bin/icupkg@/sbin/icupkg@g' data/rules.mk
+    sed -i '/INVOKE/s@/bin/gensprep@/sbin/gensprep@g' data/rules.mk
+    eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/icu

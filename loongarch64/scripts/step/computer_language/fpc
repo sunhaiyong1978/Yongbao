@@ -1,0 +1,17 @@
+source env/computer_language/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=computer_language
+export STEP_PACKAGENAME=fpc
+export PACKAGE_VERSION=3.3.1-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/fpc/3.3.1-default/
+rm -rf ${BUILD_DIRECTORY}/fpc-3.3.1-default_git
+tar xvf ${DOWNLOADDIR}/fpc-3.3.1-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fpc-3.3.1-default_git
+	make -j${JOBS} FPC=/usr/bin/fpc CPU_TARGET=${ARCH_NAME} OS_TARGET=linux BINUTILSPREFIX=${CROSS_TARGET}- all
+	make FPC=/usr/bin/fpc CPU_TARGET=${ARCH_NAME} OS_TARGET=linux BINUTILSPREFIX=${CROSS_TARGET}- PREFIX=${PWD}/fpc-$(echo "3.3.1-default" | sed "s@-default@@g")-${ARCH_NAME} install
+	mv -v fpc-$(echo "3.3.1-default" | sed "s@-default@@g")-${ARCH_NAME}/lib/fpc/*/ppc* fpc-$(echo "3.3.1-default" | sed "s@-default@@g")-${ARCH_NAME}/bin/
+	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/fpc/$(echo "3.3.1-default" | sed "s@-default@@g")/
+	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/fpc/$(echo "3.3.1-default" | sed "s@-default@@g")/fpc-$(echo "3.3.1-default" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz fpc-$(echo "3.3.1-default" | sed "s@-default@@g")-${ARCH_NAME}
+popd 
+rm -rf ${BUILD_DIRECTORY}/fpc-3.3.1-default_git

@@ -1,0 +1,15 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=tmux
+export PACKAGE_VERSION=3.3a
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/tmux/3.3a/
+rm -rf ${BUILD_DIRECTORY}/tmux-3.3a
+tar xvf ${DOWNLOADDIR}/tmux-3.3a.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tmux-3.3a
+    ./configure ${COMMON_CONFIG} --with-TERM=screen
+    eval ${MAKE_AND_INSTALL}
+    install -m 644 example_tmux.conf ${SYSROOT_DIR}/etc/example_tmux.conf
+popd 
+rm -rf ${BUILD_DIRECTORY}/tmux-3.3a

@@ -1,0 +1,57 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=make_directory
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/make_directory//
+mkdir -p ${BUILD_DIRECTORY}
+mkdir -p ${SYSROOT_DIR}
+mkdir -p ${CROSSTOOLS_DIR}
+pushd ${SYSROOT_DIR} > /dev/null
+	mkdir -p ./{boot,home,root,mnt,opt,srv,run}
+	mkdir -p ./etc/{opt,sysconfig,profile.d}
+	mkdir -p ./media/{floppy,cdrom}
+	mkdir -p ./usr/{,local/}{include,src}
+	mkdir -p ./usr/local/{bin,lib,sbin}
+	mkdir -p ./usr/{,local/}share/{color,dict,doc,info,locale,man}
+	mkdir -p ./usr/{,local/}share/{misc,terminfo,zoneinfo}
+	mkdir -p ./usr/{,local/}share/man/man{1..8}
+	mkdir -p ./var/{cache,local,log,mail,opt,spool}
+	mkdir -p ./var/lib/{color,misc,locate}
+	mkdir -p ./usr/{lib{,64},bin,sbin}
+	ln -sf usr/{lib{,64},bin,sbin} ./
+	mkdir -p ./lib/firmware
+	mkdir -p ./{dev,proc,sys}
+	ln -sf ../run ./var/run
+	ln -sf ../run/lock ./var/lock
+	install -d -m 1777 ./tmp ./var/tmp
+	if [ ! -d ./boot/boot ]; then
+  	 ln -sf . ./boot/boot
+	fi
+popd > /dev/null
+
+pushd ${COMMON_DIR} > /dev/null
+echo "[binaries]" > meson-cross.txt
+echo "c = '${CROSS_TARGET}-gcc'" >> meson-cross.txt
+echo "cpp = '${CROSS_TARGET}-g++'" >> meson-cross.txt
+echo "ar = '${CROSS_TARGET}-ar'" >> meson-cross.txt
+echo "strip = '${CROSS_TARGET}-strip'" >> meson-cross.txt
+echo "objcopy = '${CROSS_TARGET}-objcopy'" >> meson-cross.txt
+echo "pkgconfig = '${CROSS_TARGET}-pkg-config'" >> meson-cross.txt
+echo "cups-config = '${CROSS_TARGET}-cups-config'" >> meson-cross.txt
+echo "llvm-config = '${CROSS_TARGET}-llvm-config'" >> meson-cross.txt
+echo "vala = '${CROSS_TARGET}-valac'" >> meson-cross.txt
+echo "g-ir-scanner = '${CROSS_TARGET}-g-ir-scanner'" >> meson-cross.txt
+echo "g-ir-compiler = '${CROSS_TARGET}-g-ir-compiler'" >> meson-cross.txt
+echo "exe_wrapper = 'qemu-${ARCH_NAME}'" >> meson-cross.txt
+echo "[properties]" >> meson-cross.txt
+echo "skip_sanity_check = true" >> meson-cross.txt
+echo "sys_root = '${SYSROOT_DIR}'" >> meson-cross.txt
+echo "pkg_config_libdir = '${SYSROOT_DIR}/usr/lib64/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig'" >> meson-cross.txt
+echo "[host_machine]"  >> meson-cross.txt
+echo "system = 'linux'
+cpu_family = '${ARCH_NAME}'
+cpu = '${ARCH_NAME}'
+endian = 'little' " >> meson-cross.txt
+popd > /dev/null

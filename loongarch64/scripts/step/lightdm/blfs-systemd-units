@@ -1,0 +1,13 @@
+source env/lightdm/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=lightdm
+export STEP_PACKAGENAME=blfs-systemd-units
+export PACKAGE_VERSION=20220720
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/lightdm/blfs-systemd-units/20220720/
+rm -rf ${BUILD_DIRECTORY}/blfs-systemd-units-20220720
+tar xvf ${DOWNLOADDIR}/blfs-systemd-units-20220720.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/blfs-systemd-units-20220720
+	make DESTDIR=${SYSROOT_DIR} install-lightdm
+popd 
+rm -rf ${BUILD_DIRECTORY}/blfs-systemd-units-20220720

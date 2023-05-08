@@ -1,0 +1,16 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=emacs
+export PACKAGE_VERSION=28.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/emacs/28.2/
+rm -rf ${BUILD_DIRECTORY}/emacs-28.2
+tar xvf ${DOWNLOADDIR}/emacs-28.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/emacs-28.2
+	sed -i "s@)\$(libsrc)/make-docfile@) qemu-${ARCH_NAME} \$\(libsrc\)/make-docfile@g" src/Makefile.in
+	sed -i -e "s@bootstrap_exe = \(.*\)@ bootstrap_exe = /bin/emacs@g" src/Makefile.in
+	./configure ${COMMON_CONFIG} --with-dumping=none
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/emacs-28.2

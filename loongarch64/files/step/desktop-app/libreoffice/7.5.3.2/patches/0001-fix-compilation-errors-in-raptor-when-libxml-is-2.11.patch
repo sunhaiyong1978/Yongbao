@@ -1,0 +1,58 @@
+From 0a1251dbc39c1f7564d99542e6d970e98e9f6aba Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 4 May 2023 06:38:59 +0000
+Subject: [PATCH] fix compilation errors in raptor when libxml is 2.11
+
+---
+ external/redland/UnpackedTarball_raptor.mk    |  1 +
+ ...ion-for-judging-the-libxml-version.patch.1 | 26 +++++++++++++++++++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 external/redland/raptor/0001-fix-the-condition-for-judging-the-libxml-version.patch.1
+
+diff --git a/external/redland/UnpackedTarball_raptor.mk b/external/redland/UnpackedTarball_raptor.mk
+index 619116c33..ee2296e71 100644
+--- a/external/redland/UnpackedTarball_raptor.mk
++++ b/external/redland/UnpackedTarball_raptor.mk
+@@ -31,6 +31,7 @@ $(eval $(call gb_UnpackedTarball_add_patches,raptor,\
+ 	external/redland/raptor/0001-CVE-2020-25713-raptor2-malformed-input-file-can-lead.patch.1 \
+ 	external/redland/raptor/libtool.patch \
+ 	external/redland/raptor/Wint-conversion.patch \
++	external/redland/raptor/0001-fix-the-condition-for-judging-the-libxml-version.patch.1 \
+ ))
+ 
+ # vim: set noet sw=4 ts=4:
+diff --git a/external/redland/raptor/0001-fix-the-condition-for-judging-the-libxml-version.patch.1 b/external/redland/raptor/0001-fix-the-condition-for-judging-the-libxml-version.patch.1
+new file mode 100644
+index 000000000..f078e3d24
+--- /dev/null
++++ b/external/redland/raptor/0001-fix-the-condition-for-judging-the-libxml-version.patch.1
+@@ -0,0 +1,26 @@
++From 21b09b92a19abeacc773fddb5659b7844ec916fd Mon Sep 17 00:00:00 2001
++From: Sun Haiyong <sunhaiyong@zdbr.net>
++Date: Thu, 4 May 2023 06:29:03 +0000
++Subject: [PATCH] fix the condition for judging the libxml version
++
++When the version of libxml is greater than 2.11, there is no need to set checked again.
++---
++ src/raptor_libxml.c | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/src/raptor_libxml.c b/src/raptor_libxml.c
++index cee87a5..0f383f9 100644
++--- a/src/raptor_libxml.c
+++++ b/src/raptor_libxml.c
++@@ -246,7 +246,7 @@ raptor_libxml_getEntity(void* user_data, const xmlChar *name)
++     
++     ret->owner = 1;
++ 
++-#if LIBXML_VERSION >= 20627
+++#if LIBXML_VERSION >= 20627 && LIBXML_VERSION < 21100
++     /* Checked field was released in 2.6.27 on 2006-10-25
++      * http://git.gnome.org/browse/libxml2/commit/?id=a37a6ad91a61d168ecc4b29263def3363fff4da6
++      *
++-- 
++2.31.1
++
+-- 
+2.31.1
+

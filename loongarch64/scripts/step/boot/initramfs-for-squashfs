@@ -1,0 +1,53 @@
+source env/boot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=boot
+export STEP_PACKAGENAME=initramfs-for-squashfs
+export PACKAGE_VERSION=1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/initramfs-for-squashfs/1.0/
+rm -rf ${BUILD_DIRECTORY}/ISO-Build
+mkdir -pv ${BUILD_DIRECTORY}/ISO-Build/Initramfs
+pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
+    mkdir -pv rootfs
+    pushd rootfs
+        mkdir -pv ./{dev,proc,sys}
+        mkdir -pv ./usr/{lib{,64},bin,sbin}
+        mkdir -pv ./mnt/usb
+        ln -sfv usr/{lib{,64},bin,sbin} ./
+        cp ${RESOURCEDIR}/initramfs-init ./init
+        chmod +x ./init
+        cp -v ${SYSROOT_DIR}/usr/bin/busybox usr/bin/
+        ln -sv busybox usr/bin/sh
+        ln -sv busybox usr/bin/ls
+        ln -sv busybox usr/bin/mount
+        ln -sv busybox usr/bin/umount
+        ln -sv busybox usr/bin/find
+        ln -sv busybox usr/bin/blkid
+        ln -sv busybox usr/bin/grep
+        ln -sv busybox usr/bin/awk
+        ln -sv busybox usr/bin/mkdir
+        ln -sv busybox usr/bin/cat
+        ln -sv busybox usr/bin/sort
+        ln -sv busybox usr/bin/tr
+        ln -sv busybox usr/bin/ln
+        ln -sv busybox usr/bin/basename
+        ln -sv busybox usr/bin/sleep
+        ln -sv busybox usr/bin/insmod
+        ln -sv busybox usr/bin/uname
+        ln -sv busybox usr/bin/cp
+        ln -sv busybox usr/bin/mv
+        ln -sv busybox usr/bin/modprobe
+        ln -sv ../bin/busybox usr/sbin/switch_root
+
+        cp -a ${SYSROOT_DIR}/usr/lib/modules/$(cat ${COMMON_DIR}/linux-kernel.version)/kernel/fs/fat/* lib/
+	if [ -f ${SYSROOT_DIR}/usr/lib/modules/$(cat ${COMMON_DIR}/linux-kernel.version)/kernel/drivers/usb/storage/usb-storage.ko ]; then
+	        cp -a ${SYSROOT_DIR}/usr/lib/modules/$(cat ${COMMON_DIR}/linux-kernel.version)/kernel/drivers/usb/storage/usb-storage.ko lib/
+	fi
+
+        find . | cpio -H newc --create > ../initramfs.img
+    popd
+    gzip -9 initramfs.img
+    mkdir -pv ${DIST_DIRECTORY}/os/ 
+    cp initramfs.img.gz ${DIST_DIRECTORY}/os/initramfs-squashfs.img.gz
+popd
+rm -rf ${BUILD_DIRECTORY}/ISO-Build

@@ -1,0 +1,27 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=qemu
+export PACKAGE_VERSION=8.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu/8.0.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.0
+tar xvf ${DOWNLOADDIR}/qemu-8.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.0.0
+    mkdir -p build
+    pushd build
+        CFLAGS="-Wno-error=unused-function" ../configure --prefix=${CROSSTOOLS_DIR} --target-list=${TARGET_ARCH}-linux-user --static
+        ninja
+        cp qemu-${TARGET_ARCH} ${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}.bin
+    popd
+    echo "#!/bin/bash -e
+${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}.bin -L ${SYSROOT_DIR} \"\$@\"" \
+> ${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}
+
+echo "#!/bin/bash -e
+${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_TRACE_LOADED_OBJECTS=1 \"\$@\"" \
+> ${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}-ldd
+
+chmod +x ${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}{,-ldd}
+popd 
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.0

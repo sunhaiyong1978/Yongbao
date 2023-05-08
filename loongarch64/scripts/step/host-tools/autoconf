@@ -1,0 +1,15 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=autoconf
+export PACKAGE_VERSION=2.71
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/autoconf/2.71/
+rm -rf ${BUILD_DIRECTORY}/autoconf-2.71
+tar xvf ${DOWNLOADDIR}/autoconf-2.71.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/autoconf-2.71
+	
+	./configure --prefix=${CROSSTOOLS_DIR} 
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/autoconf-2.71

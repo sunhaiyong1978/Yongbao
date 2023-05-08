@@ -1,0 +1,30 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=systemd
+export PACKAGE_VERSION=253
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/systemd/253/
+rm -rf ${BUILD_DIRECTORY}/systemd-253
+tar xvf ${DOWNLOADDIR}/systemd-253.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-253
+	
+	pushd src/basic
+        python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
+	popd
+	sed -i -e 's/GROUP="render"/GROUP="video"/' \
+           -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
+	sed -i "s@Werror=undef',@& '-Wno-error=format-overflow',@g" meson.build
+
+	mkdir -p build
+	pushd build
+		meson ${MESON_CONFIG} \
+		      -Ddefault-dnssec=no -Dfirstboot=false \
+		      -Dinstall-tests=false -Dldconfig=false -Dsysusers=false \
+		      -Drpmmacrosdir=no -Dhomed=false -Duserdb=false -Dman=false -Dmode=release \
+		      -Dpamconfdir=/etc/pam.d \
+		      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/systemd-253

@@ -1,0 +1,107 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=create_base_files
+export PACKAGE_VERSION=1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/create_base_files/1.0/
+cp -a ${RESOURCEDIR}/etc-passwd ${SYSROOT_DIR}/etc/passwd
+cp -a ${RESOURCEDIR}/etc-group ${SYSROOT_DIR}/etc/group
+cp -a ${RESOURCEDIR}/etc-bashrc ${SYSROOT_DIR}/etc/bashrc
+cp -a ${RESOURCEDIR}/etc-profile ${SYSROOT_DIR}/etc/profile
+cp -a ${RESOURCEDIR}/etc-profile.d_default-event.sh ${SYSROOT_DIR}/etc/profile.d/default-event.sh
+cp -a ${RESOURCEDIR}/etc-profile.d_add-opt-path.sh ${SYSROOT_DIR}/etc/profile.d/add-opt-path.sh
+mkdir -pv ${SYSROOT_DIR}/etc/skel
+cp -a ${RESOURCEDIR}/etc-skel_bash_profile ${SYSROOT_DIR}/etc/skel/.bash_profile
+cp -a ${RESOURCEDIR}/etc-skel_bash_profile ${SYSROOT_DIR}/etc/skel/.bashrc
+cp -a ${RESOURCEDIR}/etc-ld.so.conf ${SYSROOT_DIR}/etc/ld.so.conf
+mkdir -pv ${SYSROOT_DIR}/etc/ld.so.conf.d
+cp -a ${RESOURCEDIR}/etc-nsswitch.conf ${SYSROOT_DIR}/etc/nsswitch.conf
+cp -a ${RESOURCEDIR}/etc-systemd_network_10-eth-dhcp.network ${SYSROOT_DIR}/etc/systemd/network/10-eth-dhcp.network
+ln -sfv /run/systemd/resolve/resolv.conf ${SYSROOT_DIR}/etc/resolv.conf
+cp -a ${RESOURCEDIR}/etc-hostname ${SYSROOT_DIR}/etc/hostname
+cp -a ${RESOURCEDIR}/etc-hosts ${SYSROOT_DIR}/etc/hosts
+cp -a ${RESOURCEDIR}/etc-locale.conf ${SYSROOT_DIR}/etc/locale.conf
+cp -a ${RESOURCEDIR}/etc-inputrc ${SYSROOT_DIR}/etc/inputrc
+cp -a ${RESOURCEDIR}/etc-adjtime ${SYSROOT_DIR}/etc/adjtime
+mkdir -pv ${SYSROOT_DIR}/var/lib/hwclock
+ln -sfv /etc/adjtime ${SYSROOT_DIR}/var/lib/hwclock/adjtime
+cp -a ${RESOURCEDIR}/etc-shells ${SYSROOT_DIR}/etc/shells
+cp -a ${RESOURCEDIR}/etc-fstab ${SYSROOT_DIR}/etc/fstab
+cp -a ${RESOURCEDIR}/etc-rc.local ${SYSROOT_DIR}/etc/rc.local
+chmod +x ${SYSROOT_DIR}/etc/rc.local
+mkdir -pv ${SYSROOT_DIR}/etc/first-run.d/
+
+# os_first_run "pwconv"
+# os_first_run "grpconv"
+# os_first_run "update-mime-database /usr/share/mime"
+# os_first_run "glib-compile-schemas /usr/share/glib-2.0/schemas"
+# os_first_run "systemctl enable NetworkManager"
+# os_first_run "systemctl start NetworkManager"
+# os_first_run "ssh-keygen -A"
+# os_first_run "systemctl disable sshd.socket"
+# os_first_run "systemctl enable sshd.service"
+# os_first_run "chown -v root:messagebus /usr/libexec/dbus-daemon-launch-helper"
+# os_first_run "chmod -v 4750 /usr/libexec/dbus-daemon-launch-helper"
+# os_first_run "gtk-update-icon-cache -qtf /usr/share/icons/hicolor"
+# os_first_run "update-desktop-database -q"
+# os_first_run "gtk-query-immodules-2.0 --update-cache"
+# os_first_run "gtk-query-immodules-3.0 --update-cache"
+# os_first_run "gdk-pixbuf-query-loaders --update-cache"
+# os_first_run "dconf update"
+
+
+# update-mime-database /usr/share/mime
+# glib-compile-schemas /usr/share/glib-2.0/schemas
+# systemctl enable NetworkManager
+# systemctl start NetworkManager
+# ssh-keygen -A
+# systemctl disable sshd.socket
+# systemctl enable sshd.service
+# chown -v root:messagebus /usr/libexec/dbus-daemon-launch-helper
+# chmod -v 4750 /usr/libexec/dbus-daemon-launch-helper
+# gtk-update-icon-cache -qtf /usr/share/icons/hicolor
+# update-desktop-database -q
+# gtk-query-immodules-2.0 --update-cache
+# gtk-query-immodules-3.0 --update-cache
+# gdk-pixbuf-query-loaders --update-cache
+# dconf update
+
+cat > ${SYSROOT_DIR}/etc/first-run.d/000-os-first.sh << EOF
+pwconv
+grpconv
+echo 1 > /var/run/first-run
+EOF
+
+cat > ${SYSROOT_DIR}/etc/first-run.d/999-create-user.sh << EOF
+useradd -m ${DISTRO_DEFAULT_USER} -c "默认用户"
+echo ${DISTRO_DEFAULT_USER}:${DISTRO_DEFAULT_USER} | chpasswd
+usermod -a -G video ${DISTRO_DEFAULT_USER}
+usermod -a -G input ${DISTRO_DEFAULT_USER}
+usermod -a -G wheel ${DISTRO_DEFAULT_USER}
+EOF
+
+mkdir -pv ${SYSROOT_DIR}/var/unit/{dm,wm}
+
+#cp -a ${RESOURCEDIR}/bin-run-startx.sh ${SYSROOT_DIR}/usr/bin/run-startx.sh
+#chmod u+x ${SYSROOT_DIR}/usr/bin/run-startx.sh
+
+#mkdir -pv ${SYSROOT_DIR}/etc/X11/app-defaults/
+#ln -sfv ../xinit/xinitrc.d ${SYSROOT_DIR}/etc/X11/app-defaults/
+
+#cp -a ${RESOURCEDIR}/root-xinitrc ${SYSROOT_DIR}/root/.xinitrc
+
+cat > ${SYSDIR}/sysroot/etc/lsb-release << EOF
+DISTRIB_ID="${DISTRO_NAME} Linux for ${DISTRO_ARCH_NAME}"
+DISTRIB_RELEASE="${DISTRO_VERSION}"
+DISTRIB_CODENAME="${DISTRO_NAME}"
+DISTRIB_DESCRIPTION="${DISTRO_NAME}"
+EOF
+
+cat > ${SYSDIR}/sysroot/etc/os-release << EOF
+NAME="${DISTRO_NAME} Linux"
+VERSION="${DISTRO_VERSION}"
+ID=${DISTRO_NAME}
+PRETTY_NAME="${DISTRO_NAME} Linux ${DISTRO_VERSION} for ${DISTRO_ARCH_NAME}"
+VERSION_CODENAME="${DISTRO_NAME}"
+EOF

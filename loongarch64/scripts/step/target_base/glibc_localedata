@@ -1,0 +1,19 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=glibc_localedata
+export PACKAGE_VERSION=2.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc_localedata/2.37/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.37
+tar xvf ${DOWNLOADDIR}/glibc-2.37.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.37
+        mkdir -p build-locale
+        pushd build-locale
+                ../configure --prefix=/usr --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc \
+                         --enable-stack-protector=strong --enable-add-ons \
+                         --disable-werror libc_cv_slibdir=/usr/lib64
+                make -j${JOBS}
+                make -j${JOBS} DESTDIR=${SYSROOT_DIR} localedata/install-locales
+popd 
+rm -rf ${BUILD_DIRECTORY}/glibc-2.37

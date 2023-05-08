@@ -1,0 +1,41 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=gtk3
+export PACKAGE_VERSION=3.24.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gtk3/3.24.37/
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.37
+tar xvf ${DOWNLOADDIR}/gtk+-3.24.37.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gtk+-3.24.37
+        
+        mkdir cross-prebuild
+        pushd cross-prebuild
+                meson ${MESON_CONFIG} -Dbroadway_backend=true -Dintrospection=false \
+                       ..
+                eval ${NINJA_AND_INSTALL}
+        popd
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} -Dbroadway_backend=true \
+                      ..
+                sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
+                sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/vapigen@\1bin/${CROSS_TARGET}-vapigen@g" build.ninja
+                eval ${NINJA_AND_INSTALL}
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+cat >  ${SYSROOT_DIR}/etc/gtk-3.0/settings.ini << "EOF"
+[Settings]
+gtk-theme-name = Adwaita
+gtk-icon-theme-name = oxygen
+gtk-font-name = DejaVu Sans 12
+gtk-cursor-theme-size = 18
+gtk-toolbar-style = GTK_TOOLBAR_BOTH_HORIZ
+gtk-xft-antialias = 1
+gtk-xft-hinting = 1
+gtk-xft-hintstyle = hintslight
+gtk-xft-rgba = rgb
+gtk-cursor-theme-name = Adwaita
+EOF
+popd 
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.37

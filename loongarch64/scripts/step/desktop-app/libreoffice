@@ -1,0 +1,63 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=libreoffice
+export PACKAGE_VERSION=7.5.3.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/7.5.3.2/
+rm -rf ${BUILD_DIRECTORY}/libreoffice-7.5.3.2
+tar xvf ${DOWNLOADDIR}/libreoffice-7.5.3.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libreoffice-7.5.3.2
+    mkdir -p external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-7.5.3.2.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-help-7.5.3.2.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-translations-7.5.3.2.tar.xz external/tarballs/
+    tar xvf ${RESOURCEDIR}/files/tarballs.listfile_dir.tar.gz
+    mv tarballs.listfile_dir/* external/tarballs/
+    rmdir tarballs.listfile_dir
+    tar xvf ${RESOURCEDIR}/files/tarballs_extern.listfile_dir.tar.gz
+    mv tarballs_extern.listfile_dir/* external/tarballs/
+    rmdir tarballs_extern.listfile_dir
+    mkdir -p src
+#    tar xvf external/tarballs/libreoffice-dictionaries-7.5.3.2.tar.xz -C src
+#    tar xvf external/tarballs/libreoffice-help-7.5.3.2.tar.xz -C src
+#    tar xvf external/tarballs/libreoffice-translations-7.5.3.2.tar.xz -C src
+    ln -sv src/libreoffice-help-7.5.3.2/helpcontent2
+    ln -sv src/libreoffice-dictionaries-7.5.3.2/dictionaries
+    ln -sv src/libreoffice-translations-7.5.3.2/translations
+    cp ${CROSSTOOLS_DIR}/share/automake-*/config.* ./
+    aclocal -I m4
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.5.3.2/patches/libreoffice-7.5-for-clfs.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.5.3.2/patches/libreoffice-7.5-libgpg-error-add-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.5.3.2/patches/libreoffice-7.5-postgresql-disable_spinlock.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.5.3.2/patches/0001-fix-compilation-errors-in-raptor-when-libxml-is-2.11.patch 
+	 
+    autoconf -I .
+    PKG_CONFIG_FOR_BUILD=/bin/pkg-config \
+    ./configure CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ \
+                      --build=${CROSS_HOST} --host=${CROSS_TARGET} \
+                      --prefix=/opt/libreoffice \
+                      --with-lang="zh-CN" --with-vendor=Sunhaiyong \
+                      --with-help --with-myspell-dicts \
+                      --without-junit --without-system-dicts --disable-dconf --disable-odk \
+                      --enable-release-build=yes --without-java \
+                      --with-system-curl --with-system-epoxy \
+                      --with-system-expat --with-system-graphite --with-system-harfbuzz \
+                      --with-system-jpeg --with-system-lcms2 --with-system-libtiff \
+                      --with-system-libatomic_ops --with-system-libpng --with-system-libxml \
+                      --with-system-nss --with-system-openssl \
+                      --with-system-zlib --with-system-openjpeg --with-system-icu \
+                      LIBS="-lstdc++" \
+                      --disable-coinmp --enable-python=no
+    ZIC=/usr/sbin/zic make -j${JOBS} build
+    make DESTDIR=${PWD}/dest distro-pack-install
+    cp -a ${PWD}/dest/opt/libreoffice ${SYSROOT_DIR}/opt/
+    mkdir -pv ${SYSROOT_DIR}/usr/share/bash-completion/completions/
+    cp -a ${PWD}/dest/usr/share/bash-completion/completions/* ${SYSROOT_DIR}/usr/share/bash-completion/completions/
+    cp -a ${PWD}/dest/opt/libreoffice/share/applications/*.desktop \
+           ${SYSROOT_DIR}/usr/share/applications/
+    mkdir -pv ${SYSROOT_DIR}/usr/share/xdg/
+    cp -a ${PWD}/dest/opt/libreoffice/lib/libreoffice/share/xdg/*.desktop \
+           ${SYSROOT_DIR}/usr/share/xdg/
+popd 
+rm -rf ${BUILD_DIRECTORY}/libreoffice-7.5.3.2

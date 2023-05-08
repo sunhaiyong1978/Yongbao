@@ -1,0 +1,16 @@
+source env/wm-lxde/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wm-lxde
+export STEP_PACKAGENAME=openbox
+export PACKAGE_VERSION=3.6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/openbox/3.6.1/
+rm -rf ${BUILD_DIRECTORY}/openbox-3.6.1
+tar xvf ${DOWNLOADDIR}/openbox-3.6.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openbox-3.6.1
+    2to3-3.10 -w data/autostart/openbox-xdg-autostart &&
+    sed 's/python/python3/' -i data/autostart/openbox-xdg-autostart
+    ./configure ${COMMON_CONFIG}
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/openbox-3.6.1

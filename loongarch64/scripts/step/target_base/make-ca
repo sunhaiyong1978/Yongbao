@@ -1,0 +1,27 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=make-ca
+export PACKAGE_VERSION=1.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/make-ca/1.12/
+rm -rf ${BUILD_DIRECTORY}/make-ca-1.12
+tar xvf ${DOWNLOADDIR}/make-ca-1.12.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/make-ca-1.12
+	make DESTDIR=${SYSROOT_DIR} install
+	install -vdm755 ${SYSROOT_DIR}/etc/ssl/local
+	cp ${SYSROOT_DIR}/usr/sbin/make-ca ${CROSSTOOLS_DIR}/bin/
+	sed -i "/MAKE_CA_CONF/s@\"/etc@\"${SYSROOT_DIR}/etc@g" ${CROSSTOOLS_DIR}/bin/make-ca
+	cp ${RESOURCEDIR}/files/certdata.txt ./
+	cp ${RESOURCEDIR}/files/root.crt ./
+	cp ${RESOURCEDIR}/files/class3.crt ./
+	${CROSSTOOLS_DIR}/bin/make-ca --destdir ${SYSROOT_DIR} -C certdata.txt
+	openssl x509 -in root.crt -text -fingerprint -setalias "CAcert Class 1 root" \
+	        -addtrust serverAuth -addtrust emailProtection -addtrust codeSigning \
+	        > ${SYSROOT_DIR}/etc/ssl/local/CAcert_Class_1_root.pem
+	openssl x509 -in class3.crt -text -fingerprint -setalias "CAcert Class 3 root" \
+	        -addtrust serverAuth -addtrust emailProtection -addtrust codeSigning \
+	        > ${SYSROOT_DIR}/etc/ssl/local/CAcert_Class_3_root.pem
+	${CROSSTOOLS_DIR}/bin/make-ca --destdir ${SYSROOT_DIR} -r
+popd 
+rm -rf ${BUILD_DIRECTORY}/make-ca-1.12

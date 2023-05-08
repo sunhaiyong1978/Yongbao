@@ -1,0 +1,30 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libxklavier
+export PACKAGE_VERSION=5.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libxklavier/5.4/
+rm -rf ${BUILD_DIRECTORY}/libxklavier-5.4
+tar xvf ${DOWNLOADDIR}/libxklavier-5.4.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxklavier-5.4
+	
+	mkdir cross-prebuild
+	pushd cross-prebuild
+	        ../configure ${COMMON_CONFIG} --disable-introspection
+		make -j${JOBS}
+	        make DESTDIR=${SYSROOT_DIR} install-exec
+	popd
+	sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
+	sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
+	mkdir cross-build
+	pushd cross-build
+	        ../configure ${COMMON_CONFIG} --enable-introspection=yes
+        	make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+		     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+		     VAPIGEN=${CROSS_TARGET}-vapigen
+	        make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libxklavier-5.4

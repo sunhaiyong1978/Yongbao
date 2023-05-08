@@ -1,0 +1,16 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=plymouth
+export PACKAGE_VERSION=22.02.122
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/plymouth/22.02.122/
+rm -rf ${BUILD_DIRECTORY}/plymouth-22.02.122
+tar xvf ${DOWNLOADDIR}/plymouth-22.02.122.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/plymouth-22.02.122
+    cp ${CROSSTOOLS_DIR}/share/automake-1.16/config.* build-tools/
+    sed -i "/linux\/fs.h/d" src/libply/ply-utils.c
+    ./configure ${COMMON_CONFIG}
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/plymouth-22.02.122
