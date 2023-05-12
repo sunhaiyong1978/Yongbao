@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/xcb-imdkit-1.0.5
 	mkdir cross-build
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
 	              -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
         	      -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
 	              -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \

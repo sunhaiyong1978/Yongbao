@@ -79,6 +79,7 @@
 %step/host-tools/make|
 %step/host-tools/asciidoc-py|
 %step/host-tools/itstool|
+%step/host-tools/gettext|
 %step/cross-tools/elfutils|
 %step/cross-tools/grub|
 %step/cross-tools/qemu|
@@ -605,7 +606,9 @@
 %step/toolchain/cross-binutils|g_opt,
 %step/toolchain/cross-gcc|g_opt,
 %step/toolchain/cross-gcc-glibc|g_opt,
+%step/toolchain/dist-cross-gcc-noglibc|g_opt,f_toolchain_dist-cross-gcc-noglibc_dist
 %step/toolchain/dist-cross-gcc|g_opt,f_toolchain_dist-cross-gcc_dist
+%step/toolchain/dist-cross-gcc-full|g_opt,f_toolchain_dist-cross-gcc-full_dist
 %step/toolchain/dist-cross-rustc|g_opt,f_toolchain_dist-cross-rustc_dist
 %step/lightdm/lightdm|g_opt,
 %step/lightdm/lightdm-gtk-greeter|g_opt,

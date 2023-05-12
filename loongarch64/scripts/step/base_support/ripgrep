@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ripgrep/13.0.0/
 rm -rf ${BUILD_DIRECTORY}/ripgrep-13.0.0
 tar xvf ${DOWNLOADDIR}/ripgrep-13.0.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ripgrep-13.0.0
+    patch -Np1 -i ${SYSDIR}/files/base_support/ripgrep/13.0.0/patches/0001-update-libc-version-to-0.2.144.patch 
+	 
     RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
     cargo build --release --target ${CROSS_TARGET}
     install -Dm755 target/${CROSS_TARGET}/release/rg ${SYSROOT_DIR}/usr/bin/

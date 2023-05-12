@@ -19,7 +19,9 @@ pushd ${BUILD_DIRECTORY}/librsvg-2.54.5
         RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
         make DESTDIR=${SYSROOT_DIR} install-exec
     popd
-    sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
+    sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
+    sed -i "/VAPIGEN_VAPIDIR=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
+    sed -i "/GI_DOCGEN/s@ generate @ generate --add-include-path=${SYSROOT_DIR}/usr/share/gir-1.0 @g" doc/Makefile.in
     mkdir cross-build
     pushd cross-build
         PKG_CONFIG=${CROSS_TARGET}-pkg-config \
@@ -27,9 +29,9 @@ pushd ${BUILD_DIRECTORY}/librsvg-2.54.5
         make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
              RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
              INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
-             VAPIGEN=vapigen
+             VAPIGEN=${CROSS_TARGET}-vapigen
         RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
-        make VAPIGEN=vapigen DESTDIR=${SYSROOT_DIR} install
+        make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
         rm -v ${SYSROOT_DIR}/usr/lib64/librsvg*.la
     popd
 popd 

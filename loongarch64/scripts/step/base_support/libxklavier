@@ -15,8 +15,8 @@ pushd ${BUILD_DIRECTORY}/libxklavier-5.4
 		make -j${JOBS}
 	        make DESTDIR=${SYSROOT_DIR} install-exec
 	popd
-	sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
-	sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
+	sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
+	sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
 	mkdir cross-build
 	pushd cross-build
 	        ../configure ${COMMON_CONFIG} --enable-introspection=yes

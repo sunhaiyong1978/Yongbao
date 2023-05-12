@@ -109,6 +109,11 @@ else
 	NEW_LABEL="$(echo ${DISTRO_LABEL} | sed "s@ @@g")"
 fi
 
+sed -i "/LABEL/s@vmlinux.efi@vmlinux_${NEW_LABEL}.efi @g" ${LIVE_DIRECTORY}/boot/grub/grub.cfg
+sed -i "/initrd/s@initramfs.img.gz@initramfs_${NEW_LABEL}.img.gz @g" ${LIVE_DIRECTORY}/boot/grub/grub.cfg
+mv ${LIVE_DIRECTORY}/boot/vmlinux{,_${NEW_LABEL}}.efi
+mv ${LIVE_DIRECTORY}/boot/initramfs{,_${NEW_LABEL}}.img.gz
+
 sed -i "s@ LABEL=Sunhaiyong @ LABEL=${NEW_LABEL} @g" ${LIVE_DIRECTORY}/boot/grub/grub.cfg
 echo "${NEW_LABEL}" > ${LIVE_DIRECTORY}/LABEL
 

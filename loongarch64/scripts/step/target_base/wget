@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=wget
-export PACKAGE_VERSION=1.21.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/wget/1.21.3/
-rm -rf ${BUILD_DIRECTORY}/wget-1.21.3
-tar xvf ${DOWNLOADDIR}/wget-1.21.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wget-1.21.3
+export PACKAGE_VERSION=1.21.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/wget/1.21.4/
+rm -rf ${BUILD_DIRECTORY}/wget-1.21.4
+tar xvf ${DOWNLOADDIR}/wget-1.21.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wget-1.21.4
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/wget-1.21.3
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/wget-1.21.3
+rm -rf ${BUILD_DIRECTORY}/wget-1.21.4

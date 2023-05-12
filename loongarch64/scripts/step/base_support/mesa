@@ -12,12 +12,12 @@ pushd ${BUILD_DIRECTORY}/mesa-23.0.3
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
     mkdir cross-build
     pushd cross-build
-        meson ${MESON_CONFIG} -Dcpp_std=c++17 \
-              -Dgallium-drivers="nouveau,r600,radeonsi,etnaviv,swrast,virgl" \
+        meson ${MESON_CONFIG} \
+              -Dgallium-drivers="nouveau,r300,r600,radeonsi,etnaviv,swrast,virgl" \
               -Dplatforms=x11,wayland \
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled \
-              -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast, virtio-experimental" \
+              -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast" \
                ..
 	eval ${NINJA_AND_INSTALL}
     popd

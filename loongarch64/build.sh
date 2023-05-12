@@ -12,10 +12,12 @@ declare FORCE_BUILD=0
 declare FORCE_ALL_BUILD=0
 declare OPT_SET_STR=""
 declare ONLY_BUILD=0
-declare SINGLE_BUILD=1
+declare REQUIRES_BUILD=0
+declare SINGLE_PACKAGE=0
 declare FORCE_ALL_DOWNLOAD=0
+declare DATA_SUFF=""
 
-while getopts 'fao:rdh' OPT; do
+while getopts 'fao:rsdh' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -27,7 +29,10 @@ while getopts 'fao:rdh' OPT; do
 	    OPT_SET_STR=$OPTARG
 	    ;;
 	r)
-	    SINGLE_BUILD=0
+	    REQUIRES_BUILD=1
+	    ;;
+	s)
+	    SINGLE_PACKAGE=1
 	    ;;
         d)
             FORCE_ALL_DOWNLOAD=1
@@ -46,6 +51,7 @@ while getopts 'fao:rdh' OPT; do
             echo "    -h: 当前帮助信息。"
             echo "    -d: 强制编译前先检查并下载需要的软件源码包及资源文件。"
             echo "    -o <标记,标记,...>: 设置编译标记参数（符合标记参数的软件包才会进行编译）"
+            echo "    -s: 软件包会同时在workbase/packages目录里安装一份文件在对应名称的的目录中。"
             echo "    -r: 根据指定的编译步骤或软件包，搜寻依赖的相关软件包和步骤组一起进行编译。"
             echo "    -f: 强制执行指定的编译步骤。该参数必须指定编译步骤或软件包才有效。"
             echo "    -a: 强制编译所有的软件包步骤。与-f参数配合，用来在不指定任何软件包时强制编译所有满足标记参数设置的软件包。"
@@ -53,6 +59,22 @@ while getopts 'fao:rdh' OPT; do
     esac
 done
 shift $(($OPTIND - 1))
+
+
+function create_date_suff
+{
+	if [ ! -f ${NEW_TARGET_SYSDIR}/datetime_stemp ]; then
+		DATA_SUFF="$(date +%Y%m%d%H%M%S)"
+		echo -n "${DATA_SUFF}" > ${NEW_TARGET_SYSDIR}/datetime_stemp
+	else
+		DATA_SUFF="$(cat ${NEW_TARGET_SYSDIR}/datetime_stemp)"
+	fi
+}
+
+function remove_date_suff
+{
+	rm -f ${NEW_TARGET_SYSDIR}/datetime_stemp
+}
 
 
 function get_overlay_dirname
@@ -88,13 +110,34 @@ function overlay_mount
 		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${1}
 		OVERLAY_DIR=${1}
 	fi
-	mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
-	sync
-	sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
-	if [ "x$?" != "x0" ]; then
-		echo "挂载sysroot错误！"
-		echo "sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
-		exit -2
+	if [ "x${SINGLE_PACKAGE}" == "x1" ]; then
+		if [ -f ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME} ] || [ -L ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME} ]; then
+			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}{,.bak$(date +%Y%m%d%H%M%S)}
+		fi
+		if [ -d ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST ]; then
+			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST{,.bak$(date +%Y%m%d%H%M%S)}
+		fi
+		if [ -d ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST.${DATA_SUFF} ]; then
+			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST.${DATA_SUFF}{,.bak$(date +%Y%m%d%H%M%S)}
+		fi
+		mkdir -p ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST.${DATA_SUFF}
+		ln -sf DEST.${DATA_SUFF} ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST
+		sync
+		sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST}:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+		if [ "x$?" != "x0" ]; then
+			echo "挂载sysroot错误！"
+			echo "sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST}:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+			exit -2
+		fi
+	else
+		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
+		sync
+		sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+		if [ "x$?" != "x0" ]; then
+			echo "挂载sysroot错误！"
+			echo "sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+			exit -2
+		fi
 	fi
 }
 
@@ -400,11 +443,11 @@ function create_os_run
 	declare STEP_STAGE="${2}"
 	declare PACKAGE_NAME="${3}"
 	if [ -f scripts/step/${SCRIPT_FILE}.os_first_run ]; then
-		scripts/tools/show_package_script.sh -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+		tools/show_package_script.sh -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
 	fi
 
 	if [ -f scripts/step/${SCRIPT_FILE}.os_start_run ]; then
-		scripts/tools/show_package_script.sh -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+		tools/show_package_script.sh -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
 	fi
 }
 
@@ -500,7 +543,7 @@ function step_to_index
 			else
 				eval  "echo ${STEP_NAME} | sed "s@^%@@g" | grep ${GREP_STR} > /dev/null"
 				if [ "$?" == "0" ]; then
-					if [ "x${SINGLE_BUILD}" == "x1" ]; then
+					if [ "x${REQUIRES_BUILD}" == "x0" ]; then
 						if [ "x${STOP_STEP_STR}" == "x${STEP_NAME}" ] || [ "${STEP_NAME%/*}/" == "${STOP_STEP_GROUP}" ] || ( [[ "${STEP_NAME}" =~ "${STOP_STEP_GROUP%/*}/" ]] && ( [ "x${STEP_NAME##*/}" == "xbegin_run" ] || [ "x${STEP_NAME##*/}" == "xfinal_run" ] || [ "x${STEP_NAME##*/}" == "xoverlay_before_run" ] || [ "x${STEP_NAME##*/}" == "xoverlay_after_run" ] ) ); then
 							echo -n "${SHOW_COUNT}  "
 							echo -n $(echo ${STEP_NAME} | sed "s@^%@@g")
@@ -522,10 +565,22 @@ function step_to_index
 			((${COUNT_NAME}++))
 		fi
 	done > ${NEW_TARGET_SYSDIR}/step.index
+
+	# 加入final_run脚本
+	GROUP_STR="$(cat ${NEW_TARGET_SYSDIR}/step.index | awk -F'/' '{ print $2}' | sort | uniq)"
+	for i in ${GROUP_STR}
+	do
+		if [ x"$(cat step | grep "^%step/${i}/final_run")" != "x" ]; then
+			if [ x"$(cat ${NEW_TARGET_SYSDIR}/step.index | grep "step/${i}/final_run")" == "x" ]; then
+				echo "00000  step/${i}/final_run|" >> ${NEW_TARGET_SYSDIR}/step.index
+			fi
+		fi
+	done
 }
 
 
 mkdir -p ${NEW_TARGET_SYSDIR}
+create_date_suff
 echo "创将索引文件......"
 step_to_index "${1}"
 echo "索引文件创建完成。"
@@ -550,12 +605,20 @@ if [ -f ${NEW_TARGET_SYSDIR}/status/step.md5sum ]; then
 		else
 			echo "本次创建的索引文件与上次的内容不同，可能会存在需要下载的软件包，开始进行必要的下载..."
 		fi
-		scripts/tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+		if [ -f proxy.set ]; then
+			tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+		else
+			tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+		fi
 		echo "下载完成。"
 	fi
 else
 	echo "开始下载必要的软件包..."
-	scripts/tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+	if [ -f proxy.set ]; then
+		tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+	else
+		tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+	fi
 	echo "下载完成。"
 fi
 md5sum ${NEW_TARGET_SYSDIR}/step.index > ${NEW_TARGET_SYSDIR}/status/step.md5sum
@@ -601,7 +664,7 @@ do
 		continue;
 	else
 		if [ -f ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} ]; then
-			scripts/tools/show_package_script.sh -n ${SCRIPT_FILE} | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} 2>/dev/null > /dev/null
+			tools/show_package_script.sh -n ${SCRIPT_FILE} | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} 2>/dev/null > /dev/null
 			if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
 				create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}"
 				echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
@@ -613,7 +676,7 @@ do
 	fi
 
 	echo -e "\r开始制作${STEP_STAGE}组中的${PACKAGE_NAME}软件包步骤..."
-	scripts/tools/show_package_script.sh ${SCRIPT_FILE} >/dev/null
+	tools/show_package_script.sh ${SCRIPT_FILE} >/dev/null
 	RET_VAL=$?
 	if [ "${RET_VAL}" != "0" ]; then
 		echo "${SCRIPT_FILE}脚本运行错误！"
@@ -624,10 +687,10 @@ do
 	grep "^${STEP_STAGE}$" ${NEW_TARGET_SYSDIR}/logs/step_begin_run_save > /dev/null
 	if [ "x$?" == "x0" ]; then
 		echo -n "运行 ${STEP_STAGE} 初始化脚本..."
-		scripts/tools/run_package_script.sh ${STEP_STAGE}/begin_run >${NEW_TARGET_SYSDIR}/logs/begin_run_${STEP_STAGE}.log 2>&1
+		tools/run_package_script.sh ${STEP_STAGE}/begin_run >${NEW_TARGET_SYSDIR}/logs/begin_run_${STEP_STAGE}.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "错误！"
-			scripts/tools/show_package_script.sh ${STEP_STAGE}/begin_run
+			tools/show_package_script.sh ${STEP_STAGE}/begin_run
 			echo "${STEP_STAGE} 初始化脚本运行错误!"
 			echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/begin_run_${STEP_STAGE}.log 文件。"
 			exit -1
@@ -647,10 +710,10 @@ do
 	fi
 	ln -sf ${STATUS_FILE}.log ${NEW_TARGET_SYSDIR}/logs/current.log
 	os_run_clean "${STEP_STAGE}" "${PACKAGE_NAME}"
-	scripts/tools/run_package_script.sh ${SCRIPT_FILE} >${NEW_TARGET_SYSDIR}/logs/${STATUS_FILE}.log 2>&1
+	tools/run_package_script.sh ${SCRIPT_FILE} >${NEW_TARGET_SYSDIR}/logs/${STATUS_FILE}.log 2>&1
 	if [ "x$?" != "x0" ]; then
 		echo "错误！"
-		scripts/tools/show_package_script.sh  ${SCRIPT_FILE}
+		tools/show_package_script.sh  ${SCRIPT_FILE}
 		echo "${SCRIPT_FILE}制作错误!"
 		echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_FILE}.log 文件。"
 		exit -1
@@ -661,7 +724,7 @@ do
 	fi
 
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
-		scripts/tools/show_package_script.sh -n ${SCRIPT_FILE} | md5sum > ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE}
+		tools/show_package_script.sh -n ${SCRIPT_FILE} | md5sum > ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE}
 	fi
 
 	create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}"

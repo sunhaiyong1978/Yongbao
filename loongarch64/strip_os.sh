@@ -70,7 +70,7 @@ do
 			fi
 		fi
 		STEP_NAME=$(grep -r "overlay_dir=$i" env/*/overlay.set | head -n1 | awk -F'/' '{ print $2 }')
-		scripts/tools/strip_step.sh ${STEP_NAME} ${BASE_DIR}/workbase/overlaydir_strip/$i || true
+		tools/strip_step.sh ${STEP_NAME} ${BASE_DIR}/workbase/overlaydir_strip/$i || true
 	else
 		echo "${BASE_DIR}/workbase/overlaydir 中没有发现 $i 目录，跳过。"
 	fi

@@ -41,7 +41,22 @@ while getopts 'gfui:ph' OPT; do
 	    INDEX_FILE=$OPTARG
 	    ;;
         h|?)
-            echo "用法: `basename $0` [选项] 软件包名 软件版本 GIT地址 分支名 提交号"
+            echo "下载目标系统所涉及的源码包和资源文件。"
+            echo ""
+            echo "用法: ./`basename $0` [选项] [步骤组/软件包]"
+            echo "步骤组/软件包:"
+            echo "    用来指定下载范围，通常一个步骤组会包含多个软件包，可以单独软件包名，当指定的软件包名在不同的步骤中都存在时，会一起进行下载。"
+            echo "    例如:boot/linux，代表了下载名为“boot”的步骤组内的linux这个软件包所需要的源码包或资源文件。"
+            echo "    例如:boot，代表了名为“boot”的步骤组内全部的源码包或资源文件。"
+            echo "    例如:linux，如果没有“linux”这个名称的步骤组，则会自动查询所有步骤组中是否存在linux这个软件包所对应的源码包，如果存在多个则会一起进行下载，若找不到则会提示错误。"
+            echo "    不指定步骤组/软件包时代表全部软件包和资源文件都需要进行下载。"
+            echo "选项:"
+            echo "    -h: 当前帮助信息。"
+            echo "    -f: 无论之前是否下载过，都强制下载软件源码包及资源文件。"
+            echo "    -g: 仅对使用GIT协议的软件包进行下载。"
+            echo "    -u: 与-g参数配合使用，仅对使用GIT协议的软件包中没有指定分支（branch）或提交（commit）的源码包或资源文件进行下载。"
+            echo "    -p: 使用proxy.set文件，通过该文件中的设置在下载过程中使用代理。"
+            echo "    -i <文件名>: 指定索引文件，并根据索引文件中的内容下载所需源码包和资源文件。"
             exit 0
             ;;
     esac
@@ -75,8 +90,9 @@ for i in ${STEP_ARRAY}
 do
 	PKG_NAME="$(cat scripts/step/${i}.info | awk -F'|' '{ print $1 }')"
 	PKG_VERSION="$(cat scripts/step/${i}.info | awk -F'|' '{ print $2 }')"
-	URL=$(cat sources/url/${i} | awk -F'|' '{ print $1 }')
-	SAVE_FILENAME=$(cat sources/url/${i} | awk -F'|' '{ print $2 }')
+	DOWNLOAD_TYPE=$(cat sources/url/${i} | awk -F'|' '{ print $1 }')
+	URL=$(cat sources/url/${i} | awk -F'|' '{ print $2 }')
+	SAVE_FILENAME=$(cat sources/url/${i} | awk -F'|' '{ print $3 }')
 	if [ "x${SAVE_FILENAME}" == "x" ]; then
 		SAVE_FILENAME="${URL##*/}"
 	fi
@@ -84,75 +100,74 @@ do
 	        if [ "x${PROXY_MODE}" == "x1" ]; then
         	        set_proxy "${URL}"
 	        fi
-		case "${URL%%/*}" in
-		https: | http: | ftps: | ftp: | git:)
-			if [ "x${URL##*\.}" != "xgit" ] && [ ! -f sources/url/${i}.gitinfo ]; then
-				if [ "x${GIT_ONLY}" == "xFALSE" ]; then
-					if [ "x${FORCE_DOWN}" == "xFALSE" ] && [ -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} ] && [ -f ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash ] && [ "x$(md5sum ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} | awk -F' ' '{print $1}')" == "x$(cat ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash)" ]; then
-						echo "$i 所需源码包已下载。"
-					else
-						if [ "x${FORCE_DOWN}" == "xTRUE" ]; then
-							rm -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}
-						fi
-						echo "下载：$i 所需源码包到${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}..."
-						# wget -c ${URL} -O ${BASE_DIR}/sources/downloads/files/${URL##*/}
-						wget -c ${URL} -O ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}
-						if [ "x$?" != "x0" ]; then
-							echo "${URL} 下载失败！"
-							echo "下载 ${URL} 失败！" >> logs/download_fail.log
-							((FAIL_COUNT++))
-							continue;
-						fi
-						md5sum ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} | awk -F' ' '{print $1}' > ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash
-					fi
-				fi
-			else
-				if [ -f sources/url/${i}.gitinfo ]; then
-					PKG_GIT_BRANCH="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $1 }')"
-					PKG_GIT_COMMIT="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $2 }')"
-					PKG_GIT_SUBMODULE="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $3 }')"
-				else
-					PKG_GIT_BRANCH=""
-					PKG_GIT_COMMIT=""
-					PKG_GIT_SUBMODULE="0"
-				fi
-				if ( [ "x${FORCE_DOWN}" == "xFALSE" ] || [ "x$(eval echo \${FORCE_$(echo ${PKG_NAME}_${PKG_VERSION} | sed -e "s@-@_@g" -e "s@\.@_@g" )_git})" == "x1" ] ) && [ -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ] && [ -f ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash ]; then
+		case "${DOWNLOAD_TYPE}" in
+		URL)
+			if [ "x${GIT_ONLY}" == "xFALSE" ]; then
+				if [ "x${FORCE_DOWN}" == "xFALSE" ] && [ -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} ] && [ -f ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash ] && [ "x$(md5sum ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} | awk -F' ' '{print $1}')" == "x$(cat ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash)" ]; then
 					echo "$i 所需源码包已下载。"
 				else
-					if [ -f ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash ]; then
-						rm -f ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash
+					if [ "x${FORCE_DOWN}" == "xTRUE" ]; then
+						rm -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}
 					fi
-					if [ -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ]; then
-						rm -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz
-					fi
-					if [ -d ${BASE_DIR}/sources/git/${PKG_NAME}-${PKG_VERSION}_git ]; then
-						rm -rf ${BASE_DIR}/sources/git/${PKG_NAME}-${PKG_VERSION}_git/
-					fi
-					if [ -d ${BASE_DIR}/sources/resource_git/${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}_git ]; then
-						rm -rf ${BASE_DIR}/sources/resource_git/${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}_git
-					fi
-					echo "克隆：$i 所需源码包到${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz..."
-					echo ${BASE_DIR}/scripts/tools/git_clone.sh "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
-					${BASE_DIR}/scripts/tools/git_clone.sh "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}"
+					echo "下载：$i 所需源码包到${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}..."
+					# wget -c ${URL} -O ${BASE_DIR}/sources/downloads/files/${URL##*/}
+					wget -c ${URL} -O ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}
 					if [ "x$?" != "x0" ]; then
-						echo "${URL} 克隆失败！"
-						echo "克隆 ${URL} 失败！" >> logs/download_fail.log
+						echo "${URL} 下载失败！"
+						echo "下载 ${URL} 失败！" >> logs/download_fail.log
 						((FAIL_COUNT++))
 						continue;
 					fi
-					if [ -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ]; then
-						md5sum ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz | awk -F' ' '{print $1}' > ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash
-						eval FORCE_$(echo ${PKG_NAME}_${PKG_VERSION} | sed -e "s@-@_@g" -e "s@\.@_@g" )_git=1
-					else
-						echo "sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz 文件未找到，请检查！"
-						echo "${i} 步骤中克隆 ${URL} 的打包文件 sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz 未找到！" >> logs/download_fail.log
-						((FAIL_COUNT++))
-						continue;
-					fi
+					md5sum ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} | awk -F' ' '{print $1}' > ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash
 				fi
 			fi
 			;;
-		file:)
+		GIT)
+			if [ -f sources/url/${i}.gitinfo ]; then
+				PKG_GIT_BRANCH="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $1 }')"
+				PKG_GIT_COMMIT="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $2 }')"
+				PKG_GIT_SUBMODULE="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $3 }')"
+			else
+				PKG_GIT_BRANCH=""
+				PKG_GIT_COMMIT=""
+				PKG_GIT_SUBMODULE="0"
+			fi
+			if ( [ "x${FORCE_DOWN}" == "xFALSE" ] || [ "x$(eval echo \${FORCE_$(echo ${PKG_NAME}_${PKG_VERSION} | sed -e "s@-@_@g" -e "s@\.@_@g" )_git})" == "x1" ] ) && [ -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ] && [ -f ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash ]; then
+				echo "$i 所需源码包已下载。"
+			else
+				if [ -f ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash ]; then
+					rm -f ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash
+				fi
+				if [ -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ]; then
+					rm -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz
+				fi
+				if [ -d ${BASE_DIR}/sources/git/${PKG_NAME}-${PKG_VERSION}_git ]; then
+					rm -rf ${BASE_DIR}/sources/git/${PKG_NAME}-${PKG_VERSION}_git/
+				fi
+				if [ -d ${BASE_DIR}/sources/resource_git/${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}_git ]; then
+					rm -rf ${BASE_DIR}/sources/resource_git/${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}_git
+				fi
+				echo "克隆：$i 所需源码包到${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz..."
+				echo ${BASE_DIR}/tools/git_clone.sh "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
+				${BASE_DIR}/tools/git_clone.sh "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}"
+				if [ "x$?" != "x0" ]; then
+					echo "${URL} 克隆失败！"
+					echo "克隆 ${URL} 失败！" >> logs/download_fail.log
+					((FAIL_COUNT++))
+					continue;
+				fi
+				if [ -f ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ]; then
+					md5sum ${BASE_DIR}/sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz | awk -F' ' '{print $1}' > ${BASE_DIR}/sources/downloads/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash
+					eval FORCE_$(echo ${PKG_NAME}_${PKG_VERSION} | sed -e "s@-@_@g" -e "s@\.@_@g" )_git=1
+				else
+					echo "sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz 文件未找到，请检查！"
+					echo "${i} 步骤中克隆 ${URL} 的打包文件 sources/downloads/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz 未找到！" >> logs/download_fail.log
+					((FAIL_COUNT++))
+					continue;
+				fi
+			fi
+			;;
+		FILE)
 			if [ -f ${BASE_DIR}/sources/files/${SAVE_FILENAME} ]; then
 				echo "复制：$i 所需源码包到${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}..."
 				cp -a ${BASE_DIR}/sources/files/${URL##*/} ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}
@@ -202,8 +217,8 @@ ${i} 没有下载路径，请检查。"
 							fi
 							echo "克隆：$i 所需资源文件到${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/${PKG_NAME}-${RESOURCES_FILENAME}_git.tar.gz..."
 							mkdir -p ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/{files,hash}/
-							echo ${BASE_DIR}/scripts/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
-							${BASE_DIR}/scripts/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
+							echo ${BASE_DIR}/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
+							${BASE_DIR}/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
 							if [ "x$?" != "x0" ]; then
 								echo "${URL} 克隆失败！"
 								echo "克隆 ${URL} 失败！" >> logs/download_fail.log

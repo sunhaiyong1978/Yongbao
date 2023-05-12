@@ -95,9 +95,9 @@ if [ -d ${BASE_DIR}/workbase/overlaydir_strip ]; then
 			fi
 
 			if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-				scripts/tools/dist_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/$i "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+				tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/$i "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 			else
-				scripts/tools/dist_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+				tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 			fi
 		else
 			echo "警告：${BASE_DIR}/workbase/overlaydir_strip/ 目录中没有 $i 目录，跳过！"

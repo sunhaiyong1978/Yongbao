@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#使用示例：scripts/tools/dist_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/sysroot "sysroot" squashfs Yongbao 1.0 loongarch64
+#使用示例：tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/sysroot "sysroot" squashfs Yongbao 1.0 loongarch64
 
 export NEW_TARGET_SYSDIR="${PWD}/workbase"
 export BASE_DIR="${PWD}"

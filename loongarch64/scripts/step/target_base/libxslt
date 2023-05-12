@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libxslt
-export PACKAGE_VERSION=1.1.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libxslt/1.1.37/
-rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.37
-tar xvf ${DOWNLOADDIR}/libxslt-1.1.37.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxslt-1.1.37
+export PACKAGE_VERSION=1.1.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libxslt/1.1.38/
+rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.38
+tar xvf ${DOWNLOADDIR}/libxslt-1.1.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxslt-1.1.38
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/libxslt-1.1.37
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.37
+rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.38
