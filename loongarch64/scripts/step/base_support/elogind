@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=elogind
-export PACKAGE_VERSION=246.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/elogind/246.10/
-rm -rf ${BUILD_DIRECTORY}/elogind-246.10
-tar xvf ${DOWNLOADDIR}/elogind-246.10.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elogind-246.10
-	patch -Np1 -i ${SYSDIR}/files/base_support/elogind/246.10/patches/elogind-246-add-loongarch64.patch 
+export PACKAGE_VERSION=252.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/elogind/252.9/
+rm -rf ${BUILD_DIRECTORY}/elogind-252.9
+tar xvf ${DOWNLOADDIR}/elogind-252.9.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elogind-252.9
+	patch -Np1 -i ${SYSDIR}/files/base_support/elogind/252.9/patches/0001-Fix-loongarch64-double-float-define-to-loongarch64-l.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/elogind-246.10
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/elogind-246.10
+rm -rf ${BUILD_DIRECTORY}/elogind-252.9

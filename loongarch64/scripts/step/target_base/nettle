@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=nettle
-export PACKAGE_VERSION=3.8.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nettle/3.8.1/
-rm -rf ${BUILD_DIRECTORY}/nettle-3.8.1
-tar xvf ${DOWNLOADDIR}/nettle-3.8.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nettle-3.8.1
+export PACKAGE_VERSION=3.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nettle/3.9/
+rm -rf ${BUILD_DIRECTORY}/nettle-3.9
+tar xvf ${DOWNLOADDIR}/nettle-3.9.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nettle-3.9
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/nettle-3.8.1
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/nettle-3.8.1
+rm -rf ${BUILD_DIRECTORY}/nettle-3.9

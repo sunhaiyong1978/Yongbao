@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/glib-2.76.2
         
         mkdir cross-build
         pushd cross-build
-                meson ${MESON_CONFIG} -Dtests=false -Dman=true -Dselinux=disabled \
+                meson ${MESON_CONFIG} --default-library=both -Dtests=false -Dman=true -Dselinux=disabled \
                       ..
                 sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
                 sed -i -e "s@\(${SYSDIR}/\)cross-tools/bin/vapigen@\1cross-tools/bin/${CROSS_TARGET}-vapigen@g" build.ninja

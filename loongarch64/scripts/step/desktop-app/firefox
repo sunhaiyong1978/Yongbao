@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=firefox
-export PACKAGE_VERSION=113.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/113.0/
-rm -rf ${BUILD_DIRECTORY}/firefox-113.0
-tar xvf ${DOWNLOADDIR}/firefox-113.0.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-113.0
+export PACKAGE_VERSION=113.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/113.0.1/
+rm -rf ${BUILD_DIRECTORY}/firefox-113.0.1
+tar xvf ${DOWNLOADDIR}/firefox-113.0.1.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-113.0.1
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
@@ -16,12 +16,13 @@ pushd ${BUILD_DIRECTORY}/firefox-113.0
     cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/packaging{,-*-info} third_party/python/packaging/
     cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/Jinja2-*-info third_party/python/Jinja2/
     cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/jinja2 third_party/python/Jinja2/
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0/patches/firefox-100-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0/patches/firefox-110-fix-rust.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0/patches/0001_xpcom_add_loongarch64_support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0/patches/firefox-100-for-clfs.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0/patches/firefox-105-fix-for-gcc13.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0/patches/firefox-105-fix-jit-for-loongarch64.patch 
+    sed -i "/MarkupSafe/s@2.0.1@2.1.2@g" third_party/python/glean_parser/glean_parser-7.1.0.dist-info/METADATA
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-100-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-110-fix-rust.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/0001_xpcom_add_loongarch64_support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-100-for-clfs.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-105-fix-for-gcc13.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-105-fix-jit-for-loongarch64.patch 
 	 
 # for firefox 100
 # sed -i "s@\"rU\"@\"r\"@g" python/mozbuild/mozbuild/util.py python/mozbuild/mozbuild/preprocessor.py python/mozbuild/mozbuild/backend/base.py python/mozbuild/mozbuild/action/process_define_files.py python/mozbuild/mozpack/files.py dom/base/usecounters.py
@@ -91,4 +92,4 @@ EOF
 ln -sfv ${SYSROOT_DIR}/usr/lib64/firefox/browser/chrome/icons/default/default128.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/firefox.png
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-113.0
+rm -rf ${BUILD_DIRECTORY}/firefox-113.0.1

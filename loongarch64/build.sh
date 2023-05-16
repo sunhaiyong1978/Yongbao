@@ -753,5 +753,5 @@ echo "编译制作过程完成。" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 echo -e "\r编译制作过程完成。\033[0K\n"
 if [ "x${1}" == "x" ]; then
-	echo "接下来可以使用./strip_os.sh脚本来清除调试信息以及使用./dist_os.sh脚本来打包系统。"
+	echo "接下来可以使用./strip_os.sh脚本来清除调试信息，使用./install_os_run.sh安装系统启动脚本，以及使用./pack_os.sh脚本来打包系统。"
 fi

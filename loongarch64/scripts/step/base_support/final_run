@@ -41,8 +41,8 @@ sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
        ${TEMP_DIRECTORY}/strip-foo
 
 sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
-       $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep ASCII | awk -F':' '{ print $1 }')) \
-       $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep text | awk -F':' '{ print $1 }')) \
+       $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep ASCII | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
+       $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep text | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
        $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.pl") \
        ${TEMP_DIRECTORY}/strip-foo
 

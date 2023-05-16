@@ -18,13 +18,13 @@ pushd ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
     pushd native-build
         meson --prefix=${CROSSTOOLS_DIR} \
               --buildtype=release ..
-        ninja
+        LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/:${CROSSTOOLS_DIR}/lib ninja
         ninja install
     popd
 
 cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner << EOF
 #!/bin/bash -e
-LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/ \
+LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/:${CROSSTOOLS_DIR}/lib/ \
 ${CROSSTOOLS_DIR}/bin/g-ir-scanner \
       --add-include-path=${SYSROOT_DIR}/usr/share/gir-1.0 \
       --use-binary-wrapper=${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH} \
@@ -34,7 +34,7 @@ chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner
 
 cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler << EOF
 #!/bin/bash -e
-LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/ \
+LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/:${CROSSTOOLS_DIR}/lib/ \
 ${CROSSTOOLS_DIR}/bin/g-ir-compiler \
           --includedir=/${SYSROOT_DIR}/usr/share/gir-1.0 "\$@"
 EOF

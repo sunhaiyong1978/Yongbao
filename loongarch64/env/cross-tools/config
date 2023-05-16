@@ -16,6 +16,7 @@ export MABI="lp64d"
 export LIB_SUFF="64"
 export CROSS_TOOLS_PREFIX=${CROSSTOOLS_DIR}
 export PREFIX=${CROSSTOOLS_DIR}
+export PKG_CONFIG_PATH="${CROSSTOOLS_DIR}/lib64/pkgconfig:${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/share/pkgconfig"
 export MAKE_AND_INSTALL="make -j${JOBS} && make install"
 export TARGET_ARCH=loongarch64
 export TARGET_ARCH_NAME=loongarch

@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/glib-2.76.2
     
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} \
+        meson --prefix=${CROSSTOOLS_DIR} --default-library=both \
               --buildtype=release ..
         ninja
         ninja install

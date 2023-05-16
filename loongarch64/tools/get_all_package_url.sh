@@ -181,8 +181,15 @@ ${i} 没有找到所需的文件${URL##*/}，请检查。"
 			;;
 		esac
 	else
-		NO_FILE="${NO_FILE}
+		case "${DOWNLOAD_TYPE}" in
+                	NULL)
+				echo "$i 无需下载源码。"
+				;;
+			*)
+				NO_FILE="${NO_FILE}
 ${i} 没有下载路径，请检查。"
+				;;
+		esac
 	fi
 
 
@@ -195,6 +202,7 @@ ${i} 没有下载路径，请检查。"
 			RESOURCES_MODE="$(cat ${url_i} | grep ^MODE= | awk -F'=' '{ print $2 }')"
 			PKG_GIT_BRANCH=""
 			PKG_GIT_COMMIT=""
+			PKG_GIT_SUBMODULE="0"
 	        	if [ "x${PROXY_MODE}" == "x1" ]; then
 	        	        set_proxy "${RESOURCES_URL}"
 		        fi
@@ -203,6 +211,10 @@ ${i} 没有下载路径，请检查。"
 					if [ "x${RESOURCES_MODE}" == "xGIT" ]; then
 						PKG_GIT_BRANCH="$(cat ${url_i} | grep ^GIT_BRANCH= | awk -F'=' '{ print $2 }')"
 						PKG_GIT_COMMIT="$(cat ${url_i} | grep ^GIT_COMMIT= | awk -F'=' '{ print $2 }')"
+						PKG_GIT_SUBMODULE="$(cat ${url_i} | grep ^GIT_SUBMODULE= | awk -F'=' '{ print $2 }')"
+						if [ "x${PKG_GIT_SUBMODULE}" == "x" ]; then
+							PKG_GIT_SUBMODULE="0"
+						fi
 						if [ "x${FORCE_DOWN}" == "xFALSE" ] && ([ "x${GIT_UPDATE}" == "xFALSE" ] || [ "x${PKG_GIT_COMMIT}" != "x" ]) && [ -f ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/${PKG_NAME}-${RESOURCES_FILENAME}_git.tar.gz ] && [ -f ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/hash/${PKG_NAME}-${RESOURCES_FILENAME}_git.tar.gz.hash ]; then
 							echo "$i 所需源码包 ${PKG_NAME}-${RESOURCES_FILENAME}_git.tar.gz 已下载。"
 						else
@@ -217,8 +229,8 @@ ${i} 没有下载路径，请检查。"
 							fi
 							echo "克隆：$i 所需资源文件到${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/${PKG_NAME}-${RESOURCES_FILENAME}_git.tar.gz..."
 							mkdir -p ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/{files,hash}/
-							echo ${BASE_DIR}/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
-							${BASE_DIR}/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}"
+							echo ${BASE_DIR}/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}"
+							${BASE_DIR}/tools/git_clone.sh -d "${BASE_DIR}/files/step/${i}/${PKG_VERSION}/files/" "${PKG_NAME}" "${RESOURCES_FILENAME}" "${RESOURCES_URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}"
 							if [ "x$?" != "x0" ]; then
 								echo "${URL} 克隆失败！"
 								echo "克隆 ${URL} 失败！" >> logs/download_fail.log

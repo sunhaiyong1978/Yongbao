@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ibus-pinyin/1.5.0/
 rm -rf ${BUILD_DIRECTORY}/ibus-pinyin-1.5.0
 tar xvf ${DOWNLOADDIR}/ibus-pinyin-1.5.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ibus-pinyin-1.5.0
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/ibus-pinyin/1.5.0/patches/0001-Fix-english-db-build-error.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/

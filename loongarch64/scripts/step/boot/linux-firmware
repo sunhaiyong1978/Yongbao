@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=linux-firmware
-export PACKAGE_VERSION=20230404
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-firmware/20230404/
-rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230404
-tar xvf ${DOWNLOADDIR}/linux-firmware-20230404.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-firmware-20230404
+export PACKAGE_VERSION=20230515
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-firmware/20230515/
+rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230515
+tar xvf ${DOWNLOADDIR}/linux-firmware-20230515.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-firmware-20230515
 	make DESTDIR=${SYSROOT_DIR} install
 	mv ${SYSROOT_DIR}/usr/lib/firmware{,.orig}
 	mkdir -pv ${SYSROOT_DIR}/usr/lib/firmware
@@ -15,4 +15,4 @@ pushd ${BUILD_DIRECTORY}/linux-firmware-20230404
 	      ${SYSROOT_DIR}/usr/lib/firmware/
 	rm -rf ${SYSROOT_DIR}/usr/lib/firmware.orig
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230404
+rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230515
