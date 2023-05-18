@@ -9,12 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/libxklavier-5.4
 tar xvf ${DOWNLOADDIR}/libxklavier-5.4.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libxklavier-5.4
 	
-	mkdir cross-prebuild
-	pushd cross-prebuild
-	        ../configure ${COMMON_CONFIG} --disable-introspection
-		make -j${JOBS}
-	        make DESTDIR=${SYSROOT_DIR} install-exec
-	popd
 	sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
 	sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
 	mkdir cross-build

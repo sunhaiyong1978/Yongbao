@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/qemu-8.0.0
         cp qemu-${TARGET_ARCH} ${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}.bin
     popd
     echo "#!/bin/bash -e
-${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}.bin -L ${SYSROOT_DIR} \"\$@\"" \
+${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_LIBRARY_PATH=.libs \"\$@\"" \
 > ${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}
 
 echo "#!/bin/bash -e

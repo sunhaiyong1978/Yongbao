@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=lld
-export PACKAGE_VERSION=16.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/lld/16.0.3/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
-tar xvf ${DOWNLOADDIR}/llvm-project-16.0.3.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
-patch -Np1 -i ${SYSDIR}/files/cross-tools/lld/16.0.3/patches/D138135.diff 
+export PACKAGE_VERSION=16.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/lld/16.0.4/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
+tar xvf ${DOWNLOADDIR}/llvm-project-16.0.4.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
+patch -Np1 -i ${SYSDIR}/files/cross-tools/lld/16.0.4/patches/D138135.diff 
 	 
 pushd lld
     mkdir -p native-build
@@ -27,4 +27,4 @@ pushd lld
 	ninja install
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src

@@ -3,21 +3,21 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=linux-kernel
-export PACKAGE_VERSION=6.3.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-kernel/6.3.2/
-rm -rf ${BUILD_DIRECTORY}/linux-6.3.2
-tar xvf ${DOWNLOADDIR}/linux-6.3.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.3.2
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0001-double-tty-VT-screenbuf-for-univt.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0002-Add-several-function-for-Univt.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0003-UniVT-Fix-charcount-size-to-65536.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0004-UniVT-Add-a-old_screen_size-variable-saves-the-origi.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0005-Univt-Add-support-for-writing-UTF-8-encoding.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0006-UniVT-Add-support-for-displaying-UTF-8-text.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0007-UniVT-Support-displaying-UTF-8-text-for-90-degree-ro.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0008-UniVT-Support-displaying-UTF-8-text-for-180-degree-r.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0009-UniVT-Support-displaying-UTF-8-text-for-270-degree-r.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.2/patches/0001-UniVT-Add-Chinese-fonts-support-in-console.patch 
+export PACKAGE_VERSION=6.3.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-kernel/6.3.3/
+rm -rf ${BUILD_DIRECTORY}/linux-6.3.3
+tar xvf ${DOWNLOADDIR}/linux-6.3.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.3.3
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0001-double-tty-VT-screenbuf-for-univt.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0002-Add-several-function-for-Univt.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0003-UniVT-Fix-charcount-size-to-65536.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0004-UniVT-Add-a-old_screen_size-variable-saves-the-origi.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0005-Univt-Add-support-for-writing-UTF-8-encoding.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0006-UniVT-Add-support-for-displaying-UTF-8-text.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0007-UniVT-Support-displaying-UTF-8-text-for-90-degree-ro.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0008-UniVT-Support-displaying-UTF-8-text-for-180-degree-r.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0009-UniVT-Support-displaying-UTF-8-text-for-270-degree-r.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel/6.3.3/patches/0001-UniVT-Add-Chinese-fonts-support-in-console.patch 
 	 
 	make mrproper
 	cp -af ${RESOURCEDIR}/linux-config-6 ./.config
@@ -31,4 +31,4 @@ pushd ${BUILD_DIRECTORY}/linux-6.3.2
 	cp -af arch/${ARCH_FAMILY}/boot/vmlinux.efi ${SYSROOT_DIR}/boot/vmlinux.efi
 	echo "$(ls dest/lib/modules/)" > ${COMMON_DIR}/linux-kernel.version
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.3.2
+rm -rf ${BUILD_DIRECTORY}/linux-6.3.3

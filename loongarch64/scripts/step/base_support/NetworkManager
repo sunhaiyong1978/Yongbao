@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=NetworkManager
-export PACKAGE_VERSION=1.43.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.43.7/
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.43.7
-tar xvf ${DOWNLOADDIR}/NetworkManager-1.43.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/NetworkManager-1.43.7
+export PACKAGE_VERSION=1.43.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.43.8/
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.43.8
+tar xvf ${DOWNLOADDIR}/NetworkManager-1.43.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/NetworkManager-1.43.8
     sed -i "s@jansson_libdir,@'${SYSROOT_DIR}' + &@g" meson.build
-    mkdir cross-prebuild
-    pushd cross-prebuild
+    mkdir cross-build
+    pushd cross-build
         meson ${MESON_CONFIG} \
 	      -Dlibaudit=no -Dlibpsl=false -Dnmtui=true -Dovs=false -Dppp=false -Dselinux=false \
               -Dqt=false -Dsession_tracking=systemd -Dmodem_manager=false -Dpolkit=$((test -f ${CROSSTOOLS_DIR}/bin/rustc) && echo "true" || echo "false") \
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/NetworkManager-1.43.7
         DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.43.7
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.43.8

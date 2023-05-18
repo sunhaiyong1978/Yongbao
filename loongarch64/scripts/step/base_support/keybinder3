@@ -8,11 +8,6 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/keybinder3/keybinder-
 rm -rf ${BUILD_DIRECTORY}/keybinder-3.0-0.3.2
 tar xvf ${DOWNLOADDIR}/keybinder-3.0-0.3.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/keybinder-3.0-0.3.2
-    mkdir cross-prebuild
-    pushd cross-prebuild
-        ../configure ${COMMON_CONFIG} --disable-introspection
-	eval ${MAKE_AND_INSTALL}
-    popd
     mkdir cross-build
     pushd cross-build
         ../configure ${COMMON_CONFIG} --enable-introspection

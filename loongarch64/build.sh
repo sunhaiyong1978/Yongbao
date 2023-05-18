@@ -376,13 +376,22 @@ function test_opt_can_run
 	done
 
 	TEST_STATUS=0
+	INVERT=0
 	for i in ${TEST_OPT[*]}
 	do
+		INVERT=0
 		TEST_STATUS=0
 		if [ "x${i:0:1}" == "x+" ]; then
 			OPT=${i:1}
+			INVERT=0
 		else
-			OPT=${i}
+			if [ "x${i:0:1}" == "x-" ]; then
+				OPT=${i:1}
+				INVERT=1
+			else
+				OPT=${i}
+				INVERT=0
+			fi
 		fi
 		for j in $(echo ${USE_OPT[*]})
 		do
@@ -390,8 +399,13 @@ function test_opt_can_run
 				continue
 			fi
 			if [ "x${OPT}x" == "x${j}x" ]; then
-				# ${i} 在使用
-				TEST_STATUS=1
+				if [ "x${INVERT}" == "x1" ]; then
+					# ${i} 不使用
+					TEST_STATUS=0
+				else
+					# ${i} 在使用
+					TEST_STATUS=1
+				fi
 				break;
 			fi
 		done

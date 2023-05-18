@@ -16,12 +16,6 @@ pushd ${BUILD_DIRECTORY}/keybinder-0.3.1
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-	mkdir cross-prebuild
-	pushd cross-prebuild
-	        ../configure ${COMMON_CONFIG} --disable-introspection  --disable-python --disable-lua
-		make -j${JOBS}
-	        make DESTDIR=${SYSROOT_DIR} install
-	popd
 	mkdir cross-build
 	pushd cross-build
 	        ../configure ${COMMON_CONFIG} --enable-introspection=yes  --disable-python --disable-lua

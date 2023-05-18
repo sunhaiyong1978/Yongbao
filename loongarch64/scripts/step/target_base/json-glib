@@ -9,12 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/json-glib-1.6.6
 tar xvf ${DOWNLOADDIR}/json-glib-1.6.6.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/json-glib-1.6.6
 	
-	mkdir cross-prebuild
-	pushd cross-prebuild
-		meson ${MESON_CONFIG}  -Dintrospection=disabled \
-		       ..
-		eval ${NINJA_AND_INSTALL}
-	popd
 	mkdir cross-build
 	pushd cross-build
 		meson ${MESON_CONFIG}  \

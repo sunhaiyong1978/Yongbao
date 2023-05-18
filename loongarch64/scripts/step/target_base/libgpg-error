@@ -1,10 +1,10 @@
-source env/base_support/config
+source env/target_base/config
 source env/distro.info
 source env/function.sh
-export STEP_BUILDNAME=base_support
+export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libgpg-error
 export PACKAGE_VERSION=1.47
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libgpg-error/1.47/
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libgpg-error/1.47/
 rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.47
 tar xvf ${DOWNLOADDIR}/libgpg-error-1.47.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libgpg-error-1.47

@@ -8,13 +8,6 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/libwnck2/2.31.0/
 rm -rf ${BUILD_DIRECTORY}/libwnck-2.31.0
 tar xvf ${DOWNLOADDIR}/libwnck-2.31.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libwnck-2.31.0
-    mkdir cross-prebuild
-    pushd cross-prebuild
-        ../configure ${COMMON_CONFIG} --program-suffix=-1 \
-                ac_cv_path_PKG_CONFIG=${CROSS_TARGET}-pkg-config --disable-introspection
-        make -j${JOBS} GETTEXT_PACKAGE=libwnck-1
-        make GETTEXT_PACKAGE=libwnck-1 DESTDIR=${SYSROOT_DIR} install-exec
-    popd
     mkdir cross-build
     pushd cross-build
         ../configure ${COMMON_CONFIG} --program-suffix=-1 \

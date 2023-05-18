@@ -31,8 +31,7 @@ fi
 LIVE_DIRECTORY="${1}"
 
 if [ ! -d ${LIVE_DIRECTORY} ]; then
-	echo "错误：指定的目录不存在，请先创建。"
-	exit 2
+	mkdir -pv ${LIVE_DIRECTORY}
 fi
 
 

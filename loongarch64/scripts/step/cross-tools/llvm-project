@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=16.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/16.0.3/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
-tar xvf ${DOWNLOADDIR}/llvm-project-16.0.3.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
+export PACKAGE_VERSION=16.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/16.0.4/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
+tar xvf ${DOWNLOADDIR}/llvm-project-16.0.4.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
 
 pushd llvm
     mkdir -p native-build
@@ -28,10 +28,10 @@ pushd llvm
                  -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
         ninja
         ninja install
-        cp -a ${CROSSTOOLS_DIR}/bin/llvm-config \
-              ${SYSROOT_DIR}/usr/bin/${CROSS_TARGET}-llvm-config
-        ln -sfv ${SYSROOT_DIR}/usr/bin/${CROSS_TARGET}-llvm-config \
-                ${CROSSTOOLS_DIR}/bin/
+#        cp -a ${CROSSTOOLS_DIR}/bin/llvm-config \
+#              ${SYSROOT_DIR}/usr/bin/${CROSS_TARGET}-llvm-config
+#        ln -sfv ${SYSROOT_DIR}/usr/bin/${CROSS_TARGET}-llvm-config \
+#                ${CROSSTOOLS_DIR}/bin/
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src

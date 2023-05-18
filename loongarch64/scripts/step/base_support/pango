@@ -9,12 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/pango-1.50.14
 tar xvf ${DOWNLOADDIR}/pango-1.50.14.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pango-1.50.14
 	
-	mkdir cross-prebuild
-	pushd cross-prebuild
-		meson ${MESON_CONFIG}  --wrap-mode=nofallback -Dintrospection=disabled \
-		       ..
-		eval ${NINJA_AND_INSTALL}
-	popd
 	mkdir cross-build
 	pushd cross-build
 		meson ${MESON_CONFIG}  --wrap-mode=nofallback -Dintrospection=enabled \

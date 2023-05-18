@@ -9,12 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.48.2
 tar xvf ${DOWNLOADDIR}/at-spi2-core-2.48.2.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/at-spi2-core-2.48.2
 	
-	mkdir cross-prebuild
-	pushd cross-prebuild
-		meson ${MESON_CONFIG} -Ddefault_bus=dbus-broker -Ddbus_broker=/usr/bin/dbus-broker -Ddbus_daemon=/usr/bin/dbus-daemon -Dintrospection=disabled \
-		       ..
-		eval ${NINJA_AND_INSTALL}
-	popd
 	mkdir cross-build
 	pushd cross-build
 		meson ${MESON_CONFIG} -Ddefault_bus=dbus-broker -Ddbus_broker=/usr/bin/dbus-broker -Ddbus_daemon=/usr/bin/dbus-daemon -Dintrospection=enabled \

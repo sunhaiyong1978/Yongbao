@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=grub
-export PACKAGE_VERSION=2.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/grub/2.11/
-rm -rf ${BUILD_DIRECTORY}/grub-2.11_git
-tar xvf ${DOWNLOADDIR}/grub-2.11_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/grub-2.11_git
+export PACKAGE_VERSION=2.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/grub/2.12/
+rm -rf ${BUILD_DIRECTORY}/grub-2.12_git
+tar xvf ${DOWNLOADDIR}/grub-2.12_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/grub-2.12_git
 	tar xvf ${RESOURCEDIR}/files/grub-gnulib_git.tar.gz
 	mv grub-gnulib_git gnulib
 	./bootstrap
@@ -39,4 +39,4 @@ boot
 }
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/grub-2.11_git
+rm -rf ${BUILD_DIRECTORY}/grub-2.12_git

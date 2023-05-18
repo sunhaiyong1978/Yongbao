@@ -9,8 +9,8 @@ rm -rf ${BUILD_DIRECTORY}/rustc-1.69.0-src
 tar xvf ${DOWNLOADDIR}/rustc-1.69.0-src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/rustc-1.69.0-src
     rm -rf src/llvm-project
-    tar xvf ${RESOURCEDIR}/files/llvm-project-16.0.3.src.tar.xz -C src/
-    mv src/llvm-project-16.0.3.src src/llvm-project
+    tar xvf ${RESOURCEDIR}/files/llvm-project-16.0.4.src.tar.xz -C src/
+    mv src/llvm-project-16.0.4.src src/llvm-project
     patch -Np1 -i ${SYSDIR}/files/computer_language/rustc/1.69.0/patches/0001-rustc-1.69.0-add-loongarch-support.patch 
 	patch -Np1 -i ${SYSDIR}/files/computer_language/rustc/1.69.0/patches/0001-linux-raw-sys-add-loongarch64-support.patch 
 	patch -Np1 -i ${SYSDIR}/files/computer_language/rustc/1.69.0/patches/0001-rustc-1.69.0-vendor-nix-add-loongarch64-support.patch 

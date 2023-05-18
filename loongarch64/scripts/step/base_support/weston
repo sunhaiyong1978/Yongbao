@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=weston
-export PACKAGE_VERSION=11.0.93
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/weston/11.0.93/
-rm -rf ${BUILD_DIRECTORY}/weston-11.0.93
-tar xvf ${DOWNLOADDIR}/weston-11.0.93.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/weston-11.0.93
+export PACKAGE_VERSION=12.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/weston/12.0.0/
+rm -rf ${BUILD_DIRECTORY}/weston-12.0.0
+tar xvf ${DOWNLOADDIR}/weston-12.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/weston-12.0.0
     sed -i -e "/dep_scanner =/s@, native: true@@g" \
            -e "/prog_scanner =/s@find_program\(.*\)\$@find_program('wayland-scanner')@g" \
            protocol/meson.build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/weston-11.0.93
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/weston-11.0.93
+rm -rf ${BUILD_DIRECTORY}/weston-12.0.0

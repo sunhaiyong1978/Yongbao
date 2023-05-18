@@ -8,12 +8,6 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libmbim/1.26.4/
 rm -rf ${BUILD_DIRECTORY}/libmbim-1.26.4
 tar xvf ${DOWNLOADDIR}/libmbim-1.26.4.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libmbim-1.26.4
-    mkdir cross-prebuild
-    pushd cross-prebuild
-        ../configure ${COMMON_CONFIG} --disable-introspection
-	make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install-exec
-    popd
     mkdir cross-build
     pushd cross-build
         ../configure ${COMMON_CONFIG} --enable-introspection

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=16.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/16.0.3/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
-tar xvf ${DOWNLOADDIR}/llvm-project-16.0.3.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
+export PACKAGE_VERSION=16.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/16.0.4/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
+tar xvf ${DOWNLOADDIR}/llvm-project-16.0.4.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
     
     pushd llvm
     mkdir cross-build
@@ -28,5 +28,12 @@ pushd ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
 	eval ${NINJA_AND_INSTALL}
     popd
     popd
+
+cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config << EOF
+#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/llvm-config "\$@"
+EOF
+chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config
+
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.3.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src

@@ -1,10 +1,10 @@
-source env/base_support/config
+source env/target_base/config
 source env/distro.info
 source env/function.sh
-export STEP_BUILDNAME=base_support
+export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libgcrypt
 export PACKAGE_VERSION=1.10.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libgcrypt/1.10.2/
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libgcrypt/1.10.2/
 rm -rf ${BUILD_DIRECTORY}/libgcrypt-1.10.2
 tar xvf ${DOWNLOADDIR}/libgcrypt-1.10.2.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libgcrypt-1.10.2

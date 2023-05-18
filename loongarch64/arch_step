@@ -6,8 +6,8 @@
 %step/target_base/binutils|
 %step/target_base/gcc|
 %step/target_base/valgrind|
-%step/toolchain/cross-binutils|g_opt,
-%step/toolchain/cross-gcc|g_opt,
-%step/toolchain/cross-gcc-glibc|g_opt,
+%step/toolchain/cross-binutils|g_opt,host-dist,
+%step/toolchain/cross-gcc|g_opt,host-dist,
+%step/toolchain/cross-gcc-glibc|g_opt,host-dist,
 %step/boot/grub|
-%step/computer_language/golang|g_opt,
+%step/computer_language/golang|g_opt,target-dist,

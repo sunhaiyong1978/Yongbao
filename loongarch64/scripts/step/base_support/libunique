@@ -8,11 +8,6 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libunique/3.0.2/
 rm -rf ${BUILD_DIRECTORY}/libunique-3.0.2
 tar xvf ${DOWNLOADDIR}/libunique-3.0.2.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libunique-3.0.2
-    mkdir cross-prebuild
-    pushd cross-prebuild
-        ../configure $COMMON_CONFIG --disable-introspection
-	eval ${MAKE_AND_INSTALL}
-    popd
     mkdir cross-build
     pushd cross-build
         ../configure $COMMON_CONFIG --enable-introspection

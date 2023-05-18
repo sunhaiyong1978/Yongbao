@@ -8,13 +8,6 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ModemManager/1.18.12/
 rm -rf ${BUILD_DIRECTORY}/ModemManager-1.18.12
 tar xvf ${DOWNLOADDIR}/ModemManager-1.18.12.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ModemManager-1.18.12
-    mkdir cross-prebuild
-    pushd cross-prebuild
-        ../configure ${COMMON_CONFIG} --with-systemd-journal=no     \
-                     --with-systemd-suspend-resume  --disable-introspection
-	make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install-exec
-    popd
     sed -i "/VAPIGEN_MAKEFILE=/s@=\(.*\)\$@=${SYSROOT_DIR}/usr/share/vala/Makefile.vapigen@g" configure
     mkdir cross-build
     pushd cross-build

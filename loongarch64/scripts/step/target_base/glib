@@ -18,12 +18,12 @@ pushd ${BUILD_DIRECTORY}/glib-2.76.2
                 eval ${NINJA_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
-echo '#!/bin/bash -e
-qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/glib-compile-resources "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
+echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/glib-compile-resources \"\$@\"" > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
 cp -a ${CROSSTOOLS_DIR}/bin/{${CROSS_TARGET}-,}glib-compile-resources
-echo '#!/bin/bash -e
-qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/glib-compile-schemas "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-schemas
+echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/glib-compile-schemas \"\$@\"" > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-schemas
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-schemas
 cp -a ${CROSSTOOLS_DIR}/bin/{${CROSS_TARGET}-,}glib-compile-schemas
 

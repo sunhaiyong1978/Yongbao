@@ -12,8 +12,8 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.9
 	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.9/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
 	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.9/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
 	 
-    mkdir pre-build
-    pushd pre-build
+    mkdir host-build
+    pushd host-build
         PKG_CONFIG_LIBDIR=${SYSROOT_DIR}/usr/lib64/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig \
         ../configure -hostprefix ${CROSSTOOLS_DIR} \
                 -prefix /usr -sysconfdir /etc/xdg \

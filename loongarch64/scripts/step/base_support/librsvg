@@ -12,13 +12,6 @@ pushd ${BUILD_DIRECTORY}/librsvg-2.54.5
 	 
     find vendor -name .cargo-checksum.json \
           -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
-    mkdir cross-prebuild
-    pushd cross-prebuild
-        ../configure ${COMMON_CONFIG} --disable-introspection --disable-gtk-doc
-        make -j${JOBS} RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc"
-        RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
-        make DESTDIR=${SYSROOT_DIR} install-exec
-    popd
     sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
     sed -i "/VAPIGEN_VAPIDIR=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
     sed -i "/GI_DOCGEN/s@ generate @ generate --add-include-path=${SYSROOT_DIR}/usr/share/gir-1.0 @g" doc/Makefile.in

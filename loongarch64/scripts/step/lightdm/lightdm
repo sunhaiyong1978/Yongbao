@@ -8,13 +8,6 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/lightdm/lightdm/1.32.0/
 rm -rf ${BUILD_DIRECTORY}/lightdm-1.32.0
 tar xvf ${DOWNLOADDIR}/lightdm-1.32.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/lightdm-1.32.0
-    mkdir cross-prebuild
-    pushd cross-prebuild
-        ../configure ${COMMON_CONFIG} --libexecdir=/usr/lib/lightdm \
-                     --sbindir=/usr/bin --disable-tests --with-greeter-user=lightdm \
-                     --with-greeter-session=lightdm-gtk-greeter --disable-introspection
-	eval ${MAKE_AND_INSTALL}
-    popd
     mkdir cross-build
     pushd cross-build
          PKG_CONFIG=pkg-config \

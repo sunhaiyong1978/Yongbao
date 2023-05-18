@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=grub
-export PACKAGE_VERSION=2.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/grub/2.11/
-rm -rf ${BUILD_DIRECTORY}/grub-2.11_git
-tar xvf ${DOWNLOADDIR}/grub-2.11_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/grub-2.11_git
+export PACKAGE_VERSION=2.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/grub/2.12/
+rm -rf ${BUILD_DIRECTORY}/grub-2.12_git
+tar xvf ${DOWNLOADDIR}/grub-2.12_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/grub-2.12_git
         
 	tar xvf ${RESOURCEDIR}/files/grub-gnulib_git.tar.gz
 	mv grub-gnulib_git gnulib
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/grub-2.11_git
 		--program-transform-name=s,grub,${CROSS_TARGET}-grub, --with-platform=efi --with-utils=host --disable-werror
         eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/grub-2.11_git
+rm -rf ${BUILD_DIRECTORY}/grub-2.12_git
