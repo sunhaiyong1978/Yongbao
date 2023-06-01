@@ -17,7 +17,7 @@ if [ ! -f ${PACKAGE_FILE} ]; then
 fi
 
 echo -n "正在执行${3}..."
-bash -e ${PACKAGE_FILE}
+bash -e -x ${PACKAGE_FILE}
 if [ "x$?" == "x0" ]; then
 	echo "完成。"
 	exit 0
