@@ -1,0 +1,113 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=thunderbird
+export PACKAGE_VERSION=114.0b5-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/114.0b5-default/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-114.0
+tar xvf ${DOWNLOADDIR}/thunderbird-114.0b5.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-114.0
+    mkdir -pv mozbuild/l10n-central
+    pushd mozbuild/l10n-central
+        unzip ${RESOURCEDIR}/files/tip.zip
+        mv zh-CN* zh-CN
+    popd
+    cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/packaging{,-*-info} third_party/python/packaging/
+    cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/Jinja2-*-info third_party/python/Jinja2/
+    cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/jinja2 third_party/python/Jinja2/
+    sed -i "/MarkupSafe/s@2.0.1@2.1.2@g" third_party/python/glean_parser/glean_parser-7*.dist-info/METADATA
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/114.0b5-default/patches/firefox-100-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/114.0b5-default/patches/firefox-110-fix-rust.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/114.0b5-default/patches/0001_xpcom_add_loongarch64_support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/114.0b5-default/patches/firefox-100-for-clfs.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/114.0b5-default/patches/firefox-105-fix-for-gcc13.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/114.0b5-default/patches/firefox-105-fix-jit-for-loongarch64.patch 
+	 
+    find third_party/rust/ -name .cargo-checksum.json \
+         -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
+
+    cat > comm/third_party/botan/src/build-data/arch/loongarch64.txt << "EOF"
+family loongarch
+endian little
+wordsize 64
+EOF
+
+    cat > mozconfig << "EOF"
+ac_add_options --disable-necko-wifi
+ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --prefix=/usr
+ac_add_options --libdir=/usr/lib64
+ac_add_options --target=${CROSS_TARGET}
+ac_add_options --enable-application=comm/mail
+ac_add_options --enable-jit
+ac_add_options --disable-crashreporter
+ac_add_options --disable-updater
+ac_add_options --disable-debug
+ac_add_options --disable-debug-symbols
+ac_add_options --disable-tests
+ac_add_options --enable-optimize=-O2
+ac_add_options --enable-official-branding
+ac_add_options --enable-system-ffi
+ac_add_options --enable-system-pixman
+ac_add_options --with-system-jpeg
+ac_add_options --with-system-png
+ac_add_options --with-system-zlib
+ac_add_options --without-wasm-sandboxed-libraries
+ac_add_options --with-system-webp
+ac_add_options --disable-strip
+ac_add_options --disable-jemalloc
+ac_add_options --disable-install-strip
+ac_add_options --enable-fmp4
+ac_add_options --with-sysroot=${SYSROOT_DIR}
+
+unset MOZ_TELEMETRY_REPORTING
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/thunderbird-build-dir
+EOF
+
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
+    CXXFLAGS="-fpermissive -Wnonnull" \
+    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
+    ./mach configure
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
+    CXXFLAGS="-fpermissive -Wnonnull" \
+    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
+    ./mach build -j${JOBS}
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
+    CXXFLAGS="-fpermissive -Wnonnull" \
+    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
+    ./mach package
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
+    CXXFLAGS="-fpermissive -Wnonnull" \
+    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
+    ./mach build installers-zh-CN
+    mkdir -pv ${DIST_DIRECTORY}/${ARCH_NAME}/thunderbird/
+    cp -av thunderbird-build-dir/dist/thunderbird-*.tar.bz2 ${DIST_DIRECTORY}/${ARCH_NAME}/thunderbird/
+    tar xvf thunderbird-build-dir/dist/thunderbird-*.zh-CN.linux-${ARCH_NAME}.tar.bz2 \
+        -C ${SYSROOT_DIR}/usr/lib64/
+    ln -sfv /usr/lib64/thunderbird/thunderbird ${SYSROOT_DIR}/usr/bin/thunderbird
+
+cat > ${SYSROOT_DIR}/usr/share/applications/thunderbird.desktop << "EOF"
+[Desktop Entry]
+Encoding=UTF-8
+Name=Thunderbird Mail
+Name[zh_CN]=邮件客户端
+Comment=Send and receive mail
+Comment[zh_CN]=邮件客户端
+GenericName=邮件客户端
+Exec=thunderbird %u
+Terminal=false
+Type=Application
+Icon=thunderbird
+Categories=Network;Email;
+MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;x-scheme-handler/mailto;
+StartupNotify=true
+EOF
+ln -sfv ${SYSROOT_DIR}/usr/lib64/thunderbird/chrome/icons/default/default256.png \
+        ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/thunderbird-114.0

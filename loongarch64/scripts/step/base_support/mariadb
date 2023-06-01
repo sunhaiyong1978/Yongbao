@@ -1,0 +1,63 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=mariadb
+export PACKAGE_VERSION=11.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mariadb/11.1.0/
+rm -rf ${BUILD_DIRECTORY}/mariadb-11.1.0
+tar xvf ${DOWNLOADDIR}/mariadb-11.1.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mariadb-11.1.0
+        patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/11.1.0/patches/0001-mariadb-fix-for-gcc13.patch 
+	 
+	sed -i "s@COMMAND factorial@COMMAND qemu-loongarch64 factorial@g" dbug/CMakeLists.txt
+	sed -i "s@COMMAND comp_err@COMMAND qemu-loongarch64 comp_err@g" extra/CMakeLists.txt
+	sed -i "s@COMMAND gen_lex_token@COMMAND qemu-loongarch64 gen_lex_token@g" sql/CMakeLists.txt
+	sed -i "s@COMMAND gen_lex_hash@COMMAND qemu-loongarch64 gen_lex_hash@g" sql/CMakeLists.txt
+	sed -i "s@COMMAND comp_sql@COMMAND qemu-loongarch64 comp_sql@g" scripts/CMakeLists.txt
+	sed -i "s@COMMAND uca-dump@COMMAND qemu-loongarch64 uca-dump@g" strings/CMakeLists.txt
+        mkdir cross-build
+        pushd cross-build
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
+                      -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
+                      -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
+                      -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \
+                      -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
+                      -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
+                      -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPERL_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-perl \
+                      -DRuby_EXECUTABLE=${SYSDIR}/cross-tools/bin/ruby \
+                      -DCAT_EXECUTABLE=/bin/cat \
+                      -DBISON_EXECUTABLE=/bin/bison \
+                      -DGPERF_EXECUTABLE=/bin/gperf \
+                      -DGETCONF=/usr/bin/getconf \
+                      -DDOXYGEN_EXECUTABLE=/bin/doxygen \
+                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DINSTALL_LIBDIR=/usr/lib64 \
+                      -DCMAKE_INSTALL_PREFIX=/usr \
+                      -DBUILD_SHARED_LIBS=ON \
+                      -DGRN_LOG_PATH=/var/log/groonga.log \
+                      -DINSTALL_MANDIR=share/man \
+                      -DINSTALL_MYSQLSHAREDIR=share/mysql \
+                      -DINSTALL_MYSQLTESTDIR=share/mysql/test \
+                      -DINSTALL_PAMDIR=lib/security \
+                      -DINSTALL_PAMDATADIR=/etc/security \
+                      -DINSTALL_PLUGINDIR=lib/mysql/plugin \
+                      -DINSTALL_SBINDIR=sbin \
+                      -DINSTALL_SCRIPTDIR=bin \
+                      -DINSTALL_SQLBENCHDIR=share/mysql/bench \
+                      -DINSTALL_SUPPORTFILESDIR=share/mysql \
+                      -DMYSQL_DATADIR=/srv/mysql \
+                      -DMYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock \
+                      -DWITH_EXTRA_CHARSETS=complex \
+                      -DWITH_EMBEDDED_SERVER=ON \
+                      -DSKIP_TESTS=ON \
+                      -DTOKUDB_OK=0 \
+                       -Wno-dev ..
+                eval ${MAKE_AND_INSTALL}
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/mariadb-11.1.0

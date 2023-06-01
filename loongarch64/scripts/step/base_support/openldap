@@ -1,0 +1,25 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=openldap
+export PACKAGE_VERSION=2.6.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/openldap/2.6.4/
+rm -rf ${BUILD_DIRECTORY}/openldap-2.6.4
+tar xvf ${DOWNLOADDIR}/openldap-2.6.4.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openldap-2.6.4
+        
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+	STRIP="${CROSS_TARGET}-strip" \
+	./configure ${COMMON_CONFIG} --disable-static --enable-dynamic  \
+            --enable-versioning=yes --disable-debug --disable-slapd \
+            --with-yielding_select=yes ac_cv_func_memcmp_working=yes --enable-malloc0returnsnull
+        make -j${JOBS} LD="${CROSS_TARGET}-ld" depend
+	make -j${JOBS} LD="${CROSS_TARGET}-ld"
+        make STRIP="${CROSS_TARGET}-strip" DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/openldap-2.6.4

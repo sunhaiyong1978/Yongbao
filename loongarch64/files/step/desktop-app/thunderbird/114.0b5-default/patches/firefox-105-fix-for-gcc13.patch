@@ -1,0 +1,11 @@
+diff -Nurp firefox-105.0.orig/toolkit/components/telemetry/pingsender/pingsender.cpp firefox-105.0/toolkit/components/telemetry/pingsender/pingsender.cpp
+--- firefox-105.0.orig/toolkit/components/telemetry/pingsender/pingsender.cpp	2022-09-15 18:50:28.000000000 +0000
++++ firefox-105.0/toolkit/components/telemetry/pingsender/pingsender.cpp	2022-09-20 04:46:11.421696481 +0000
+@@ -9,6 +9,7 @@
+ #include <fstream>
+ #include <iomanip>
+ #include <string>
++#include <cstdint>
+ #include <vector>
+ 
+ #include <zlib.h>

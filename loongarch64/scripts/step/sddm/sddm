@@ -1,0 +1,92 @@
+source env/sddm/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=sddm
+export STEP_PACKAGENAME=sddm
+export PACKAGE_VERSION=0.20.0-git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/sddm/0.20.0-git-default/
+rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
+tar xvf ${DOWNLOADDIR}/sddm-0.20.0-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
+    mkdir -p build
+    pushd build
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname \
+              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
+              -DQT_IMPORTS_DIR=/usr/lib64/qt5/qml \
+              -DENABLE_JOURNALD:BOOL=ON \
+              -DSESSION_COMMAND:PATH=/etc/sddm/Xsession \
+              -DWAYLAND_SESSION_COMMAND:PATH=/etc/sddm/wayland-session \
+              -DCMAKE_INSTALL_PREFIX=/usr ..
+        eval ${MAKE_AND_INSTALL}
+    popd
+    mkdir -p ${SYSROOT_DIR}/etc/sddm
+    cp -av ${SYSROOT_DIR}/usr/share/sddm/scripts/* ${SYSROOT_DIR}/etc/sddm/
+    install -v -dm755 ${SYSROOT_DIR}/var/lib/sddm
+    install -v -dm755 ${SYSROOT_DIR}/var/run/sddm
+    chmod a+rw ${SYSROOT_DIR}/var/lib/sddm \
+               ${SYSROOT_DIR}/var/run/sddm
+popd 
+rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
+
+cat > ${SYSROOT_DIR}/etc/pam.d/sddm << "EOF"
+#%PAM-1.0
+
+auth        include     system-auth
+-auth       optional    pam_gnome_keyring.so
+-auth       optional    pam_kwallet5.so
+
+account     include     system-account
+
+password    include     system-password
+-password   optional    pam_gnome_keyring.so    use_authtok
+
+session     optional    pam_keyinit.so          force revoke
+session     include     system-session
+-session    optional    pam_gnome_keyring.so    auto_start
+-session    optional    pam_kwallet5.so         auto_start
+EOF
+
+cat > ${SYSROOT_DIR}/etc/pam.d/sddm-greeter << "EOF"
+#%PAM-1.0
+
+# Load environment from /etc/environment and ~/.pam_environment
+auth            required pam_env.so
+
+# Always let the greeter start without authentication
+auth            required pam_permit.so
+
+# No action required for account management
+account         required pam_permit.so
+
+# Can't change password
+password        required pam_deny.so
+
+# Setup session
+session         required pam_unix.so
+session         optional pam_systemd.so
+EOF
+
+cat > ${SYSROOT_DIR}/etc/pam.d/sddm-autologin << "EOF"
+#%PAM-1.0
+auth        required    pam_env.so
+auth        required    pam_faillock.so preauth
+auth        required    pam_shells.so
+auth        required    pam_nologin.so
+auth        required    pam_permit.so
+-auth       optional    pam_gnome_keyring.so
+-auth       optional    pam_kwallet5.so
+account     required    pam_unix.so
+password    required    pam_deny.so
+session     required    pam_unix.so
+session     optional    pam_systemd.so
+-session    optional    pam_gnome_keyring.so auto_start
+-session    optional    pam_kwallet5.so auto_start
+EOF
+
+cat > ${SYSROOT_DIR}/etc/sddm.conf << "EOF"
+[General]
+InputMethod=
+Numlock=on
+EOF

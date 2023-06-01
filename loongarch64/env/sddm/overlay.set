@@ -1,0 +1,3 @@
+overlay_dir=sddm
+parent_dirs=sysroot
+temp_fix=1

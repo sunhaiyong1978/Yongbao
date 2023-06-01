@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gtk3
-export PACKAGE_VERSION=3.24.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gtk3/3.24.37/
-rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.37
-tar xvf ${DOWNLOADDIR}/gtk+-3.24.37.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gtk+-3.24.37
+export PACKAGE_VERSION=3.24.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gtk3/3.24.38/
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.38
+tar xvf ${DOWNLOADDIR}/gtk+-3.24.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gtk+-3.24.38
         
         mkdir cross-build
         pushd cross-build
@@ -32,4 +32,4 @@ gtk-xft-rgba = rgb
 gtk-cursor-theme-name = Adwaita
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.37
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.38

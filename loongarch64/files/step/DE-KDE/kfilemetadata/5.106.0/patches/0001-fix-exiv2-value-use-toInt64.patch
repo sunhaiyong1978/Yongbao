@@ -1,0 +1,34 @@
+From fa769687a2ec286883239f9ea6affe6d67d95a84 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 28 May 2023 05:13:55 +0000
+Subject: [PATCH] fix exiv2 value use toInt64.
+
+---
+ src/extractors/exiv2extractor.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/extractors/exiv2extractor.cpp b/src/extractors/exiv2extractor.cpp
+index 10c3dc5..476c5a6 100644
+--- a/src/extractors/exiv2extractor.cpp
++++ b/src/extractors/exiv2extractor.cpp
+@@ -75,7 +75,7 @@ QVariant toVariantDateTime(const Exiv2::Value& value)
+ QVariant toVariantLong(const Exiv2::Value& value)
+ {
+     if (value.typeId() == Exiv2::unsignedLong || value.typeId() == Exiv2::signedLong) {
+-        qlonglong val = value.toLong();
++        qlonglong val = value.toUint32();
+         return QVariant(val);
+     }
+ 
+@@ -310,7 +310,7 @@ double Exiv2Extractor::fetchGpsAltitude(const Exiv2::ExifData& data)
+         it = data.findKey(Exiv2::ExifKey("Exif.GPSInfo.GPSAltitudeRef"));
+         if (it != data.end() && it->count() > 0 &&
+             (it->value().typeId() == Exiv2::unsignedByte || it->value().typeId() == Exiv2::signedByte)) {
+-            auto altRef = it->value().toLong();
++            auto altRef = it->value().toUint32();
+             if (altRef) {
+                 alt = -1.0 * ratio.first / ratio.second;
+             } else {
+-- 
+2.31.1
+

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=firefox
-export PACKAGE_VERSION=113.0.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/113.0.1/
-rm -rf ${BUILD_DIRECTORY}/firefox-113.0.1
-tar xvf ${DOWNLOADDIR}/firefox-113.0.1.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-113.0.1
+export PACKAGE_VERSION=114.0.b7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/114.0.b7/
+rm -rf ${BUILD_DIRECTORY}/firefox-114.0
+tar xvf ${DOWNLOADDIR}/firefox-114.0b7.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-114.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
@@ -16,13 +16,13 @@ pushd ${BUILD_DIRECTORY}/firefox-113.0.1
     cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/packaging{,-*-info} third_party/python/packaging/
     cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/Jinja2-*-info third_party/python/Jinja2/
     cp -a ${SYSROOT_DIR}/usr/lib/python3.11/site-packages/jinja2 third_party/python/Jinja2/
-    sed -i "/MarkupSafe/s@2.0.1@2.1.2@g" third_party/python/glean_parser/glean_parser-7.1.0.dist-info/METADATA
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-100-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-110-fix-rust.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/0001_xpcom_add_loongarch64_support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-100-for-clfs.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-105-fix-for-gcc13.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/113.0.1/patches/firefox-105-fix-jit-for-loongarch64.patch 
+    sed -i "/MarkupSafe/s@2.0.1@2.1.2@g" third_party/python/glean_parser/glean_parser-7.*.dist-info/METADATA
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/114.0.b7/patches/firefox-100-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/114.0.b7/patches/firefox-110-fix-rust.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/114.0.b7/patches/0001_xpcom_add_loongarch64_support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/114.0.b7/patches/firefox-100-for-clfs.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/114.0.b7/patches/firefox-105-fix-for-gcc13.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/114.0.b7/patches/firefox-105-fix-jit-for-loongarch64.patch 
 	 
 # for firefox 100
 # sed -i "s@\"rU\"@\"r\"@g" python/mozbuild/mozbuild/util.py python/mozbuild/mozbuild/preprocessor.py python/mozbuild/mozbuild/backend/base.py python/mozbuild/mozbuild/action/process_define_files.py python/mozbuild/mozpack/files.py dom/base/usecounters.py
@@ -33,7 +33,7 @@ pushd ${BUILD_DIRECTORY}/firefox-113.0.1
          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
     cat > mozconfig << "EOF"
 ac_add_options --disable-necko-wifi
-ac_add_options --disable-jit
+ac_add_options --enable-jit
 ac_add_options --disable-strip
 ac_add_options --disable-jemalloc
 ac_add_options --disable-install-strip
@@ -52,22 +52,24 @@ ac_add_options --with-sysroot=${SYSROOT_DIR}
 unset MOZ_TELEMETRY_REPORTING
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 EOF
-    CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ \
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach configure
-    CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ \
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach build -j${JOBS}
-    CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ \
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach package
-    CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ \
+    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach build installers-zh-CN
+    mkdir -pv ${DIST_DIRECTORY}/${ARCH_NAME}/firefox/
+    cp -av firefox-build-dir/dist/firefox-*.tar.bz2 ${DIST_DIRECTORY}/${ARCH_NAME}/firefox/
     tar xvf firefox-build-dir/dist/firefox-*.zh-CN.linux-${ARCH_NAME}.tar.bz2 \
         -C ${SYSROOT_DIR}/usr/lib64/
     ln -sfv /usr/lib64/firefox/firefox ${SYSROOT_DIR}/usr/bin/firefox
@@ -92,4 +94,4 @@ EOF
 ln -sfv ${SYSROOT_DIR}/usr/lib64/firefox/browser/chrome/icons/default/default128.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/firefox.png
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-113.0.1
+rm -rf ${BUILD_DIRECTORY}/firefox-114.0

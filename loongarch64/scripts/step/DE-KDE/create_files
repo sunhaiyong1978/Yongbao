@@ -1,0 +1,41 @@
+source env/DE-KDE/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=DE-KDE
+export STEP_PACKAGENAME=create_files
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/create_files//
+cat > ${SYSROOT_DIR}/etc/profile.d/kde.sh << "EOF"
+export QT_PLUGIN_PATH=${QT_PLUGIN_PATH}:/usr/lib64/plugins:/usr/lib64/plugins/kcms
+export QML2_IMPORT_PATH=${QML2_IMPORT_PATH}:/usr/lib64/qml
+EOF
+
+
+cat > ${SYSROOT_DIR}/etc/pam.d/kde << EOF
+auth     requisite      pam_nologin.so
+auth     required       pam_env.so
+
+auth     required       pam_succeed_if.so uid >= 1000 quiet
+auth     include        system-auth
+
+account  include        system-account
+password include        system-password
+session  include        system-session
+EOF
+
+cat > ${SYSROOT_DIR}/etc/pam.d/kde-np << EOF
+auth     requisite      pam_nologin.so
+auth     required       pam_env.so
+
+auth     required       pam_succeed_if.so uid >= 1000 quiet
+auth     required       pam_permit.so
+
+account  include        system-account
+password include        system-password
+session  include        system-session
+EOF
+
+cat > ${SYSROOT_DIR}/etc/pam.d/kscreensaver << EOF
+auth    include system-auth
+account include system-account
+EOF

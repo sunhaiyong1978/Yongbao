@@ -25,7 +25,7 @@ pushd ${BUILD_DIRECTORY}/perl-5.36.1
 	make depend
 	eval ${MAKE_AND_INSTALL}
 echo '#!/bin/bash -e
-qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/perl "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/perl -I${SYSROOT_DIR}/usr/lib64/perl5/5.3x/site_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.3x/site_perl -I${SYSROOT_DIR}/usr/lib64/perl5/5.3x/vendor_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.3x/vendor_perl -I${SYSROOT_DIR}/usr/lib64/perl5/5.3x/core_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.3x/core_perl "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
 popd 
 rm -rf ${BUILD_DIRECTORY}/perl-5.36.1

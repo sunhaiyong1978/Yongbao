@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=binutils
-export PACKAGE_VERSION=2.41
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/binutils/2.41/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.41_git
-tar xvf ${DOWNLOADDIR}/binutils-2.41_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.41_git
+export PACKAGE_VERSION=2.40
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/binutils/2.40/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.40
+tar xvf ${DOWNLOADDIR}/binutils-2.40.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.40
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -pv cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.41_git
 		make DESTDIR=${SYSROOT_DIR} tooldir=/usr install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.41_git
+rm -rf ${BUILD_DIRECTORY}/binutils-2.40
