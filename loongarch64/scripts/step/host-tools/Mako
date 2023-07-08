@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Mako/1.2.4/
 rm -rf ${BUILD_DIRECTORY}/Mako-1.2.4
 tar xvf ${DOWNLOADDIR}/Mako-1.2.4.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/Mako-1.2.4
+	
 	${CROSSTOOLS_DIR}/bin/python3 setup.py build
         ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
 popd 

@@ -1,0 +1,14 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=p7zip
+export PACKAGE_VERSION=17.05
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/p7zip/17.05/
+rm -rf ${BUILD_DIRECTORY}/p7zip-17.05
+tar xvf ${DOWNLOADDIR}/p7zip-17.05.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/p7zip-17.05
+	make -j${JOBS} CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ all3
+	make DEST_HOME=/usr DEST_SHARE=/usr/lib64/p7zip DEST_MAN=/usr/share/man DEST_DIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/p7zip-17.05

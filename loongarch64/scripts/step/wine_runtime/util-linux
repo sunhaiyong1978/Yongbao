@@ -1,0 +1,20 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=util-linux
+export PACKAGE_VERSION=2.39.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/util-linux/2.39.1/
+rm -rf ${BUILD_DIRECTORY}/util-linux-2.39.1
+tar xvf ${DOWNLOADDIR}/util-linux-2.39.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/util-linux-2.39.1
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --enable-malloc0returnsnull
+	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_64_SYSROOT_DIR} install
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/util-linux-2.39.1

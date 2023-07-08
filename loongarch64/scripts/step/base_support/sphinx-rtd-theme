@@ -1,0 +1,16 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=sphinx-rtd-theme
+export PACKAGE_VERSION=1.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sphinx-rtd-theme/1.2.2/
+rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.2.2
+tar xvf ${DOWNLOADDIR}/sphinx_rtd_theme-1.2.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.2.2
+	patch -Np1 -i ${SYSDIR}/files/base_support/sphinx-rtd-theme/1.2.2/patches/0001-fix-sphinx-and-docutils-requires-version.patch 
+	 
+	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user sphinx-rtd-theme --root=${SYSROOT_DIR} --prefix=/usr
+popd 
+rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.2.2

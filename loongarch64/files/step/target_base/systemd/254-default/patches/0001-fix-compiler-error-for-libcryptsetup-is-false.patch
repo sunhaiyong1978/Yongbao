@@ -1,0 +1,25 @@
+From d6a1e691c00adad9d4e0b5c028b003abbee62199 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 24 Jun 2023 09:52:28 +0000
+Subject: [PATCH] fix compiler error for libcryptsetup is false.
+
+---
+ src/partition/repart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/partition/repart.c b/src/partition/repart.c
+index 634eb2e..7540291 100644
+--- a/src/partition/repart.c
++++ b/src/partition/repart.c
+@@ -3163,7 +3163,7 @@ typedef struct DecryptedPartitionTarget {
+ } DecryptedPartitionTarget;
+ 
+ static DecryptedPartitionTarget* decrypted_partition_target_free(DecryptedPartitionTarget *t) {
+-#ifdef HAVE_LIBCRYPTSETUP
++#if HAVE_LIBCRYPTSETUP
+         int r;
+ 
+         if (!t)
+-- 
+2.31.1
+

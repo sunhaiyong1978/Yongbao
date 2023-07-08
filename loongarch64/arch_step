@@ -1,6 +1,6 @@
 
 %step/cross-tools/grub|
 %step/target_base/valgrind|
-%step/desktop-app/firefox|g_opt
+%step/base_support/jdk20|g_opt
 %step/boot/grub|
-%step/computer_language/golang|g_opt,target-dist
+%step/computer_language/golang|g_opt,target-dist,golang

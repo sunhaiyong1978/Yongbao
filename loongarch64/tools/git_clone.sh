@@ -88,7 +88,7 @@ if [ "x${PKG_SUBMODULE}" == "x1" ]; then
 		git checkout ${PKG_COMMIT}
 		echo "git submodule init"
 		git submodule init
-		echo "git submodule update"
+		echo "git submodule update --depth 1"
 		git submodule update --depth 1
 	popd
 	echo "tar -czf ${PKG_NAME}${PKG_VERSION}_git.tar.gz ${PKG_NAME}${PKG_VERSION}_git"

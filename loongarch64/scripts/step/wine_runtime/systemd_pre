@@ -1,0 +1,31 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=systemd_pre
+export PACKAGE_VERSION=254-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/systemd_pre/254-default/
+rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git
+tar xvf ${DOWNLOADDIR}/systemd-254-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-254-default_git
+	patch -Np1 -i ${SYSDIR}/files/wine_runtime/systemd_pre/254-default/patches/0001-fix-compiler-error-for-libcryptsetup-is-false.patch 
+	 
+	pushd src/basic
+        python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
+	popd
+	sed -i -e 's/GROUP="render"/GROUP="video"/' \
+           -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
+	sed -i "s@Werror=undef',@& '-Wno-error=format-overflow', '-Wno-error=implicit-function-declaration',@g" meson.build
+
+	mkdir -p build
+	pushd build
+		meson ${MESON_CONFIG} \
+		      -Ddefault-dnssec=no -Dfirstboot=false \
+		      -Dinstall-tests=false -Dldconfig=false -Dsysusers=false \
+		      -Drpmmacrosdir=no -Dhomed=false -Duserdb=false -Dman=false -Dmode=release \
+		      -Dpamconfdir=/etc/pam.d \
+		      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git

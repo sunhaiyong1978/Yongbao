@@ -13,8 +13,6 @@ pushd ${BUILD_DIRECTORY}/libnma-1.10.6
 	pushd cross-build
 		meson ${MESON_CONFIG} -Dvapi=false -Dgtk_doc=false -Dlibnma_gtk4=true -Dmobile_broadband_provider_info=false -Dintrospection=true \
                       ..
-		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
-		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@\1bin/${CROSS_TARGET}-\2@g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

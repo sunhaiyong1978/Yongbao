@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kjs
-export PACKAGE_VERSION=5.106.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kjs/5.106.0/
-rm -rf ${BUILD_DIRECTORY}/kjs-5.106.0
-tar xvf ${DOWNLOADDIR}/kjs-5.106.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kjs-5.106.0
+export PACKAGE_VERSION=5.107.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kjs/5.107.0/
+rm -rf ${BUILD_DIRECTORY}/kjs-5.107.0
+tar xvf ${DOWNLOADDIR}/kjs-5.107.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kjs-5.107.0
         
 	sed -i "s@COMMAND \${ICEMAKER_EXECUTABLE}@COMMAND qemu-loongarch64 ${PWD}/cross-build/bin/icemaker@g" \
         	src/kjs/CMakeLists.txt
@@ -40,4 +40,4 @@ pushd ${BUILD_DIRECTORY}/kjs-5.106.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kjs-5.106.0
+rm -rf ${BUILD_DIRECTORY}/kjs-5.107.0

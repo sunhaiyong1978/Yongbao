@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=groff
-export PACKAGE_VERSION=1.22.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/groff/1.22.4/
-rm -rf ${BUILD_DIRECTORY}/groff-1.22.4
-tar xvf ${DOWNLOADDIR}/groff-1.22.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/groff-1.22.4
+export PACKAGE_VERSION=1.23.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/groff/1.23.0/
+rm -rf ${BUILD_DIRECTORY}/groff-1.23.0
+tar xvf ${DOWNLOADDIR}/groff-1.23.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/groff-1.23.0
 	for config_i in $(find -name "config.sub")
         do
                 cp ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/groff-1.22.4
 	make -j${JOBS} TROFFBIN=troff GROFFBIN=groff GROFF_BIN_PATH=
 	make DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/groff-1.22.4
+rm -rf ${BUILD_DIRECTORY}/groff-1.23.0

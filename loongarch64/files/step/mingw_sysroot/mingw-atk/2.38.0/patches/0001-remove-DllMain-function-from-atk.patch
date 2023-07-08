@@ -1,0 +1,38 @@
+From 72c6866443a1f97a9d9070c602eb56ef2aab2ece Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 11 Jun 2023 13:35:07 +0000
+Subject: [PATCH] remove DllMain function from atk.
+
+---
+ atk/atkprivate.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/atk/atkprivate.c b/atk/atkprivate.c
+index e414bf2..a63312a 100644
+--- a/atk/atkprivate.c
++++ b/atk/atkprivate.c
+@@ -38,21 +38,6 @@
+ 
+ static HMODULE atk_dll;
+ 
+-BOOL WINAPI
+-DllMain (HINSTANCE hinstDLL,
+-         DWORD     fdwReason,
+-         LPVOID    lpvReserved)
+-{
+-  switch (fdwReason)
+-    {
+-    case DLL_PROCESS_ATTACH:
+-      atk_dll = (HMODULE) hinstDLL;
+-      break;
+-    }
+-
+-  return TRUE;
+-}
+-
+ static const char *
+ get_atk_locale_dir (void)
+ {
+-- 
+2.31.1
+

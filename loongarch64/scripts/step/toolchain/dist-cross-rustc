@@ -3,19 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=dist-cross-rustc
-export PACKAGE_VERSION=1.69.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/dist-cross-rustc/1.69.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.69.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.69.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.69.0-src
-	rm -rf src/llvm-project
-	tar xvf ${RESOURCEDIR}/files/llvm-project-16.0.2.src.tar.xz -C src/
-	mv src/llvm-project-16.0.2.src src/llvm-project
-	patch -Np1 -i ${SYSDIR}/files/toolchain/dist-cross-rustc/1.69.0/patches/0001-rustc-1.69.0-add-loongarch-support.patch 
-	 
-	sed -i "s@ifdef LLVM_RUSTLLVM@if 0@g" compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp
-	find vendor -name .cargo-checksum.json \
-          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
+export PACKAGE_VERSION=1.70.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/dist-cross-rustc/1.70.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.70.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.70.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.70.0-src
+	
 
 	if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
         	mv ${TEMP_DIRECTORY}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
@@ -36,7 +29,7 @@ pushd ${BUILD_DIRECTORY}/rustc-1.69.0-src
 	make -j${JOBS} TARGET_CC="${CROSS_TARGET}-gcc"
 	PATH=${TEMP_DIRECTORY}/cross-tools/bin:$PATH \
 	make -j${JOBS} TARGET_CC="${CROSS_TARGET}-gcc" dist
-        mkdir -p ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.69.0" | sed "s@-default@@g")/
-        find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.69.0" | sed "s@-default@@g")/ ';'
+        mkdir -p ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.70.0" | sed "s@-default@@g")/
+        find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.70.0" | sed "s@-default@@g")/ ';'
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.69.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.70.0-src

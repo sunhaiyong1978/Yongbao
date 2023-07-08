@@ -3,17 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=253
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/253/
-rm -rf ${BUILD_DIRECTORY}/systemd-253
-tar xvf ${DOWNLOADDIR}/systemd-253.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-253
+export PACKAGE_VERSION=254-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/254-default/
+rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git
+tar xvf ${DOWNLOADDIR}/systemd-254-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-254-default_git
 	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
 	popd
 	sed -i -e 's/GROUP="render"/GROUP="video"/' \
            -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
+	sed -i "s@Werror=undef',@& '-Wno-error=format-overflow', '-Wno-error=implicit-function-declaration',@g" meson.build
 
 	mkdir -p build
 	pushd build
@@ -47,4 +48,4 @@ password required    pam_deny.so
 EOF
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-253
+rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git

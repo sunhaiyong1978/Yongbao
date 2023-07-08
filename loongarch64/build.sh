@@ -119,6 +119,7 @@ function overlay_mount
 			if [ ! -d ${NEW_TARGET_SYSDIR}/overlaydir/${i} ]; then
 				mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${i}
 			fi
+			            # ${LOWERDIR_LIST}:${NEW_TARGET_SYSDIR}/overlaydir/${i}
 			LOWERDIR_LIST=${NEW_TARGET_SYSDIR}/overlaydir/${i}:${LOWERDIR_LIST}
 		done
 	fi
@@ -127,6 +128,37 @@ function overlay_mount
 		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${1}
 		OVERLAY_DIR=${1}
 	fi
+
+	mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
+	sync
+
+	if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+		if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
+			mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
+		fi
+		if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change ]; then
+			mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change{,.$(date +%Y%m%d%H%M%S)}
+		fi
+		mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}
+		mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change
+		sync
+		sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+		if [ "x$?" != "x0" ]; then
+			echo "挂载sysroot错误！"
+			echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+			exit -2
+		fi
+		fn_overlay_temp_fix_run "${1}"
+		overlay_umount
+		sync
+#		sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+#		if [ "x$?" != "x0" ]; then
+#			echo "挂载sysroot错误！"
+#			echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+#			exit -2
+#		fi
+	fi
+
 	if [ "x${SINGLE_PACKAGE}" == "x1" ]; then
 		if [ -f ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME} ] || [ -L ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME} ]; then
 			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}{,.bak$(date +%Y%m%d%H%M%S)}
@@ -140,34 +172,44 @@ function overlay_mount
 		mkdir -p ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST.${DATA_SUFF}
 		ln -sf DEST.${DATA_SUFF} ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST
 		sync
-		sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
-		if [ "x$?" != "x0" ]; then
-			echo "挂载sysroot错误！"
-			echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
-			exit -2
-		fi
-	else
-		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
-		sync
+
 		if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
-			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
-				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
-			fi
-			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change ]; then
-				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change{,.$(date +%Y%m%d%H%M%S)}
-			fi
-			mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}
-			mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change
-			sync
-			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 			if [ "x$?" != "x0" ]; then
 				echo "挂载sysroot错误！"
-				echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+				echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 				exit -2
 			fi
-			fn_overlay_temp_fix_run "${1}"
-			overlay_umount
-			sync
+		else
+			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+			if [ "x$?" != "x0" ]; then
+				echo "挂载sysroot错误！"
+				echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+				exit -2
+			fi
+		fi
+	else
+#		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
+#		sync
+		if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+#			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
+#				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
+#			fi
+#			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change ]; then
+#				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change{,.$(date +%Y%m%d%H%M%S)}
+#			fi
+#			mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}
+#			mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change
+#			sync
+#			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+#			if [ "x$?" != "x0" ]; then
+#				echo "挂载sysroot错误！"
+#				echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+#				exit -2
+#			fi
+#			fn_overlay_temp_fix_run "${1}"
+#			overlay_umount
+#			sync
 			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 			if [ "x$?" != "x0" ]; then
 				echo "挂载sysroot错误！"
@@ -175,14 +217,14 @@ function overlay_mount
 				exit -2
 			fi
 		else
-			if [ "x${OVERLAY_TEMP_FIX}" != "x2" ]; then
+			if [ "x${OVERLAY_TEMP_FIX}" != "x2" ]; then  # 除了final_run之外的步骤
 				sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 				if [ "x$?" != "x0" ]; then
 					echo "挂载sysroot错误！"
 					echo "sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 					exit -2
 				fi
-			else
+			else  # final_run步骤
 				sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/.lowerdir,upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 				if [ "x$?" != "x0" ]; then
 					echo "挂载sysroot错误！"
@@ -510,11 +552,11 @@ function create_os_run
 	declare STEP_STAGE="${2}"
 	declare PACKAGE_NAME="${3}"
 	if [ -f scripts/step/${SCRIPT_FILE}.os_first_run ]; then
-		tools/show_package_script.sh -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+		tools/show_package_script.sh -e -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
 	fi
 
 	if [ -f scripts/step/${SCRIPT_FILE}.os_start_run ]; then
-		tools/show_package_script.sh -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+		tools/show_package_script.sh -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
 	fi
 }
 
@@ -803,11 +845,13 @@ do
 
 	if [ -f env/${STEP_STAGE}/overlay.set ]; then
 		overlay_umount
-		if [ "x${STEP_OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
-			cp -a ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/* ${NEW_TARGET_SYSDIR}/overlaydir/$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)/
-			if [ "x$?" != "x0" ]; then
-				echo "错误：以临时修改覆盖方式编译的软件包在复制文件时出现错误，请检查 ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/ 目录中是否没有产生任何文件。"
-				exit -2
+		if [ "x${SINGLE_PACKAGE}" != "x1" ]; then
+			if [ "x${STEP_OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
+				cp -a ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/* ${NEW_TARGET_SYSDIR}/overlaydir/$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)/
+				if [ "x$?" != "x0" ]; then
+					echo "错误：以临时修改覆盖方式编译的软件包在复制文件时出现错误，请检查 ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/ 目录中是否没有产生任何文件。"
+					exit -2
+				fi
 			fi
 		fi
 	fi

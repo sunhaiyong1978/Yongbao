@@ -1,0 +1,25 @@
+From 7e9769e3f168266df5b5bd8dbb4f8adbbe9a5eb5 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 13 Jun 2023 12:32:52 +0000
+Subject: [PATCH] libosinfo enable introspection for cross build.
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 39b739e..46f2252 100644
+--- a/meson.build
++++ b/meson.build
+@@ -29,7 +29,7 @@ libosinfo_pkgconfdir = join_paths(libosinfo_libdir, 'pkgconfig')
+ 
+ # gobject introspection
+ gir = find_program('g-ir-scanner', required: get_option('enable-introspection'))
+-enable_introspection = gir.found() and not meson.is_cross_build()
++enable_introspection = gir.found()
+ 
+ # vala
+ vapi_opt = get_option('enable-vala')
+-- 
+2.31.1
+

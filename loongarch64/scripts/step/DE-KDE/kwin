@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kwin
-export PACKAGE_VERSION=5.27.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kwin/5.27.5/
-rm -rf ${BUILD_DIRECTORY}/kwin-5.27.5
-tar xvf ${DOWNLOADDIR}/kwin-5.27.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kwin-5.27.5
+export PACKAGE_VERSION=5.27.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kwin/5.27.6/
+rm -rf ${BUILD_DIRECTORY}/kwin-5.27.6
+tar xvf ${DOWNLOADDIR}/kwin-5.27.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kwin-5.27.6
         
 	sed -i "s@COMMAND qtwaylandscanner_kde@COMMAND qemu-loongarch64 ${PWD}/cross-build/bin/qtwaylandscanner_kde@g" src/wayland/tools/CMakeLists.txt
         mkdir cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/kwin-5.27.5
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kwin-5.27.5
+rm -rf ${BUILD_DIRECTORY}/kwin-5.27.6

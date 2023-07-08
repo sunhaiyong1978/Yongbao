@@ -14,7 +14,7 @@ pushd ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname \
               -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
-              -DQT_IMPORTS_DIR=/usr/lib64/qt5/qml \
+              -DQT_IMPORTS_DIR=/usr/lib64/qml \
               -DENABLE_JOURNALD:BOOL=ON \
               -DSESSION_COMMAND:PATH=/etc/sddm/Xsession \
               -DWAYLAND_SESSION_COMMAND:PATH=/etc/sddm/wayland-session \

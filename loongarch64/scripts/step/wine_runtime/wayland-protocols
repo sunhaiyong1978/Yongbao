@@ -1,0 +1,20 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=wayland-protocols
+export PACKAGE_VERSION=1.32
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/wayland-protocols/1.32/
+rm -rf ${BUILD_DIRECTORY}/wayland-protocols-1.32
+tar xvf ${DOWNLOADDIR}/wayland-protocols-1.32.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wayland-protocols-1.32
+    sed -i -e "/dep_scanner =/s@, native: true@@g" \
+           -e "/prog_scanner =/s@find_program\(.*\)\$@find_program('wayland-scanner')@g" \
+           tests/meson.build
+    mkdir cross-build
+    pushd cross-build
+        meson ${MESON_CONFIG} -Dtests=false ..
+	eval ${NINJA_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/wayland-protocols-1.32

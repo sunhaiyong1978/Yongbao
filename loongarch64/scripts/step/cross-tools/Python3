@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=Python3
-export PACKAGE_VERSION=3.11.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Python3/3.11.3/
-rm -rf ${BUILD_DIRECTORY}/Python-3.11.3
-tar xvf ${DOWNLOADDIR}/Python-3.11.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.11.3
+export PACKAGE_VERSION=3.11.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Python3/3.11.4/
+rm -rf ${BUILD_DIRECTORY}/Python-3.11.4
+tar xvf ${DOWNLOADDIR}/Python-3.11.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.11.4
 	./configure --prefix=${CROSSTOOLS_DIR} --with-platlibdir=lib64 \
 	            --disable-shared --with-system-expat --with-system-ffi \
 	            --with-ensurepip=yes --enable-optimizations \
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/Python-3.11.3
 	       -e "/'EXT_SUFFIX'/s@-x86_64-linux-gnu@@g" \
 	       ${CROSSTOOLS_DIR}/lib64/python3.11/_sysconfigdata__linux_${CROSS_TARGET}.py
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.11.3
+rm -rf ${BUILD_DIRECTORY}/Python-3.11.4

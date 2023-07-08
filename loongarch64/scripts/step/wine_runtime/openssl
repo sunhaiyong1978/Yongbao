@@ -1,0 +1,17 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=openssl
+export PACKAGE_VERSION=3.1.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/openssl/3.1.1/
+rm -rf ${BUILD_DIRECTORY}/openssl-3.1.1
+tar xvf ${DOWNLOADDIR}/openssl-3.1.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openssl-3.1.1
+	CC="${X86_64_HOST}-gcc" \
+	./Configure --prefix=/usr --openssldir=/etc/ssl \
+				--libdir=lib64 shared zlib
+	sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/openssl-3.1.1

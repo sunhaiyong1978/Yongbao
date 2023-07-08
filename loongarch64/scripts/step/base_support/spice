@@ -1,0 +1,20 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=spice
+export PACKAGE_VERSION=0.15.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/spice/0.15.2/
+rm -rf ${BUILD_DIRECTORY}/spice-0.15.2
+tar xvf ${DOWNLOADDIR}/spice-0.15.2.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/spice-0.15.2
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} -Dmanual=false \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/spice-0.15.2

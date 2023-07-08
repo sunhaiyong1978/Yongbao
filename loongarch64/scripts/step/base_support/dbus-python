@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/dbus-python-1.3.2.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/dbus-python-1.3.2
     mkdir python3
     pushd python3
-        PYTHON=${CROSSTOOLS_DIR}/bin/python3 \
+        PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
         ../configure ${COMMON_CONFIG} --docdir=/usr/share/doc/dbus-python
 	eval ${MAKE_AND_INSTALL}
     popd

@@ -1,0 +1,15 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=libcap
+export PACKAGE_VERSION=2.69
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libcap/2.69/
+rm -rf ${BUILD_DIRECTORY}/libcap-2.69
+tar xvf ${DOWNLOADDIR}/libcap-2.69.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libcap-2.69
+	make -j${JOBS} CROSS_COMPILE="${X86_64_HOST}-" BUILD_CC="gcc" GOLANG=no prefix=/usr lib=lib64
+	make CROSS_COMPILE="${X86_64_HOST}-" BUILD_CC="gcc" GOLANG=no prefix=/usr lib=lib64 \
+		 DESTDIR=${X86_64_SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/libcap-2.69

@@ -1,0 +1,20 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=gnutls
+export PACKAGE_VERSION=3.8.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/gnutls/3.8.0/
+rm -rf ${BUILD_DIRECTORY}/gnutls-3.8.0
+tar xvf ${DOWNLOADDIR}/gnutls-3.8.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gnutls-3.8.0
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --enable-openssl-compatibility --enable-ssl3-support --with-libz-prefix=${X86_64_SYSROOT_DIR}/usr --disable-guile --disable-doc --without-p11-kit --enable-malloc0returnsnull
+	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_64_SYSROOT_DIR} install
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/gnutls-3.8.0

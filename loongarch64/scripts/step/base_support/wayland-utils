@@ -1,0 +1,21 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=wayland-utils
+export PACKAGE_VERSION=1.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/wayland-utils/1.2.0/
+rm -rf ${BUILD_DIRECTORY}/wayland-utils-1.2.0
+tar xvf ${DOWNLOADDIR}/wayland-utils-1.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wayland-utils-1.2.0
+    sed -i -e "/dep_scanner =/s@, native: true@@g" \
+           -e "/prog_scanner =/s@find_program\(.*\)\$@find_program('wayland-scanner')@g" \
+           wayland-info/meson.build
+    mkdir cross-build
+    pushd cross-build
+        meson ${MESON_CONFIG} \
+              ..
+        eval ${NINJA_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/wayland-utils-1.2.0

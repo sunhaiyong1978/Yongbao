@@ -1,0 +1,14 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=Parse-Yapp
+export PACKAGE_VERSION=1.21
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Parse-Yapp/1.21/
+rm -rf ${BUILD_DIRECTORY}/Parse-Yapp-1.21
+tar xvf ${DOWNLOADDIR}/Parse-Yapp-1.21.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Parse-Yapp-1.21
+	${CROSSTOOLS_DIR}/bin/perl Makefile.PL
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/Parse-Yapp-1.21

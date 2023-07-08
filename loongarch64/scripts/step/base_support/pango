@@ -8,13 +8,12 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pango/1.50.14/
 rm -rf ${BUILD_DIRECTORY}/pango-1.50.14
 tar xvf ${DOWNLOADDIR}/pango-1.50.14.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pango-1.50.14
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/pango/1.50.14/patches/0001-remove-array-bounds-flags-for-gcc-13.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		meson ${MESON_CONFIG}  --wrap-mode=nofallback -Dintrospection=enabled \
                       ..
-		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
-                sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@\1bin/${CROSS_TARGET}-\2@g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

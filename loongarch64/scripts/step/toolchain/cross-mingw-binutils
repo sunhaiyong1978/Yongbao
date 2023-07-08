@@ -1,0 +1,26 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=cross-mingw-binutils
+export PACKAGE_VERSION=2.40
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-mingw-binutils/2.40/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.40
+tar xvf ${DOWNLOADDIR}/binutils-2.40.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.40
+    rm -rf gdb* libdecnumber readline sim
+    mkdir cross-build
+    pushd cross-build
+	PATH=${CROSS_TOOLS_PREFIX}/bin:${PATH}
+        LDFLAGS="--static" \
+        ../configure --prefix=/opt/cross-tools --build=${CROSS_HOST} --host=${MINGW_HOST} \
+                     --target=${CROSS_TARGET} \
+                     --enable-nls --enable-64-bit-bfd --disable-shared
+        make -j${JOBS} configure-host
+        make -j${JOBS}
+        make DESTDIR=${PWD}/dest install-strip
+	mkdir -pv ${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/binutils/${CROSS_TARGET}/
+	cp -a dest/opt/* ${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/binutils/${CROSS_TARGET}/
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/binutils-2.40

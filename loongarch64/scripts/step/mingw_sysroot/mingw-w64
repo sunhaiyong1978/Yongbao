@@ -1,0 +1,26 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-w64
+export PACKAGE_VERSION=v11.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-w64/v11.0.0/
+rm -rf ${BUILD_DIRECTORY}/mingw-w64-v11.0.0
+tar xvf ${DOWNLOADDIR}/mingw-w64-v11.0.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mingw-w64-v11.0.0
+	pushd mingw-w64-headers
+		mkdir -p build
+		pushd build
+			../configure --host=${MINGW_HOST} --prefix=/mingw
+			make -j${JOBS} DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root install
+			make -j${JOBS} DESTDIR=${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/mingw-w64-headers install
+		popd
+	popd
+	mkdir -p build
+	pushd build
+		../configure --host=${MINGW_HOST} --prefix=/mingw
+		make -j${JOBS} DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root install
+		make -j${JOBS} DESTDIR=${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/mingw-w64-libs install
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/mingw-w64-v11.0.0

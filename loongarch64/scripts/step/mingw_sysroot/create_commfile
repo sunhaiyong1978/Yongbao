@@ -1,0 +1,31 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=create_commfile
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/create_commfile//
+pushd ${COMMON_DIR} > /dev/null
+cat > meson-cross_mingw.txt << EOF
+[binaries]
+c = '${MINGW_HOST}-gcc'
+cpp = '${MINGW_HOST}-g++'
+ar = '${MINGW_HOST}-ar'
+strip = '${MINGW_HOST}-strip'
+ranlib = '${MINGW_HOST}-ranlib'
+pkgconfig = '${MINGW_HOST}-pkg-config'
+windres = '${MINGW_HOST}-windres'
+dlltool = '${MINGW_HOST}-dlltool'
+
+[properties]
+sys_root = '${MINGW_SYSROOT_DIR}'
+needs_exe_wrapper = true
+pkg_config_libdir = '${MINGW_SYSROOT_DIR}/mingw/lib/pkgconfig'
+
+[host_machine]
+system = 'windows'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+EOF
+popd > /dev/null

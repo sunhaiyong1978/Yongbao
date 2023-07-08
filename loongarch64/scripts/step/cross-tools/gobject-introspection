@@ -27,8 +27,8 @@ cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner << EOF
 LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/:${CROSSTOOLS_DIR}/lib/ \
 ${CROSSTOOLS_DIR}/bin/g-ir-scanner \
       --add-include-path=${SYSROOT_DIR}/usr/share/gir-1.0 \
-      --use-binary-wrapper=${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH} \
-      --use-ldd-wrapper=${CROSSTOOLS_DIR}/bin/qemu-${TARGET_ARCH}-ldd "\$@"
+      --use-binary-wrapper=${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH} \
+      --use-ldd-wrapper=${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}-ldd "\$@"
 EOF
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner
 

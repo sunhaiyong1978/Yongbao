@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=clang
-export PACKAGE_VERSION=16.0.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/clang/16.0.4/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
-tar xvf ${DOWNLOADDIR}/llvm-project-16.0.4.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
+export PACKAGE_VERSION=16.0.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/clang/16.0.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-16.0.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
     pushd clang
     mkdir cross-build
     pushd cross-build
@@ -33,4 +33,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
     popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.4.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.6.src

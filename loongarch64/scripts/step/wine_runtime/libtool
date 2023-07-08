@@ -1,0 +1,21 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=libtool
+export PACKAGE_VERSION=2.4.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libtool/2.4.7/
+rm -rf ${BUILD_DIRECTORY}/libtool-2.4.7
+tar xvf ${DOWNLOADDIR}/libtool-2.4.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libtool-2.4.7
+	./configure ${COMMON_CONFIG}
+	eval ${MAKE_AND_INSTALL}
+sed -i -e "s@${CROSS_TOOLS_PREFIX}/${X86_64_HOST}@/usr@g" \
+       -e "s@${CROSS_TOOLS_PREFIX}/lib/gcc@/usr/lib64/gcc@g" \
+       -e "s@${CROSS_TOOLS_PREFIX}/bin@/usr/bin@g" \
+       -e "s@${X86_64_SYSROOT_DIR}/lib@/usr/lib@g" \
+       -e "s@${X86_64_SYSROOT_DIR}/usr@/usr@g" \
+       -e "s@${X86_64_HOST}-@@g" \
+       ${X86_64_SYSROOT_DIR}/usr/bin/libtool
+popd 
+rm -rf ${BUILD_DIRECTORY}/libtool-2.4.7

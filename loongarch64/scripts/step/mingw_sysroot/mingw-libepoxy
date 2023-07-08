@@ -1,0 +1,20 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-libepoxy
+export PACKAGE_VERSION=1.5.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-libepoxy/1.5.10/
+rm -rf ${BUILD_DIRECTORY}/libepoxy-1.5.10
+tar xvf ${DOWNLOADDIR}/libepoxy-1.5.10.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libepoxy-1.5.10
+	
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} --default-library=static  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libepoxy-1.5.10

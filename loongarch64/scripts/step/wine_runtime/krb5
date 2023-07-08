@@ -1,0 +1,21 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=krb5
+export PACKAGE_VERSION=1.21
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/krb5/1.21/
+rm -rf ${BUILD_DIRECTORY}/krb5-1.21
+tar xvf ${DOWNLOADDIR}/krb5-1.21.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/krb5-1.21
+    pushd src
+#        sed -i "s@error=discarded-qualifiers@@g" configure
+        ./configure ${COMMON_CONFIG} --runstatedir=/run \
+                    --with-system-ss --with-system-verto=no \
+                    --enable-dns-for-realm \
+                    krb5_cv_attr_constructor_destructor=yes,yes \
+                    ac_cv_func_regcomp=yes ac_cv_printf_positional=yes
+        eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/krb5-1.21

@@ -1,0 +1,16 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-zlib
+export PACKAGE_VERSION=1.2.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-zlib/1.2.13/
+rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13
+tar xvf ${DOWNLOADDIR}/zlib-1.2.13.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zlib-1.2.13
+	
+	CROSS_PREFIX=${MINGW_HOST}- ./configure --prefix=/mingw --static
+	make -j${JOBS}
+	make DESTDIR=${MINGW_SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13

@@ -1,0 +1,21 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=binutils
+export PACKAGE_VERSION=2.40
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/binutils/2.40/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.40
+tar xvf ${DOWNLOADDIR}/binutils-2.40.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.40
+	rm -rf gdb* libdecnumber readline sim
+	mkdir -pv cross-build
+	pushd cross-build
+		../configure --prefix=/usr --libdir=/usr/lib64 --build=${CROSS_HOST} \
+		             --host=${X86_64_HOST} --enable-shared --disable-werror \
+		             --with-system-zlib --enable-64-bit-bfd
+		make -j${JOBS} tooldir=/usr
+		make DESTDIR=${X86_64_SYSROOT_DIR} tooldir=/usr install
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/binutils-2.40

@@ -1,0 +1,20 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=spice-protocol
+export PACKAGE_VERSION=0.14.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/spice-protocol/0.14.4/
+rm -rf ${BUILD_DIRECTORY}/spice-protocol-0.14.4
+tar xvf ${DOWNLOADDIR}/spice-protocol-0.14.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/spice-protocol-0.14.4
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/spice-protocol-0.14.4

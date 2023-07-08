@@ -1,0 +1,20 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libslirp
+export PACKAGE_VERSION=4.7.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libslirp/4.7.0/
+rm -rf ${BUILD_DIRECTORY}/libslirp-v4.7.0
+tar xvf ${DOWNLOADDIR}/libslirp-v4.7.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libslirp-v4.7.0
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libslirp-v4.7.0

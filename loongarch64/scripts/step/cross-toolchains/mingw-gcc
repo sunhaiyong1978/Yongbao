@@ -1,0 +1,28 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=mingw-gcc
+export PACKAGE_VERSION=13.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-gcc/13.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0
+tar xvf ${DOWNLOADDIR}/gcc-13.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-13.1.0
+	mkdir -p tools-build
+	pushd tools-build
+		AR=ar LDFLAGS="-Wl,-rpath,${CROSS_TOOLS_PREFIX}/lib" \
+		../configure --prefix=${PREFIX}/${MINGW_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \
+		             --target=${MINGW_HOST} --disable-nls \
+		             --with-mpfr=${CROSSTOOLS_DIR} --with-gmp=${CROSSTOOLS_DIR} \
+		             --with-mpc=${CROSSTOOLS_DIR} \
+		             --with-newlib --disable-shared \
+		             --with-sysroot=${SYSROOT_DIR}/usr/lib/mingw/sys-root \
+		             --disable-decimal-float --disable-libgomp --disable-libitm \
+		             --disable-libsanitizer --disable-libquadmath --disable-threads \
+		             --disable-target-zlib --with-system-zlib --enable-checking=release \
+		             --enable-languages=c
+		make -j${JOBS} all-gcc
+		make install-strip-gcc
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0

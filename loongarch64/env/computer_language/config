@@ -18,7 +18,7 @@ export PREFIX=/usr
 export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib${LIB_SUFF}"
 export PKG_CONFIG_SYSROOT_DIR=${SYSROOT_DIR}
 export PKG_CONFIG_PATH="${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig"
-export COMMON_CONFIG="--prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} \
+export COMMON_CONFIG="--prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --datarootdir=/usr/share \
                       --build=${CROSS_HOST} --host=${CROSS_TARGET}"
 export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${SYSROOT_DIR} install && rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la"
 export MESON_CONFIG="--prefix=/usr --libdir=/usr/lib${LIB_SUFF} --sysconfdir=/etc --localstatedir=/var \

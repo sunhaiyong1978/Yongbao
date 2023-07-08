@@ -1,0 +1,23 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=json-c
+export PACKAGE_VERSION=0.16-20220414
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/json-c/0.16-20220414/
+rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
+tar xvf ${DOWNLOADDIR}/json-c-0.16-20220414.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-x86_64.cmake \
+       		      -DCMAKE_INSTALL_PREFIX=/usr  -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414

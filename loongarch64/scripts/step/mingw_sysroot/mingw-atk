@@ -1,0 +1,21 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-atk
+export PACKAGE_VERSION=2.38.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-atk/2.38.0/
+rm -rf ${BUILD_DIRECTORY}/atk-2.38.0
+tar xvf ${DOWNLOADDIR}/atk-2.38.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/atk-2.38.0
+	patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/mingw-atk/2.38.0/patches/0001-remove-DllMain-function-from-atk.patch 
+	 
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} --default-library=static -Dintrospection=false \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/atk-2.38.0

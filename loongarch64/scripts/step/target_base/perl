@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=perl
-export PACKAGE_VERSION=5.36.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/perl/5.36.1/
-rm -rf ${BUILD_DIRECTORY}/perl-5.36.1
-tar xvf ${DOWNLOADDIR}/perl-5.36.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/perl-5.36.1
+export PACKAGE_VERSION=5.38.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/perl/5.38.0/
+rm -rf ${BUILD_DIRECTORY}/perl-5.38.0
+tar xvf ${DOWNLOADDIR}/perl-5.38.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/perl-5.38.0
 	sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr \
 	             -Dprivlib=/usr/lib/perl5/5.3x/core_perl \
 	             -Darchlib=/usr/lib64/perl5/5.3x/core_perl \
@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/perl-5.36.1
 	             -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 \
 	             -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads \
 	             -Dusecrosscompile
-	cp ${RESOURCEDIR}/perl-5.36.0-${ARCH_NAME}-config.sh ./config.sh
+	cp ${RESOURCEDIR}/perl-5.x-${ARCH_NAME}-config.sh ./config.sh
 	sed -i "/^cc=/s@'cc'@'${CROSS_TARGET}-gcc'@g" config.sh
 	sed -i "/^ld=/s@'cc'@'${CROSS_TARGET}-gcc'@g" config.sh
 	./Configure -S
@@ -28,4 +28,4 @@ echo '#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/perl -I${SYSROOT_DIR}/usr/lib64/perl5/5.3x/site_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.3x/site_perl -I${SYSROOT_DIR}/usr/lib64/perl5/5.3x/vendor_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.3x/vendor_perl -I${SYSROOT_DIR}/usr/lib64/perl5/5.3x/core_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.3x/core_perl "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
 popd 
-rm -rf ${BUILD_DIRECTORY}/perl-5.36.1
+rm -rf ${BUILD_DIRECTORY}/perl-5.38.0

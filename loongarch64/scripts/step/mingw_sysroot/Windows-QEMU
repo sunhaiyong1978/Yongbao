@@ -1,0 +1,20 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=Windows-QEMU
+export PACKAGE_VERSION=8.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/Windows-QEMU/8.0.2/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.2
+tar xvf ${DOWNLOADDIR}/qemu-8.0.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.0.2
+    patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/Windows-QEMU/8.0.2/patches/0001-fix-errors-at-static-linking-of-mingw64.patch 
+	 
+    mkdir -p build
+    pushd build
+        ../configure --cross-prefix=${MINGW_HOST}- --target-list=${ARCH_NAME}-softmmu --static
+        ninja
+	DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.2

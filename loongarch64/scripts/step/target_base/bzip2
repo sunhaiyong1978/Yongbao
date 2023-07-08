@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/bzip2-1.0.8
 	cp -v bzip2-shared ${SYSROOT_DIR}/bin/bzip2
 	cp -av libbz2.so* ${SYSROOT_DIR}/lib${LIB_SUFF}
 	mv ${SYSROOT_DIR}/usr/lib/libbz2.a ${SYSROOT_DIR}/lib${LIB_SUFF}/
-	ln -sfv ../../lib64/libbz2.so.1 ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libbz2.so
+	ln -sfv ../../lib64/libbz2.so.1.0 ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libbz2.so
 	ln -sfv bzip2 ${SYSROOT_DIR}/bin/bunzip2
 	ln -sfv bzip2 ${SYSROOT_DIR}/bin/bzcat
 popd 

@@ -1,11 +1,15 @@
 #!/bin/bash -e
 
 EXPORT_SHOW=1
+EXPORT_ENV_VAR=0
 
-while getopts 'nh' OPT; do
+while getopts 'neh' OPT; do
     case $OPT in
         n)
             EXPORT_SHOW=0
+            ;;
+        e)
+            EXPORT_ENV_VAR=1
             ;;
         h|?)
             echo "用法: `basename $0` [-e] 步骤名/软件包名"
@@ -65,9 +69,11 @@ if [ "x${EXPORT_SHOW}" == "x1" ]; then
 	done
 fi
 
-SHOW_BODY="$(echo "${SHOW_BODY}" | sed "s@\${@#{@g")"
+if [ "x${EXPORT_ENV_VAR}" == "x0" ]; then
+	SHOW_BODY="$(echo "${SHOW_BODY}" | sed "s@\${@#{@g")"
 
-SHOW_BODY="$(echo "${SHOW_BODY}" | sed -e "s@#%%%#@\${@g" -e "s@#\*\*\*#@}@g")"
+	SHOW_BODY="$(echo "${SHOW_BODY}" | sed -e "s@#%%%#@\${@g" -e "s@#\*\*\*#@}@g")"
+fi
 
 envsubst <<< "${SHOW_BODY}" | sed "s@#{@\${@g"
 

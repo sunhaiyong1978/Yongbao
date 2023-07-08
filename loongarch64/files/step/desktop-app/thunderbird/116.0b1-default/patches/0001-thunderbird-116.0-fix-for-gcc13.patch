@@ -1,0 +1,37 @@
+From c1855a66959fe65ec7bb3afbcda6fddf8e9777e1 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 8 Jul 2023 04:01:44 +0000
+Subject: [PATCH] thunderbird 116.0 fix for gcc13.
+
+---
+ comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h | 1 +
+ toolkit/components/telemetry/pingsender/pingsender.cpp     | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h b/comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h
+index 72cad831f5..4abad719af 100644
+--- a/comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h
++++ b/comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h
+@@ -32,6 +32,7 @@
+ #include <exception>
+ #include <iostream>
+ #include <string>
++#include <cstdint>
+ 
+ namespace sexp {
+ 
+diff --git a/toolkit/components/telemetry/pingsender/pingsender.cpp b/toolkit/components/telemetry/pingsender/pingsender.cpp
+index 30f2907c72..e6645227a2 100644
+--- a/toolkit/components/telemetry/pingsender/pingsender.cpp
++++ b/toolkit/components/telemetry/pingsender/pingsender.cpp
+@@ -10,6 +10,7 @@
+ #include <fstream>
+ #include <iomanip>
+ #include <string>
++#include <cstdint>
+ #include <vector>
+ 
+ #include <zlib.h>
+-- 
+2.31.1
+

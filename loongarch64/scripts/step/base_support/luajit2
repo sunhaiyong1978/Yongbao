@@ -1,0 +1,14 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=luajit2
+export PACKAGE_VERSION=2.1-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/luajit2/2.1-default/
+rm -rf ${BUILD_DIRECTORY}/luajit2-2.1-default_git
+tar xvf ${DOWNLOADDIR}/luajit2-2.1-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/luajit2-2.1-default_git
+	make -j${JOBS} CC=${CROSS_TARGET}-gcc HOST_CC=gcc TARGET_STRIP=${CROSS_TARGET}-strip PREFIX=/usr MULTILIB=lib64
+	make CC=${CROSS_TARGET}-gcc HOST_CC=gcc TARGET_STRIP=${CROSS_TARGET}-strip PREFIX=/usr MULTILIB=lib64 DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/luajit2-2.1-default_git

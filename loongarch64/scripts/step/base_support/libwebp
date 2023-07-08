@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libwebp
-export PACKAGE_VERSION=1.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libwebp/1.3.0/
-rm -rf ${BUILD_DIRECTORY}/libwebp-1.3.0
-tar xvf ${DOWNLOADDIR}/libwebp-1.3.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libwebp-1.3.0
+export PACKAGE_VERSION=1.3.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libwebp/1.3.1/
+rm -rf ${BUILD_DIRECTORY}/libwebp-1.3.1
+tar xvf ${DOWNLOADDIR}/libwebp-1.3.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libwebp-1.3.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/libwebp-1.3.0
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libwebp-1.3.0
+rm -rf ${BUILD_DIRECTORY}/libwebp-1.3.1

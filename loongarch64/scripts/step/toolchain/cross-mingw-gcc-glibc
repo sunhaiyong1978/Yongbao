@@ -1,0 +1,46 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=cross-mingw-gcc-glibc
+export PACKAGE_VERSION=13.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-mingw-gcc-glibc/13.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0
+tar xvf ${DOWNLOADDIR}/gcc-13.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-13.1.0
+    if [ -d ${PREFIX}/cross-tools ]; then
+	mv ${PREFIX}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
+    fi
+#    mkdir -pv ${PREFIX}/cross-tools
+#    mkdir -pv ${PREFIX}/cross-tools/target/lib{,64}
+#    cp -a ${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/binutils/${CROSS_TARGET}/cross-tools/* ${PREFIX}/cross-tools/
+#    cp -a ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/* ${PREFIX}/cross-tools/target/
+#    cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_TARGET}/glibc/* ${PREFIX}/cross-tools/target/
+
+    sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+#    tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
+#    tar xvf $(ls ${DOWNLOADDIR}/mpfr-*.tar.* | sort -V | tail -n1)
+#    tar xvf $(ls ${DOWNLOADDIR}/mpc-*.tar.* | sort -V | tail -n1)
+#    mv gmp-* gmp
+#    mv mpfr-* mpfr
+#    mv mpc-* mpc
+    mkdir cross-build
+    pushd cross-build
+	PATH=${CROSS_TOOLS_PREFIX}/bin:${PATH}
+        LDFLAGS="-static" \
+        ../configure --prefix=/opt/cross-tools --build=${CROSS_HOST} --host=${MINGW_HOST} \
+                     --target=${CROSS_TARGET} \
+                     --enable-__cxa_atexit --enable-threads=posix \
+                     --enable-libstdcxx-time \
+                     --enable-checking=release \
+                     --with-sysroot=/opt/cross-tools/target \
+                     --enable-default-pie --disable-multilib \
+                     --enable-languages=c,c++,fortran,objc,obj-c++,lto
+        make -j${JOBS} all
+        make -j${JOBS}
+        make DESTDIR=${PWD}/dest install-strip
+	mkdir -pv ${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/gcc/${CROSS_TARGET}/
+        cp -a dest/opt/* ${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/gcc/${CROSS_TARGET}/
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0

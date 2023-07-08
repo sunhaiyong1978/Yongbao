@@ -3,18 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=253
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/systemd/253/
-rm -rf ${BUILD_DIRECTORY}/systemd-253
-tar xvf ${DOWNLOADDIR}/systemd-253.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-253
-	
+export PACKAGE_VERSION=254-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/systemd/254-default/
+rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git
+tar xvf ${DOWNLOADDIR}/systemd-254-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-254-default_git
+	patch -Np1 -i ${SYSDIR}/files/target_base/systemd/254-default/patches/0001-fix-compiler-error-for-libcryptsetup-is-false.patch 
+	 
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
 	popd
 	sed -i -e 's/GROUP="render"/GROUP="video"/' \
            -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
-	sed -i "s@Werror=undef',@& '-Wno-error=format-overflow',@g" meson.build
+	sed -i "s@Werror=undef',@& '-Wno-error=format-overflow', '-Wno-error=implicit-function-declaration',@g" meson.build
 
 	mkdir -p build
 	pushd build
@@ -27,4 +28,4 @@ pushd ${BUILD_DIRECTORY}/systemd-253
 		eval ${NINJA_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-253
+rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git

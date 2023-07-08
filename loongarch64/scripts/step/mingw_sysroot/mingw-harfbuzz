@@ -1,0 +1,22 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-harfbuzz
+export PACKAGE_VERSION=7.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-harfbuzz/7.3.0/
+rm -rf ${BUILD_DIRECTORY}/harfbuzz-7.3.0
+tar xvf ${DOWNLOADDIR}/harfbuzz-7.3.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/harfbuzz-7.3.0
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${MINGW_HOST}-gcc" CXX="${MINGW_HOST}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		      -DCMAKE_INSTALL_LIBDIR=/mingw/lib \
+       		      -DCMAKE_INSTALL_PREFIX=/mingw -DBUILD_SHARED_LIBS=OFF -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f  ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/harfbuzz-7.3.0

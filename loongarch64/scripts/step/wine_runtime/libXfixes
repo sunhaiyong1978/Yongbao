@@ -1,0 +1,20 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=libXfixes
+export PACKAGE_VERSION=6.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libXfixes/6.0.1/
+rm -rf ${BUILD_DIRECTORY}/libXfixes-6.0.1
+tar xvf ${DOWNLOADDIR}/libXfixes-6.0.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libXfixes-6.0.1
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_64_SYSROOT_DIR} install
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libXfixes-6.0.1

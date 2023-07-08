@@ -1,0 +1,23 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-glib
+export PACKAGE_VERSION=2.77.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-glib/2.77.0/
+rm -rf ${BUILD_DIRECTORY}/glib-2.77.0
+tar xvf ${DOWNLOADDIR}/glib-2.77.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.77.0
+	sed -i "/libintl.type_name/d" meson.build
+	sed -i "s@libiconv = \[\]@libiconv = dependency\('iconv'\)@g" meson.build
+        
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} --default-library=static -Dtests=false -Dman=false -Dselinux=disabled \
+                      ..
+		ninja
+		DESTDIR=${MINGW_SYSROOT_DIR} ninja install
+        popd
+        rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/glib-2.77.0

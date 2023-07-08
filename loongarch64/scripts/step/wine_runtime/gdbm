@@ -1,0 +1,20 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=gdbm
+export PACKAGE_VERSION=1.23
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/gdbm/1.23/
+rm -rf ${BUILD_DIRECTORY}/gdbm-1.23
+tar xvf ${DOWNLOADDIR}/gdbm-1.23.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdbm-1.23
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --disable-static --enable-libgdbm-compat --enable-malloc0returnsnull
+	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_64_SYSROOT_DIR} install
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/gdbm-1.23

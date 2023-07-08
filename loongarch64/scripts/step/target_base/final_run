@@ -25,6 +25,7 @@ sed -i -e "s@${SYSROOT_DIR}/lib@/usr/lib@g" \
        $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.sh") \
        $(find ${SYSROOT_DIR}/usr/lib64/pkgconfig/ -type f) \
+       $(find ${SYSROOT_DIR}/usr/share/pkgconfig/ -type f) \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.cmake") \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "Makefile*") \
        ${TEMP_DIRECTORY}/strip-foo
@@ -32,7 +33,6 @@ sed -i -e "s@${SYSROOT_DIR}/lib@/usr/lib@g" \
 sed -i -e "s@${SYSROOT_DIR}@@g" \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.py") \
        $(file ${SYSROOT_DIR}/usr/lib64/rustlib/* | grep ASCII | awk -F':' '{ print $1 }') \
-       $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.prl") \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.pri") \
        ${TEMP_DIRECTORY}/strip-foo
 
@@ -45,5 +45,8 @@ sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
        $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep text | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
        $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.pl") \
        ${TEMP_DIRECTORY}/strip-foo
+
+find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.la" -exec rm '{}' ';'
+find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.prl" -exec rm '{}' ';'
 
 rm -f ${TEMP_DIRECTORY}/strip-foo

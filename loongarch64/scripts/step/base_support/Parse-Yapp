@@ -1,0 +1,17 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=Parse-Yapp
+export PACKAGE_VERSION=1.21
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Parse-Yapp/1.21/
+rm -rf ${BUILD_DIRECTORY}/Parse-Yapp-1.21
+tar xvf ${DOWNLOADDIR}/Parse-Yapp-1.21.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Parse-Yapp-1.21
+    ${CROSSTOOLS_DIR}/bin/perl Makefile.PL CC=${CROSS_TARGET}-gcc LD=${CROSS_TARGET}-ld
+    sed -i "/^INSTALL/s@${CROSSTOOLS_DIR}@/usr@g" Makefile
+    sed -i "/^PERL_INC/s@${CROSSTOOLS_DIR}@${SYSROOT_DIR}/usr@g" Makefile
+    sed -i "/^LDDLFLAGS/s@/usr/local/lib@${SYSROOT_DIR}/usr/lib64@g" Makefile
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/Parse-Yapp-1.21

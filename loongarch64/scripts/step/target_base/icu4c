@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=icu4c
-export PACKAGE_VERSION=73_1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/icu4c/73_1/
+export PACKAGE_VERSION=73_2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/icu4c/73_2/
 rm -rf ${BUILD_DIRECTORY}/icu
-tar xvf ${DOWNLOADDIR}/icu4c-73_1-src.tgz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/icu4c-73_2-src.tgz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/icu
     pushd source
     touch config/icucross.mk

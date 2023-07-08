@@ -1,0 +1,20 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-mpfr
+export PACKAGE_VERSION=4.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-mpfr/4.2.0/
+rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.0
+tar xvf ${DOWNLOADDIR}/mpfr-4.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mpfr-4.2.0
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --enable-static --enable-static --disable-shared --enable-malloc0returnsnull
+	CC="${MINGW_HOST}-gcc" CXX="${MINGW_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root install
+	rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.0

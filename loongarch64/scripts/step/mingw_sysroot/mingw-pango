@@ -1,0 +1,20 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-pango
+export PACKAGE_VERSION=1.50.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-pango/1.50.14/
+rm -rf ${BUILD_DIRECTORY}/pango-1.50.14
+tar xvf ${DOWNLOADDIR}/pango-1.50.14.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pango-1.50.14
+	
+	mkdir cross-build
+	pushd cross-build
+		LDFLAGS="-lcairo -lfreetype -lharfbuzz -lpthread -lpng -lpixman-1" meson ${MESON_CONFIG} --default-library=static  --wrap-mode=nofallback \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/pango-1.50.14

@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=keybinder3
-export PACKAGE_VERSION=3.0-0.3.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/keybinder3/3.0-0.3.2/
+export PACKAGE_VERSION=0.3.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/keybinder3/0.3.2/
 rm -rf ${BUILD_DIRECTORY}/keybinder-3.0-0.3.2
-tar xvf ${DOWNLOADDIR}/keybinder3-3.0-0.3.2.tar.gz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/keybinder-3.0-0.3.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/keybinder-3.0-0.3.2
     mkdir cross-build
     pushd cross-build

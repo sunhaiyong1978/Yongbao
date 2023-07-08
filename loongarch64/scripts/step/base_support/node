@@ -3,26 +3,28 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=node
-export PACKAGE_VERSION=20.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/node/20.2.0/
-rm -rf ${BUILD_DIRECTORY}/node-20.2.0
-tar xvf ${DOWNLOADDIR}/node-20.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/node-20.2.0
+export PACKAGE_VERSION=20.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/node/20.4.0/
+rm -rf ${BUILD_DIRECTORY}/node-20.4.0
+tar xvf ${DOWNLOADDIR}/node-20.4.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/node-20.4.0
     
-    sed -i "s@registry.npmjs.org@registry.loongnix.cn:5873@g" deps/npm/lib/utils/config/definitions.js
+    sed -i "s@registry.npmjs.org@registry.loongnix.cn:5873@g" deps/npm/node_modules/@npmcli/config/lib/definitions/definitions.js
     mkdir -pv out/Release
-    for i in bytecode_builtins_list_generator gen-regexp-special-case torque mksnapshot
+    for i in bytecode_builtins_list_generator gen-regexp-special-case torque mksnapshot node_js2c
     do
         sed -i "/EXECUTABLE_SUFFIX/s@$i<@$i.host<@g" tools/v8_gypfiles/v8.gyp
         echo -e '#!/bin/bash -e \n' "qemu-${ARCH_NAME} ${PWD}/out/Release/$i \"\$@\"" > ${PWD}/out/Release/$i.host
         chmod +x ${PWD}/out/Release/$i.host
     done
+    sed -i "/EXECUTABLE_SUFFIX/s@node_js2c<@node_js2c.host<@g" node.gyp
     PKG_CONFIG=${CROSS_TARGET}-pkg-config \
     CC="clang" CXX="clang++" \
     ./configure --prefix /usr --dest-cpu=$(echo ${ARCH_NAME} | sed 's@arch@@g') --shared-openssl \
                 --with-intl=system-icu --shared
     make -j${JOBS} -C out bytecode_builtins_list_generator gen-regexp-special-case torque
     make -j${JOBS} -C out mksnapshot
+    make -j${JOBS} -C out node_js2c
     eval ${MAKE_AND_INSTALL}
     cp -av out/Release/node ${SYSROOT_DIR}/usr/bin/
     mv -v ${SYSROOT_DIR}/usr/lib/libnode.so* ${SYSROOT_DIR}/usr/lib64/
@@ -33,4 +35,4 @@ pushd ${BUILD_DIRECTORY}/node-20.2.0
         exit 1
     fi
 popd 
-rm -rf ${BUILD_DIRECTORY}/node-20.2.0
+rm -rf ${BUILD_DIRECTORY}/node-20.4.0

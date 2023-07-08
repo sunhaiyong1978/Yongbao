@@ -13,8 +13,6 @@ pushd ${BUILD_DIRECTORY}/libhandy-1.8.2
 	pushd cross-build
 		meson ${MESON_CONFIG}  -Dintrospection=enabled \
                       ..
-		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
-                sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@\1bin/${CROSS_TARGET}-\2@g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

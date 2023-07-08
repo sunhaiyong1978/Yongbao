@@ -1,0 +1,20 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-pcre2
+export PACKAGE_VERSION=10.42
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-pcre2/10.42/
+rm -rf ${BUILD_DIRECTORY}/pcre2-10.42
+tar xvf ${DOWNLOADDIR}/pcre2-10.42.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pcre2-10.42
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --enable-static --enable-unicode --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-malloc0returnsnull
+	CC="${MINGW_HOST}-gcc" CXX="${MINGW_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root install
+	rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/pcre2-10.42

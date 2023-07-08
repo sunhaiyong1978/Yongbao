@@ -1,0 +1,21 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=mingw-gtk3
+export PACKAGE_VERSION=3.24.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gtk3/3.24.38/
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.38
+tar xvf ${DOWNLOADDIR}/gtk+-3.24.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gtk+-3.24.38
+        patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/mingw-gtk3/3.24.38/patches/0001-fix-cross-compile-error-for-mingw.patch 
+	 
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} --default-library=static -Dintrospection=false -Dbroadway_backend=true --wrap-mode=nodownload -Dtests=false \
+                      ..
+                eval ${NINJA_AND_INSTALL}
+        popd
+        rm -f ${MINGW_SYSROOT_DIR}/ming/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.38

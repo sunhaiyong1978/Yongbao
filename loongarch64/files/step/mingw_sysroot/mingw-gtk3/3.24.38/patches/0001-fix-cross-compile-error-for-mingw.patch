@@ -1,0 +1,24 @@
+From 57f49546bca2c3fe9bbfb97ab8d3ccab0b1268a3 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 12 Jun 2023 07:06:53 +0000
+Subject: [PATCH] fix cross compile error for mingw.
+
+---
+ gtk/a11y/gtkaccessibility.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gtk/a11y/gtkaccessibility.c b/gtk/a11y/gtkaccessibility.c
+index 3f58af7..41e26ec 100644
+--- a/gtk/a11y/gtkaccessibility.c
++++ b/gtk/a11y/gtkaccessibility.c
+@@ -991,6 +991,6 @@ _gtk_accessibility_init (void)
+ #ifdef GDK_WINDOWING_X11
+   atk_bridge_adaptor_init (NULL, NULL);
+ #endif
+
+-  atk_misc_instance = g_object_new (GTK_TYPE_MISC_IMPL, NULL);
++//  atk_misc_instance = g_object_new (GTK_TYPE_MISC_IMPL, NULL);
+ }
+-- 
+2.31.1
+

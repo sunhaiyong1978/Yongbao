@@ -1,0 +1,25 @@
+From 77242cb0f6c20f152c5cde655595712c3acb545c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 13 Jun 2023 06:18:10 +0000
+Subject: [PATCH] libvirt-glib enable introspection for cross build.
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 0fc7440..1a57980 100644
+--- a/meson.build
++++ b/meson.build
+@@ -61,7 +61,7 @@ includedir = join_paths(prefix, get_option('includedir'))
+ 
+ # gobject introspection
+ gir = find_program('g-ir-scanner', required: get_option('introspection'))
+-enable_introspection = gir.found() and not meson.is_cross_build()
++enable_introspection = gir.found()
+ 
+ # vala
+ vapi_opt = get_option('vapi')
+-- 
+2.31.1
+

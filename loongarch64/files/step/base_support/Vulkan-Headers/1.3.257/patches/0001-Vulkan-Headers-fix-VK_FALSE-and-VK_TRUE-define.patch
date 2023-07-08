@@ -1,0 +1,34 @@
+From d0670b3dc5ae43ea845f7b7718c89089716672b3 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 6 Jul 2023 15:31:31 +0000
+Subject: [PATCH] Vulkan Headers fix VK_FALSE and VK_TRUE define.
+
+---
+ include/vulkan/vulkan.hpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/vulkan/vulkan.hpp b/include/vulkan/vulkan.hpp
+index fa021e2..98cb7ef 100644
+--- a/include/vulkan/vulkan.hpp
++++ b/include/vulkan/vulkan.hpp
+@@ -6864,7 +6864,7 @@ namespace VULKAN_HPP_NAMESPACE
+   //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
+   //=========================================
+   VULKAN_HPP_CONSTEXPR uint32_t AttachmentUnused                 = VK_ATTACHMENT_UNUSED;
+-  VULKAN_HPP_CONSTEXPR uint32_t False                            = VK_FALSE;
++  VULKAN_HPP_CONSTEXPR uint32_t FALSE                            = VK_FALSE;
+   VULKAN_HPP_CONSTEXPR float    LodClampNone                     = VK_LOD_CLAMP_NONE;
+   VULKAN_HPP_CONSTEXPR uint32_t LuidSize                         = VK_LUID_SIZE;
+   VULKAN_HPP_CONSTEXPR uint32_t MaxDescriptionSize               = VK_MAX_DESCRIPTION_SIZE;
+@@ -6885,7 +6885,7 @@ namespace VULKAN_HPP_NAMESPACE
+   VULKAN_HPP_CONSTEXPR uint32_t RemainingMipLevels               = VK_REMAINING_MIP_LEVELS;
+   VULKAN_HPP_CONSTEXPR uint32_t ShaderUnusedKhr                  = VK_SHADER_UNUSED_KHR;
+   VULKAN_HPP_CONSTEXPR uint32_t SubpassExternal                  = VK_SUBPASS_EXTERNAL;
+-  VULKAN_HPP_CONSTEXPR uint32_t True                             = VK_TRUE;
++  VULKAN_HPP_CONSTEXPR uint32_t TRUE                             = VK_TRUE;
+   VULKAN_HPP_CONSTEXPR uint32_t UuidSize                         = VK_UUID_SIZE;
+   VULKAN_HPP_CONSTEXPR uint64_t WholeSize                        = VK_WHOLE_SIZE;
+   VULKAN_HPP_CONSTEXPR uint32_t HeaderVersion                    = VK_HEADER_VERSION;
+-- 
+2.31.1
+

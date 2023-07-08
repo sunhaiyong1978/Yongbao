@@ -10,6 +10,7 @@ tar xvf ${DOWNLOADDIR}/xfsprogs-6.3.0.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/xfsprogs-6.3.0
         patch -Np1 -i ${SYSDIR}/files/target_base/xfsprogs/6.3.0/patches/0001-Fix-for-cross-build.patch 
 	patch -Np1 -i ${SYSDIR}/files/target_base/xfsprogs/6.3.0/patches/0002-Fix-for-gcc-13.patch 
+	patch -Np1 -i ${SYSDIR}/files/target_base/xfsprogs/6.3.0/patches/0001-fix-po-file-typo.patch 
 	 
         for config_i in $(find -name "config.sub")
         do

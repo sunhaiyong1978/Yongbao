@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=Python
-export PACKAGE_VERSION=3.11.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Python/3.11.3/
-rm -rf ${BUILD_DIRECTORY}/Python-3.11.3
-tar xvf ${DOWNLOADDIR}/Python-3.11.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.11.3
+export PACKAGE_VERSION=3.11.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Python/3.11.4/
+rm -rf ${BUILD_DIRECTORY}/Python-3.11.4
+tar xvf ${DOWNLOADDIR}/Python-3.11.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.11.4
 cat > config.cache << "EOF"
     ac_cv_aligned_required=no
     ac_cv_broken_sem_getvalue=no
@@ -32,5 +32,10 @@ sed -i -e "s@${SYSROOT_DIR}@@g" \
 cp -v ${CROSSTOOLS_DIR}/bin/python3.11-config{,.tools}
 cp -v ${SYSROOT_DIR}/usr/bin/python3.11-config ${CROSSTOOLS_DIR}/bin/
 sed -i "/^prefix_real/s@=.*@=${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/python3.11-config
+
+echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/python3 \"\$@\"" > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
+chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
+
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.11.3
+rm -rf ${BUILD_DIRECTORY}/Python-3.11.4

@@ -3,27 +3,25 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=oxygen-sounds
-export PACKAGE_VERSION=5.27.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/oxygen-sounds/5.27.5/
-rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.5
-tar xvf ${DOWNLOADDIR}/oxygen-sounds-5.27.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/oxygen-sounds-5.27.5
+export PACKAGE_VERSION=5.27.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/oxygen-sounds/5.27.6/
+rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.6
+tar xvf ${DOWNLOADDIR}/oxygen-sounds-5.27.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/oxygen-sounds-5.27.6
         
 	mkdir cross-build
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
-	              -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
-        	      -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
-	              -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+	              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
 	              -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
         	      -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
-		      -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
-		      -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
-		      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
-		      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
-	              -DPERL_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-perl \
-        	      -DRuby_EXECUTABLE=${SYSDIR}/cross-tools/bin/ruby \
+		      -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+		      -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+		      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+		      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+	              -DPERL_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl \
+        	      -DRuby_EXECUTABLE=${CROSSTOOLS_DIR}/bin/ruby \
 	              -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
 		      -DDOXYGEN_EXECUTABLE=/bin/doxygen \
 		      -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
@@ -40,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/oxygen-sounds-5.27.5
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.5
+rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.6

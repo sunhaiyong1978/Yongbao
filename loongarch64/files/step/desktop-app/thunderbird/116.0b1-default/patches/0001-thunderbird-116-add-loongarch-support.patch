@@ -1,0 +1,59 @@
+From 6bc24631a5801bc60a70342bed77f96dabbf3ab4 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 8 Jul 2023 04:58:42 +0000
+Subject: [PATCH] thunderbird 116 add loongarch support.
+
+---
+ third_party/libwebrtc/build/build_config.h | 4 ++++
+ toolkit/moz.configure                      | 6 +++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/third_party/libwebrtc/build/build_config.h b/third_party/libwebrtc/build/build_config.h
+index c39ae9da50..66c0d4a874 100644
+--- a/third_party/libwebrtc/build/build_config.h
++++ b/third_party/libwebrtc/build/build_config.h
+@@ -210,6 +210,10 @@
+ #define ARCH_CPU_SPARC 1
+ #define ARCH_CPU_32_BITS 1
+ #define ARCH_CPU_BIG_ENDIAN 1
++#elif defined(__loongarch__lp64)
++#define ARCH_CPU_LOONGARCH64 1
++#define ARCH_CPU_64_BITS 1
++#define ARCH_CPU_LITTLE_ENDIAN 1
+ #else
+ #error Please add support for your architecture in build/build_config.h
+ #endif
+diff --git a/toolkit/moz.configure b/toolkit/moz.configure
+index 2e56fa46ce..0cb9b180fc 100644
+--- a/toolkit/moz.configure
++++ b/toolkit/moz.configure
+@@ -537,7 +537,7 @@ set_define("MOZ_WAYLAND", depends_if(wayland_headers)(lambda _: True))
+ @depends(target, toolkit_gtk)
+ def vaapi(target, toolkit_gtk):
+     # VAAPI is mostly used on x86(-64) but is sometimes used on ARM/ARM64 SOCs.
+-    if target.cpu in ("arm", "aarch64", "x86", "x86_64") and toolkit_gtk:
++    if target.cpu in ("arm", "aarch64", "x86", "x86_64", "loongarch64") and toolkit_gtk:
+         return True
+ 
+ 
+@@ -545,7 +545,7 @@ def vaapi(target, toolkit_gtk):
+ def v4l2(target, toolkit_gtk):
+     # V4L2 decode is only used in GTK/Linux and generally only appears on
+     # embedded SOCs.
+-    if target.cpu in ("arm", "aarch64", "riscv64") and toolkit_gtk:
++    if target.cpu in ("arm", "aarch64", "riscv64", "loongarch64") and toolkit_gtk:
+         return True
+ 
+ 
+@@ -2374,7 +2375,7 @@ with only_when(compile_environment | artifact_builds):
+                 use_nasm = False
+         elif target.cpu == "x86_64":
+             flags = ["-D__x86_64__", "-DPIC", "-DELF", "-Pconfig_unix64.asm"]
+-        elif target.cpu in ("x86", "arm", "aarch64"):
++        elif target.cpu in ("x86", "arm", "aarch64", "loongarch64"):
+             flac_only = True
+         else:
+             enable = False
+-- 
+2.31.1
+

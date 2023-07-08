@@ -39,3 +39,11 @@ cat > ${SYSROOT_DIR}/etc/pam.d/kscreensaver << EOF
 auth    include system-auth
 account include system-account
 EOF
+
+mkdir -p ${SYSROOT_DIR}/etc/sddm.conf.d/
+cat > ${SYSROOT_DIR}/etc/sddm.conf.d/kde_settings.conf << EOF
+[Theme]
+Current=breeze
+CursorTheme=breeze_cursors
+Font=Noto Sans,10,-1,0,50,0,0,0,0,0
+EOF

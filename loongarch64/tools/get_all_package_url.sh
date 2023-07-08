@@ -20,10 +20,11 @@ function set_proxy
 declare GIT_ONLY=FALSE
 declare GIT_UPDATE=FALSE
 declare FORCE_DOWN=FALSE
+declare RESOURCES_ONLY=FALSE
 declare PROXY_MODE=0
 declare INDEX_FILE=""
 
-while getopts 'gfui:ph' OPT; do
+while getopts 'gfuri:ph' OPT; do
     case $OPT in
 	g)  
 	    GIT_ONLY=TRUE
@@ -33,6 +34,9 @@ while getopts 'gfui:ph' OPT; do
 	    ;;
 	u)
 	    GIT_UPDATE=TRUE
+	    ;;
+	r)
+	    RESOURCES_ONLY=TRUE
 	    ;;
 	p)
 	    PROXY_MODE=1
@@ -54,6 +58,7 @@ while getopts 'gfui:ph' OPT; do
             echo "    -h: 当前帮助信息。"
             echo "    -f: 无论之前是否下载过，都强制下载软件源码包及资源文件。"
             echo "    -g: 仅对使用GIT协议的软件包进行下载。"
+            echo "    -r: 仅对软件包的资源文件进行下载。"
             echo "    -u: 与-g参数配合使用，仅对使用GIT协议的软件包中没有指定分支（branch）或提交（commit）的源码包或资源文件进行下载。"
             echo "    -p: 使用proxy.set文件，通过该文件中的设置在下载过程中使用代理。"
             echo "    -i <文件名>: 指定索引文件，并根据索引文件中的内容下载所需源码包和资源文件。"
@@ -96,7 +101,7 @@ do
 	if [ "x${SAVE_FILENAME}" == "x" ]; then
 		SAVE_FILENAME="${URL##*/}"
 	fi
-	if [ "x${URL}" != "x" ]; then
+	if [ "x${URL}" != "x" ] && [ "x${RESOURCES_ONLY}" != "xTRUE" ]; then
 	        if [ "x${PROXY_MODE}" == "x1" ]; then
         	        set_proxy "${URL}"
 	        fi
@@ -181,15 +186,17 @@ ${i} 没有找到所需的文件${URL##*/}，请检查。"
 			;;
 		esac
 	else
-		case "${DOWNLOAD_TYPE}" in
-                	NULL)
-				echo "$i 无需下载源码。"
-				;;
-			*)
-				NO_FILE="${NO_FILE}
+		if [ "x${RESOURCES_ONLY}" != "xTRUE" ]; then
+			case "${DOWNLOAD_TYPE}" in
+        	        	NULL)
+					echo "$i 无需下载源码。"
+					;;
+				*)
+					NO_FILE="${NO_FILE}
 ${i} 没有下载路径，请检查。"
-				;;
-		esac
+					;;
+			esac
+		fi
 	fi
 
 

@@ -1,0 +1,29 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=qemu
+export PACKAGE_VERSION=8.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/8.0.2/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.2
+tar xvf ${DOWNLOADDIR}/qemu-8.0.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.0.2
+	patch -Np1 -i ${SYSDIR}/files/simulate/qemu/8.0.2/patches/0001-Revert-linux-user-Fix-brk-to-release-pages.patch 
+	 
+	mkdir -p cross-build
+	pushd cross-build
+		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
+			     --audio-drv-list=alsa,pa \
+		             --target-list=aarch64-softmmu,alpha-softmmu,arm-softmmu,avr-softmmu,cris-softmmu,hppa-softmmu,i386-softmmu,loongarch64-softmmu,m68k-softmmu,microblaze-softmmu,microblazeel-softmmu,mips-softmmu,mips64-softmmu,mips64el-softmmu,mipsel-softmmu,nios2-softmmu,or1k-softmmu,ppc-softmmu,ppc64-softmmu,riscv32-softmmu,riscv64-softmmu,rx-softmmu,s390x-softmmu,sh4-softmmu,sh4eb-softmmu,sparc-softmmu,sparc64-softmmu,tricore-softmmu,x86_64-softmmu,xtensa-softmmu,xtensaeb-softmmu,aarch64-linux-user,aarch64_be-linux-user,alpha-linux-user,arm-linux-user,armeb-linux-user,cris-linux-user,hppa-linux-user,i386-linux-user,loongarch64-linux-user,m68k-linux-user,microblaze-linux-user,microblazeel-linux-user,mips-linux-user,mips64-linux-user,mips64el-linux-user,mipsel-linux-user,mipsn32-linux-user,mipsn32el-linux-user,nios2-linux-user,or1k-linux-user,ppc-linux-user,ppc64-linux-user,ppc64le-linux-user,riscv32-linux-user,riscv64-linux-user,s390x-linux-user,sh4-linux-user,sh4eb-linux-user,sparc-linux-user,sparc32plus-linux-user,sparc64-linux-user,x86_64-linux-user,xtensa-linux-user,xtensaeb-linux-user
+		eval ${NINJA_AND_INSTALL}
+	popd
+
+	sed -i "s@(uname -m)@(cross-uname -m)@g" scripts/qemu-binfmt-conf.sh
+	for qemu_cpu in i386 i486 alpha arm armeb sparc sparc32plus sparc64 ppc ppc64 ppc64le m68k mips mipsel mipsn32 mipsn32el mips64 mips64el sh4 sh4eb s390x aarch64 aarch64_be hppa riscv32 riscv64 xtensa xtensaeb microblaze microblazeel or1k x86_64 hexagon loongarch64
+	do
+		scripts/qemu-binfmt-conf.sh --qemu-path /usr/bin --systemd ${qemu_cpu} --exportdir ${SYSROOT_DIR}/etc/binfmt.d
+	done
+
+	mkdir -p ${SYSROOT_DIR}/usr/gnemul
+popd 
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.2
