@@ -104,6 +104,7 @@
 %step/cross-tools/JSON|
 %step/host-tools/autoconf-archive|
 %step/cross-tools/SPIRV-LLVM-Translator|f_opt
+%step/cross-tools/gdb|
 %step/host-tools/hiredis|
 %step/host-tools/ccache|
 %step/host-tools/asciidoctor|
