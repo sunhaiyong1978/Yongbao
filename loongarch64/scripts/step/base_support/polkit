@@ -13,8 +13,8 @@ pushd ${BUILD_DIRECTORY}/polkit-v.121
         pushd cross-build
                 meson ${MESON_CONFIG} -Dsession_tracking=libsystemd-login -Djs_engine=mozjs \
                       ..
-                sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
-		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/vapigen@\1bin/${CROSS_TARGET}-vapigen@g" build.ninja
+#                sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
+#		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/vapigen@\1bin/${CROSS_TARGET}-vapigen@g" build.ninja
                 eval ${NINJA_AND_INSTALL}
         popd
 

@@ -17,13 +17,13 @@ cp -a ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/* ${TEMP_DIRECTORY}/cross
 cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_TARGET}/glibc/* ${TEMP_DIRECTORY}/cross-tools/target/
 
 pushd ${TEMP_DIRECTORY}
-	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${DISTRO_ARCH}-cross-tools-gcc-glibc.tar.xz ]; then
-		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${DISTRO_ARCH}-cross-tools-gcc-glibc.tar.xz
+	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-glibc.tar.xz ]; then
+		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-glibc.tar.xz
 	fi
 
 	mkdir -pv ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/
 
-	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${DISTRO_ARCH}-cross-tools-gcc-glibc.tar.xz cross-tools
+	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-glibc.tar.xz cross-tools
 popd
 
 if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=x86_64-gcc-glibc
-export PACKAGE_VERSION=13.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/x86_64-gcc-glibc/13.1.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0
-tar xvf ${DOWNLOADDIR}/gcc-13.1.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.1.0
+export PACKAGE_VERSION=14.0.0-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/x86_64-gcc-glibc/14.0.0-default/
+rm -rf ${BUILD_DIRECTORY}/gcc_git-14.0.0-default_git
+tar xvf ${DOWNLOADDIR}/gcc_git-14.0.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc_git-14.0.0-default_git
 	mkdir -p tools-build-all
 	pushd tools-build-all
 		../configure --prefix=${PREFIX}/${X86_64_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/gcc-13.1.0
 		make install-strip
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0
+rm -rf ${BUILD_DIRECTORY}/gcc_git-14.0.0-default_git

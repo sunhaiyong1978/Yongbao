@@ -22,6 +22,7 @@ pushd ${BUILD_DIRECTORY}/glibc-2.37
 	                 --enable-kernel=4.15
 		make -j${JOBS}
 		make DESTDIR=${X86_64_SYSROOT_DIR} install
+		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${X86_64_HOST}/glibc install
     popd
     mkdir -p ${X86_64_SYSROOT_DIR}/usr/lib
 popd 

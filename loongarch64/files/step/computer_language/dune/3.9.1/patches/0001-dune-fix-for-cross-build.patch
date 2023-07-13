@@ -1,0 +1,92 @@
+From ccee55e7bbe050ce0b07c06f716c8026bd87ac8e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 26 Jun 2023 09:29:34 +0000
+Subject: [PATCH] dune fix for cross build.
+
+---
+ doc/dune                | 22 ----------------------
+ otherlibs/xdg/dune      |  7 -------
+ src/fsevents/dune       |  2 --
+ src/fsevents/flags/dune |  8 +-------
+ 4 files changed, 1 insertion(+), 38 deletions(-)
+
+diff --git a/doc/dune b/doc/dune
+index 5a9e6ae..3568523 100644
+--- a/doc/dune
++++ b/doc/dune
+@@ -1,25 +1,3 @@
+-(rule
+- (with-stdout-to
+-  dune.1
+-  (run %{bin:dune} --help=groff)))
+-
+-(install
+- (section man)
+- (package dune)
+- (files dune.1))
+-
+-(rule
+- (with-stdout-to
+-  dune-config.5
+-  (run %{bin:dune} help config --man-format=groff)))
+-
+-(install
+- (section man)
+- (package dune)
+- (files dune-config.5))
+-
+-(include dune.inc)
+-
+ (rule
+  (alias runtest)
+  (mode promote)
+diff --git a/otherlibs/xdg/dune b/otherlibs/xdg/dune
+index cff43df..51eab66 100644
+--- a/otherlibs/xdg/dune
++++ b/otherlibs/xdg/dune
+@@ -1,13 +1,6 @@
+-(rule
+- (with-stdout-to
+-  c_library_flags.sexp
+-  (run gen_flags/gen_flags.exe %{os_type})))
+-
+ (library
+  (name xdg)
+  (public_name xdg)
+- (c_library_flags
+-  (:include c_library_flags.sexp))
+  (foreign_stubs
+   (language c)
+   (names xdg_stubs))
+diff --git a/src/fsevents/dune b/src/fsevents/dune
+index 0fa17a8..0bc9c58 100644
+--- a/src/fsevents/dune
++++ b/src/fsevents/dune
+@@ -1,8 +1,6 @@
+ (library
+  (name fsevents)
+  (synopsis "minimal bindings for fsvents on macos")
+- (library_flags
+-  (:include flags/sexp))
+  (foreign_stubs
+   (language c)
+   (names fsevents_stubs))
+diff --git a/src/fsevents/flags/dune b/src/fsevents/flags/dune
+index 5bf0c75..fc748b6 100644
+--- a/src/fsevents/flags/dune
++++ b/src/fsevents/flags/dune
+@@ -1,10 +1,4 @@
+ (executable
+  (name gen_flags))
+ 
+-(rule
+- (deps
+-  (:script gen_flags.ml))
+- (action
+-  (with-stdout-to
+-   sexp
+-   (run ./gen_flags.exe %{system}))))
++
+-- 
+2.31.1
+

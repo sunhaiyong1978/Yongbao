@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=krb5
-export PACKAGE_VERSION=1.21
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/krb5/1.21/
-rm -rf ${BUILD_DIRECTORY}/krb5-1.21
-tar xvf ${DOWNLOADDIR}/krb5-1.21.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/krb5-1.21
+export PACKAGE_VERSION=1.21.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/krb5/1.21.1/
+rm -rf ${BUILD_DIRECTORY}/krb5-1.21.1
+tar xvf ${DOWNLOADDIR}/krb5-1.21.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/krb5-1.21.1
     pushd src
 #        sed -i "s@error=discarded-qualifiers@@g" configure
         ./configure ${COMMON_CONFIG} --runstatedir=/run \
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/krb5-1.21
         eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/krb5-1.21
+rm -rf ${BUILD_DIRECTORY}/krb5-1.21.1

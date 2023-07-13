@@ -9,6 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/dnsmasq-2.89
 tar xvf ${DOWNLOADDIR}/dnsmasq-2.89.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dnsmasq-2.89
 	make -j${JOBS} CC=${CROSS_TARGET}-gcc PREFIX=/usr
-	make CC=${CROSS_TARGET}-gcc PREFIX=/usr DESTDIR=${PWD}/dest install
+	make CC=${CROSS_TARGET}-gcc PREFIX=/usr DESTDIR=${SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/dnsmasq-2.89

@@ -90,6 +90,10 @@ if [ "x${PKG_SUBMODULE}" == "x1" ]; then
 		git submodule init
 		echo "git submodule update --depth 1"
 		git submodule update --depth 1
+		echo "git submodule foreach git submodule init"
+		git submodule foreach git submodule init
+		echo "git submodule foreach git submodule update --depth 1"
+		git submodule foreach git submodule update --depth 1
 	popd
 	echo "tar -czf ${PKG_NAME}${PKG_VERSION}_git.tar.gz ${PKG_NAME}${PKG_VERSION}_git"
 	tar -czf ${PKG_NAME}${PKG_VERSION}_git.tar.gz ${PKG_NAME}${PKG_VERSION}_git

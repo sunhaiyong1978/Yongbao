@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=qemu
-export PACKAGE_VERSION=8.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/8.0.2/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.0.2
-tar xvf ${DOWNLOADDIR}/qemu-8.0.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.0.2
-	patch -Np1 -i ${SYSDIR}/files/simulate/qemu/8.0.2/patches/0001-Revert-linux-user-Fix-brk-to-release-pages.patch 
+export PACKAGE_VERSION=8.0.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/8.0.3/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.3
+tar xvf ${DOWNLOADDIR}/qemu-8.0.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.0.3
+	patch -Np1 -i ${SYSDIR}/files/simulate/qemu/8.0.3/patches/0001-Revert-linux-user-Fix-brk-to-release-pages.patch 
 	 
 	mkdir -p cross-build
 	pushd cross-build
@@ -26,4 +26,4 @@ pushd ${BUILD_DIRECTORY}/qemu-8.0.2
 
 	mkdir -p ${SYSROOT_DIR}/usr/gnemul
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.0.2
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.3

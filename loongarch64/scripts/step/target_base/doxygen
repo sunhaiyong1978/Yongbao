@@ -13,6 +13,7 @@ pushd ${BUILD_DIRECTORY}/doxygen-1.9.7
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX=/usr -Wno-dev ..
+	make generate_configvalues_header
 	make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
     popd

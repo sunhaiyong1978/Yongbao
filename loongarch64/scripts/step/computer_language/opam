@@ -1,0 +1,25 @@
+source env/computer_language/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=computer_language
+export STEP_PACKAGENAME=opam
+export PACKAGE_VERSION=2.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/opam/2.1.5/
+rm -rf ${BUILD_DIRECTORY}/opam-full-2.1.5
+tar xvf ${DOWNLOADDIR}/opam-full-2.1.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/opam-full-2.1.5
+	patch -Np1 -i ${SYSDIR}/files/computer_language/opam/2.1.5/patches/0001-opam-remove-create-man-file-step-for-cross-build.patch 
+	 
+	PATH=${CROSSTOOLS_DIR}/ocaml-cross/bin:${PATH}
+	./configure --host=${CROSS_TARGET} --prefix=/usr
+	make lib-ext
+	dune build src_ext/seq/src/select_version.exe
+	dune build src_ext/base64/config/config.exe
+	dune build src_ext/cppo/src/cppo_main.exe
+	sed -i "s@run ./@run qemu-loongarch64 ./@g" src_ext/seq/src/dune src_ext/base64/config/dune
+	sed -i "s@run %{bin@run qemu-loongarch64 %{bin@g" src_ext/extlib/src/dune src_ext/cmdliner/src/dune src_ext/ocamlgraph/src/dune src/core/dune src_ext/dose3/src/common/dune
+	dune build src/tools/opam_installer.exe
+	make
+	dune install --prefix /usr --destdir ${SYSROOT_DIR} opam opam-installer
+popd 
+rm -rf ${BUILD_DIRECTORY}/opam-full-2.1.5

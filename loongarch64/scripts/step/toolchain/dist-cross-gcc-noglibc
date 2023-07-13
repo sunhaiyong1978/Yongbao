@@ -16,13 +16,13 @@ cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/binutils/${CROSS_TARGET}/cross-tools/
 cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/gcc-newlib/${CROSS_TARGET}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
 
 pushd ${TEMP_DIRECTORY}
-	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${DISTRO_ARCH}-cross-tools-gcc-noglibc.tar.xz ]; then
-		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${DISTRO_ARCH}-cross-tools-gcc-noglibc.tar.xz
+	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-noglibc.tar.xz ]; then
+		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-noglibc.tar.xz
 	fi
 
 	mkdir -pv ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/
 
-	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${DISTRO_ARCH}-cross-tools-gcc-noglibc.tar.xz cross-tools
+	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-noglibc.tar.xz cross-tools
 popd
 
 if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
