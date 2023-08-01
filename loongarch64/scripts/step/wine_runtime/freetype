@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=freetype
 export PACKAGE_VERSION=2.13.1
@@ -14,9 +15,5 @@ pushd ${BUILD_DIRECTORY}/freetype-2.13.1
     ./configure ${COMMON_CONFIG} \
                 --enable-freetype-config
     eval ${MAKE_AND_INSTALL}
-
-    sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
-           -e "s@${CROSS_TARGET}-@@g" \
-           ${SYSROOT_DIR}/usr/bin/freetype-config
 popd 
 rm -rf ${BUILD_DIRECTORY}/freetype-2.13.1

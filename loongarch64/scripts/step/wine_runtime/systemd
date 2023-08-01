@@ -1,13 +1,14 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=254-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/systemd/254-default/
-rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git
-tar xvf ${DOWNLOADDIR}/systemd-254-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-254-default_git
+export PACKAGE_VERSION=254
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/systemd/254/
+rm -rf ${BUILD_DIRECTORY}/systemd-254
+tar xvf ${DOWNLOADDIR}/systemd-254.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-254
 	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
@@ -27,4 +28,4 @@ pushd ${BUILD_DIRECTORY}/systemd-254-default_git
 		eval ${NINJA_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git
+rm -rf ${BUILD_DIRECTORY}/systemd-254

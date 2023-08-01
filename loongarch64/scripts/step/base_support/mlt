@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mlt
-export PACKAGE_VERSION=7.16.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mlt/7.16.0/
-rm -rf ${BUILD_DIRECTORY}/mlt-7.16.0
-tar xvf ${DOWNLOADDIR}/mlt-7.16.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mlt-7.16.0
+export PACKAGE_VERSION=7.18.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mlt/7.18.0/
+rm -rf ${BUILD_DIRECTORY}/mlt-7.18.0
+tar xvf ${DOWNLOADDIR}/mlt-7.18.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mlt-7.18.0
         
         mkdir cross-build
         pushd cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/mlt-7.16.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mlt-7.16.0
+rm -rf ${BUILD_DIRECTORY}/mlt-7.18.0

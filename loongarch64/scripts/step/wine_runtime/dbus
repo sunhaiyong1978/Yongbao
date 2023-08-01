@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=dbus
 export PACKAGE_VERSION=1.15.6
@@ -14,6 +15,6 @@ pushd ${BUILD_DIRECTORY}/dbus-1.15.6
 	            --with-console-auth-dir=/run/console \
 	            --with-system-socket=/run/dbus/system_bus_socket
 	eval ${MAKE_AND_INSTALL}
-	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/libdbus*.la
+	rm -f ${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/libdbus*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/dbus-1.15.6

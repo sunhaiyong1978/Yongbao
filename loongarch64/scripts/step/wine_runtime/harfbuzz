@@ -1,13 +1,14 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=harfbuzz
-export PACKAGE_VERSION=8.0.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/harfbuzz/8.0.1/
-rm -rf ${BUILD_DIRECTORY}/harfbuzz-8.0.1
-tar xvf ${DOWNLOADDIR}/harfbuzz-8.0.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/harfbuzz-8.0.1
+export PACKAGE_VERSION=8.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/harfbuzz/8.1.0/
+rm -rf ${BUILD_DIRECTORY}/harfbuzz-8.1.0
+tar xvf ${DOWNLOADDIR}/harfbuzz-8.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/harfbuzz-8.1.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -15,6 +16,6 @@ pushd ${BUILD_DIRECTORY}/harfbuzz-8.0.1
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd
-	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/harfbuzz-8.0.1
+rm -rf ${BUILD_DIRECTORY}/harfbuzz-8.1.0

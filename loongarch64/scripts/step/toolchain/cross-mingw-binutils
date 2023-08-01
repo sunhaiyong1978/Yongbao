@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-mingw-binutils
-export PACKAGE_VERSION=2.40
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-mingw-binutils/2.40/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.40
-tar xvf ${DOWNLOADDIR}/binutils-2.40.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.40
+export PACKAGE_VERSION=2.41
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-mingw-binutils/2.41/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41
+tar xvf ${DOWNLOADDIR}/binutils-2.41.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.41
     rm -rf gdb* libdecnumber readline sim
     mkdir cross-build
     pushd cross-build
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.40
 	cp -a dest/opt/* ${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/binutils/${CROSS_TARGET}/
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.40
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41

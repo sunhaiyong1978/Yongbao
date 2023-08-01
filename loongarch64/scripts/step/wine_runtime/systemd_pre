@@ -1,14 +1,15 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=systemd_pre
-export PACKAGE_VERSION=254-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/systemd_pre/254-default/
-rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git
-tar xvf ${DOWNLOADDIR}/systemd-254-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-254-default_git
-	patch -Np1 -i ${SYSDIR}/files/wine_runtime/systemd_pre/254-default/patches/0001-fix-compiler-error-for-libcryptsetup-is-false.patch 
+export PACKAGE_VERSION=254
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/systemd_pre/254/
+rm -rf ${BUILD_DIRECTORY}/systemd-254
+tar xvf ${DOWNLOADDIR}/systemd-254.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-254
+	patch -Np1 -i ${SYSDIR}/files/wine_runtime/systemd_pre/254/patches/0001-fix-compiler-error-for-libcryptsetup-is-false.patch 
 	 
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
@@ -28,4 +29,4 @@ pushd ${BUILD_DIRECTORY}/systemd-254-default_git
 		eval ${NINJA_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-254-default_git
+rm -rf ${BUILD_DIRECTORY}/systemd-254

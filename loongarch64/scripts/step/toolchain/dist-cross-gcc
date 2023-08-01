@@ -5,25 +5,32 @@ export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=dist-cross-gcc
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/dist-cross-gcc//
+HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+HOST_ARCH_NAME="$(get_user_set_env host ${HOST_ARCH_NAME})" 
+HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+TARGET_ARCH_NAME="$(get_user_set_env target ${DISTRO_ARCH})" 
+ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_HOST})" "${ARCH_ABI}")
+
 if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
 	mv ${TEMP_DIRECTORY}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
 fi
 
 mkdir -pv ${TEMP_DIRECTORY}/cross-tools/target/usr/lib{,64}
 ln -sv usr/lib{,64} ${TEMP_DIRECTORY}/cross-tools/target/
-cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/binutils/${CROSS_TARGET}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
-cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/gcc/${CROSS_TARGET}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
-cp -a ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/* ${TEMP_DIRECTORY}/cross-tools/target/
-cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_TARGET}/glibc/* ${TEMP_DIRECTORY}/cross-tools/target/
+cp -a ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+cp -a ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+# cp -a ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/* ${TEMP_DIRECTORY}/cross-tools/target/
+# cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_TARGET}/glibc/* ${TEMP_DIRECTORY}/cross-tools/target/
 
 pushd ${TEMP_DIRECTORY}
-	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-glibc.tar.xz ]; then
-		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-glibc.tar.xz
+	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc-glibc.tar.xz ]; then
+		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc-glibc.tar.xz
 	fi
 
 	mkdir -pv ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/
 
-	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${DISTRO_ARCH}-gcc-glibc.tar.xz cross-tools
+	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc.tar.xz cross-tools
+	info_pool "生成了可发布的压缩包文件：${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc.tar.xz"
 popd
 
 if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then

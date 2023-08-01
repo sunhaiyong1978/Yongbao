@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=glibc
-export PACKAGE_VERSION=2.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.37/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.37
-tar xvf ${DOWNLOADDIR}/glibc-2.37.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.37
+export PACKAGE_VERSION=2.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.38/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.38
+tar xvf ${DOWNLOADDIR}/glibc-2.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.38
     
     cp ${CROSSTOOLS_DIR}/share/automake*/config.* ./
     sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
@@ -31,7 +31,6 @@ pushd ${BUILD_DIRECTORY}/glibc-2.37
 		                  ${SYSROOT_DIR}/usr/lib/tmpfiles.d/nscd.conf
 		install -v -Dm644 ../nscd/nscd.service \
 		                  ${SYSROOT_DIR}/usr/lib/systemd/system/nscd.service
-		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${CROSS_TARGET}/glibc install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.37
+rm -rf ${BUILD_DIRECTORY}/glibc-2.38

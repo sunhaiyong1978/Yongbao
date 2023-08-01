@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=nghttp2
-export PACKAGE_VERSION=1.55.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/nghttp2/1.55.0/
-rm -rf ${BUILD_DIRECTORY}/nghttp2-1.55.0
-tar xvf ${DOWNLOADDIR}/nghttp2-1.55.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nghttp2-1.55.0
+export PACKAGE_VERSION=1.55.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/nghttp2/1.55.1/
+rm -rf ${BUILD_DIRECTORY}/nghttp2-1.55.1
+tar xvf ${DOWNLOADDIR}/nghttp2-1.55.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nghttp2-1.55.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/nghttp2-1.55.0
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/nghttp2-1.55.0
+rm -rf ${BUILD_DIRECTORY}/nghttp2-1.55.1

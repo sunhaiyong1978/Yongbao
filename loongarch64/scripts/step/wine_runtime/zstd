@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=zstd
 export PACKAGE_VERSION=1.5.5
@@ -8,7 +9,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/zstd/1.5.5/
 rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
 tar xvf ${DOWNLOADDIR}/zstd-1.5.5.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/zstd-1.5.5
-	make -j${JOBS} CC="${X86_64_HOST}-gcc" PREFIX=/usr LIBDIR=/usr/lib64
-	make CC="${X86_64_HOST}-gcc" PREFIX=/usr LIBDIR=/usr/lib64 DESTDIR=${X86_64_SYSROOT_DIR} install
+	make -j${JOBS} CC="${X86_HOST}-gcc" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF}
+	make CC="${X86_HOST}-gcc" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF} DESTDIR=${X86_SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5

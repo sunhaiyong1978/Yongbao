@@ -11,13 +11,14 @@ BASE_DIR="${PWD}"
 declare FORCE_BUILD=0
 declare FORCE_ALL_BUILD=0
 declare OPT_SET_STR=""
+declare OPT_SET_ENV=""
 declare ONLY_BUILD=0
 declare REQUIRES_BUILD=0
 declare SINGLE_PACKAGE=0
 declare FORCE_ALL_DOWNLOAD=0
 declare DATA_SUFF=""
 
-while getopts 'fao:rsdh' OPT; do
+while getopts 'fao:rsde:h' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -37,6 +38,9 @@ while getopts 'fao:rsdh' OPT; do
         d)
             FORCE_ALL_DOWNLOAD=1
             ;;
+	e)
+	    OPT_SET_ENV=$OPTARG
+	    ;;
         h|?)
             echo "目标系统构建命令。"
             echo ""
@@ -59,6 +63,60 @@ while getopts 'fao:rsdh' OPT; do
     esac
 done
 shift $(($OPTIND - 1))
+
+
+function set_build_env
+{
+	declare -a SET_ENV
+	declare SET_COUNT=0
+	declare SET_STR="${2}"
+	declare -a USE_ENV=(${1})
+	declare USE_ENV_COUNT=${#USE_ENV[@]}
+
+	for i in $(echo "${SET_STR}" | tr "," "\\n")
+	do
+		SET_ENV[${SET_COUNT}]=${i}
+		((SET_COUNT++))
+	done
+
+	for i in ${SET_ENV[*]}
+	do
+		USE_ENV[${USE_ENV_COUNT}]=${i}
+		((USE_ENV_COUNT++))
+	done
+	echo "${USE_ENV[@]}"
+}
+
+
+
+function get_all_can_set_env_str
+{
+        declare -a SET_ENV
+        declare SET_COUNT=0
+        declare GET_ENV_VALUE=""
+        declare SET_STR="${1}"
+        declare -a USE_ENV=("")
+        declare USE_ENV_COUNT=${#USE_ENV[@]}
+
+        for i in $(echo "${SET_STR}" | tr "," "\\n")
+        do
+                if [ "x${i:0:1}" == "x%" ]; then
+	                SET_ENV[${SET_COUNT}]=${i:1}
+        	        ((SET_COUNT++))
+		fi
+        done
+
+        for i in ${SET_ENV[*]}
+        do
+		GET_ENV_VALUE=""
+		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
+		if [ "x${GET_ENV_VALUE}" != "x" ]; then
+	                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
+        	        ((USE_ENV_COUNT++))
+		fi
+        done
+	echo $(IFS=_; echo "${USE_ENV[*]}")
+}
 
 
 function create_date_suff
@@ -440,7 +498,9 @@ function set_to_default_opt
 			if [ "x${i:0:1}" == "x+" ]; then
 				USE_OPT[${USE_COUNT}]=${i:1}
 			else
-				USE_OPT[${USE_COUNT}]=${i}
+				if [ "x${i:0:1}" != "x%" ]; then
+					USE_OPT[${USE_COUNT}]=${i}
+				fi
 			fi
 			((USE_COUNT++))
 		fi
@@ -484,9 +544,16 @@ function test_opt_can_run
 				OPT=${i:1}
 				INVERT=1
 			else
-				OPT=${i}
-				INVERT=0
+				if [ "x${i:0:1}" == "x%" ]; then
+					continue
+				else
+					OPT=${i}
+					INVERT=0
+				fi
 			fi
+		fi
+		if [ "x${INVERT}" == "x1" ]; then
+			TEST_STATUS=1
 		fi
 		for j in $(echo ${USE_OPT[*]})
 		do
@@ -504,6 +571,7 @@ function test_opt_can_run
 				break;
 			fi
 		done
+#		if [ "x${TEST_STATUS}" == "x0" ] && [ "x${INVERT}" == "x0" ]; then
 		if [ "x${TEST_STATUS}" == "x0" ]; then
 			# ${i} 标记没有找到，${1} 测试不通过"
 			echo "1"
@@ -589,8 +657,6 @@ function step_to_index
  	USE_OPT=($(set_to_default_opt "$(echo ${USE_OPT[@]})" "${OPT_SET_STR}"))
 	USE_COUNT=${#USE_OPT[@]}
 
-
-
 	if [ "x${STEP_PKG_STR}" != "x" ]; then
 		FORMAT_STRING=$(format_step_str "${STEP_PKG_STR}")
 		echo "指定了编译步骤：${FORMAT_STRING}"
@@ -644,6 +710,7 @@ function step_to_index
 		COUNT_NAME=${TMP_NAME/-/_}_COUNT
 		printf -v SHOW_COUNT "%05d" ${!COUNT_NAME}
 
+		#echo "test_opt_can_run" "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
 		if [ "x$(test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}")" == "x0" ]; then
 			if [ "x${GREP_STR}" == "x" ]; then
 				echo -n "${SHOW_COUNT}  "
@@ -689,6 +756,22 @@ function step_to_index
 
 
 mkdir -p ${NEW_TARGET_SYSDIR}
+
+declare -a USE_SET_ENV
+declare USE_SET_ENV_COUNT=0
+	
+USE_SET_ENV=($(set_build_env "" "${OPT_SET_ENV}"))
+USE_SET_ENV_COUNT=${#USE_SET_ENV[@]}
+
+echo -n "" > ${NEW_TARGET_SYSDIR}/set_env.conf
+for set_env in ${USE_SET_ENV[*]}
+do
+	ENV_KEY=$(echo ${set_env} | awk -F'=' '{ print $1 }')
+	ENV_VALUE=$(echo ${set_env} | awk -F'=' '{ print $2 }')
+	echo "export YONGBAO_SET_ENV_${ENV_KEY}=${ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/set_env.conf
+done
+
+
 create_date_suff
 echo "创将索引文件......"
 step_to_index "${1}"
@@ -761,13 +844,25 @@ echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_overlay_before_run_save
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_overlay_after_run_save
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_overlay_temp_fix_run_save
 
-cat ${STEP_FILE} | awk -F'|' '{ print $1 }' | while read line
+
+if [ -f ${NEW_TARGET_SYSDIR}/logs/info_pool ]; then
+	mv ${NEW_TARGET_SYSDIR}/logs/info_pool{,.$(date +%Y%m%d%H%M%S)}
+fi
+touch ${NEW_TARGET_SYSDIR}/logs/info_pool
+
+# cat ${STEP_FILE} | awk -F'|' '{ print $1 }' | while read line
+cat ${STEP_FILE} | while read line_all
 do
+	line=$(echo "${line_all}" | awk -F'|' '{ print $1 }')
+	PACKAGE_ALL_OPT="$(echo "${line_all}" | awk -F'|' '{ print $2 }')"
 	RET_VAL=0
 	PACKAGE_INDEX=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $1 }')
 	STEP_STAGE=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $2 }')
 	PACKAGE_NAME=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $3 }')
-	STATUS_FILE="${PACKAGE_NAME}_${STEP_STAGE}_${PACKAGE_INDEX}"
+
+	PACKAGE_SET_ENV=$(get_all_can_set_env_str "${PACKAGE_ALL_OPT}")
+
+	STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${PACKAGE_INDEX}"
 	SCRIPT_FILE=$(echo "${line}" | awk -F' ' '{ print $2 }' | sed "s@ *step\/@@g")
 	if [ "x${PACKAGE_NAME}" == "xbegin_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_before_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_after_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_temp_fix_run" ]; then
 		echo "${STEP_STAGE}" >> ${NEW_TARGET_SYSDIR}/logs/step_${PACKAGE_NAME}_save
@@ -884,6 +979,9 @@ done
 
 if [ "x$?" == "x0" ]; then
 	echo -e "\r编译制作过程完成。\033[0K\n"
+
+	cat ${NEW_TARGET_SYSDIR}/logs/info_pool
+	
 	if [ "x${1}" == "x" ]; then
 		echo "接下来可以使用./strip_os.sh脚本来清除调试信息，使用./install_os_run.sh安装系统启动脚本，以及使用./pack_os.sh脚本来打包系统。"
 	fi

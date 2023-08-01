@@ -1,0 +1,38 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=clang_git
+export PACKAGE_VERSION=main_git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/clang_git/main_git-default/
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+tar xvf ${DOWNLOADDIR}/llvm-project_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+    pushd clang
+    mkdir cross-build
+    pushd cross-build
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
+              -DLLVM_CONFIG=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config \
+              -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+              -DLLVM_LIBDIR_SUFFIX=64 \
+              -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+              -DLLVM_ENABLE_RTTI:BOOL=ON \
+              -DLLVM_ENABLE_ZLIB:BOOL=ON \
+              -DCLANG_TABLEGEN:PATH=${CROSSTOOLS_DIR}/bin/clang-tblgen \
+              -DLLVM_TABLEGEN_EXE:FILEPATH=${CROSSTOOLS_DIR}/bin/llvm-tblgen \
+	      -DPython3_EXECUTABLE:PATH=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+              -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+              -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+              -DCMAKE_SYSROOT=${SYSROOT_DIR} \
+              -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
+              -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
+              -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+              -DLLVM_INCLUDE_TESTS=OFF \
+              -DLLVM_HOST_TRIPLE=${CROSS_TARGET}
+        sed -i "s@${PWD}/bin/clang-ast-dump@qemu-${ARCH_NAME} ${PWD}/bin/clang-ast-dump@g" build.ninja
+	eval ${NINJA_AND_INSTALL}
+    popd
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git

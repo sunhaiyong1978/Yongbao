@@ -1,0 +1,25 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=mesa_git
+export PACKAGE_VERSION=main_git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa_git/main_git-default/
+rm -rf ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
+tar xvf ${DOWNLOADDIR}/mesa_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
+    sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
+           -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
+    mkdir cross-build
+    pushd cross-build
+        meson ${MESON_CONFIG} \
+              -Dgallium-drivers="nouveau,r300,r600,radeonsi,etnaviv,swrast,virgl,zink" \
+              -Dplatforms=x11,wayland \
+              -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true -Dosmesa=true \
+              -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dgallium-opencl=disabled \
+              -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast" \
+               ..
+	eval ${NINJA_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/mesa_git-main_git-default_git

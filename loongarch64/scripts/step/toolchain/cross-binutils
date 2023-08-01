@@ -3,23 +3,28 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-binutils
-export PACKAGE_VERSION=2.40
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.40/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.40
-tar xvf ${DOWNLOADDIR}/binutils-2.40.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.40
+export PACKAGE_VERSION=2.41
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.41/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41
+tar xvf ${DOWNLOADDIR}/binutils-2.41.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.41
+    HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+    HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+    ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
+    
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+
     rm -rf gdb* libdecnumber readline sim
     mkdir cross-build
     pushd cross-build
-        LDFLAGS="--static" CC=gcc AR=ar AS=as \
-        ../configure --prefix=${PREFIX}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
-                     --target=${CROSS_TARGET} --with-sysroot=${PREFIX}/cross-tools/target --enable-nls \
+        LDFLAGS="--static" \
+        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} --target=${HOST_TARGET} \
+                     --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-nls \
                      --enable-64-bit-bfd --disable-shared
-        make -j${JOBS} configure-host LIBS="-lzstd -lpthread"
+        make -j${JOBS} configure-host LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"
         make -j${JOBS}
-        make DESTDIR=${PWD}/dest install-strip
-	mkdir -pv ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/binutils/${CROSS_TARGET}/
-	cp -a dest/${PREFIX}/* ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/binutils/${CROSS_TARGET}/
+        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.40
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41

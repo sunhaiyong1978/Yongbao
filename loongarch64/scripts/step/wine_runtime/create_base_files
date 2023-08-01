@@ -1,9 +1,10 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=create_base_files
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/create_base_files//
 mkdir -p ${SYSROOT_DIR}/usr/gnemul/
-ln -sf ../../usr/lib/x86_64/sys-root ${SYSROOT_DIR}/usr/gnemul/qemu-x86_64
+ln -sf ../../usr/lib/i686/sys-root ${SYSROOT_DIR}/usr/gnemul/qemu-i686

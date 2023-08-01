@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=glibc_localedata
-export PACKAGE_VERSION=2.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc_localedata/2.37/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.37
-tar xvf ${DOWNLOADDIR}/glibc-2.37.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.37
+export PACKAGE_VERSION=2.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc_localedata/2.38/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.38
+tar xvf ${DOWNLOADDIR}/glibc-2.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.38
         mkdir -p build-locale
         pushd build-locale
                 ../configure --prefix=/usr --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc \
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/glibc-2.37
                 make -j${JOBS}
                 make -j${JOBS} DESTDIR=${SYSROOT_DIR} localedata/install-locales
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.37
+rm -rf ${BUILD_DIRECTORY}/glibc-2.38

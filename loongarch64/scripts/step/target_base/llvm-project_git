@@ -1,0 +1,40 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=llvm-project_git
+export PACKAGE_VERSION=main_git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project_git/main_git-default/
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+tar xvf ${DOWNLOADDIR}/llvm-project_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+    
+    pushd llvm
+    mkdir cross-build
+    pushd cross-build
+	export CC="clang" CXX="clang++"
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
+              -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+              -DLLVM_LIBDIR_SUFFIX=64 \
+              -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+              -DLLVM_BUILD_RUNTIME:BOOL=ON -DLLVM_ENABLE_RTTI:BOOL=ON \
+              -DLLVM_ENABLE_ZLIB:BOOL=ON -DLLVM_ENABLE_FFI:BOOL=ON \
+              -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+              -DLLVM_TABLEGEN:PATH=${CROSSTOOLS_DIR}/bin/llvm-tblgen \
+              -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
+              -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
+              -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+	      -Dzstd_LIBRARY:FILEPATH=${SYSROOT_DIR}/usr/lib64/libzstd.so \
+              -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
+	eval ${NINJA_AND_INSTALL}
+    popd
+    popd
+
+cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config << EOF
+#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/llvm-config "\$@"
+EOF
+chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git

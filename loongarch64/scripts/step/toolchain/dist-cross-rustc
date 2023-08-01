@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=dist-cross-rustc
-export PACKAGE_VERSION=1.70.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/dist-cross-rustc/1.70.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.70.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.70.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.70.0-src
+export PACKAGE_VERSION=1.71.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/dist-cross-rustc/1.71.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.71.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.71.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.71.0-src
 	
 
 	if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
@@ -29,7 +29,7 @@ pushd ${BUILD_DIRECTORY}/rustc-1.70.0-src
 	make -j${JOBS} TARGET_CC="${CROSS_TARGET}-gcc"
 	PATH=${TEMP_DIRECTORY}/cross-tools/bin:$PATH \
 	make -j${JOBS} TARGET_CC="${CROSS_TARGET}-gcc" dist
-        mkdir -p ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.70.0" | sed "s@-default@@g")/
-        find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.70.0" | sed "s@-default@@g")/ ';'
+        mkdir -p ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.71.0" | sed "s@-default@@g")/
+        find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/rust/$(echo "1.71.0" | sed "s@-default@@g")/ ';'
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.70.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.71.0-src

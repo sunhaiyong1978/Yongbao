@@ -3,17 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=linux-header
-export PACKAGE_VERSION=6.4.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/linux-header/6.4.3/
-rm -rf ${BUILD_DIRECTORY}/linux-6.4.3
-tar xvf ${DOWNLOADDIR}/linux-6.4.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.4.3
+export PACKAGE_VERSION=6.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/linux-header/6.5/
+rm -rf ${BUILD_DIRECTORY}/linux_git-6.5_git
+tar xvf ${DOWNLOADDIR}/linux_git-6.5_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux_git-6.5_git
+	
 	make ARCH=${ARCH_FAMILY} mrproper
 	make ARCH=${ARCH_FAMILY} INSTALL_HDR_PATH=dest headers_install
 	find dest/include -name '.*' -delete
+	sed -i "/__ARCH_WANT_NEW_STAT/d" dest/include/asm/unistd.h
 	mkdir -pv ${SYSROOT_DIR}/usr/include
 	cp -rv dest/include/* ${SYSROOT_DIR}/usr/include
-	mkdir -pv ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include
-	cp -rv dest/include/* ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include/
+#	mkdir -pv ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include
+#	cp -rv dest/include/* ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include/
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.4.3
+rm -rf ${BUILD_DIRECTORY}/linux_git-6.5_git

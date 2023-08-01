@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=pcre2
 export PACKAGE_VERSION=10.42
@@ -13,8 +14,8 @@ pushd ${BUILD_DIRECTORY}/pcre2-10.42
 		autoreconf -ifv
 	fi
 	 ./configure ${COMMON_CONFIG} --enable-unicode --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline --enable-malloc0returnsnull
-	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
-        make DESTDIR=${X86_64_SYSROOT_DIR} install
-	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+	CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_SYSROOT_DIR} install
+	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/pcre2-10.42

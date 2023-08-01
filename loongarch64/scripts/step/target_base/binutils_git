@@ -1,0 +1,23 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=binutils_git
+export PACKAGE_VERSION=2.41-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/binutils_git/2.41-default/
+rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
+tar xvf ${DOWNLOADDIR}/binutils_git-2.41-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
+	patch -Np1 -i ${SYSDIR}/files/target_base/binutils_git/2.41-default/patches/0001-remove-default-use-relax-for-lld.patch 
+	 
+	rm -rf gdb* libdecnumber readline sim
+	mkdir -pv cross-build
+	pushd cross-build
+		../configure --prefix=/usr --libdir=/usr/lib64 --build=${CROSS_HOST} \
+		             --host=${CROSS_TARGET} --enable-shared --disable-werror \
+		             --with-system-zlib --enable-64-bit-bfd
+		make -j${JOBS} tooldir=/usr
+		make DESTDIR=${SYSROOT_DIR} tooldir=/usr install
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git

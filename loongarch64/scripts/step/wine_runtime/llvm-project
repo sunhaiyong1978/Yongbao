@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=llvm-project
 export PACKAGE_VERSION=16.0.6
@@ -12,10 +13,9 @@ pushd ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
     pushd llvm
     mkdir cross-build
     pushd cross-build
-        CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" \
+        CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
-              -DLLVM_LIBDIR_SUFFIX=64 \
               -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
               -DLLVM_BUILD_RUNTIME:BOOL=ON -DLLVM_ENABLE_RTTI:BOOL=ON \
               -DLLVM_ENABLE_ZLIB:BOOL=ON -DLLVM_ENABLE_FFI:BOOL=ON \
@@ -24,7 +24,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
               -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
               -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
               -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
-              -DLLVM_DEFAULT_TARGET_TRIPLE=${X86_64_HOST}
+              -DLLVM_DEFAULT_TARGET_TRIPLE=${X86_HOST}
 	eval ${NINJA_AND_INSTALL}
     popd
     popd

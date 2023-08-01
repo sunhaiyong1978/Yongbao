@@ -14,19 +14,23 @@ export PATH=${CROSSTOOLS_DIR}/bin:/usr/bin:/bin
 export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
+export ARCH_BIT=64
 export PREFIX=/usr
-export PKG_CONFIG_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/x86_64/sys-root"
-export X86_64_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/x86_64/sys-root"
-export PKG_CONFIG_PATH="${X86_64_SYSROOT_DIR}/usr/lib64/pkgconfig:${X86_64_SYSROOT_DIR}/usr/share/pkgconfig"
-export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib/x86_64/sys-root/usr/lib64"
-export X86_64_HOST=x86_64-unknown-linux-gnu
-export COMMON_CONFIG="--prefix=/usr --build=${CROSS_HOST} --host=${X86_64_HOST} --libdir=/usr/lib64 --sysconfdir=/etc"
-export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${X86_64_SYSROOT_DIR} install && rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la"
-export MESON_CONFIG="--prefix=/usr --libdir=/usr/lib${LIB_SUFF} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross-x86_64.txt"
-export NINJA_AND_INSTALL="CC=${X86_64_HOST}-gcc ninja && DESTDIR=${X86_64_SYSROOT_DIR} ninja install"
+export LIB_SUFF=""
+export PKG_CONFIG_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/i686/sys-root"
+export X86_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/i686/sys-root"
+export PKG_CONFIG_PATH="${X86_SYSROOT_DIR}/usr/lib/pkgconfig:${X86_SYSROOT_DIR}/usr/share/pkgconfig"
+export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib/i686/sys-root/usr/lib"
+export X86_HOST=i686-unknown-linux-gnu
+export COMMON_CONFIG="--prefix=/usr --build=${CROSS_HOST} --host=${X86_HOST} --libdir=/usr/lib --sysconfdir=/etc"
+export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${X86_SYSROOT_DIR} install && rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la"
+export MESON_CONFIG="--prefix=/usr --libdir=/usr/lib${LIB_SUFF} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross-i686.txt"
+export NINJA_AND_INSTALL="CC=${X86_HOST}-gcc ninja && DESTDIR=${X86_SYSROOT_DIR} ninja install"
 
-export CROSS_TOOLS_PREFIX=${SYSDIR}/cross-toolchains/${X86_64_HOST}
+export CROSS_TARGET=${X86_HOST}
+
+export CROSS_TOOLS_PREFIX=${SYSDIR}/cross-toolchains/${X86_HOST}
 export PATH=${CROSS_TOOLS_PREFIX}/bin:$PATH
-export ARCH_NAME=x86_64
+export ARCH_NAME=i686
 export ARCH_FAMILY=x86
-export ARCH_ABI=64
+export ARCH_ABI=32

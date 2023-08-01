@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=xorgproto
 export PACKAGE_VERSION=2023.2
@@ -15,6 +16,6 @@ pushd ${BUILD_DIRECTORY}/xorgproto-2023.2
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd
-	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/xorgproto-2023.2

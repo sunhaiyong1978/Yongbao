@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=cups
 export PACKAGE_VERSION=2.4.6
@@ -12,8 +13,8 @@ pushd ${BUILD_DIRECTORY}/cups-2.4.6
     ./configure ${COMMON_CONFIG} --with-rcdir=/tmp/cupsinit   \
             --with-system-groups=lpadmin
     eval ${MAKE_AND_INSTALL}
-    rm -rf ${X86_64_SYSROOT_DIR}/tmp/cupsinit
-    mkdir -p ${X86_64_SYSROOT_DIR}/etc/cups
-    echo "ServerName /run/cups/cups.sock" > ${X86_64_SYSROOT_DIR}/etc/cups/client.conf
+    rm -rf ${X86_SYSROOT_DIR}/tmp/cupsinit
+    mkdir -p ${X86_SYSROOT_DIR}/etc/cups
+    echo "ServerName /run/cups/cups.sock" > ${X86_SYSROOT_DIR}/etc/cups/client.conf
 popd 
 rm -rf ${BUILD_DIRECTORY}/cups-2.4.6

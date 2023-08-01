@@ -1,0 +1,25 @@
+From bdafbe0cb2d7dd8c9d3b04f1156e6bc6ecae2b18 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 26 Jul 2023 10:01:20 +0000
+Subject: [PATCH] remove default use relax for lld.
+
+---
+ opcodes/loongarch-opc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/opcodes/loongarch-opc.c b/opcodes/loongarch-opc.c
+index c83e4810..9c7f8fea 100644
+--- a/opcodes/loongarch-opc.c
++++ b/opcodes/loongarch-opc.c
+@@ -24,7 +24,7 @@
+ 
+ struct loongarch_ASEs_option LARCH_opts =
+ {
+-  .relax = 1
++  .relax = 0
+ };
+ 
+ size_t
+-- 
+2.31.1
+

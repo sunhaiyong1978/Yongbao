@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=libvdpau
 export PACKAGE_VERSION=1.5
@@ -15,6 +16,6 @@ pushd ${BUILD_DIRECTORY}/libvdpau-1.5
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd
-	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/libvdpau-1.5

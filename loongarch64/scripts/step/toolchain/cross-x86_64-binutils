@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-x86_64-binutils
-export PACKAGE_VERSION=2.41-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-x86_64-binutils/2.41-default/
-rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
-tar xvf ${DOWNLOADDIR}/binutils_git-2.41-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
+export PACKAGE_VERSION=2.41
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-x86_64-binutils/2.41/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41
+tar xvf ${DOWNLOADDIR}/binutils-2.41.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.41
     rm -rf gdb* libdecnumber readline sim
     mkdir cross-build
     pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
 	cp -a dest/${PREFIX}/* ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/binutils/${X86_64_LINUX_HOST}/
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41

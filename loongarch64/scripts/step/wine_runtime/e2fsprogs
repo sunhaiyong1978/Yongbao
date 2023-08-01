@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=e2fsprogs
 export PACKAGE_VERSION=1.47.0
@@ -14,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.0
 		             --enable-elf-shlibs --disable-libblkid \
 		             --disable-libuuid --disable-uuidd --disable-fsck
 		eval ${MAKE_AND_INSTALL}
-		rm -fv ${X86_64_SYSROOT_DIR}/usr/lib64/{libcom_err,libe2p,libext2fs,libss}.la
+		rm -fv ${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/{libcom_err,libe2p,libext2fs,libss}.la
 	popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.0

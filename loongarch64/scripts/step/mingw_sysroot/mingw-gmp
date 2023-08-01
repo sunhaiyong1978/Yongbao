@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-gmp
-export PACKAGE_VERSION=6.2.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gmp/6.2.1/
-rm -rf ${BUILD_DIRECTORY}/gmp-6.2.1
-tar xvf ${DOWNLOADDIR}/gmp-6.2.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gmp-6.2.1
+export PACKAGE_VERSION=6.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gmp/6.3.0/
+rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0
+tar xvf ${DOWNLOADDIR}/gmp-6.3.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gmp-6.3.0
 	ABI=64 ./configure --build=${CROSS_HOST} --host=${MINGW_HOST} \
                 --prefix=/mingw --enable-cxx
 	make -j${JOBS}
 	make DESTDIR=${MINGW_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/gmp-6.2.1
+rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0
 rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la

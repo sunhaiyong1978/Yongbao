@@ -1,0 +1,27 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=i686-qemu
+export PACKAGE_VERSION=8.0.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/i686-qemu/8.0.3/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.3
+tar xvf ${DOWNLOADDIR}/qemu-8.0.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.0.3
+    mkdir -p build
+    pushd build
+        ../configure --prefix=${PREFIX}/${X86_HOST} --target-list=i386-linux-user --static
+        ninja
+        cp qemu-i386 ${PREFIX}/${X86_HOST}/bin/qemu-i386.bin
+    popd
+    echo "#!/bin/bash -e
+${PREFIX}/${X86_HOST}/bin/qemu-i386.bin -L ${SYSROOT_DIR}/usr/lib/i686/sys-root \"\$@\"" \
+> ${PREFIX}/${X86_HOST}/bin/qemu-i386
+
+echo "#!/bin/bash -e
+${PREFIX}/${X86_HOST}/bin/qemu-i386.bin -L ${SYSROOT_DIR}/usr/lib/i686/sys-root -E LD_TRACE_LOADED_OBJECTS=1 \"\$@\"" \
+> ${PREFIX}/${X86_HOST}/bin/qemu-i386-ldd
+
+chmod +x ${PREFIX}/${X86_HOST}/bin/qemu-i386{,-ldd}
+popd 
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.3

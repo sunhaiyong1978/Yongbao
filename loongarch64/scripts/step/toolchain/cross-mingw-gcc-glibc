@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-mingw-gcc-glibc
-export PACKAGE_VERSION=13.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-mingw-gcc-glibc/13.1.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0
-tar xvf ${DOWNLOADDIR}/gcc-13.1.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.1.0
+export PACKAGE_VERSION=13.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-mingw-gcc-glibc/13.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-13.2.0
     if [ -d ${PREFIX}/cross-tools ]; then
 	mv ${PREFIX}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
     fi
@@ -43,4 +43,4 @@ pushd ${BUILD_DIRECTORY}/gcc-13.1.0
         cp -a dest/opt/* ${TOOLCHAIN_DIRECTORY}/${MINGW_HOST}/gcc/${CROSS_TARGET}/
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.1.0
+rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0

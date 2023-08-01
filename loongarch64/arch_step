@@ -1,6 +1,9 @@
 
+%step/target_base/linux-header|
 %step/cross-tools/grub|
 %step/target_base/valgrind|
 %step/base_support/jdk20|g_opt
+%step/base_support/perf|g_opt
+%step/boot/linux-kernel|
 %step/boot/grub|
 %step/computer_language/golang|g_opt,target-dist,golang

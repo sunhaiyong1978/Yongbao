@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=node
-export PACKAGE_VERSION=20.4.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/node/20.4.0/
-rm -rf ${BUILD_DIRECTORY}/node-20.4.0
-tar xvf ${DOWNLOADDIR}/node-20.4.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/node-20.4.0
+export PACKAGE_VERSION=20.5.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/node/20.5.0/
+rm -rf ${BUILD_DIRECTORY}/node-20.5.0
+tar xvf ${DOWNLOADDIR}/node-20.5.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/node-20.5.0
     
     sed -i "s@registry.npmjs.org@registry.loongnix.cn:5873@g" deps/npm/node_modules/@npmcli/config/lib/definitions/definitions.js
     mkdir -pv out/Release
@@ -19,7 +19,7 @@ pushd ${BUILD_DIRECTORY}/node-20.4.0
     done
     sed -i "/EXECUTABLE_SUFFIX/s@node_js2c<@node_js2c.host<@g" node.gyp
     PKG_CONFIG=${CROSS_TARGET}-pkg-config \
-    CC="clang" CXX="clang++" \
+    CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
     ./configure --prefix /usr --dest-cpu=$(echo ${ARCH_NAME} | sed 's@arch@@g') --shared-openssl \
                 --with-intl=system-icu --shared
     make -j${JOBS} -C out bytecode_builtins_list_generator gen-regexp-special-case torque
@@ -35,4 +35,4 @@ pushd ${BUILD_DIRECTORY}/node-20.4.0
         exit 1
     fi
 popd 
-rm -rf ${BUILD_DIRECTORY}/node-20.4.0
+rm -rf ${BUILD_DIRECTORY}/node-20.5.0

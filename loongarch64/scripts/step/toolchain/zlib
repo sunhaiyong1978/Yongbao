@@ -1,0 +1,25 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=zlib
+export PACKAGE_VERSION=1.2.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zlib/1.2.13/
+rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13
+tar xvf ${DOWNLOADDIR}/zlib-1.2.13.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zlib-1.2.13
+	
+
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+        CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target)" "${ARCH_BIT}")
+        LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
+        ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
+
+        PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
+
+	CROSS_PREFIX=${CROSS_TARGET}- ./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF}
+	make -j${JOBS} CC="${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}"
+	INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
+	make DESTDIR=${INSTALL_DIST_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13

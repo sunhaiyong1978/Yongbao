@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=LVM2
 export PACKAGE_VERSION=2.03.21
@@ -13,8 +14,8 @@ pushd ${BUILD_DIRECTORY}/LVM2.2.03.21
 		autoreconf -ifv
 	fi
 	 ./configure ${COMMON_CONFIG} --with-usrlibdir=/usr/lib${LIB_SUFF} --enable-cmdlib --enable-pkgconfig --enable-udev_sync ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes --enable-malloc0returnsnull
-	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
-        make DESTDIR=${X86_64_SYSROOT_DIR} install
-	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+	CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_SYSROOT_DIR} install
+	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.21

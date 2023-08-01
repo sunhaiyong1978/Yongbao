@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alsa-utils/1.2.9/
 rm -rf ${BUILD_DIRECTORY}/alsa-utils-1.2.9
 tar xvf ${DOWNLOADDIR}/alsa-utils-1.2.9.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/alsa-utils-1.2.9
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/alsa-utils/1.2.9/patches/0001-fix-for-glibc-2.38.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/

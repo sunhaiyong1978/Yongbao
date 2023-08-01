@@ -1,0 +1,26 @@
+From 3b7fa12dba6749ef3d044bac9219b1235f75a9ae Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 10 Jul 2023 12:02:57 +0000
+Subject: [PATCH] fix the missing include file when using gcc plugins in
+ longarch.
+
+---
+ gcc/config.gcc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index d88071773..4d795bca8 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -2478,7 +2478,7 @@ riscv*-*-freebsd*)
+ 
+ loongarch*-*-linux*)
+ 	tm_file="elfos.h gnu-user.h linux.h linux-android.h glibc-stdint.h ${tm_file}"
+-	tm_file="${tm_file} loongarch/gnu-user.h loongarch/linux.h"
++	tm_file="${tm_file} loongarch/gnu-user.h loongarch/linux.h loongarch/loongarch-def.h loongarch/loongarch-tune.h loongarch/loongarch-driver.h"
+ 	extra_options="${extra_options} linux-android.opt"
+ 	tmake_file="${tmake_file} loongarch/t-linux"
+ 	gnu_ld=yes
+-- 
+2.31.1
+

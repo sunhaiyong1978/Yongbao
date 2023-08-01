@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=zlib
 export PACKAGE_VERSION=1.2.13
@@ -9,8 +10,8 @@ rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13
 tar xvf ${DOWNLOADDIR}/zlib-1.2.13.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/zlib-1.2.13
 	
-	CROSS_PREFIX=${X86_64_HOST}- ./configure --prefix=/usr --libdir=/usr/lib64
+	CROSS_PREFIX=${X86_HOST}- ./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF}
 	make -j${JOBS}
-	make DESTDIR=${X86_64_SYSROOT_DIR} install
+	make DESTDIR=${X86_SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/zlib-1.2.13

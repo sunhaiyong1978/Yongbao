@@ -1,6 +1,7 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=libaio
 export PACKAGE_VERSION=0.3.113
@@ -8,7 +9,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libaio/0.3.113/
 rm -rf ${BUILD_DIRECTORY}/libaio-0.3.113
 tar xvf ${DOWNLOADDIR}/libaio_0.3.113.orig.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libaio-0.3.113
-    make -j${JOBS} CC="${X86_64_HOST}-gcc"
-    make DESTDIR=${X86_64_SYSROOT_DIR} libdir=/usr/lib64 install
+    make -j${JOBS} CC="${X86_HOST}-gcc"
+    make DESTDIR=${X86_SYSROOT_DIR} libdir=/usr/lib${LIB_SUFF} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/libaio-0.3.113

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=Vulkan-Tools
-export PACKAGE_VERSION=1.3.257
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Tools/1.3.257/
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.257
-tar xvf ${DOWNLOADDIR}/Vulkan-Tools-1.3.257.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.257
+export PACKAGE_VERSION=1.3.260
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Tools/1.3.260/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.260
+tar xvf ${DOWNLOADDIR}/Vulkan-Tools-1.3.260.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.260
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.257
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.257
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.260

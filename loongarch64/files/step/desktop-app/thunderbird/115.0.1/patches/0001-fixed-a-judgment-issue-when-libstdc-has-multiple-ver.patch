@@ -1,0 +1,25 @@
+From 44a0b7dcc8381004e6c4b17233db43a44ee903ed Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 1 Aug 2023 02:56:54 +0000
+Subject: [PATCH] fixed a judgment issue when libstdc++ has multiple versions.
+
+---
+ build/moz.configure/toolchain.configure | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/moz.configure/toolchain.configure b/build/moz.configure/toolchain.configure
+index 6a9933f97f..aebd79fe59 100644
+--- a/build/moz.configure/toolchain.configure
++++ b/build/moz.configure/toolchain.configure
+@@ -1083,7 +1083,7 @@ def sysroot(host_or_target, target_sysroot=None):
+             include = os.path.join(path, "usr/include/c++")
+             if os.path.isdir(include):
+                 with os.scandir(include) as d:
+-                    version = max(Version(e.name) for e in d if e.is_dir())
++                    version = max(Version(e.name) for e in d if e.is_dir() and (e.name[0] > '0' and e.name[0] < '9'))
+             log.info("Using %s sysroot in %s", host_or_target_str, path)
+         return namespace(
+             path=path,
+-- 
+2.31.1
+

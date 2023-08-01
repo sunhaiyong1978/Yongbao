@@ -1,29 +1,30 @@
 source env/wine_runtime/config
 source env/distro.info
 source env/function.sh
+source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=glibc
-export PACKAGE_VERSION=2.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/glibc/2.37/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.37
-tar xvf ${DOWNLOADDIR}/glibc-2.37.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.37
+export PACKAGE_VERSION=2.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/glibc/2.38/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.38
+tar xvf ${DOWNLOADDIR}/glibc-2.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.38
     
-    mkdir -p build-64
-    pushd build-64
-        BUILD_CC="gcc" CC="${X86_64_HOST}-gcc -m64" \
-        CXX="${X86_64_HOST}-gcc -m64" \
-        AS="${X86_64_HOST}-as" AR="${X86_64_HOST}-ar" RANLIB="${X86_64_HOST}-ranlib" \
-        ../configure --prefix=/usr --host=${X86_64_HOST} --build=${CROSS_HOST} \
-	                 --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc \
-	                 --with-headers=${X86_64_SYSROOT_DIR}/usr/include \
+    mkdir -p build
+    pushd build
+        BUILD_CC="gcc" CC="${X86_HOST}-gcc -m32" \
+        CXX="${X86_HOST}-gcc -m32" \
+        AS="${X86_HOST}-as" AR="${X86_HOST}-ar" RANLIB="${X86_HOST}-ranlib" \
+        ../configure --prefix=/usr --host=${X86_HOST} --build=${CROSS_HOST} \
+	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
+	                 --with-headers=${X86_SYSROOT_DIR}/usr/include \
 	                 --enable-add-ons \
-	                 --disable-werror libc_cv_slibdir=/usr/lib64 \
-	                 --enable-kernel=4.15
+	                 --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF} \
+	                 --enable-kernel=2.6.0
 		make -j${JOBS}
-		make DESTDIR=${X86_64_SYSROOT_DIR} install
-		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${X86_64_HOST}/glibc install
+		make DESTDIR=${X86_SYSROOT_DIR} install
+		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${X86_HOST}/glibc install
     popd
-    mkdir -p ${X86_64_SYSROOT_DIR}/usr/lib
+    mkdir -p ${X86_SYSROOT_DIR}/usr/lib
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.37
+rm -rf ${BUILD_DIRECTORY}/glibc-2.38

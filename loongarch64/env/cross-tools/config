@@ -14,11 +14,13 @@ export PATH=${CROSSTOOLS_DIR}/bin:/usr/bin:/bin
 export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
+export ARCH_BIT=64
 export CROSS_TOOLS_PREFIX=${CROSSTOOLS_DIR}
 export PREFIX=${CROSSTOOLS_DIR}
 export COMMON_CONFIG="--prefix=${PREFIX}"
 export PKG_CONFIG_PATH="${CROSSTOOLS_DIR}/lib64/pkgconfig:${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/share/pkgconfig"
 export MAKE_AND_INSTALL="make -j${JOBS} && make install"
+export LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/lib
 export YONGBAO_TARGET_ARCH=loongarch64
 export YONGBAO_TARGET_ARCH_NAME=loongarch
 export TARGET_ABI=lp64

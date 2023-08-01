@@ -1,0 +1,32 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=llvm_runtimes_git
+export PACKAGE_VERSION=main_git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm_runtimes_git/main_git-default/
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+tar xvf ${DOWNLOADDIR}/llvm-project_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+    pushd runtimes
+        mkdir cross-build
+        pushd cross-build
+            CC="clang" CXX="clang++" \
+            cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
+                  -DLLVM_CONFIG=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config \
+                  -DLLVM_LIBDIR_SUFFIX=64 \
+                  -DCMAKE_AR="${CROSSTOOLS_DIR}/bin/llvm-ar" \
+                  -DCMAKE_RANLIB="${CROSSTOOLS_DIR}/bin/llvm-ranlib" \
+                  -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+		  -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;pstl;libcxx" \
+                  -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+		  -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+                  -DCMAKE_SYSROOT=${SYSROOT_DIR} \
+                  -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
+                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+                  -DLLVM_HOST_TRIPLE=${CROSS_TARGET}
+             eval ${NINJA_AND_INSTALL}
+        popd
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git

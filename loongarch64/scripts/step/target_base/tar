@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=tar
-export PACKAGE_VERSION=1.34
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/tar/1.34/
-rm -rf ${BUILD_DIRECTORY}/tar-1.34
-tar xvf ${DOWNLOADDIR}/tar-1.34.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/tar-1.34
+export PACKAGE_VERSION=1.35
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/tar/1.35/
+rm -rf ${BUILD_DIRECTORY}/tar-1.35
+tar xvf ${DOWNLOADDIR}/tar-1.35.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tar-1.35
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/tar-1.34
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/tar-1.34
+rm -rf ${BUILD_DIRECTORY}/tar-1.35

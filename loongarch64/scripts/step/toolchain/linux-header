@@ -1,0 +1,21 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=linux-header
+export PACKAGE_VERSION=6.4.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/linux-header/6.4.7/
+rm -rf ${BUILD_DIRECTORY}/linux-6.4.7
+tar xvf ${DOWNLOADDIR}/linux-6.4.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.4.7
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+	CROSS_KERNEL_NAME=$(archname_to_linuxname "$(get_user_set_env target ${ARCH_FAMILY})" "${ARCH_FAMILY}")
+	make ARCH=${CROSS_KERNEL_NAME} mrproper
+	make ARCH=${CROSS_KERNEL_NAME} INSTALL_HDR_PATH=dest headers_install
+	find dest/include -name '.*' -delete
+
+        INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
+        mkdir -pv ${INSTALL_DIST_DIR}/usr/include
+        cp -rv dest/include/* ${INSTALL_DIST_DIR}/usr/include/
+popd 
+rm -rf ${BUILD_DIRECTORY}/linux-6.4.7

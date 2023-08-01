@@ -3,11 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=binutils
-export PACKAGE_VERSION=2.40
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/binutils/2.40/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.40
-tar xvf ${DOWNLOADDIR}/binutils-2.40.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.40
+export PACKAGE_VERSION=2.41
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/binutils/2.41/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41
+tar xvf ${DOWNLOADDIR}/binutils-2.41.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.41
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/binutils/2.41/patches/0001-remove-default-use-relax-for-lld.patch 
+	 
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -p tools-build
 	pushd tools-build
@@ -21,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.40
     	cp -v ../include/libiberty.h ${SYSDIR}/sysroot/usr/include
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.40
+rm -rf ${BUILD_DIRECTORY}/binutils-2.41
