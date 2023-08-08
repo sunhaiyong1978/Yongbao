@@ -4,13 +4,12 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=mesa
-export PACKAGE_VERSION=23.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/mesa/23.2.0/
-rm -rf ${BUILD_DIRECTORY}/mesa-23.2.0
-tar xvf ${DOWNLOADDIR}/mesa-23.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mesa-23.2.0
-    patch -Np1 -i ${SYSDIR}/files/wine_runtime/mesa/23.2.0/patches/0001-fix-libdrm-and-mesa-multiple-definition-of-handle_ta.patch 
-	 
+export PACKAGE_VERSION=main_git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/mesa/main_git-default/
+rm -rf ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
+tar xvf ${DOWNLOADDIR}/mesa_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
+    
     sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
     mkdir cross-build
@@ -23,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/mesa-23.2.0
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mesa-23.2.0
+rm -rf ${BUILD_DIRECTORY}/mesa_git-main_git-default_git

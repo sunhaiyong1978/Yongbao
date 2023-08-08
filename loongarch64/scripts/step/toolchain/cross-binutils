@@ -24,6 +24,9 @@ pushd ${BUILD_DIRECTORY}/binutils-2.41
                      --enable-64-bit-bfd --disable-shared
         make -j${JOBS} configure-host LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"
         make -j${JOBS}
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils ]; then
+		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils{,.$(date +%Y%m%d%H%M%S)}
+	fi
         make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils install-strip
     popd
 popd 

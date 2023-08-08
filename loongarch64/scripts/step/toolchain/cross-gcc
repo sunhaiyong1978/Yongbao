@@ -34,6 +34,9 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
                      --with-abi=${ARCH_ABI} \
                      --enable-languages=c,c++
         make -j${JOBS} all-gcc all-target-libgcc
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib ]; then
+		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib{,.$(date +%Y%m%d%H%M%S)}
+	fi
         make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib install-strip-gcc install-strip-target-libgcc
     popd
 popd 

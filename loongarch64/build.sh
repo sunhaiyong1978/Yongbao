@@ -92,7 +92,9 @@ function set_build_env
 function get_all_can_set_env_str
 {
         declare -a SET_ENV
+        declare -a DEFAULT_ENV
         declare SET_COUNT=0
+        declare TEMP_COUNT=0
         declare GET_ENV_VALUE=""
         declare SET_STR="${1}"
         declare -a USE_ENV=("")
@@ -101,21 +103,55 @@ function get_all_can_set_env_str
         for i in $(echo "${SET_STR}" | tr "," "\\n")
         do
                 if [ "x${i:0:1}" == "x%" ]; then
-	                SET_ENV[${SET_COUNT}]=${i:1}
+# 	                SET_ENV[${SET_COUNT}]=${i:1}
+	                SET_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $1 }')
+	                DEFAULT_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $2 }')
         	        ((SET_COUNT++))
 		fi
         done
+
+
+	echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
 
         for i in ${SET_ENV[*]}
         do
 		GET_ENV_VALUE=""
 		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
-		if [ "x${GET_ENV_VALUE}" != "x" ]; then
-	                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
-        	        ((USE_ENV_COUNT++))
+		if [ "x${GET_ENV_VALUE}" != "x" ] || [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
+			if [ "x${GET_ENV_VALUE}" != "x" ]; then
+		                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
+			fi
+			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
+				USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
+				echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+			fi
+        		((USE_ENV_COUNT++))
 		fi
+        	((TEMP_COUNT++))
         done
 	echo $(IFS=_; echo "${USE_ENV[*]}")
+}
+
+function get_can_set_status_file
+{
+        declare SET_STR="${1}"
+
+        declare -a SET_ENV
+        declare -a DEFAULT_ENV
+        declare SET_COUNT=0
+        declare TEMP_COUNT=0
+        declare GET_ENV_VALUE=""
+        declare -a USE_ENV=("")
+        declare USE_ENV_COUNT=${#USE_ENV[@]}
+
+        for i in $(echo "${SET_STR}" | tr "," "\\n")
+        do
+                if [ "x${i}" == "xnone_status" ]; then
+			echo "0"
+			return
+		fi
+        done
+	echo "1"
 }
 
 
@@ -141,6 +177,23 @@ function get_overlay_dirname
 
 	OVERLAY_DIR=$(cat ${1} | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
 	echo "${OVERLAY_DIR}"
+}
+
+function fn_run_tempfix_file
+{
+	if [ "x${1}" == "x" ]; then
+		return
+	fi
+	echo "${1}"
+	declare STEP_STAGE="${1}"
+	if [ -f scripts/step/${1} ]; then
+		echo "执行${STEP_STAGE}的临时修改脚本……"
+		tools/run_package_script.sh ${1} >${NEW_TARGET_SYSDIR}/logs/overlay_tempfix_file_$(basename ${STEP_STAGE})_0000.log 2>&1
+		if [ "x$?" != "x0" ]; then
+			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/overlay_tempfix_file_$(basename ${STEP_STAGE})_0000.log 获取更详细的内容。"
+			exit -3
+		fi
+	fi
 }
 
 function fn_overlay_temp_fix_run
@@ -190,7 +243,7 @@ function overlay_mount
 	mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
 	sync
 
-	if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+	if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]) || [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
 		if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
 			mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
 		fi
@@ -206,7 +259,11 @@ function overlay_mount
 			echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 			exit -2
 		fi
-		fn_overlay_temp_fix_run "${1}"
+		if [ ! -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
+			fn_overlay_temp_fix_run "${1}"
+		else
+			fn_run_tempfix_file "${1}/${PACKAGE_NAME}.tempfix"
+		fi
 		overlay_umount
 		sync
 #		sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
@@ -231,7 +288,8 @@ function overlay_mount
 		ln -sf DEST.${DATA_SUFF} ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST
 		sync
 
-		if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+	        if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]) || [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
+#		if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
 			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 			if [ "x$?" != "x0" ]; then
 				echo "挂载sysroot错误！"
@@ -249,7 +307,8 @@ function overlay_mount
 	else
 #		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
 #		sync
-		if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+		if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]) || [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
+#		if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
 #			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
 #				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
 #			fi
@@ -524,6 +583,9 @@ function test_opt_can_run
 
 	for i in $(echo "${TEST_STR}" | tr "," "\\n")
 	do
+		if [ "x${i}" == "xnone_status" ]; then
+			continue
+		fi
 		if [ "x{i}" != "x" ]; then
 			TEST_OPT[${TEST_COUNT}]=${i}
 			((TEST_COUNT++))
@@ -710,7 +772,7 @@ function step_to_index
 		COUNT_NAME=${TMP_NAME/-/_}_COUNT
 		printf -v SHOW_COUNT "%05d" ${!COUNT_NAME}
 
-		#echo "test_opt_can_run" "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
+		# echo "test_opt_can_run" "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
 		if [ "x$(test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}")" == "x0" ]; then
 			if [ "x${GREP_STR}" == "x" ]; then
 				echo -n "${SHOW_COUNT}  "
@@ -770,6 +832,7 @@ do
 	ENV_VALUE=$(echo ${set_env} | awk -F'=' '{ print $2 }')
 	echo "export YONGBAO_SET_ENV_${ENV_KEY}=${ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/set_env.conf
 done
+echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
 
 
 create_date_suff
@@ -861,6 +924,7 @@ do
 	PACKAGE_NAME=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $3 }')
 
 	PACKAGE_SET_ENV=$(get_all_can_set_env_str "${PACKAGE_ALL_OPT}")
+	PACKAGE_SET_STATUS_FILE=$(get_can_set_status_file "${PACKAGE_ALL_OPT}")
 
 	STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${PACKAGE_INDEX}"
 	SCRIPT_FILE=$(echo "${line}" | awk -F' ' '{ print $2 }' | sed "s@ *step\/@@g")
@@ -941,7 +1005,8 @@ do
 	if [ -f env/${STEP_STAGE}/overlay.set ]; then
 		overlay_umount
 		if [ "x${SINGLE_PACKAGE}" != "x1" ]; then
-			if [ "x${STEP_OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
+			if ([ "x${STEP_OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${STEP_STAGE}/overlay_temp_fix_run ]) || [ -f scripts/step/${STEP_STAGE}/${PACKAGE_NAME}.tempfix ]; then
+#			if [ "x${STEP_OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
 				cp -a ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/* ${NEW_TARGET_SYSDIR}/overlaydir/$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)/
 				if [ "x$?" != "x0" ]; then
 					echo "错误：以临时修改覆盖方式编译的软件包在复制文件时出现错误，请检查 ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/ 目录中是否没有产生任何文件。"
@@ -951,7 +1016,7 @@ do
 		fi
 	fi
 
-	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
+	if [ "x${PACKAGE_NAME}" != "xfinal_run" ] && [ "x${PACKAGE_SET_STATUS_FILE}" == "x1" ]; then
 		tools/show_package_script.sh -n ${SCRIPT_FILE} | md5sum > ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE}
 	fi
 
@@ -963,8 +1028,8 @@ do
 		PACKAGE_URL=$(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME})
 		if [ "x${PACKAGE_URL}" != "x" ]; then
 			echo -n "${PACKAGE_URL}" >> ${NEW_TARGET_SYSDIR}/logs/build_log
-                	case "${PACKAGE_URL%%/*}" in
-			git:)
+                	case "$(echo ${PACKAGE_URL%%/*} | awk -F'|' '{ print $1 }')" in
+			GIT)
 				if [ -f sources/url/${STEP_STAGE}/${PACKAGE_NAME}.gitinfo ]; then
 					echo -n " $(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME}.gitinfo) " >> ${NEW_TARGET_SYSDIR}/logs/build_log
 				fi
@@ -972,6 +1037,10 @@ do
 	                *)
 				;;
 			esac
+			PKG_FILENAME=$(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME} | awk -F'|' '{ print $3 }' | sed "s@\.tar\.gz\$@@g")
+			if [ -f sources/downloads/files/${PKG_FILENAME}.commit ]; then
+				echo -n " | $(cat sources/downloads/files/${PKG_FILENAME}.commit) " >> ${NEW_TARGET_SYSDIR}/logs/build_log
+			fi
 		fi
 	fi
 	echo "" >> ${NEW_TARGET_SYSDIR}/logs/build_log

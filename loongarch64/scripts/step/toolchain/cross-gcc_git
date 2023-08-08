@@ -8,14 +8,13 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc_git/13.1.0-def
 rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
 tar xvf ${DOWNLOADDIR}/gcc_git-13.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
+    HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+    HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+    ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
     patch -Np1 -i ${SYSDIR}/files/toolchain/cross-gcc_git/13.1.0-default/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
 	 
-    if [ -d ${PREFIX}/cross-tools ]; then
-	mv ${PREFIX}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
-    fi
-    mkdir -pv ${PREFIX}/cross-tools
-    mkdir -pv ${PREFIX}/cross-tools/target/lib{,64}
-    cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/binutils_git/${CROSS_TARGET}/cross-tools/* ${PREFIX}/cross-tools/
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
     tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
     tar xvf $(ls ${DOWNLOADDIR}/mpfr-*.tar.* | sort -V | tail -n1)
@@ -25,19 +24,20 @@ pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
     mv mpc-* mpc
     mkdir cross-build
     pushd cross-build
-        AR=ar LDFLAGS="-static" \
-        ../configure --prefix=${PREFIX}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
-                     --target=${CROSS_TARGET} \
-                     --with-newlib --disable-shared --with-sysroot=${PREFIX}/cross-tools/target \
+        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} \
+                     --target=${HOST_TARGET} \
+                     --with-newlib --disable-shared --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
                      --disable-decimal-float --disable-libgomp --disable-libitm \
                      --disable-libsanitizer --disable-libquadmath --disable-threads \
                      --disable-target-zlib --with-system-zlib --enable-checking=release \
-                     --enable-default-pie --enable-plugin --enable-plugins \
+                     --enable-default-pie --disable-multilib \
+                     --with-abi=${ARCH_ABI} \
                      --enable-languages=c,c++
-        make -j${JOBS} all-gcc all-target-libgcc LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"
-        make DESTDIR=${PWD}/dest install-strip-gcc install-strip-target-libgcc
-	mkdir -pv ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/gcc_git-newlib/${CROSS_TARGET}/
-	cp -a dest/${PREFIX}/* ${TOOLCHAIN_DIRECTORY}/${CROSS_HOST}/gcc_git-newlib/${CROSS_TARGET}/
+        make -j${JOBS} all-gcc all-target-libgcc
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib ]; then
+		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib{,.$(date +%Y%m%d%H%M%S)}
+	fi
+        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib install-strip-gcc install-strip-target-libgcc                                                                                                             
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git

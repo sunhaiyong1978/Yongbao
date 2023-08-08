@@ -21,6 +21,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		             --disable-decimal-float --disable-libgomp --disable-libitm \
 		             --disable-libsanitizer --disable-libquadmath --disable-threads \
 		             --disable-target-zlib --with-system-zlib --enable-checking=release \
+			     --with-tune=generic \
 		             --enable-languages=c
 		make -j${JOBS} all-gcc all-target-libgcc
 		make install-strip-gcc install-strip-target-libgcc

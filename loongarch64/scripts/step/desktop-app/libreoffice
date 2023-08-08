@@ -49,6 +49,7 @@ pushd ${BUILD_DIRECTORY}/libreoffice-7.6.0.1
                       --with-system-zlib --with-system-openjpeg --with-system-icu \
                       LIBS="-lstdc++" \
                       --disable-coinmp --enable-python=no
+    LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" make -j${JOBS} gb_Side=build -rs -f Makefile.gbuild build-tools
     ZIC=/usr/sbin/zic make -j${JOBS} build
     make DESTDIR=${PWD}/dest distro-pack-install
     cp -a ${PWD}/dest/opt/libreoffice ${SYSROOT_DIR}/opt/

@@ -111,6 +111,9 @@ do
 				if [ "x${FORCE_DOWN}" == "xFALSE" ] && [ -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} ] && [ -f ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash ] && [ "x$(md5sum ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME} | awk -F' ' '{print $1}')" == "x$(cat ${BASE_DIR}/sources/downloads/hash/${SAVE_FILENAME}.hash)" ]; then
 					echo "$i 所需源码包已下载。"
 				else
+					if [ -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}.commit ]; then
+						rm -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}.commit
+					fi
 					if [ "x${FORCE_DOWN}" == "xTRUE" ]; then
 						rm -f ${BASE_DIR}/sources/downloads/files/${SAVE_FILENAME}
 					fi

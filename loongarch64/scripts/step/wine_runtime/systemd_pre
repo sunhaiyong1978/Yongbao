@@ -9,8 +9,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/systemd_pre/254/
 rm -rf ${BUILD_DIRECTORY}/systemd-254
 tar xvf ${DOWNLOADDIR}/systemd-254.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/systemd-254
-	patch -Np1 -i ${SYSDIR}/files/wine_runtime/systemd_pre/254/patches/0001-fix-compiler-error-for-libcryptsetup-is-false.patch 
-	 
+	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
 	popd

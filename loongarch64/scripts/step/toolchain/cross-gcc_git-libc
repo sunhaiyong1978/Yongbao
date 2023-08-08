@@ -1,0 +1,52 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=cross-gcc_git-libc
+export PACKAGE_VERSION=13.1.0-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc_git-libc/13.1.0-default/
+rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
+tar xvf ${DOWNLOADDIR}/gcc_git-13.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
+    HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+    HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+    ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
+    patch -Np1 -i ${SYSDIR}/files/toolchain/cross-gcc_git-libc/13.1.0-default/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
+	 
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+
+    if [ -d ${PREFIX}/cross-tools ]; then
+        mv ${PREFIX}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
+    fi
+    mkdir -pv ${PREFIX}/cross-tools
+    cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/target ${PREFIX}/cross-tools/
+
+    sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+    tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
+    tar xvf $(ls ${DOWNLOADDIR}/mpfr-*.tar.* | sort -V | tail -n1)
+    tar xvf $(ls ${DOWNLOADDIR}/mpc-*.tar.* | sort -V | tail -n1)
+    mv gmp-* gmp
+    mv mpfr-* mpfr
+    mv mpc-* mpc
+    mkdir cross-build
+    pushd cross-build
+        LDFLAGS="-static" \
+        ../configure --prefix=${PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} \
+                     --target=${HOST_TARGET} \
+                     --enable-__cxa_atexit --enable-threads=posix \
+                     --enable-libstdcxx-time \
+                     --enable-checking=release \
+                     --with-sysroot=${PREFIX}/cross-tools/target \
+                     --enable-default-pie --disable-multilib --enable-linker-build-id \
+                     --with-abi=${ARCH_ABI} \
+                     --enable-languages=c,c++,fortran,objc,obj-c++,lto
+        make -j${JOBS} all-gcc
+        make -j${JOBS}
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc ]; then
+		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc{,.$(date +%Y%m%d%H%M%S)}
+	fi
+        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc install-strip
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git

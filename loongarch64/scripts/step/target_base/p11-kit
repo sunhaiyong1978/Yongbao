@@ -8,13 +8,28 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/p11-kit/0.25.0/
 rm -rf ${BUILD_DIRECTORY}/p11-kit-0.25.0
 tar xvf ${DOWNLOADDIR}/p11-kit-0.25.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/p11-kit-0.25.0
-	
-	mkdir cross-build
-	pushd cross-build
-		meson ${MESON_CONFIG} -Dtrust_paths=/etc/pki/anchors \
+        
+sed 's/if (gi/& \&\& gi != C_GetInterface/' \
+    -i p11-kit/modules.c
+
+sed '20,$ d' -i trust/trust-extract-compat &&
+cat >> trust/trust-extract-compat << "EOF"
+# Copy existing anchor modifications to /etc/ssl/local
+/usr/libexec/make-ca/copy-trust-modifications
+
+# Update trust stores
+/usr/sbin/make-ca -r
+EOF
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} -Dtrust_paths=/etc/pki/anchors \
                       ..
-		eval ${NINJA_AND_INSTALL}
-	popd
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+                eval ${NINJA_AND_INSTALL}
+        popd
+	ln -sfv ${SYSROOT_DIR}/usr/libexec/p11-kit/trust-extract-compat \
+        	${SYSROOT_DIR}/usr/bin/update-ca-certificates
+	ln -sfv ./pkcs11/p11-kit-trust.so ${SYSROOT_DIR}/usr/lib64/libnssckbi.so
+
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/p11-kit-0.25.0

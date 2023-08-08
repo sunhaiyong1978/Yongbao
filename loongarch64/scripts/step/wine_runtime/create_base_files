@@ -7,4 +7,4 @@ export STEP_PACKAGENAME=create_base_files
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/create_base_files//
 mkdir -p ${SYSROOT_DIR}/usr/gnemul/
-ln -sf ../../usr/lib/i686/sys-root ${SYSROOT_DIR}/usr/gnemul/qemu-i686
+ln -sf ../../usr/lib/i686/sys-root ${SYSROOT_DIR}/usr/gnemul/qemu-i386

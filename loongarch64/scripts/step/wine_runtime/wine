@@ -4,20 +4,23 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=wine
-export PACKAGE_VERSION=8.13
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/wine/8.13/
-rm -rf ${BUILD_DIRECTORY}/wine-8.13
-tar xvf ${DOWNLOADDIR}/wine-8.13.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-8.13
+export PACKAGE_VERSION=6.0.4-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/wine/6.0.4-default/
+rm -rf ${BUILD_DIRECTORY}/wine-6.0.4
+tar xvf ${DOWNLOADDIR}/wine-6.0.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-6.0.4
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-         ./configure ${COMMON_CONFIG} --with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" NETAPI_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" --enable-malloc0returnsnull
+         ./configure ${COMMON_CONFIG} --with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" NETAPI_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" --enable-malloc0returnsnull --without-vulkan --without-opencl
         CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-8.13
+rm -rf ${BUILD_DIRECTORY}/wine-6.0.4
 
 echo -n ":Windows:M::MZ::/usr/bin/wine:" > ${SYSROOT_DIR}/etc/binfmt.d/wine.conf
+
+#  [[[7.0.0]]]
+# EXTRA_PARM=--with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-lpulse -lpthread ${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio/libpulsecommon-16.1.so" NETAPI_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi"

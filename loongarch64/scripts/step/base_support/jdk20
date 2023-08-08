@@ -26,6 +26,7 @@ pushd ${BUILD_DIRECTORY}/jdk20-20.0.1_git
 	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "20.0.1" | sed "s@-default@@g")/
         tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "20.0.1" | sed "s@-default@@g")/jdk-$(echo "20.0.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* jdk20
         tar -xvf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "20.0.1" | sed "s@-default@@g")/jdk-$(echo "20.0.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz -C ${SYSROOT_DIR}/opt/
+	info_pool "生成了可发布的JDK 20.0.1 虚拟机压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "20.0.1" | sed "s@-default@@g")/jdk-$(echo "20.0.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/jdk20-20.0.1_git

@@ -17,6 +17,7 @@ export LIB_SUFF="64"
 export ARCH_BIT=64
 export PREFIX=${SYSDIR}/build/toolchain
 export MINGW_HOST=x86_64-w64-mingw32ucrt
+export MINGW_TARGET=x86_64-w64-mingw32ucrt
 export X86_64_LINUX_HOST=x86_64-unknown-linux-gnu
 export CROSS_TOOLS_PREFIX=${SYSDIR}/mingw-tools
 export COMMON_CONFIG="--prefix=${SYSDIR}/cross-tools/toolchains"

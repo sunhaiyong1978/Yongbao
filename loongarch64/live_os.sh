@@ -115,5 +115,6 @@ mv ${LIVE_DIRECTORY}/boot/initramfs{,_${NEW_LABEL}}.img.gz
 
 sed -i "s@ LABEL=Sunhaiyong @ LABEL=${NEW_LABEL} @g" ${LIVE_DIRECTORY}/boot/grub/grub.cfg
 echo "${NEW_LABEL}" > ${LIVE_DIRECTORY}/LABEL
+cp -a ${BASE_DIR}/docs ${LIVE_DIRECTORY}/ 
 
 echo "Live USB系统导出完成，存放在 ${LIVE_DIRECTORY} , 准备一个第一分区为VFAT格式空分区的U盘，将 ${LIVE_DIRECTORY} 目录中所有内容复制到U盘的第一分区中，该U盘即可在支持UEFI的机器上作为LiveUSB启动。"

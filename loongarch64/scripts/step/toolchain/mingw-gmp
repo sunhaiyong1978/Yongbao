@@ -1,0 +1,25 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=mingw-gmp
+export PACKAGE_VERSION=6.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/mingw-gmp/6.3.0/
+rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0
+tar xvf ${DOWNLOADDIR}/gmp-6.3.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gmp-6.3.0
+	
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+	CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target)" "${ARCH_BIT}")
+	LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
+	ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
+
+        PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
+
+	./configure --prefix=/mingw --host=${CROSS_TARGET} --build=${CROSS_HOST} \
+                         --enable-cxx
+	make -j${JOBS}
+	INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
+	make DESTDIR=${INSTALL_DIST_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0

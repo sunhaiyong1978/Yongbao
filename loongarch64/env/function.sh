@@ -177,3 +177,4 @@ function archname_to_archabi
 }
 
 source ${NEW_TARGET_SYSDIR}/set_env.conf
+source ${NEW_TARGET_SYSDIR}/package_env.conf
