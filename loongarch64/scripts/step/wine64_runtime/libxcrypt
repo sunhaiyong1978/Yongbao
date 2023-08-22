@@ -1,0 +1,22 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=libxcrypt
+export PACKAGE_VERSION=4.4.36
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libxcrypt/4.4.36/
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.36
+tar xvf ${DOWNLOADDIR}/libxcrypt-4.4.36.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.36
+	patch -Np1 -i ${SYSDIR}/files/wine64_runtime/libxcrypt/4.4.36/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
+	 
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	CFLAGS="${CFLAGS} -Wno-error=stringop-overread" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_64_SYSROOT_DIR} install
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.36

@@ -1,0 +1,21 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine_runtime/custom
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=libxcvt
+export PACKAGE_VERSION=0.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libxcvt/0.1.2/
+rm -rf ${BUILD_DIRECTORY}/libxcvt-0.1.2
+tar xvf ${DOWNLOADDIR}/libxcvt-0.1.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxcvt-0.1.2
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} --default-library=both  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libxcvt-0.1.2

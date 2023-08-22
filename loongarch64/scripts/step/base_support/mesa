@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mesa
-export PACKAGE_VERSION=23.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/23.2.0/
-rm -rf ${BUILD_DIRECTORY}/mesa-23.2.0
-tar xvf ${DOWNLOADDIR}/mesa-23.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mesa-23.2.0
+export PACKAGE_VERSION=23.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/23.1.6/
+rm -rf ${BUILD_DIRECTORY}/mesa-23.1.6
+tar xvf ${DOWNLOADDIR}/mesa-23.1.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa-23.1.6
     sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
     mkdir cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/mesa-23.2.0
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mesa-23.2.0
+rm -rf ${BUILD_DIRECTORY}/mesa-23.1.6

@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=json-c
-export PACKAGE_VERSION=0.16-20220414
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/json-c/0.16-20220414/
-rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
-tar xvf ${DOWNLOADDIR}/json-c-0.16-20220414.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
+export PACKAGE_VERSION=0.17-20230812
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/json-c/0.17-20230812/
+rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.17-20230812
+tar xvf ${DOWNLOADDIR}/json-c-0.17-20230812.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/json-c-json-c-0.17-20230812
         
 	mkdir cross-build
 	pushd cross-build
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
 	popd
         rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
+rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.17-20230812

@@ -8,10 +8,14 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-pkg-config/
 rm -rf ${BUILD_DIRECTORY}/pkg-config-0.29.2
 tar xvf ${DOWNLOADDIR}/pkg-config-0.29.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pkg-config-0.29.2
+        MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+        INSTALL_ARCH_NAME="mingw64ucrt"
+        INSTALL_ARCH_NAME=$(archname_to_name "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+
         
         ./configure --prefix=${PREFIX}/${MINGW_HOST} --build=${CROSS_HOST} \
                 --host=${CROSS_HOST} --target=${MINGW_HOST} \
-                --with-pc_path==${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/pkgconfig --program-prefix=${MINGW_HOST}- --with-internal-glib --disable-host-tool
+                --with-pc_path==${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root/mingw/lib/pkgconfig --program-prefix=${MINGW_HOST}- --with-internal-glib --disable-host-tool
 	make -j${JOBS}
 	make install
 popd 

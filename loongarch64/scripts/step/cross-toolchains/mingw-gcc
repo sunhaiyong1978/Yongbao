@@ -8,6 +8,10 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-gcc/13.2.0/
 rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
 tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc-13.2.0
+	MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+	INSTALL_ARCH_NAME="mingw64ucrt"
+	INSTALL_ARCH_NAME=$(archname_to_name "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+
 	mkdir -p tools-build
 	pushd tools-build
 		AR=ar LDFLAGS="-Wl,-rpath,${CROSS_TOOLS_PREFIX}/lib" \
@@ -16,7 +20,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		             --with-mpfr=${CROSSTOOLS_DIR} --with-gmp=${CROSSTOOLS_DIR} \
 		             --with-mpc=${CROSSTOOLS_DIR} \
 		             --with-newlib --disable-shared \
-		             --with-sysroot=${SYSROOT_DIR}/usr/lib/mingw/sys-root \
+		             --with-sysroot=${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root \
 		             --disable-decimal-float --disable-libgomp --disable-libitm \
 		             --disable-libsanitizer --disable-libquadmath --disable-threads \
 		             --disable-target-zlib --with-system-zlib --enable-checking=release \

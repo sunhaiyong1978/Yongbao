@@ -8,3 +8,5 @@ export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/create_base_files//
 mkdir -p ${SYSROOT_DIR}/usr/gnemul/
 ln -sf ../../usr/lib/i686/sys-root ${SYSROOT_DIR}/usr/gnemul/qemu-i386
+ln -sf ../../usr/lib/i686/sys-root ${SYSROOT_DIR}/usr/gnemul/latx-i386
+echo "vm.mmap_min_addr=65536" > ${SYSROOT_DIR}/etc/sysctl.d/99-wine_runtime.conf

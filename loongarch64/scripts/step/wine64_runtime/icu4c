@@ -1,0 +1,23 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=icu4c
+export PACKAGE_VERSION=73_2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/icu4c/73_2/
+rm -rf ${BUILD_DIRECTORY}/icu
+tar xvf ${DOWNLOADDIR}/icu4c-73_2-src.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/icu
+    pushd source
+    touch config/icucross.mk
+    touch config/icucross.inc
+    sed -i '/^PKGDATA/s@$(TOOLBINDIR)@${CROSSTOOLS_DIR}/bin@g' data/Makefile.in
+    sed -i '/INVOKE/s@$(TOOLBINDIR)@${CROSSTOOLS_DIR}/bin@g' data/Makefile.in extra/uconv/Makefile.in
+    sed -i '/INVOKE/s@/bin/icupkg@/sbin/icupkg@g' data/Makefile.in
+    ./configure ${COMMON_CONFIG} --with-cross-build=${PWD}
+    make -j${JOBS}
+    make PKGDATA_INVOKE= DESTDIR=${X86_64_SYSROOT_DIR} install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/icu

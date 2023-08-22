@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pango
-export PACKAGE_VERSION=1.50.14
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pango/1.50.14/
-rm -rf ${BUILD_DIRECTORY}/pango-1.50.14
-tar xvf ${DOWNLOADDIR}/pango-1.50.14.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pango-1.50.14
-	patch -Np1 -i ${SYSDIR}/files/base_support/pango/1.50.14/patches/0001-remove-array-bounds-flags-for-gcc-13.patch 
-	 
+export PACKAGE_VERSION=1.51.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pango/1.51.0/
+rm -rf ${BUILD_DIRECTORY}/pango-1.51.0
+tar xvf ${DOWNLOADDIR}/pango-1.51.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pango-1.51.0
+	
 	mkdir cross-build
 	pushd cross-build
 		meson ${MESON_CONFIG}  --wrap-mode=nofallback -Dintrospection=enabled \
@@ -18,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/pango-1.50.14
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pango-1.50.14
+rm -rf ${BUILD_DIRECTORY}/pango-1.51.0

@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} \
-              -Dgallium-drivers="nouveau,r300,r600,radeonsi,etnaviv,swrast,virgl,zink" \
+              -Dgallium-drivers="auto" \
               -Dplatforms=x11,wayland \
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true -Dosmesa=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dgallium-opencl=disabled \

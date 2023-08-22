@@ -1,0 +1,37 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=oss4
+export PACKAGE_VERSION=4.2-build2020
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/oss4/4.2-build2020/
+rm -rf ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl
+tar xvf ${DOWNLOADDIR}/oss4_4.2-build2020.orig.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl
+	mkdir -p cross-build
+	pushd cross-build
+		../configure --enable-libsalsa=NO --config-vmix=FIXEDPOINT --config-midi=YES
+		make CC=${X86_64_HOST}-gcc LD=${X86_64_HOST}-ld CPLUSPLUS="${X86_64_HOST}-g++ -fno-rtti -fno-exceptions -I." ARCH=x86_64
+		make CC=${X86_64_HOST}-gcc CXX=${X86_64_HOST}-g++ ARCH=x86_64 DESTDIR=${X86_64_SYSROOT_DIR} copy
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl
+
+# rm -rf ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl
+tar xvf ${DOWNLOADDIR}/oss4_4.2-build2020.orig.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl
+#	mkdir -p cross-build
+#	pushd cross-build
+#		../configure --enable-libsalsa=NO --config-vmix=FIXEDPOINT
+#		pushd lib/libOSSlib
+#			make -j${JOBS} CC=${X86_64_HOST}-gcc CXX=${X86_64_HOST}-g++ libOSSlib.so
+#		popd
+#		pushd lib/libsalsa
+#			make -j${JOBS} CC=${X86_64_HOST}-gcc CXX=${X86_64_HOST}-g++
+#		popd
+#		make -j${JOBS} CC=${X86_64_HOST}-gcc CXX=${X86_64_HOST}-g++ build
+#		make CC=${X86_64_HOST}-gcc CXX=${X86_64_HOST}-g++ DESTDIR=${X86_64_SYSROOT_DIR} copy
+#	popd
+#popd 
+rm -rf ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl

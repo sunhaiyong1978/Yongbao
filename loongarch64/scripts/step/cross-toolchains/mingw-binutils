@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-binutils/2.
 rm -rf ${BUILD_DIRECTORY}/binutils-2.41
 tar xvf ${DOWNLOADDIR}/binutils-2.41.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/binutils-2.41
+	MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -p tools-build
 	pushd tools-build

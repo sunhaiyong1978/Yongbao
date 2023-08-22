@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=sphinxcontrib-applehelp
-export PACKAGE_VERSION=1.0.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinxcontrib-applehelp/1.0.4/
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-applehelp-1.0.4
-tar xvf ${DOWNLOADDIR}/sphinxcontrib-applehelp-1.0.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinxcontrib-applehelp-1.0.4
+export PACKAGE_VERSION=1.0.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinxcontrib-applehelp/1.0.7/
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_applehelp-1.0.7
+tar xvf ${DOWNLOADDIR}/sphinxcontrib_applehelp-1.0.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinxcontrib_applehelp-1.0.7
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user sphinxcontrib-applehelp
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-applehelp-1.0.4
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_applehelp-1.0.7

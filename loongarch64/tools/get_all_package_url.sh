@@ -208,7 +208,7 @@ ${i} 没有下载路径，请检查。"
 		for url_i in $(ls ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/*.url)
 		do
 			RESOURCES_URL="$(cat ${url_i} | grep ^URL= | awk -F'=' '{ print $2 }')"
-			RESOURCES_FILENAME="$(cat ${url_i} | grep ^FILENAME= | awk -F'=' '{ print $2 }')"
+			RESOURCES_FILENAME="$(cat ${url_i} | grep ^FILENAME= | awk -F'=' '{ print $2 }' | sed "s@<<<PACKAGE_VERSION>>>@${PKG_VERSION}@g")"
 			RESOURCES_MODE="$(cat ${url_i} | grep ^MODE= | awk -F'=' '{ print $2 }')"
 			PKG_GIT_BRANCH=""
 			PKG_GIT_COMMIT=""

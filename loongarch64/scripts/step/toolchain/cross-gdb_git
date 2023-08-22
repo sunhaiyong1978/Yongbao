@@ -24,7 +24,7 @@ pushd ${BUILD_DIRECTORY}/gdb_git-14.0.50-default_git
 	LDFLAGS="--static -pthread" \
 	../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} --target=${HOST_TARGET} \
  --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-64-bit-bfd
-	make -j${JOBS} all-gdb
+	make -j${JOBS} all-gdb LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"
 	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gdb ]; then
 		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gdb{,.$(date +%Y%m%d%H%M%S)}
 	fi

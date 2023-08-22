@@ -1,2 +1,2 @@
 overlay_dir=
-parent_dirs=sysroot mingw_sysroot wine_runtime
+parent_dirs=sysroot mingw_sysroot wine_runtime wine64_runtime

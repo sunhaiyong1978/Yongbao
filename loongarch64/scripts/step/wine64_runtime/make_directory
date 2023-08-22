@@ -1,0 +1,62 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=make_directory
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/make_directory//
+mkdir -p ${X86_64_SYSROOT_DIR}
+pushd ${X86_64_SYSROOT_DIR}
+  mkdir -p usr/lib{,64}
+  mkdir -p usr/{bin,sbin}
+  ln -sf usr/lib ./
+  ln -sf usr/lib64 ./
+  ln -sf usr/bin ./
+  ln -sf usr/sbin ./
+popd
+
+cat > ${COMMON_DIR}/meson-cross-x86_64.txt << EOF
+[binaries]
+c = '${X86_64_HOST}-gcc'
+cpp = '${X86_64_HOST}-g++'
+ar = '${X86_64_HOST}-ar'
+strip = '${X86_64_HOST}-strip'
+objcopy = '${X86_64_HOST}-objcopy'
+pkgconfig = '${X86_64_HOST}-pkg-config'
+llvm-config = 'llvm-config'
+exe_wrapper = 'qemu-x86_64'
+[properties]"
+skip_sanity_check = true
+needs_exe_wrapper = true
+sys_root = '${X86_64_SYSROOT_DIR}'
+pkg_config_libdir = '${X86_64_SYSROOT_DIR}/usr/lib64/pkgconfig:${X86_64_SYSROOT_DIR}/usr/share/pkgconfig'
+[host_machine]
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+EOF
+
+cat > ${COMMON_DIR}/cmake-cross-x86_64.cmake << EOF
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
+
+
+set(CMAKE_CROSSCOMPILING_EMULATOR qemu-x86_64)
+set(CMAKE_SYSROOT ${X86_64_SYSROOT_DIR})
+set(CMAKE_FIND_ROOT_PATH ${X86_64_SYSROOT_DIR}/usr)
+
+set(CMAKE_INSTALL_PREFIX /usr)
+
+# set(CMAKE_STAGING_PREFIX /home/devel/stage)
+
+set(tools ${CROSS_TOOLS_PREFIX})
+set(CMAKE_C_COMPILER \${tools}/bin/${X86_64_HOST}-gcc)
+set(CMAKE_CXX_COMPILER \${tools}/bin/${X86_64_HOST}-g++)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+EOF

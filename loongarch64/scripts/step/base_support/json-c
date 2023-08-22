@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=json-c
-export PACKAGE_VERSION=0.16-20220414
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/json-c/0.16-20220414/
-rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
-tar xvf ${DOWNLOADDIR}/json-c-0.16-20220414.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
+export PACKAGE_VERSION=0.17-20230812
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/json-c/0.17-20230812/
+rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.17-20230812
+tar xvf ${DOWNLOADDIR}/json-c-0.17-20230812.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/json-c-json-c-0.17-20230812
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.16-20220414
+rm -rf ${BUILD_DIRECTORY}/json-c-json-c-0.17-20230812

@@ -16,6 +16,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
                              --with-mpc=${CROSSTOOLS_DIR} \
                              --with-sysroot=${SYSROOT_DIR}/usr/lib/x86_64/sys-root \
                              --with-system-zlib --disable-multilib --with-abi=64 \
+			     --with-tune=generic \
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
 		make -j${JOBS}
 		make install-strip

@@ -1,0 +1,17 @@
+MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+INSTALL_ARCH_NAME="mingw64ucrt"
+INSTALL_ARCH_NAME=$(archname_to_name "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+
+export MINGW_HOST INSTALL_ARCH_NAME
+
+export PREFIX=/mingw
+export PKG_CONFIG_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root"
+export MINGW_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root"
+export PKG_CONFIG_PATH="${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root/mingw/lib/pkgconfig"
+export COMMON_CONFIG="--prefix=/mingw --build=${CROSS_HOST} --host=${MINGW_HOST}"
+export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root install && rm -f ${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root/lib/*.la"
+export MESON_CONFIG="--prefix=/mingw --cross-file ${COMMON_DIR}/meson-cross_${INSTALL_ARCH_NAME}.txt"
+export NINJA_AND_INSTALL="CC=${MINGW_HOST}-gcc ninja && DESTDIR=${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root ninja install"
+
+export CROSS_TOOLS_PREFIX=${SYSDIR}/cross-toolchains/${MINGW_HOST}
+export PATH=${CROSS_TOOLS_PREFIX}/bin:$PATH

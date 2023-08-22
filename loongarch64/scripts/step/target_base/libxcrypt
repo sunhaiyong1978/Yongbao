@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.36
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} 
+	CFLAGS="${CFLAGS} -Wno-error=stringop-overread" ./configure ${COMMON_CONFIG} 
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

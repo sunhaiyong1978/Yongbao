@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=sphinxcontrib-qthelp
-export PACKAGE_VERSION=1.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinxcontrib-qthelp/1.0.3/
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-qthelp-1.0.3
-tar xvf ${DOWNLOADDIR}/sphinxcontrib-qthelp-1.0.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinxcontrib-qthelp-1.0.3
+export PACKAGE_VERSION=1.0.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinxcontrib-qthelp/1.0.6/
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_qthelp-1.0.6
+tar xvf ${DOWNLOADDIR}/sphinxcontrib_qthelp-1.0.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinxcontrib_qthelp-1.0.6
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user sphinxcontrib-qthelp
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-qthelp-1.0.3
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_qthelp-1.0.6

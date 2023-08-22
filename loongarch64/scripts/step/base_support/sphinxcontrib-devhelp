@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=sphinxcontrib-devhelp
-export PACKAGE_VERSION=1.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sphinxcontrib-devhelp/1.0.2/
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-devhelp-1.0.2
-tar xvf ${DOWNLOADDIR}/sphinxcontrib-devhelp-1.0.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinxcontrib-devhelp-1.0.2
+export PACKAGE_VERSION=1.0.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sphinxcontrib-devhelp/1.0.5/
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.5
+tar xvf ${DOWNLOADDIR}/sphinxcontrib_devhelp-1.0.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.5
 	
 	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user sphinxcontrib-devhelp --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-devhelp-1.0.2
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.5

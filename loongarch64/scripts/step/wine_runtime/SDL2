@@ -4,13 +4,13 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=SDL2
-export PACKAGE_VERSION=2.28.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/SDL2/2.28.1/
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.1
-tar xvf ${DOWNLOADDIR}/SDL2-2.28.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SDL2-2.28.1
+export PACKAGE_VERSION=2.28.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/SDL2/2.28.2/
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.2
+tar xvf ${DOWNLOADDIR}/SDL2-2.28.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SDL2-2.28.2
     ./configure ${COMMON_CONFIG}
     make -j${JOBS} WAYLAND_SCANNER=wayland-scanner
     make DESTDIR=${X86_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.1
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.2

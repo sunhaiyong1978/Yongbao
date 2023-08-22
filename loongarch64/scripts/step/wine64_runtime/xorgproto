@@ -1,0 +1,21 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=xorgproto
+export PACKAGE_VERSION=2023.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/xorgproto/2023.2/
+rm -rf ${BUILD_DIRECTORY}/xorgproto-2023.2
+tar xvf ${DOWNLOADDIR}/xorgproto-2023.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xorgproto-2023.2
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} --default-library=both  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/xorgproto-2023.2

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=solid
-export PACKAGE_VERSION=5.108.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/solid/5.108.0/
-rm -rf ${BUILD_DIRECTORY}/solid-5.108.0
-tar xvf ${DOWNLOADDIR}/solid-5.108.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/solid-5.108.0
+export PACKAGE_VERSION=5.109.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/solid/5.109.0/
+rm -rf ${BUILD_DIRECTORY}/solid-5.109.0
+tar xvf ${DOWNLOADDIR}/solid-5.109.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/solid-5.109.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/solid-5.108.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/solid-5.108.0
+rm -rf ${BUILD_DIRECTORY}/solid-5.109.0

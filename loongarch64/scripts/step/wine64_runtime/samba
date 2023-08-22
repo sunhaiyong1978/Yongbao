@@ -1,0 +1,26 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=samba
+export PACKAGE_VERSION=4.18.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/samba/4.18.6/
+rm -rf ${BUILD_DIRECTORY}/samba-4.18.6
+tar xvf ${DOWNLOADDIR}/samba-4.18.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.18.6
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	sed -i.orig "/test_args/s@cmd = \[self@cmd = \['qemu-x86_64'\] + \[self@g" third_party/waf/waflib/Tools/c_config.py
+
+        NCURSES_CONFIG=${X86_64_SYSROOT_DIR}/bin/ncursesw6-config PKG_CONFIG=${X86_64_HOST}-pkg-config CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --with-piddir=/run/samba --with-pammodulesdir=/usr/lib/security --enable-fhs --without-ad-dc --hostcc=gcc --with-system-mitkrb5 --disable-python --without-ldap --without-ads --without-pam
+        eval ${MAKE_AND_INSTALL}
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/samba-4.18.6

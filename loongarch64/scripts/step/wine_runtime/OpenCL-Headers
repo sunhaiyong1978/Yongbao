@@ -1,0 +1,24 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine_runtime/custom
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=OpenCL-Headers
+export PACKAGE_VERSION=2023.04.17
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/OpenCL-Headers/2023.04.17/
+rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2023.04.17
+tar xvf ${DOWNLOADDIR}/OpenCL-Headers-2023.04.17.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenCL-Headers-2023.04.17
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-i686.cmake \
+       		      -DCMAKE_INSTALL_PREFIX=/usr  -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2023.04.17

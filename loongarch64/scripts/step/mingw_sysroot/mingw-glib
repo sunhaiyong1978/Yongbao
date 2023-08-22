@@ -1,13 +1,14 @@
 source env/mingw_sysroot/config
 source env/distro.info
 source env/function.sh
+source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-glib
-export PACKAGE_VERSION=2.77.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-glib/2.77.1/
-rm -rf ${BUILD_DIRECTORY}/glib-2.77.1
-tar xvf ${DOWNLOADDIR}/glib-2.77.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.77.1
+export PACKAGE_VERSION=2.77.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-glib/2.77.2/
+rm -rf ${BUILD_DIRECTORY}/glib-2.77.2
+tar xvf ${DOWNLOADDIR}/glib-2.77.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.77.2
 	sed -i "/libintl.type_name/d" meson.build
 	sed -i "s@libiconv = \[\]@libiconv = dependency\('iconv'\)@g" meson.build
         
@@ -20,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/glib-2.77.1
         popd
         rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.77.1
+rm -rf ${BUILD_DIRECTORY}/glib-2.77.2

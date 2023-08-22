@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if [ ! -f step ]; then
-	echo "没有发现脚本文件，请检查当前目录是否存在step文件。"
-fi
-
 NEW_TARGET_SYSDIR="${PWD}/workbase"
 BASE_DIR="${PWD}"
 
@@ -14,11 +10,16 @@ declare OPT_SET_STR=""
 declare OPT_SET_ENV=""
 declare ONLY_BUILD=0
 declare REQUIRES_BUILD=0
+declare GROUP_IN_BUILD=0
 declare SINGLE_PACKAGE=0
 declare FORCE_ALL_DOWNLOAD=0
+declare EXPORT_STEP=0
 declare DATA_SUFF=""
+declare SOURCE_STEP_FILE="step"
+declare INDEX_STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
+declare SET_INDEX_STEP_FILE=""
 
-while getopts 'fao:rsde:h' OPT; do
+while getopts 'fao:rgsde:xi:h' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -32,6 +33,10 @@ while getopts 'fao:rsde:h' OPT; do
 	r)
 	    REQUIRES_BUILD=1
 	    ;;
+	g)
+	    REQUIRES_BUILD=1
+	    GROUP_IN_BUILD=1
+	    ;;
 	s)
 	    SINGLE_PACKAGE=1
 	    ;;
@@ -40,6 +45,12 @@ while getopts 'fao:rsde:h' OPT; do
             ;;
 	e)
 	    OPT_SET_ENV=$OPTARG
+	    ;;
+	x)
+	    EXPORT_STEP=1
+	    ;;
+	i)
+	    SET_INDEX_STEP_FILE=$OPTARG
 	    ;;
         h|?)
             echo "目标系统构建命令。"
@@ -57,13 +68,21 @@ while getopts 'fao:rsde:h' OPT; do
             echo "    -o <标记,标记,...>: 设置编译标记参数（符合标记参数的软件包才会进行编译）"
             echo "    -s: 软件包会同时在workbase/packages目录里安装一份文件在对应名称的的目录中。"
             echo "    -r: 根据指定的编译步骤或软件包，搜寻依赖的相关软件包和步骤组一起进行编译。"
+            echo "    -g: 根据指定的编译步骤或软件包，搜寻依赖的相关软件包和步骤组，然后从组中的第一个步骤开始进行编译直到指定的编译步骤或软件包为止。"
             echo "    -f: 强制执行指定的编译步骤。该参数必须指定编译步骤或软件包才有效。"
             echo "    -a: 强制编译所有的软件包步骤。与-f参数配合，用来在不指定任何软件包时强制编译所有满足标记参数设置的软件包。"
+            echo "    -e <变量名=变量,变量名=变量,...>: 设置编译过程中传递给编译步骤的变量设置。"
+            echo "    -x: 导出需要执行的step文件内容。"
             exit 127
     esac
 done
 shift $(($OPTIND - 1))
 
+
+if [ ! -f "${SOURCE_STEP_FILE}" ]; then
+	echo "没有发现脚本文件，请检查当前目录是否存在 ${SOURCE_STEP_FILE} 文件。"
+	exit 127
+fi
 
 function set_build_env
 {
@@ -85,6 +104,56 @@ function set_build_env
 		((USE_ENV_COUNT++))
 	done
 	echo "${USE_ENV[@]}"
+}
+
+
+
+function get_all_set_env_expr
+{
+        declare -a SET_ENV
+        declare -a DEFAULT_ENV
+        declare SET_COUNT=0
+        declare TEMP_COUNT=0
+        declare GET_ENV_VALUE=""
+        declare SET_STR="${1}"
+        declare -a USE_ENV=("")
+        declare USE_ENV_COUNT=${#USE_ENV[@]}
+
+        for i in $(echo "${SET_STR}" | tr "," "\\n")
+        do
+                if [ "x${i:0:1}" == "x%" ]; then
+	                SET_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $1 }')
+	                DEFAULT_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $2 }')
+        	        ((SET_COUNT++))
+		fi
+        done
+	if [ "x${SET_COUNT}" == "x0" ]; then
+		echo ""
+		return
+	fi
+
+        for i in ${SET_ENV[*]}
+        do
+		GET_ENV_VALUE=""
+		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
+		if [ "x${GET_ENV_VALUE}" != "x" ] || [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
+			if [ "x${GET_ENV_VALUE}" != "x" ]; then
+		                USE_ENV[${USE_ENV_COUNT}]="${i}=${GET_ENV_VALUE}"
+			fi
+			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
+				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
+					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
+						USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]}"
+					fi
+				else
+					USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]}"
+				fi
+			fi
+        		((USE_ENV_COUNT++))
+		fi
+        	((TEMP_COUNT++))
+        done
+	echo $(IFS= ; echo "${USE_ENV[*]}")
 }
 
 
@@ -122,8 +191,15 @@ function get_all_can_set_env_str
 		                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
 			fi
 			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
-				USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
-				echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
+					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
+						USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
+						echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+					fi
+				else
+					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
+					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+				fi
 			fi
         		((USE_ENV_COUNT++))
 		fi
@@ -734,14 +810,14 @@ function step_to_index
 	        STEPNAME=$(get_string_stepname "${FORMAT_STRING}")
         	STEP_PKGNAME=$(get_string_pkgname "${FORMAT_STRING}")
 		if [ "x${STEPNAME}" != "xNULL" ] && [ "x${STEP_PKGNAME}" != "xNULL" ]; then
-			STEP_PKG_OPT=$(cat step | grep "^%step/${STEPNAME}/${STEP_PKGNAME}|" | sort | uniq | tail -n1 | awk -F'|' '{ print $2 }')
-			STOP_STEP_PKGNAME=$(cat step | grep "^%step/${STEPNAME}/${STEP_PKGNAME}|" | sort | uniq | tail -n1 | awk -F'|' '{ print $1 }')
+			STEP_PKG_OPT=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/${STEP_PKGNAME}|" | sort | uniq | tail -n1 | awk -F'|' '{ print $2 }')
+			STOP_STEP_PKGNAME=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/${STEP_PKGNAME}|" | sort | uniq | tail -n1 | awk -F'|' '{ print $1 }')
 			STOP_STEP_GROUP="${STOP_STEP_PKGNAME}"
 			STOP_STEP_STR="${STOP_STEP_PKGNAME}"
 		fi
 		if [ "x${STEPNAME}" != "xNULL" ] && [ "x${STEP_PKGNAME}" == "xNULL" ]; then
-			STEP_PKG_OPT=$(cat step | grep "^%step/${STEPNAME}/" | head -n1 | awk -F'|' '{ print $2 }')
-			STOP_STEP_PKGNAME=$(cat step | grep "^%step/${STEPNAME}/" | tail -n1 | awk -F'|' '{ print $1 }')
+			STEP_PKG_OPT=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/" | head -n1 | awk -F'|' '{ print $2 }')
+			STOP_STEP_PKGNAME=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/" | tail -n1 | awk -F'|' '{ print $1 }')
 			STOP_STEP_GROUP="%step/${STEPNAME}/"
 			STOP_STEP_STR="${STOP_STEP_PKGNAME}"
 		fi
@@ -758,19 +834,24 @@ function step_to_index
 	echo "当前指定的编译标记如下："
 	echo "${USE_OPT[@]}"
 
-	for i in $(cat step | grep "^%step" | awk -F'/' '{ print $2 }' | sort | uniq)
+	for i in $(cat "${SOURCE_STEP_FILE}" | grep "^%step" | awk -F'/' '{ print $2 }' | sort | uniq)
 	do
 		declare ${i/-/_}_COUNT=1
 	done
 
-	for i in $(cat step | grep "^%step")
+	for i in $(cat "${SOURCE_STEP_FILE}" | grep "^%step")
 	do
 		STEP_NAME=$(echo ${i} | awk -F'|' '{ print $1 }')
 		STEP_OPT=$(echo ${i} | awk -F'|' '{ print $2 }')
 
+		if [ "x${STEP_NAME##*/}" == "xNULL" ]; then
+			continue;
+		fi
+
 		TMP_NAME=$(echo ${STEP_NAME} | awk -F'/' '{ print $2 }')
 		COUNT_NAME=${TMP_NAME/-/_}_COUNT
 		printf -v SHOW_COUNT "%05d" ${!COUNT_NAME}
+
 
 		# echo "test_opt_can_run" "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
 		if [ "x$(test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}")" == "x0" ]; then
@@ -779,8 +860,13 @@ function step_to_index
 				echo -n $(echo ${STEP_NAME} | sed "s@^%@@g")
 				echo "|${STEP_OPT}"
 			else
-				eval  "echo ${STEP_NAME} | sed "s@^%@@g" | grep ${GREP_STR} > /dev/null"
-				if [ "$?" == "0" ]; then
+				GREP_RET=0
+				if [ "x${REQUIRES_BUILD}" == "x0" ]; then
+					eval  "echo ${STEP_NAME} | sed "s@^%@@g" | grep ${GREP_STR} > /dev/null"
+					GREP_RET=$?
+				fi
+#				if [ "$?" == "0" ]; then
+				if [ "${GREP_RET}" == "0" ]; then
 					if [ "x${REQUIRES_BUILD}" == "x0" ]; then
 						if [ "x${STOP_STEP_STR}" == "x${STEP_NAME}" ] || [ "${STEP_NAME%/*}/" == "${STOP_STEP_GROUP}" ] || ( [[ "${STEP_NAME}" =~ "${STOP_STEP_GROUP%/*}/" ]] && ( [ "x${STEP_NAME##*/}" == "xbegin_run" ] || [ "x${STEP_NAME##*/}" == "xfinal_run" ] || [ "x${STEP_NAME##*/}" == "xoverlay_before_run" ] || [ "x${STEP_NAME##*/}" == "xoverlay_after_run" ] || [ "x${STEP_NAME##*/}" == "xoverlay_temp_fix_run" ] ) ); then
 							echo -n "${SHOW_COUNT}  "
@@ -788,9 +874,14 @@ function step_to_index
 							echo "|${STEP_OPT}"
 						fi
 					else
-						echo -n "${SHOW_COUNT}  "
-						echo -n $(echo ${STEP_NAME} | sed "s@^%@@g")
-						echo "|${STEP_OPT}"
+						if [ "${STEP_NAME%/*}/" == "${STOP_STEP_GROUP}" ]; then
+							GROUP_IN_BUILD=0
+						fi
+						if [ "x${GROUP_IN_BUILD}" == "x0" ]; then
+							echo -n "${SHOW_COUNT}  "
+							echo -n $(echo ${STEP_NAME} | sed "s@^%@@g")
+							echo "|${STEP_OPT}"
+						fi
 					fi
 					if [ "x${STOP_STEP_PKGNAME}" == "x${STEP_NAME}" ]; then
 						break;
@@ -802,15 +893,19 @@ function step_to_index
 		if [ "x${STEP_NAME##*/}" != "xbegin_run" ] && [ "x${STEP_NAME##*/}" != "xfinal_run" ] && [ "x${STEP_NAME##*/}" != "xoverlay_before_run" ] && [ "x${STEP_NAME##*/}" != "xoverlay_after_run" ] && [ "x${STEP_NAME##*/}" != "xoverlay_temp_fix_run" ]; then
 			((${COUNT_NAME}++))
 		fi
-	done > ${NEW_TARGET_SYSDIR}/step.index
+	done > ${INDEX_STEP_FILE}
+#       done > ${NEW_TARGET_SYSDIR}/step.index
 
 	# 加入final_run脚本
-	GROUP_STR="$(cat ${NEW_TARGET_SYSDIR}/step.index | awk -F'/' '{ print $2}' | sort | uniq)"
+# 	GROUP_STR="$(cat ${NEW_TARGET_SYSDIR}/step.index | awk -F'/' '{ print $2}' | sort | uniq)"
+	GROUP_STR="$(cat "${INDEX_STEP_FILE}" | awk -F'/' '{ print $2}' | sort | uniq)"
 	for i in ${GROUP_STR}
 	do
-		if [ x"$(cat step | grep "^%step/${i}/final_run")" != "x" ]; then
-			if [ x"$(cat ${NEW_TARGET_SYSDIR}/step.index | grep "step/${i}/final_run")" == "x" ]; then
-				echo "00000  step/${i}/final_run|" >> ${NEW_TARGET_SYSDIR}/step.index
+		if [ x"$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${i}/final_run")" != "x" ]; then
+#			if [ x"$(cat ${NEW_TARGET_SYSDIR}/step.index | grep "step/${i}/final_run")" == "x" ]; then
+#				echo "00000  step/${i}/final_run|" >> ${NEW_TARGET_SYSDIR}/step.index
+			if [ x"$(cat "${INDEX_STEP_FILE}" | grep "step/${i}/final_run")" == "x" ]; then
+				echo "00000  step/${i}/final_run|" >> ${INDEX_STEP_FILE}
 			fi
 		fi
 	done
@@ -836,9 +931,36 @@ echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
 
 
 create_date_suff
-echo "创将索引文件......"
-step_to_index "${1}"
-echo "索引文件创建完成。"
+if [ "x${SET_INDEX_STEP_FILE}" == "x" ] || [ "x${EXPORT_STEP}" == "x1" ]; then
+	if [ "x${SET_INDEX_STEP_FILE}" == "x" ]; then
+		INDEX_STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
+	else
+		INDEX_STEP_FILE="${SET_INDEX_STEP_FILE}"
+	fi
+	echo "创建索引文件......"
+	step_to_index "${1}"
+	echo "索引文件创建完成。"
+else
+	if [ "x${1}" != "x" ]; then
+		echo "因指定了索引文件 ${SET_INDEX_STEP_FILE} ，不支持再指定 “${1}” 作为编译筛选目标。"
+		exit 1
+	fi
+	echo -n "指定了索引文件 ${SET_INDEX_STEP_FILE} ..."
+	if [ ! -f "${SET_INDEX_STEP_FILE}" ]; then
+		echo "不存在!"
+		exit 1
+	else
+		echo ""
+	fi
+	INDEX_STEP_FILE="${SET_INDEX_STEP_FILE}"
+fi
+
+if [ "x${EXPORT_STEP}" == "x1" ]; then
+#	cat ${NEW_TARGET_SYSDIR}/step.index
+	cat "${INDEX_STEP_FILE}"
+	echo "以上内容已存放在 ${INDEX_STEP_FILE} 文件中。"
+	exit 0
+fi
 
 if [ "x${1}" != "x" ] && [ "x${FORCE_BUILD}" == "x1" ]; then
 	FORCE_ALL_BUILD=1
@@ -861,22 +983,27 @@ if [ -f ${NEW_TARGET_SYSDIR}/status/step.md5sum ]; then
 			echo "本次创建的索引文件与上次的内容不同，可能会存在需要下载的软件包，开始进行必要的下载..."
 		fi
 		if [ -f proxy.set ]; then
-			tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+#			tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+			tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
 		else
-			tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+#			tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+			tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
 		fi
 		echo "下载完成。"
 	fi
 else
 	echo "开始下载必要的软件包..."
 	if [ -f proxy.set ]; then
-		tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+#		tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+		tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
 	else
-		tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+#		tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+		tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
 	fi
 	echo "下载完成。"
 fi
-md5sum ${NEW_TARGET_SYSDIR}/step.index > ${NEW_TARGET_SYSDIR}/status/step.md5sum
+# md5sum ${NEW_TARGET_SYSDIR}/step.index > ${NEW_TARGET_SYSDIR}/status/step.md5sum
+md5sum ${INDEX_STEP_FILE} > ${NEW_TARGET_SYSDIR}/status/step.md5sum
 
 
 mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/{.lowerdir,.workerdir}
@@ -899,7 +1026,8 @@ done
 echo "开始编译制作过程......"
 echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 
-STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
+# STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
+STEP_FILE="${INDEX_STEP_FILE}"
 
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_begin_run_save
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_final_run_save
@@ -922,6 +1050,16 @@ do
 	PACKAGE_INDEX=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $1 }')
 	STEP_STAGE=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $2 }')
 	PACKAGE_NAME=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $3 }')
+	PACKAGE_GIT_COMMIT=""
+
+	if [ -f sources/url/${STEP_STAGE}/${PACKAGE_NAME} ]; then
+		PKG_FILENAME=$(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME} | awk -F'|' '{ print $3 }' | sed "s@\.tar\.gz\$@@g")
+		if [ -f sources/downloads/files/${PKG_FILENAME}.commit ]; then
+			PACKAGE_GIT_COMMIT="$(cat sources/downloads/files/${PKG_FILENAME}.commit)"
+		else
+			PACKAGE_GIT_COMMIT=""
+		fi
+	fi
 
 	PACKAGE_SET_ENV=$(get_all_can_set_env_str "${PACKAGE_ALL_OPT}")
 	PACKAGE_SET_STATUS_FILE=$(get_can_set_status_file "${PACKAGE_ALL_OPT}")
@@ -933,7 +1071,7 @@ do
 		continue;
 	else
 		if [ -f ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} ]; then
-			tools/show_package_script.sh -n ${SCRIPT_FILE} | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} 2>/dev/null > /dev/null
+			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} 2>/dev/null > /dev/null
 			if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
 				create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}"
 				echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
@@ -945,9 +1083,13 @@ do
 	fi
 
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
-		echo -e "\r开始制作${STEP_STAGE}组中的${PACKAGE_NAME}软件包步骤...\033[0K"
+		if [ "x$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" == "x" ]; then
+			echo -e "\r开始执行 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包的制作步骤...\033[0K"
+		else
+			echo -e "\r开始执行 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 $(get_all_set_env_expr "${PACKAGE_ALL_OPT}") 的制作步骤...\033[0K"
+		fi
 	else
-		echo -e "\r准备执行${STEP_STAGE}组中的完成脚本...\033[0K"
+		echo -e "\r准备执行 ${STEP_STAGE} 组中的完成脚本...\033[0K"
 	fi
 	tools/show_package_script.sh ${SCRIPT_FILE} >/dev/null
 	RET_VAL=$?
@@ -966,7 +1108,7 @@ do
 			tools/show_package_script.sh ${STEP_STAGE}/begin_run
 			echo "${STEP_STAGE} 初始化脚本运行错误!"
 			echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/begin_run_${STEP_STAGE}.log 文件。"
-			exit -1
+			exit 1
 		fi
 		sed -i "/^${STEP_STAGE}$/d" ${NEW_TARGET_SYSDIR}/logs/step_begin_run_save
 		echo "完成。"
@@ -999,7 +1141,7 @@ do
 		tools/show_package_script.sh  ${SCRIPT_FILE}
 		echo "${SCRIPT_FILE}制作错误!"
 		echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_FILE}.log 文件。"
-		exit -1
+		exit 1
 	fi
 
 	if [ -f env/${STEP_STAGE}/overlay.set ]; then
@@ -1017,7 +1159,7 @@ do
 	fi
 
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ] && [ "x${PACKAGE_SET_STATUS_FILE}" == "x1" ]; then
-		tools/show_package_script.sh -n ${SCRIPT_FILE} | md5sum > ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE}
+		echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE}
 	fi
 
 	create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}"
@@ -1054,6 +1196,8 @@ if [ "x$?" == "x0" ]; then
 	if [ "x${1}" == "x" ]; then
 		echo "接下来可以使用./strip_os.sh脚本来清除调试信息，使用./install_os_run.sh安装系统启动脚本，以及使用./pack_os.sh脚本来打包系统。"
 	fi
+else
+	exit
 fi
 echo "编译制作过程完成。" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log

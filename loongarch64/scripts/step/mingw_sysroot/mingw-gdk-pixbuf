@@ -1,6 +1,7 @@
 source env/mingw_sysroot/config
 source env/distro.info
 source env/function.sh
+source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-gdk-pixbuf
 export PACKAGE_VERSION=2.42.10

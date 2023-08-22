@@ -31,8 +31,11 @@ pushd ${BUILD_DIRECTORY}/blender-git-default_git
                       -DGPERF_EXECUTABLE=/bin/gperf \
                       -DDOXYGEN_EXECUTABLE=/bin/doxygen \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
-                      -DCMAKE_INSTALL_PREFIX=/usr \
-                      -DWITH_MATERIALX=OFF -DWITH_MOD_OCEANSIM=OFF -DWITH_HYDRA=OFF -DWITH_GTESTS=OFF -DWITH_PYTHON=ON -DPYTHON_LIBRARY=${SYSROOT_DIR}/usr/lib64 -DPYTHON_INCLUDE_DIR=${SYSROOT_DIR}/usr/include/python3.11   -DWITH_CYCLES_EMBREE=OFF -DWITH_PUGIXML=OFF -DWITH_TBB=OFF -DWITH_PYTHON_NUMPY=OFF \
+                      -DCMAKE_INSTALL_PREFIX=/usr -DWITH_INSTALL_PORTABLE=OFF \
+                      -DWITH_MATERIALX=OFF -DWITH_MOD_OCEANSIM=OFF -DWITH_HYDRA=OFF -DWITH_GTESTS=OFF \
+		      -DWITH_PYTHON=ON -DPYTHON_LIBPATH=${SYSROOT_DIR}/usr/lib64/ -DPYTHON_VERSION=$(cat ${COMMON_DIR}/Python3.version) \
+		      -DPYTHON_LIBRARY=${SYSROOT_DIR}/usr/lib64/libpython$(cat ${COMMON_DIR}/Python3.version).so -DPYTHON_INCLUDE_DIR=${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version) \
+		      -DWITH_CYCLES_EMBREE=OFF -DWITH_PUGIXML=OFF -DWITH_TBB=OFF -DWITH_PYTHON_NUMPY=OFF \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd

@@ -12,10 +12,10 @@ pushd ${BUILD_DIRECTORY}/make-ca-1.12
 	install -vdm755 ${SYSROOT_DIR}/etc/ssl/local
 	cp ${SYSROOT_DIR}/usr/sbin/make-ca ${CROSSTOOLS_DIR}/bin/
 	sed -i "/MAKE_CA_CONF/s@\"/etc@\"${SYSROOT_DIR}/etc@g" ${CROSSTOOLS_DIR}/bin/make-ca
-#	cp ${RESOURCEDIR}/files/certdata.txt ./
+	cp ${RESOURCEDIR}/files/certdata.txt ./
 	cp ${RESOURCEDIR}/files/root.crt ./
 	cp ${RESOURCEDIR}/files/class3.crt ./
-#	${CROSSTOOLS_DIR}/bin/make-ca --destdir ${SYSROOT_DIR} -C certdata.txt
+	${CROSSTOOLS_DIR}/bin/make-ca --destdir ${SYSROOT_DIR} -C certdata.txt
 	openssl x509 -in root.crt -text -fingerprint -setalias "CAcert Class 1 root" \
 	        -addtrust serverAuth -addtrust emailProtection -addtrust codeSigning \
 	        > ${SYSROOT_DIR}/etc/ssl/local/CAcert_Class_1_root.pem

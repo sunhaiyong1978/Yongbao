@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pulseaudio
-export PACKAGE_VERSION=16.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pulseaudio/16.1/
-rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.1
-tar xvf ${DOWNLOADDIR}/pulseaudio-16.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pulseaudio-16.1
+export PACKAGE_VERSION=16.99.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pulseaudio/16.99.1/
+rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.99.1
+tar xvf ${DOWNLOADDIR}/pulseaudio-16.99.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pulseaudio-16.99.1
 	
 	mkdir cross-build
 	pushd cross-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/pulseaudio-16.1
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.1
+rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.99.1

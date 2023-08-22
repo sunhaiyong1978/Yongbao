@@ -1,0 +1,26 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=bzip2
+export PACKAGE_VERSION=1.0.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/bzip2/1.0.8/
+rm -rf ${BUILD_DIRECTORY}/bzip2-1.0.8
+tar xvf ${DOWNLOADDIR}/bzip2-1.0.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bzip2-1.0.8
+	sed -i.orig -e "/^all:/s/ test//" Makefile
+	sed -i -e 's:ln -s -f $(PREFIX)/bin/:ln -s -f :' Makefile
+	sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+	make -j${JOBS} CC=${X86_64_HOST}-gcc -f Makefile-libbz2_so
+	make clean
+	make -j${JOBS} CC=${X86_64_HOST}-gcc
+	make PREFIX=${X86_64_SYSROOT_DIR}/usr install
+	cp -v bzip2-shared ${X86_64_SYSROOT_DIR}/bin/bzip2
+	cp -av libbz2.so* ${X86_64_SYSROOT_DIR}/lib${LIB_SUFF}
+	mv ${X86_64_SYSROOT_DIR}/usr/lib/libbz2.a ${X86_64_SYSROOT_DIR}/lib${LIB_SUFF}/
+	ln -sfv ../../lib64/libbz2.so.1.0 ${X86_64_SYSROOT_DIR}/usr/lib${LIB_SUFF}/libbz2.so
+	ln -sfv bzip2 ${X86_64_SYSROOT_DIR}/bin/bunzip2
+	ln -sfv bzip2 ${X86_64_SYSROOT_DIR}/bin/bzcat
+popd 
+rm -rf ${BUILD_DIRECTORY}/bzip2-1.0.8

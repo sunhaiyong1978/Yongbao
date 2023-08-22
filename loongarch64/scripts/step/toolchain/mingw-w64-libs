@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=mingw-w64-libs
-export PACKAGE_VERSION=v11.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/mingw-w64-libs/v11.0.0/
-rm -rf ${BUILD_DIRECTORY}/mingw-w64-v11.0.0
-tar xvf ${DOWNLOADDIR}/mingw-w64-v11.0.0.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mingw-w64-v11.0.0
+export PACKAGE_VERSION=v11.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/mingw-w64-libs/v11.0.1/
+rm -rf ${BUILD_DIRECTORY}/mingw-w64-v11.0.1
+tar xvf ${DOWNLOADDIR}/mingw-w64-v11.0.1.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mingw-w64-v11.0.1
 	
         MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
         PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/bin:${PATH}
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/mingw-w64-v11.0.0
 		make -j${JOBS} DESTDIR=${INSTALL_DIST_DIR} install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mingw-w64-v11.0.0
+rm -rf ${BUILD_DIRECTORY}/mingw-w64-v11.0.1

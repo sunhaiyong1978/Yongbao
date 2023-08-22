@@ -20,6 +20,7 @@ pushd ${BUILD_DIRECTORY}/kwin-5.27.7
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
                       -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
                       -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
                       -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
                       -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
                       -DPERL_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-perl \

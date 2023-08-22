@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/gstreamer-1.22.5
 	
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG} --default-library=static  \
+		meson ${MESON_CONFIG} --default-library=both  \
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd

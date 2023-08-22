@@ -25,11 +25,13 @@ function fn_overlay_temp_fix_run
 	declare STEP_STAGE="${1}"
 	if [ -f scripts/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
 		echo "执行${STEP_STAGE}的临时修改脚本……"
+		set +e
 		tools/run_package_script.sh ${STEP_STAGE}/overlay_temp_fix_run >${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 获取更详细的内容。"
 			exit -3
 		fi
+		set -e
 	fi
 }
 

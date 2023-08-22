@@ -1,12 +1,13 @@
 source env/mingw_sysroot/config
 source env/distro.info
 source env/function.sh
+source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=create_commfile
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/create_commfile//
 pushd ${COMMON_DIR} > /dev/null
-cat > meson-cross_mingw.txt << EOF
+cat > meson-cross_${INSTALL_ARCH_NAME}.txt << EOF
 [binaries]
 c = '${MINGW_HOST}-gcc'
 cpp = '${MINGW_HOST}-g++'

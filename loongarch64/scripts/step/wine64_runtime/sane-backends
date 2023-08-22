@@ -1,0 +1,22 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=sane-backends
+export PACKAGE_VERSION=1.2.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/sane-backends/1.2.1/
+rm -rf ${BUILD_DIRECTORY}/backends-1.2.1-103c2b5d8e6d4e43026e90c5fb3b6b6a19cd5ee5
+tar xvf ${DOWNLOADDIR}/sane-backends-1.2.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/backends-1.2.1-103c2b5d8e6d4e43026e90c5fb3b6b6a19cd5ee5
+        
+	echo ${PACKAGE_VERSION} > .tarball-version
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+         ./configure ${COMMON_CONFIG} --enable-static  --enable-malloc0returnsnull
+        CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_64_SYSROOT_DIR} install
+        rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/backends-1.2.1-103c2b5d8e6d4e43026e90c5fb3b6b6a19cd5ee5

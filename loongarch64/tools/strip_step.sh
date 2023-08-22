@@ -23,7 +23,7 @@ source ${BASE_DIR}/env/${STRIP_STEP_NAME}/config
 
 if [ -d ${STRIP_DIR} ]; then
 	pushd ${STRIP_DIR} > /dev/null
-		for dir_i in $(find -name "lib" -o -name "lib64" -o -name "lib32")
+		for dir_i in $(find -name "lib" -o -name "lib64" -o -name "lib32" -o -name "share")
 		do
 			if [ -d ${dir_i} ]; then
 				echo "find ${dir_i} -type f -name \*.a -exec ${CROSS_TARGET}-strip --strip-debug {} ';'" >> ${BASE_DIR}/logs/strip_${STRIP_STEP_NAME}.log

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=less
-export PACKAGE_VERSION=633
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/less/633/
-rm -rf ${BUILD_DIRECTORY}/less-633
-tar xvf ${DOWNLOADDIR}/less-633.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/less-633
+export PACKAGE_VERSION=643
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/less/643/
+rm -rf ${BUILD_DIRECTORY}/less-643
+tar xvf ${DOWNLOADDIR}/less-643.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/less-643
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/less-633
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/less-633
+rm -rf ${BUILD_DIRECTORY}/less-643

@@ -12,18 +12,16 @@ pushd ${BUILD_DIRECTORY}/glibc-2.38
     
     mkdir -p build
     pushd build
-        BUILD_CC="gcc" CC="${X86_HOST}-gcc -m32" \
-        CXX="${X86_HOST}-gcc -m32" \
+        BUILD_CC="gcc" CC="${X86_HOST}-gcc -m32 ${CFLAGS}" \
+        CXX="${X86_HOST}-gcc -m32 ${CXXFLAGS}" \
         AS="${X86_HOST}-as" AR="${X86_HOST}-ar" RANLIB="${X86_HOST}-ranlib" \
         ../configure --prefix=/usr --host=${X86_HOST} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
 	                 --with-headers=${X86_SYSROOT_DIR}/usr/include \
 	                 --enable-add-ons \
-	                 --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF} \
-	                 --enable-kernel=2.6.0
+	                 --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF}
 		make -j${JOBS}
 		make DESTDIR=${X86_SYSROOT_DIR} install
-		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${X86_HOST}/glibc install
     popd
     mkdir -p ${X86_SYSROOT_DIR}/usr/lib
 popd 

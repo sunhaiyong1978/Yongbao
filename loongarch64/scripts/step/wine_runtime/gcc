@@ -12,6 +12,8 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv cross-build
 	pushd cross-build
+		export CFLAGS=""
+		export CXXFLAGS=""
 		../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
 		             --host=${X86_HOST} --target=${X86_HOST} \
 		             --enable-__cxa_atexit --enable-threads=posix \

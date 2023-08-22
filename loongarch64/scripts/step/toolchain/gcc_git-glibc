@@ -9,8 +9,8 @@ rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
 tar xvf ${DOWNLOADDIR}/gcc_git-13.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
     CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
-    CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target ${CROSS_TARGET})")
-    LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
+#    CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target ${CROSS_TARGET})")
+#    LIB_SUFF=$(archname_to_lib_suff "${CROSS_ARCH_BIT}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
 
     patch -Np1 -i ${SYSDIR}/files/toolchain/gcc_git-glibc/13.1.0-default/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 

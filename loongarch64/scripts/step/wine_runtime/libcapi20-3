@@ -1,0 +1,21 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine_runtime/custom
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=libcapi20-3
+export PACKAGE_VERSION=3.27
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libcapi20-3/3.27/
+rm -rf ${BUILD_DIRECTORY}/capi20
+tar xvf ${DOWNLOADDIR}/libcapi20-3_3.27.orig.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/capi20
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${X86_SYSROOT_DIR} install
+	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/capi20

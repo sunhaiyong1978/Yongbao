@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libxml2
-export PACKAGE_VERSION=2.11.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libxml2/2.11.4/
-rm -rf ${BUILD_DIRECTORY}/libxml2-2.11.4
-tar xvf ${DOWNLOADDIR}/libxml2-2.11.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxml2-2.11.4
+export PACKAGE_VERSION=2.11.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libxml2/2.11.5/
+rm -rf ${BUILD_DIRECTORY}/libxml2-2.11.5
+tar xvf ${DOWNLOADDIR}/libxml2-2.11.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxml2-2.11.5
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/libxml2-2.11.4
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxml2-2.11.4
+rm -rf ${BUILD_DIRECTORY}/libxml2-2.11.5

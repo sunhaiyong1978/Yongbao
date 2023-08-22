@@ -1,14 +1,15 @@
 source env/mingw_sysroot/config
 source env/distro.info
 source env/function.sh
+source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=Windows-QEMU
-export PACKAGE_VERSION=8.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/Windows-QEMU/8.0.3/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.0.3
-tar xvf ${DOWNLOADDIR}/qemu-8.0.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.0.3
-    patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/Windows-QEMU/8.0.3/patches/0001-fix-errors-at-static-linking-of-mingw64.patch 
+export PACKAGE_VERSION=8.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/Windows-QEMU/8.0.4/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.4
+tar xvf ${DOWNLOADDIR}/qemu-8.0.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.0.4
+    patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/Windows-QEMU/8.0.4/patches/0001-fix-errors-at-static-linking-of-mingw64.patch 
 	 
     mkdir -p build
     pushd build
@@ -17,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/qemu-8.0.3
 	DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.0.3
+rm -rf ${BUILD_DIRECTORY}/qemu-8.0.4

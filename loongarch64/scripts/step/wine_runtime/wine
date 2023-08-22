@@ -4,23 +4,29 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=wine
-export PACKAGE_VERSION=6.0.4-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/wine/6.0.4-default/
-rm -rf ${BUILD_DIRECTORY}/wine-6.0.4
-tar xvf ${DOWNLOADDIR}/wine-6.0.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-6.0.4
+export PACKAGE_VERSION=8.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/wine/8.0.2/
+rm -rf ${BUILD_DIRECTORY}/wine-8.0.2
+tar xvf ${DOWNLOADDIR}/wine-8.0.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-8.0.2
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-         ./configure ${COMMON_CONFIG} --with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" NETAPI_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" --enable-malloc0returnsnull --without-vulkan --without-opencl
+	PATH=${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
+
+	export CROSSCFLAGS="-g -O3"
+        ./configure --prefix=/opt/wine --build=${CROSS_HOST} --host=${X86_HOST} --with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" NETAPI_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" OSSLIBDIR=${X86_SYSROOT_DIR}/usr/lib/oss --enable-malloc0returnsnull
         CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+
+	mkdir -p ${SYSROOT_DIR}/opt/wine/share/wine/{mono,gecko}
+	cp -a ${RESOURCEDIR}/files/wine-mono-$(grep "MONO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86.msi ${SYSROOT_DIR}/opt/wine/share/wine/mono/
+	cp -a ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86.msi ${SYSROOT_DIR}/opt/wine/share/wine/gecko/
+
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-6.0.4
+rm -rf ${BUILD_DIRECTORY}/wine-8.0.2
+
 
 echo -n ":Windows:M::MZ::/usr/bin/wine:" > ${SYSROOT_DIR}/etc/binfmt.d/wine.conf
-
-#  [[[7.0.0]]]
-# EXTRA_PARM=--with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-lpulse -lpthread ${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio/libpulsecommon-16.1.so" NETAPI_LIBS="-Wl,-rpath-link=${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi"

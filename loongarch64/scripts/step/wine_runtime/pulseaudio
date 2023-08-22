@@ -4,18 +4,18 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=pulseaudio
-export PACKAGE_VERSION=16.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/pulseaudio/16.1/
-rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.1
-tar xvf ${DOWNLOADDIR}/pulseaudio-16.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pulseaudio-16.1
+export PACKAGE_VERSION=16.99.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/pulseaudio/16.99.1/
+rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.99.1
+tar xvf ${DOWNLOADDIR}/pulseaudio-16.99.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pulseaudio-16.99.1
 	
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG} --default-library=static -Ddatabase=gdbm -Dbluez5=disabled \
+		meson ${MESON_CONFIG} --default-library=both -Ddatabase=gdbm -Dbluez5=disabled \
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.1
+rm -rf ${BUILD_DIRECTORY}/pulseaudio-16.99.1

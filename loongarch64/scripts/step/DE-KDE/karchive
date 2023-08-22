@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=karchive
-export PACKAGE_VERSION=5.108.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/karchive/5.108.0/
-rm -rf ${BUILD_DIRECTORY}/karchive-5.108.0
-tar xvf ${DOWNLOADDIR}/karchive-5.108.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/karchive-5.108.0
+export PACKAGE_VERSION=5.109.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/karchive/5.109.0/
+rm -rf ${BUILD_DIRECTORY}/karchive-5.109.0
+tar xvf ${DOWNLOADDIR}/karchive-5.109.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/karchive-5.109.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/karchive-5.108.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/karchive-5.108.0
+rm -rf ${BUILD_DIRECTORY}/karchive-5.109.0
