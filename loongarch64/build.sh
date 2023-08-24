@@ -18,6 +18,8 @@ declare DATA_SUFF=""
 declare SOURCE_STEP_FILE="step"
 declare INDEX_STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
 declare SET_INDEX_STEP_FILE=""
+declare SET_STEP_FILE=""
+declare INDEX_MD5SUM_FILE="step.md5sum"
 
 while getopts 'fao:rgsde:xi:h' OPT; do
     case $OPT in
@@ -50,7 +52,7 @@ while getopts 'fao:rgsde:xi:h' OPT; do
 	    EXPORT_STEP=1
 	    ;;
 	i)
-	    SET_INDEX_STEP_FILE=$OPTARG
+	    SET_STEP_FILE=$OPTARG
 	    ;;
         h|?)
             echo "目标系统构建命令。"
@@ -73,11 +75,29 @@ while getopts 'fao:rgsde:xi:h' OPT; do
             echo "    -a: 强制编译所有的软件包步骤。与-f参数配合，用来在不指定任何软件包时强制编译所有满足标记参数设置的软件包。"
             echo "    -e <变量名=变量,变量名=变量,...>: 设置编译过程中传递给编译步骤的变量设置。"
             echo "    -x: 导出需要执行的step文件内容。"
+            echo "    -i: 设置指定的步骤文件（.step）或步骤索引文件(.index)。"
             exit 127
     esac
 done
 shift $(($OPTIND - 1))
 
+
+if [ "x${SET_STEP_FILE}" != "x" ]; then
+	case "x${SET_STEP_FILE#*.}" in
+		"xindex")
+			SOURCE_STEP_FILE="step"
+			SET_INDEX_STEP_FILE="${SET_STEP_FILE}"
+			;;
+		"xstep")
+			SOURCE_STEP_FILE="${SET_INDEX_STEP_FILE}"
+			SET_INDEX_STEP_FILE=""
+			;;
+		*)
+			echo "指定的步骤或索引文件必须以step或者index作为后缀名。"
+			exit 2
+			;;
+	esac
+fi
 
 if [ ! -f "${SOURCE_STEP_FILE}" ]; then
 	echo "没有发现脚本文件，请检查当前目录是否存在 ${SOURCE_STEP_FILE} 文件。"
@@ -931,11 +951,14 @@ echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
 
 
 create_date_suff
+
 if [ "x${SET_INDEX_STEP_FILE}" == "x" ] || [ "x${EXPORT_STEP}" == "x1" ]; then
 	if [ "x${SET_INDEX_STEP_FILE}" == "x" ]; then
 		INDEX_STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
+		INDEX_MD5SUM_FILE="step.md5sum"
 	else
 		INDEX_STEP_FILE="${SET_INDEX_STEP_FILE}"
+		INDEX_MD5SUM_FILE="custom_$(basename ${INDEX_STEP_FILE}).md5sum"
 	fi
 	echo "创建索引文件......"
 	step_to_index "${1}"
@@ -953,6 +976,7 @@ else
 		echo ""
 	fi
 	INDEX_STEP_FILE="${SET_INDEX_STEP_FILE}"
+	INDEX_MD5SUM_FILE="custom_$(basename ${INDEX_STEP_FILE}).md5sum"
 fi
 
 if [ "x${EXPORT_STEP}" == "x1" ]; then
@@ -974,8 +998,8 @@ mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay
 mkdir -p ${NEW_TARGET_SYSDIR}/common_files
 mkdir -p ${NEW_TARGET_SYSDIR}/scripts/os_{first,start}_run
 
-if [ -f ${NEW_TARGET_SYSDIR}/status/step.md5sum ]; then
-	md5sum -c ${NEW_TARGET_SYSDIR}/status/step.md5sum 2>/dev/null > /dev/null
+if [ -f ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} ]; then
+	md5sum -c ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} 2>/dev/null > /dev/null
 	if [ "$?" != "0" ] || [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
 		if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
 			echo "强制指定进行软件包下载检查，开始进行必要的下载..."
@@ -1003,7 +1027,7 @@ else
 	echo "下载完成。"
 fi
 # md5sum ${NEW_TARGET_SYSDIR}/step.index > ${NEW_TARGET_SYSDIR}/status/step.md5sum
-md5sum ${INDEX_STEP_FILE} > ${NEW_TARGET_SYSDIR}/status/step.md5sum
+md5sum ${INDEX_STEP_FILE} > ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE}
 
 
 mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/{.lowerdir,.workerdir}
