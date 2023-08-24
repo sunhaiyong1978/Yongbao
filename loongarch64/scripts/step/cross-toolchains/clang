@@ -15,6 +15,7 @@ pushd clang
         LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX}/llvm-project \
                  -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
+		 -DLLVM_CMAKE_DIR=${SYSDIR}/cross-toolchains/llvm-project/lib64/cmake \
 		 -DLLVM_CONFIG=${SYSDIR}/cross-toolchains/llvm-project/bin/llvm-config \
                  -DBUILD_SHARED_LIBS:BOOL=OFF \
                  -DCMAKE_BUILD_TYPE=Release \

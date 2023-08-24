@@ -13,6 +13,7 @@ pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-16.0.0
         mkdir -p build
         pushd build
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX}/llvm-project \
+		      -DLLVM_DIR:PATH=${SYSDIR}/cross-toolchains/llvm-project/lib64/cmake/llvm \
 		      -DCMAKE_INSTALL_RPATH="${PREFIX}/llvm-project/lib64;\\\${ORIGIN}/../lib64" \
                       -DBUILD_SHARED_LIBS=OFF -DCCACHE_ALLOWED=OFF \
 		      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${PWD}/../SPIRV-Headers-sdk-1.3.250.1 \

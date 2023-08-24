@@ -9,6 +9,8 @@ rm -rf ${BUILD_DIRECTORY}/rustc-1.71.0-src
 tar xvf ${DOWNLOADDIR}/rustc-1.71.0-src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/rustc-1.71.0-src
     
+    export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
     LDFLAGS="" \
     PKG_CONFIG_SYSROOT_DIR="" \
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
