@@ -1,3 +1,4 @@
+%step/target_base/make_directory|
 %step/host-tools/automake|
 %step/host-tools/binutils|nouse
 %step/host-tools/gcc|nouse
@@ -8,7 +9,6 @@
 %step/host-tools/mpc|
 %step/cross-tools/gcc_nolibc|-gcc_git
 %step/cross-tools/gcc_git_nolibc|gcc_git
-%step/target_base/make_directory|
 %step/target_base/linux-header|
 %step/target_base/glibc|
 %step/target_base/glibc_localedata|
@@ -440,6 +440,7 @@
 %step/base_support/sassc|g_opt
 %step/base_support/gtk2|g_opt
 %step/base_support/gtk3|g_opt
+%step/base_support/libdecor|g_opt
 %step/base_support/mesa-demos|g_opt
 %step/base_support/gstreamer|g_opt
 %step/base_support/gst-plugins-base|g_opt
