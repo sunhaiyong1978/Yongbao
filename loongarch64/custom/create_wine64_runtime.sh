@@ -9,6 +9,7 @@ sed -i -e "/cross-tools\/gcc/d" \
        -e "/cross-tools\/grub/d" \
        -e "/cross-tools\/gdb/d" \
        -e "/cross-tools\/qemu/d" \
+       -e "/cross-tools\/node/d" \
        steps/wine_runtime_host_requires.index
 ./build.sh -i steps/wine_runtime_host_requires.index
 
