@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+./build.sh -r host-tools/automake
+
 # 筛选编译Wine所需要的host-tools工具集。
 mkdir -p steps
 ./build.sh -x -o -f_opt,-g_opt,wine -i steps/wine_runtime_host_requires.index -g host-tools
@@ -9,7 +11,10 @@ sed -i -e "/cross-tools\/gcc/d" \
        -e "/cross-tools\/grub/d" \
        -e "/cross-tools\/gdb/d" \
        -e "/cross-tools\/qemu/d" \
+       -e "/cross-tools\/rustc/d" \
+       -e "/bootstrap\//d" \
        -e "/host-tools\/node/d" \
+       -e "/host-tools\/cbindgen/d" \
        steps/wine_runtime_host_requires.index
 ./build.sh -i steps/wine_runtime_host_requires.index
 
