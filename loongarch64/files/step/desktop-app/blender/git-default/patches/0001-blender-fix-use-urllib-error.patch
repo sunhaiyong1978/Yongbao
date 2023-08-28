@@ -1,0 +1,24 @@
+From c0fa05d1f1dff91df46271e598d04e217eeb2aa1 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 28 Aug 2023 08:25:46 +0000
+Subject: [PATCH] blender fix use urllib error.
+
+---
+ scripts/startup/bl_operators/wm.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/startup/bl_operators/wm.py b/scripts/startup/bl_operators/wm.py
+index 940095c..fa5c79c 100644
+--- a/scripts/startup/bl_operators/wm.py
++++ b/scripts/startup/bl_operators/wm.py
+@@ -1028,6 +1028,7 @@ class WM_OT_url_open(Operator):
+     @staticmethod
+     def _add_utm_param_to_url(url, utm_source):
+         import urllib
++        import urllib3
+ 
+         # Make sure we have a scheme otherwise we can't parse the url.
+         if not url.startswith(("http://", "https://")):
+-- 
+2.31.1
+

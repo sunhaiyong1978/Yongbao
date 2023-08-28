@@ -1,0 +1,25 @@
+From bbd138bbd4f79a0643a7adb771539779c8b15963 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 28 Aug 2023 08:02:53 +0000
+Subject: [PATCH] ssr Add loongarch64 support.
+
+---
+ glinject/elfhacks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/glinject/elfhacks.h b/glinject/elfhacks.h
+index 3c351e2..083b0b6 100644
+--- a/glinject/elfhacks.h
++++ b/glinject/elfhacks.h
+@@ -38,7 +38,7 @@ extern "C" {
+ 
+ #define __PUBLIC __attribute__ ((visibility ("default")))
+ 
+-#ifdef __x86_64__
++#if defined ( __x86_64__) || defined (__loongarch_lp64)
+ # define __elf64
+ #endif
+ #ifdef __i386__
+-- 
+2.31.1
+

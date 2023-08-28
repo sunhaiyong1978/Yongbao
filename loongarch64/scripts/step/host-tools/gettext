@@ -9,7 +9,14 @@ rm -rf ${BUILD_DIRECTORY}/gettext-0.22
 tar xvf ${DOWNLOADDIR}/gettext-0.22.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gettext-0.22
 	
-	./configure --prefix=${CROSSTOOLS_DIR} --disable-shared
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	 ./configure --prefix=${CROSSTOOLS_DIR} --disable-shared
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/gettext-0.22

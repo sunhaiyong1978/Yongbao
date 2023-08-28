@@ -956,6 +956,7 @@
 %step/desktop-app/robin-map|g_opt+desk-app
 %step/desktop-app/oiio|g_opt+desk-app
 %step/desktop-app/blender|g_opt+desk-app
+%step/desktop-app/ssr|g_opt+desk-app
 %step/simulate/qemu|emu
 %step/simulate/libvirt|emu
 %step/simulate/libvirt-glib|emu
@@ -1012,10 +1013,10 @@
 %step/mingw_sysroot/mingw-gtk3|mingw;%target=?mingw64ucrt
 %step/mingw_sysroot/mingw-SDL2|mingw;%target=?mingw64ucrt
 %step/mingw_sysroot/Windows-QEMU|mingw;%target=?mingw64ucrt
-%step/wine_runtime/make_directory|wine
-%step/wine_runtime/linux-header|wine
-%step/wine_runtime/glibc|wine
-%step/wine_runtime/libxcrypt|wine
+%step/wine_runtime/make_directory|wine,wine64
+%step/wine_runtime/linux-header|wine,wine64
+%step/wine_runtime/glibc|wine,wine64
+%step/wine_runtime/libxcrypt|wine,wine64
 %step/wine64_runtime/make_directory|wine64
 %step/wine64_runtime/linux-header|wine64
 %step/wine64_runtime/glibc|wine64

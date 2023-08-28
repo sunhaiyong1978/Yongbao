@@ -9,7 +9,14 @@ rm -rf ${BUILD_DIRECTORY}/libxml2-2.11.5
 tar xvf ${DOWNLOADDIR}/libxml2-2.11.5.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libxml2-2.11.5
 	
-PKG_CONFIG_PATH=${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/pkgconfig	./configure --prefix=${CROSSTOOLS_DIR} --with-history --with-icu --with-python=${CROSSTOOLS_DIR}/bin/python3 PYTHON=python3
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	PKG_CONFIG_PATH=${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/pkgconfig ./configure --prefix=${CROSSTOOLS_DIR} --with-history --with-icu --with-python=${CROSSTOOLS_DIR}/bin/python3 PYTHON=python3
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/libxml2-2.11.5

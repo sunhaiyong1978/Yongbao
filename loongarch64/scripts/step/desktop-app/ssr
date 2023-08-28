@@ -1,0 +1,26 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=ssr
+export PACKAGE_VERSION=0.4.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/ssr/0.4.4/
+rm -rf ${BUILD_DIRECTORY}/ssr-0.4.4
+tar xvf ${DOWNLOADDIR}/ssr-0.4.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ssr-0.4.4
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/ssr/0.4.4/patches/0001-ssr-Add-loongarch64-support.patch 
+	 
+    mkdir cross-build
+    pushd cross-build
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CXXFLAGS="-fpermissive" \
+        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
+              -DCMAKE_SYSROOT=${SYSROOT_DIR} \
+              -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
+              -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+              -DWITH_QT5=TRUE \
+              ..
+	eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/ssr-0.4.4

@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/git-default/
 rm -rf ${BUILD_DIRECTORY}/blender-git-default_git
 tar xvf ${DOWNLOADDIR}/blender-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/blender-git-default_git
-        
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/git-default/patches/0001-blender-fix-use-urllib-error.patch 
+	 
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER \"${CROSSTOOLS_DIR}/bin/wayland-scanner\")@g" build_files/cmake/platform/platform_unix.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc@g" build_files/cmake/macros.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc_icon>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc_icon@g" build_files/cmake/macros.cmake
@@ -40,5 +41,9 @@ pushd ${BUILD_DIRECTORY}/blender-git-default_git
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+
+	cp -a ${SYSROOT_DIR}/usr/lib/python$(cat ${COMMON_DIR}/Python3.version)/site-packages/urllib3* ${SYSROOT_DIR}/usr/share/blender/*/python/lib/python$(cat ${COMMON_DIR}/Python3.version)/site-packages/
+	rm -v ${SYSROOT_DIR}/usr/share/blender/*/python/bin/*
+	rm -r ${SYSROOT_DIR}/usr/share/blender/*/python/lib64/python$(cat ${COMMON_DIR}/Python3.version)/config-$(cat ${COMMON_DIR}/Python3.version)
 popd 
 rm -rf ${BUILD_DIRECTORY}/blender-git-default_git

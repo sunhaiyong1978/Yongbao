@@ -20,3 +20,5 @@ pushd ${BUILD_DIRECTORY}/krb5-1.21.2
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/krb5-1.21.2
+cp -v ${X86_SYSROOT_DIR}/usr/bin/krb5-config ${CROSS_TOOLS_PREFIX}/bin/
+sed -i "s@-L\$libdir@@g" ${CROSS_TOOLS_PREFIX}/bin/krb5-config

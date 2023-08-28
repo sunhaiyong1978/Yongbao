@@ -9,7 +9,14 @@ rm -rf ${BUILD_DIRECTORY}/itstool-2.0.7
 tar xvf ${DOWNLOADDIR}/itstool-2.0.7.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/itstool-2.0.7
 	
-PYTHON=${CROSSTOOLS_DIR}/bin/python3	./configure --prefix=${CROSSTOOLS_DIR} 
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	PYTHON=${CROSSTOOLS_DIR}/bin/python3 ./configure --prefix=${CROSSTOOLS_DIR} 
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/itstool-2.0.7
