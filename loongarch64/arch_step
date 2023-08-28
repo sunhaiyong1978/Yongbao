@@ -6,5 +6,5 @@
 %step/base_support/perf|g_opt
 %step/boot/linux-kernel|
 %step/boot/grub|
-%step/toolchain/linux-header|g_opt,host-dist,%target
-%step/computer_language/golang|g_opt,target-dist,golang
+%step/toolchain/linux-header|g_opt+host-dist;%target
+%step/computer_language/golang|g_opt;target-dist+golang

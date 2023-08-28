@@ -9,13 +9,13 @@ sed -i -e "/cross-tools\/gcc/d" \
        -e "/cross-tools\/grub/d" \
        -e "/cross-tools\/gdb/d" \
        -e "/cross-tools\/qemu/d" \
-       -e "/cross-tools\/node/d" \
+       -e "/host-tools\/node/d" \
        steps/wine_runtime_host_requires.index
 ./build.sh -i steps/wine_runtime_host_requires.index
 
 
 # 编译与wine相关的交叉工具链
-./build.sh -o wine64,wine -g cross-toolchains
+./build.sh -o wine -g cross-toolchains
 
 # 编译wine_runtime环境的软件包
 ./build.sh wine_runtime

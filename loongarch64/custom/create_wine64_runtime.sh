@@ -2,16 +2,16 @@
 
 # 筛选编译Wine所需要的host-tools工具集。
 mkdir -p steps
-./build.sh -x -o -f_opt,-g_opt,wine -i steps/wine_runtime_host_requires.index -g host-tools
-sed -i "/step\/target_base/d" steps/wine_runtime_host_requires.index
+./build.sh -x -o -f_opt,-g_opt,wine64 -i steps/wine64_runtime_host_requires.index -g host-tools
+sed -i "/step\/target_base/d" steps/wine64_runtime_host_requires.index
 sed -i -e "/cross-tools\/gcc/d" \
        -e "/cross-tools\/binutils/d" \
        -e "/cross-tools\/grub/d" \
        -e "/cross-tools\/gdb/d" \
        -e "/cross-tools\/qemu/d" \
-       -e "/cross-tools\/node/d" \
-       steps/wine_runtime_host_requires.index
-./build.sh -i steps/wine_runtime_host_requires.index
+       -e "/host-tools\/node/d" \
+       steps/wine64_runtime_host_requires.index
+./build.sh -i steps/wine64_runtime_host_requires.index
 
 
 # 编译与wine相关的交叉工具链
