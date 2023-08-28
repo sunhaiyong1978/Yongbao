@@ -139,7 +139,7 @@ function get_all_set_env_expr
         declare -a USE_ENV=("")
         declare USE_ENV_COUNT=${#USE_ENV[@]}
 
-        for i in $(echo "${SET_STR}" | tr "," "\\n")
+        for i in $(echo "${SET_STR}" | tr ";" "\\n")
         do
                 if [ "x${i:0:1}" == "x%" ]; then
 	                SET_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $1 }')
@@ -189,7 +189,7 @@ function get_all_can_set_env_str
         declare -a USE_ENV=("")
         declare USE_ENV_COUNT=${#USE_ENV[@]}
 
-        for i in $(echo "${SET_STR}" | tr "," "\\n")
+        for i in $(echo "${SET_STR}" | tr ";" "\\n")
         do
                 if [ "x${i:0:1}" == "x%" ]; then
 # 	                SET_ENV[${SET_COUNT}]=${i:1}
@@ -622,6 +622,7 @@ function get_default_opt
 }
 
 
+
 function set_to_default_opt
 {
 	declare -a SET_OPT
@@ -630,40 +631,94 @@ function set_to_default_opt
 	declare -a USE_OPT=(${1})
 	declare USE_COUNT=${#USE_OPT[@]}
 
-	for i in $(echo "${SET_STR}" | tr "," "\\n")
+	for i in $(echo "${SET_STR}" | tr ";" "\\n")
 	do
-		SET_OPT[${SET_COUNT}]=${i}
-		((SET_COUNT++))
+                if [ "x${i}" == "xnone_status" ] || [ "x${i:0:1}" == "x%" ]; then
+                        continue
+                fi
+                if [ "x{i}" != "x" ]; then
+			SET_OPT[${SET_COUNT}]=${i}
+			((SET_COUNT++))
+		fi
 	done
 
-	for i in ${SET_OPT[*]}
+
+	for g in ${SET_OPT[*]}
 	do
-		if [ "x${i}" == "xbad" ] || ( ( [ "x${i:0:1}" == "x+" ] || [ "x${i:0:1}" == "x-" ] ) && [ "x${i:1}" == "xbad" ] ); then
-			continue;
-		fi
-		if [ "x${i:0:1}" == "x-" ]; then
-			OPT=${i:1}
-			for j in $(echo ${!USE_OPT[@]})
+		for n in $(echo "${g}" | tr "," "\\n")
+		do
+			for i in $(echo "${n}" | tr "+" "\\n")
 			do
-				if [ "x${OPT}x" == "x${USE_OPT[${j}]}x" ]; then
-					USE_OPT[${j}]=""
+				if [ "x${i}" == "xbad" ]; then
+					continue;
 				fi
-			done
-		else
-			if [ "x${i:0:1}" == "x+" ]; then
-				USE_OPT[${USE_COUNT}]=${i:1}
-			else
-				if [ "x${i:0:1}" != "x%" ]; then
+
+				if [ "x${i:0:1}" == "x!" ]; then
+					OPT=${i:1}
+					for j in $(echo ${!USE_OPT[@]})
+					do
+						if [ "x${OPT}x" == "x${USE_OPT[${j}]}x" ]; then
+							USE_OPT[${j}]=""
+						fi
+					done
+				else
 					USE_OPT[${USE_COUNT}]=${i}
+					((USE_COUNT++))
 				fi
-			fi
-			((USE_COUNT++))
-		fi
+
+			done
+		done
 	done
 	echo "${USE_OPT[@]}"
 }
 
-function test_opt_can_run
+
+
+# function set_to_default_opt
+# {
+#	declare -a SET_OPT
+#	declare SET_COUNT=0
+#	declare SET_STR="${2}"
+#	declare -a USE_OPT=(${1})
+#	declare USE_COUNT=${#USE_OPT[@]}
+#
+#	for i in $(echo "${SET_STR}" | tr "," "\\n")
+#	do
+#		SET_OPT[${SET_COUNT}]=${i}
+#		((SET_COUNT++))
+#	done
+#
+#	for i in ${SET_OPT[*]}
+#	do
+#		if [ "x${i}" == "xbad" ] || ( ( [ "x${i:0:1}" == "x+" ] || [ "x${i:0:1}" == "x-" ] ) && [ "x${i:1}" == "xbad" ] ); then
+#			continue;
+#		fi
+#		if [ "x${i:0:1}" == "x-" ]; then
+#			OPT=${i:1}
+#			for j in $(echo ${!USE_OPT[@]})
+#			do
+#				if [ "x${OPT}x" == "x${USE_OPT[${j}]}x" ]; then
+#					USE_OPT[${j}]=""
+#				fi
+#			done
+#		else
+#			if [ "x${i:0:1}" == "x+" ]; then
+#				USE_OPT[${USE_COUNT}]=${i:1}
+#			else
+#				if [ "x${i:0:1}" != "x%" ]; then
+#					USE_OPT[${USE_COUNT}]=${i}
+#				fi
+#			fi
+#			((USE_COUNT++))
+#		fi
+#	done
+#	echo "${USE_OPT[@]}"
+# }
+
+
+
+
+function test_opt
 {
 	declare TEST_COUNT=0
 	declare TEST_STR="${2}"
@@ -671,17 +726,15 @@ function test_opt_can_run
 	declare OPT=""
 	declare -a USE_OPT=(${1})
 	declare USE_COUNT=${#USE_OPT[@]}
+	declare ONCE_PASS=0
 
 	if [ "x${TEST_STR}" == "x" ]; then
-		echo "0"
+		echo "1"
 		return
 	fi
 
-	for i in $(echo "${TEST_STR}" | tr "," "\\n")
+	for i in $(echo "${TEST_STR}" | tr "+" "\\n")
 	do
-		if [ "x${i}" == "xnone_status" ]; then
-			continue
-		fi
 		if [ "x{i}" != "x" ]; then
 			TEST_OPT[${TEST_COUNT}]=${i}
 			((TEST_COUNT++))
@@ -694,25 +747,24 @@ function test_opt_can_run
 	do
 		INVERT=0
 		TEST_STATUS=0
-		if [ "x${i:0:1}" == "x+" ]; then
-			OPT=${i:1}
-			INVERT=0
-		else
-			if [ "x${i:0:1}" == "x-" ]; then
+
+		case "x${i:0:1}" in
+#			"x+")
+#				OPT=${i:1}
+#				INVERT=0
+#				;;
+			"x!")
 				OPT=${i:1}
 				INVERT=1
-			else
-				if [ "x${i:0:1}" == "x%" ]; then
-					continue
-				else
-					OPT=${i}
-					INVERT=0
-				fi
-			fi
-		fi
-		if [ "x${INVERT}" == "x1" ]; then
-			TEST_STATUS=1
-		fi
+				;;
+			*)
+				OPT=${i}
+				INVERT=0
+				;;
+		esac
+#		if [ "x${INVERT}" == "x1" ]; then
+#			TEST_STATUS=1
+#		fi
 		for j in $(echo ${USE_OPT[*]})
 		do
 			if [ "x${j}" == "x" ]; then
@@ -720,8 +772,10 @@ function test_opt_can_run
 			fi
 			if [ "x${OPT}x" == "x${j}x" ]; then
 				if [ "x${INVERT}" == "x1" ]; then
-					# ${i} 不使用
 					TEST_STATUS=0
+					# ${i} 反标记找到，${1} 测试不通过"
+					echo "0"
+					return
 				else
 					# ${i} 在使用
 					TEST_STATUS=1
@@ -729,18 +783,114 @@ function test_opt_can_run
 				break;
 			fi
 		done
-#		if [ "x${TEST_STATUS}" == "x0" ] && [ "x${INVERT}" == "x0" ]; then
+		if [ "x${INVERT}" == "x1" ]; then
+			continue
+		fi
 		if [ "x${TEST_STATUS}" == "x0" ]; then
 			# ${i} 标记没有找到，${1} 测试不通过"
-			echo "1"
+			echo "0"
 			return
 		fi
 	done
 
 	# 全部找到，测试通过
 
-	echo "0"
+	echo "1"
 	return
+}
+
+function test_opt_group
+{
+	declare TEST_COUNT=0
+	declare TEST_STR="${2}"
+	declare -a TEST_OPT
+	declare OPT=""
+	declare -a USE_OPT=(${1})
+	declare USE_COUNT=${#USE_OPT[@]}
+	declare ONCE_PASS=0
+
+	if [ "x${TEST_STR}" == "x" ]; then
+		echo "1"
+		return
+	fi
+
+	for i in $(echo "${TEST_STR}" | tr "," "\\n")
+	do
+		if [ "x{i}" != "x" ]; then
+			TEST_OPT[${TEST_COUNT}]=${i}
+			((TEST_COUNT++))
+		fi
+	done
+
+	TEST_STATUS=0
+	for i in ${TEST_OPT[*]}
+	do
+		if [ "x$(test_opt "${1}" "${i}")" == "x1" ]; then
+			# 找到，测试通过
+			TEST_STATUS=1
+			echo "1"
+			return
+		fi
+	done
+
+	if [ "x${TEST_STATUS}" == "x0" ]; then
+		# ${i} 标记没有找到，${1} 测试不通过"
+		echo "0"
+		return
+	else
+		# 找到，测试通过
+		echo "1"
+		return
+	fi
+
+}
+
+function test_opt_can_run
+{
+	declare TEST_COUNT=0
+	declare TEST_STR="${2}"
+	declare -a TEST_OPT
+	declare OPT=""
+	declare -a USE_OPT=(${1})
+	declare USE_COUNT=${#USE_OPT[@]}
+	declare ONCE_PASS=0
+
+	if [ "x${TEST_STR}" == "x" ]; then
+		echo "1"
+		return
+	fi
+
+	for i in $(echo "${TEST_STR}" | tr ";" "\\n")
+	do
+		if [ "x${i}" == "xnone_status" ] || [ "x${i:0:1}" == "x%" ]; then
+			continue
+		fi
+		if [ "x{i}" != "x" ]; then
+			TEST_OPT[${TEST_COUNT}]=${i}
+			((TEST_COUNT++))
+		fi
+	done
+
+	TEST_STATUS=0
+	for i in ${TEST_OPT[*]}
+	do
+		if [ "x$(test_opt_group "${1}" "${i}")" == "x0" ]; then
+			TEST_STATUS=1
+			# ${i} 标记没有找到，${1} 测试不通过"
+			echo "0"
+			return
+		fi
+	done
+
+	if [ "x${TEST_STATUS}" == "x0" ]; then
+		# 全部找到，测试通过
+		echo "1"
+		return
+	else
+		# ${i} 标记没有找到，${1} 测试不通过"
+		echo "0"
+		return
+	fi
 }
 
 
@@ -874,7 +1024,8 @@ function step_to_index
 
 
 		# echo "test_opt_can_run" "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
-		if [ "x$(test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}")" == "x0" ]; then
+		# test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
+		if [ "x$(test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}")" == "x1" ]; then
 			if [ "x${GREP_STR}" == "x" ]; then
 				echo -n "${SHOW_COUNT}  "
 				echo -n $(echo ${STEP_NAME} | sed "s@^%@@g")
