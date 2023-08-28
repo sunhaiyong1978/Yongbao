@@ -1,0 +1,25 @@
+From df19ed1a92847d55855a462669ecdea6926f702e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 27 Aug 2023 10:56:58 +0000
+Subject: [PATCH] fix pluggy require version.
+
+---
+ pyproject.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 8e4e5ff..5b3b971 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -37,7 +37,7 @@ dependencies = [
+   "editables>=0.3",
+   "packaging>=21.3",
+   "pathspec>=0.10.1",
+-  "pluggy>=1.0.0",
++  "pluggy",
+   "tomli>=1.2.2; python_version < '3.11'",
+   "trove-classifiers",
+ ]
+-- 
+2.31.1
+

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=vala
-export PACKAGE_VERSION=0.56.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/vala/0.56.11/
-rm -rf ${BUILD_DIRECTORY}/vala-0.56.11
-tar xvf ${DOWNLOADDIR}/vala-0.56.11.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vala-0.56.11
+export PACKAGE_VERSION=0.56.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/vala/0.56.12/
+rm -rf ${BUILD_DIRECTORY}/vala-0.56.12
+tar xvf ${DOWNLOADDIR}/vala-0.56.12.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vala-0.56.12
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/vala-0.56.11
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/vala-0.56.11
+rm -rf ${BUILD_DIRECTORY}/vala-0.56.12

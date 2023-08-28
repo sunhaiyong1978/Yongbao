@@ -19,7 +19,8 @@ pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dosmesa=true \
               -Dlibunwind=disabled \
-               ..
+	      -Dgallium-drivers="kmsro,radeonsi,r300,r600,nouveau,freedreno,swrast,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,iris,lima,zink,d3d12,asahi,i915,crocus" \
+              ..
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 

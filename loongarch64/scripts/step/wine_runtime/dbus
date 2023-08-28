@@ -4,11 +4,12 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=dbus
-export PACKAGE_VERSION=1.15.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/dbus/1.15.6/
-rm -rf ${BUILD_DIRECTORY}/dbus-1.15.6
-tar xvf ${DOWNLOADDIR}/dbus-1.15.6.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dbus-1.15.6
+export PACKAGE_VERSION=1.15.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/dbus/1.15.8/
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8
+tar xvf ${DOWNLOADDIR}/dbus-1.15.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dbus-1.15.8
+	./autogen.sh
 	./configure ${COMMON_CONFIG} --runstatedir=/run \
 	            --enable-user-session \
 	            --disable-static --disable-doxygen-docs --disable-xml-docs \
@@ -17,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/dbus-1.15.6
 	eval ${MAKE_AND_INSTALL}
 	rm -f ${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/libdbus*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/dbus-1.15.6
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8

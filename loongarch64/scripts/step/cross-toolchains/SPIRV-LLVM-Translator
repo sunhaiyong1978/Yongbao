@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-16.0.0
 tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-16.0.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-16.0.0
         
+	export PATH=${PREFIX}/llvm-project/bin:${PATH}
 	tar xvf ${RESOURCEDIR}/files/SPIRV-Headers-sdk-1.3.250.1.tar.gz
         mkdir -p build
         pushd build

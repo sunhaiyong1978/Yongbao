@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=sphinx-rtd-theme
-export PACKAGE_VERSION=1.2.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinx-rtd-theme/1.2.2/
-rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.2.2
-tar xvf ${DOWNLOADDIR}/sphinx_rtd_theme-1.2.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.2.2
-	patch -Np1 -i ${SYSDIR}/files/host-tools/sphinx-rtd-theme/1.2.2/patches/0001-fix-sphinx-and-docutils-requires-version.patch 
+export PACKAGE_VERSION=1.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinx-rtd-theme/1.3.0/
+rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.3.0
+tar xvf ${DOWNLOADDIR}/sphinx_rtd_theme-1.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.3.0
+	patch -Np1 -i ${SYSDIR}/files/host-tools/sphinx-rtd-theme/1.3.0/patches/0001-fix-docutils-require-version.patch 
 	 
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user sphinx-rtd-theme
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.2.2
+rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-1.3.0

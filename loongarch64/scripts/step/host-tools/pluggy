@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=pluggy
-export PACKAGE_VERSION=1.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pluggy/1.2.0/
-rm -rf ${BUILD_DIRECTORY}/pluggy-1.2.0
-tar xvf ${DOWNLOADDIR}/pluggy-1.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pluggy-1.2.0
+export PACKAGE_VERSION=1.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pluggy/1.3.0/
+rm -rf ${BUILD_DIRECTORY}/pluggy-1.3.0
+tar xvf ${DOWNLOADDIR}/pluggy-1.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pluggy-1.3.0
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user pluggy
 popd 
-rm -rf ${BUILD_DIRECTORY}/pluggy-1.2.0
+rm -rf ${BUILD_DIRECTORY}/pluggy-1.3.0

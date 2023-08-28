@@ -31,6 +31,7 @@ pushd ${BUILD_DIRECTORY}/wine-8.0.2
 popd 
 rm -rf ${BUILD_DIRECTORY}/wine-8.0.2
 
+# mkdir -p ${SYSROOT_DIR}/etc/binfmt.d/
 # echo -n ":Windows64:M::MZ::/usr/bin/wine64:" > ${SYSROOT_DIR}/etc/binfmt.d/wine64.conf
 
 # [[[7.0.0]]]

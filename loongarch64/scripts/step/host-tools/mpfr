@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=mpfr
-export PACKAGE_VERSION=4.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/mpfr/4.2.0/
-rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.0
-tar xvf ${DOWNLOADDIR}/mpfr-4.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mpfr-4.2.0
+export PACKAGE_VERSION=4.2.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/mpfr/4.2.1/
+rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.1
+tar xvf ${DOWNLOADDIR}/mpfr-4.2.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mpfr-4.2.1
 	
 	./configure --prefix=${CROSSTOOLS_DIR} --disable-static --with-gmp=${PREFIX}
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.0
+rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.1

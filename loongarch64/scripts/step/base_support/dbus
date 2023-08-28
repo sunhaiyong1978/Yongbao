@@ -3,11 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dbus
-export PACKAGE_VERSION=1.15.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus/1.15.6/
-rm -rf ${BUILD_DIRECTORY}/dbus-1.15.6
-tar xvf ${DOWNLOADDIR}/dbus-1.15.6.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dbus-1.15.6
+export PACKAGE_VERSION=1.15.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus/1.15.8/
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8
+tar xvf ${DOWNLOADDIR}/dbus-1.15.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dbus-1.15.8
+	./autogen.sh
 	./configure ${COMMON_CONFIG} --runstatedir=/run \
 	            --enable-user-session \
 	            --disable-static --disable-doxygen-docs --disable-xml-docs \
@@ -17,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/dbus-1.15.6
 	rm -f ${SYSROOT_DIR}/usr/lib64/libdbus*.la
 	chmod -v 4750 ${SYSROOT_DIR}/usr/libexec/dbus-daemon-launch-helper
 popd 
-rm -rf ${BUILD_DIRECTORY}/dbus-1.15.6
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=x86_64-qemu
-export PACKAGE_VERSION=8.0.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/x86_64-qemu/8.0.4/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.0.4
-tar xvf ${DOWNLOADDIR}/qemu-8.0.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.0.4
+export PACKAGE_VERSION=8.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/x86_64-qemu/8.1.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.1.0
+tar xvf ${DOWNLOADDIR}/qemu-8.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.1.0
     mkdir -p build
     pushd build
         ../configure --prefix=${PREFIX}/${X86_64_HOST} --target-list=x86_64-linux-user --static
@@ -24,4 +24,4 @@ ${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64.bin -L ${SYSROOT_DIR}/usr/lib/x86_64/sy
 
 chmod +x ${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64{,-ldd}
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.0.4
+rm -rf ${BUILD_DIRECTORY}/qemu-8.1.0
