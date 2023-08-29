@@ -13,13 +13,20 @@ pushd ${BUILD_DIRECTORY}/Python-3.11.5
 	            --with-ensurepip=yes --enable-optimizations \
 	            ac_cv_broken_sem_getvalue=yes LIBSQLITE3_LIBS="-L${CROSSTOOLS_DIR}/lib -Wl,-rpath=${CROSSTOOLS_DIR}/lib -lsqlite3"
 	eval ${MAKE_AND_INSTALL}
-	sed -i "s@-lutil @@g" ${CROSSTOOLS_DIR}/bin/python3.11-config
-	cp ${CROSSTOOLS_DIR}/lib64/python3.11/_sysconfigdata__linux_{x86_64-linux-gnu,${CROSS_TARGET}}.py
-	sed -i -e "/'CC'/s@'gcc@'${CROSS_TARGET}-gcc@g" \
-	       -e "/'CXX'/s@'g++@'${CROSS_TARGET}-g++@g" \
-	       -e "/'LDSHARED'/s@'gcc@'${CROSS_TARGET}-gcc@g" \
-	       -e "/'SOABI'/s@-x86_64-linux-gnu@@g" \
-	       -e "/'EXT_SUFFIX'/s@-x86_64-linux-gnu@@g" \
-	       ${CROSSTOOLS_DIR}/lib64/python3.11/_sysconfigdata__linux_${CROSS_TARGET}.py
+
+#	echo "${PACKAGE_VERSION%\.*}" > ${COMMON_DIR}/Python3.version
+	save_package_version Python3 "${PACKAGE_VERSION%\.*}"
+	PYTHON_VERSION="$(get_package_version Python3)"
+
+	sed -i "s@-lutil @@g" ${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config
+
+#	PYTHON_EXT="$(python3-config --extension-suffix | grep -o "$(echo $(get_package_version Python3) | sed "s@\.@@g")\(.*\).so" | sed "s@^$(echo $(get_package_version Python3) | sed "s@\.@@g")@@g" | sed "s@\.so\$@@g" | sed "s@^-@@g")"
+#	cp ${CROSSTOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_{${PYTHON_EXT},${CROSS_TARGET}}.py
+#	sed -i -e "/'CC'/s@'gcc@'${CROSS_TARGET}-gcc@g" \
+#	       -e "/'CXX'/s@'g++@'${CROSS_TARGET}-g++@g" \
+#	       -e "/'LDSHARED'/s@'gcc@'${CROSS_TARGET}-gcc@g" \
+#	       -e "/'SOABI'/s@-$(uname -m)-linux-gnu@@g" \
+#	       -e "/'EXT_SUFFIX'/s@-$(uname -m)-linux-gnu@@g" \
+#	       ${CROSSTOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
 popd 
 rm -rf ${BUILD_DIRECTORY}/Python-3.11.5

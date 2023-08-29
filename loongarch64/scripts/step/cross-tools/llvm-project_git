@@ -29,5 +29,6 @@ pushd llvm
         ninja
         ninja install
 popd
+save_package_version cross-tools_llvm-project "18.0.0"
 popd 
 rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git

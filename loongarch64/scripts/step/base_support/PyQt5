@@ -15,9 +15,9 @@ pushd ${BUILD_DIRECTORY}/PyQt5-5.15.9
     _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     ${CROSSTOOLS_DIR}/bin/python3 ./configure.py --confirm-license \
               --bindir=/usr/bin --sipdir=/usr/share/sip/PyQt5 \
-              --destdir=/usr/lib64/python3.11/site-packages \
-              --stubsdir=/usr/lib64/python3.11/site-packages/PyQt5 \
-              --sip-incdir=${SYSROOT_DIR}/usr/include/python3.11
+              --destdir=/usr/lib64/python$(get_package_version Python3)/site-packages \
+              --stubsdir=/usr/lib64/python$(get_package_version Python3)/site-packages/PyQt5 \
+              --sip-incdir=${SYSROOT_DIR}/usr/include/python$(get_package_version Python3)
     make -j${JOBS}
     make INSTALL_ROOT=${SYSROOT_DIR} install
 popd 

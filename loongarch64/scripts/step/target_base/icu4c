@@ -15,9 +15,9 @@ pushd ${BUILD_DIRECTORY}/icu
     sed -i '/INVOKE/s@$(TOOLBINDIR)@/bin@g' data/Makefile.in extra/uconv/Makefile.in
     sed -i '/INVOKE/s@/bin/icupkg@/sbin/icupkg@g' data/Makefile.in
     ./configure ${COMMON_CONFIG} --with-cross-build=${PWD}
-    sed -i '/INVOKE/s@$(TOOLBINDIR)@/bin@g' data/rules.mk
-    sed -i '/INVOKE/s@/bin/icupkg@/sbin/icupkg@g' data/rules.mk
-    sed -i '/INVOKE/s@/bin/gensprep@/sbin/gensprep@g' data/rules.mk
+#    sed -i '/INVOKE/s@$(TOOLBINDIR)@/bin@g' data/rules.mk
+#    sed -i '/INVOKE/s@/bin/icupkg@/sbin/icupkg@g' data/rules.mk
+#    sed -i '/INVOKE/s@/bin/gensprep@/sbin/gensprep@g' data/rules.mk
     eval ${MAKE_AND_INSTALL}
     popd
 popd 

@@ -15,11 +15,11 @@ pushd ${BUILD_DIRECTORY}/qemu-8.1.0
         cp qemu-x86_64 ${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64.bin
     popd
     echo "#!/bin/bash -e
-${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64.bin -L ${SYSROOT_DIR}/usr/lib/x86_64/sys-root \"\$@\"" \
+${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64.bin -L ${SYSROOT_DIR}/usr/lib/x86_64/sys-root -E LD_LIBRARY_PATH=${SYSROOT_DIR}/usr/lib/x86_64/sys-root/usr/lib64 \"\$@\"" \
 > ${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64
 
 echo "#!/bin/bash -e
-${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64.bin -L ${SYSROOT_DIR}/usr/lib/x86_64/sys-root -E LD_TRACE_LOADED_OBJECTS=1 \"\$@\"" \
+${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64.bin -L ${SYSROOT_DIR}/usr/lib/x86_64/sys-root -E LD_TRACE_LOADED_OBJECTS=1 -E LD_LIBRARY_PATH=${SYSROOT_DIR}/usr/lib/x86_64/sys-root/usr/lib64 \"\$@\"" \
 > ${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64-ldd
 
 chmod +x ${PREFIX}/${X86_64_HOST}/bin/qemu-x86_64{,-ldd}

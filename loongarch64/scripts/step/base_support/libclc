@@ -25,6 +25,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
                   -DLLVM_SPIRV="${CROSSTOOLS_DIR}/bin/llvm-spirv" \
                   -DCMAKE_AR="${CROSSTOOLS_DIR}/bin/llvm-ar" \
                   -DCMAKE_RANLIB="${CROSSTOOLS_DIR}/bin/llvm-ranlib" \
+		  -DLLVM_DIR:PATH=${SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake/llvm \
                   -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
                   -DLLVM_ENABLE_RTTI:BOOL=ON \
                   -DLLVM_ENABLE_ZLIB:BOOL=ON \

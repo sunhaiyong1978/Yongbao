@@ -318,7 +318,41 @@ function archname_to_cxxflags
 	return
 }
 
+function save_package_version
+{
+	declare SAVE_PACKAGE_NAME=""
+	declare SAVE_PACKAGE_VERSION=""
+	if [ "x${1}" == "x" ]; then
+		SAVE_PACKAGE_NAME="${STEP_PACKAGENAME}"
+	else
+		SAVE_PACKAGE_NAME="${1}"
+	fi
+	if [ "x${2}" == "x" ]; then
+		SAVE_PACKAGE_VERSION="${PACKAGE_VERSION}"
+	else
+		SAVE_PACKAGE_VERSION="${2}"
+	fi
+	if [ "x${SAVE_PACKAGE_NAME}" == "x" ]; then
+		SAVE_PACKAGE_NAME="foo"
+	fi
+	echo "${SAVE_PACKAGE_VERSION}" > ${COMMON_DIR}/${SAVE_PACKAGE_NAME}.version
+	return
+}
 
+function get_package_version
+{
+	declare GET_PACKAGE_NAME="${1}"
+	if [ "x${GET_PACKAGE_NAME}" == "x" ]; then
+		echo "unknown"
+		return
+	fi
+	if [ ! -f ${COMMON_DIR}/${GET_PACKAGE_NAME}.version ]; then
+		echo "noversion"
+		return
+	fi
+	echo "$(cat ${COMMON_DIR}/${GET_PACKAGE_NAME}.version | head -n1)"
+	return
+}
 
 source ${NEW_TARGET_SYSDIR}/set_env.conf
 source ${NEW_TARGET_SYSDIR}/package_env.conf

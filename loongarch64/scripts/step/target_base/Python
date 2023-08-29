@@ -24,20 +24,38 @@ EOF
 	            --enable-optimizations --with-platlibdir=lib64 \
 	            --cache-file=config.cache
 	eval ${MAKE_AND_INSTALL}
-ln -sfv python3 ${SYSROOT_DIR}/usr/bin/python
-sed -i -e "s@${SYSROOT_DIR}@@g" \
-       -e "s@${CROSS_TARGET}-@@g" \
-       ${SYSROOT_DIR}/usr/lib64/python3.11/_sysconfigdata__linux_.py
 
-cp -v ${CROSSTOOLS_DIR}/bin/python3.11-config{,.tools}
-cp -v ${SYSROOT_DIR}/usr/bin/python3.11-config ${CROSSTOOLS_DIR}/bin/
-sed -i "/^prefix_real/s@=.*@=${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/python3.11-config
+PYTHON_VERSION="${PACKAGE_VERSION%\.*}"
+save_package_version Python3 "${PACKAGE_VERSION%\.*}"
+
+ln -sfv python3 ${SYSROOT_DIR}/usr/bin/python
+cp -v ${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config{,.tools}
+
+cp -v ${SYSROOT_DIR}/usr/bin/python$(get_package_version Python3)-config ${CROSSTOOLS_DIR}/bin/
+sed -i "/^prefix_real/s@=.*@=${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config
 
 echo "#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/python3 \"\$@\"" > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
 
-echo "${PACKAGE_VERSION%\.*}" > ${COMMON_DIR}/Python3.version
+
+HOST_PYTHON_EXT="$(${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config.tools --extension-suffix | grep -o "$(echo $(get_package_version Python3) | sed "s@\.@@g")\(.*\).so" | sed "s@^$(echo $(get_package_version Python3) | sed "s@\.@@g")@@g" | sed "s@\.so\$@@g")"
+if [ "x${HOST_PYTHON_EXT}" != "x" ]; then
+	HOST_PYTHON_EXT="${HOST_PYTHON_EXT:1}"
+fi
+TARGET_PYTHON_EXT="$(${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config --extension-suffix | grep -o "$(echo $(get_package_version Python3) | sed "s@\.@@g")\(.*\).so" | sed "s@^$(echo $(get_package_version Python3) | sed "s@\.@@g")@@g" | sed "s@\.so\$@@g")"
+if [ "x${TARGET_PYTHON_EXT}" != "x" ]; then
+	TARGET_PYTHON_EXT="${TARGET_PYTHON_EXT:1}"
+fi
+
+cp ${SYSROOT_DIR}/usr/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${TARGET_PYTHON_EXT}.py ${CROSSTOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
+
+sed -i "/'INCLUDEPY'/s@'/usr/include@'${SYSROOT_DIR}/usr/include@g" ${CROSSTOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
+
+sed -i -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSS_TARGET}-@@g" \
+       ${SYSROOT_DIR}/usr/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${TARGET_PYTHON_EXT}.py
+
 
 popd 
 rm -rf ${BUILD_DIRECTORY}/Python-3.11.5

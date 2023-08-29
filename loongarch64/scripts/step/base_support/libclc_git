@@ -25,6 +25,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
                   -DLLVM_SPIRV="${CROSSTOOLS_DIR}/bin/llvm-spirv" \
                   -DCMAKE_AR="${CROSSTOOLS_DIR}/bin/llvm-ar" \
                   -DCMAKE_RANLIB="${CROSSTOOLS_DIR}/bin/llvm-ranlib" \
+		  -DLLVM_DIR:PATH=${SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake/llvm \
                   -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
                   -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
                   -DLLVM_ENABLE_RTTI:BOOL=ON \

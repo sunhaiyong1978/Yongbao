@@ -35,5 +35,7 @@ qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/llvm-config "\$@"
 EOF
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config
 
+save_package_version target_base_llvm-project
+
 popd 
 rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.6.src

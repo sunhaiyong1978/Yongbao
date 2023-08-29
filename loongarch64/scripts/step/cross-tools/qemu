@@ -15,11 +15,11 @@ pushd ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
         cp qemu-${YONGBAO_TARGET_ARCH} ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin
     popd
     echo "#!/bin/bash -e
-${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_LIBRARY_PATH=.libs \"\$@\"" \
+${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_LIBRARY_PATH=.libs:${SYSROOT_DIR}/usr/lib${LIB_SUFF} \"\$@\"" \
 > ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}
 
 echo "#!/bin/bash -e
-${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_TRACE_LOADED_OBJECTS=1 \"\$@\"" \
+${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_TRACE_LOADED_OBJECTS=1 -E LD_LIBRARY_PATH=${SYSROOT_DIR}/usr/lib${LIB_SUFF} \"\$@\"" \
 > ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}-ldd
 
 chmod +x ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}{,-ldd}

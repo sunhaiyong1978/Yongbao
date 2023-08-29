@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/libxml2-2.11.5
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --with-history --with-icu --with-python=${CROSSTOOLS_DIR}/bin/python3 --with-python_install_dir=/usr/lib64/python3.11/site-packages PYTHON=python3
+	 ./configure ${COMMON_CONFIG} --with-history --with-icu --with-python=${CROSSTOOLS_DIR}/bin/python3 --with-python_install_dir=/usr/lib64/python$(get_package_version Python3)/site-packages PYTHON=python3
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

@@ -42,7 +42,8 @@
 %step/cross-tools/llvm-project_git|g_opt;llvm_git
 %step/cross-tools/clang_git|g_opt;llvm_git
 %step/cross-tools/lld_git|g_opt;llvm_git
-%step/cross-tools/SPIRV-LLVM-Translator|f_opt
+%step/cross-tools/SPIRV-LLVM-Translator|f_opt;!llvm_git
+%step/cross-tools/SPIRV-LLVM-Translator_git|f_opt;llvm_git
 %step/bootstrap/rust-bootstrap|g_opt
 %step/bootstrap/go-bootstrap|g_opt
 %step/bootstrap/jdk20-bootstrap|g_opt
@@ -182,6 +183,7 @@
 %step/target_base/patch|
 %step/target_base/curl|
 %step/target_base/cmake|
+%step/target_base/Python|
 %step/target_base/MarkupSafe|
 %step/target_base/Jinja2|
 %step/target_base/man-db|
@@ -344,7 +346,8 @@
 %step/base_support/OpenCL-Headers|g_opt
 %step/base_support/SPIRV-Headers|g_opt
 %step/base_support/SPIRV-Tools|g_opt
-%step/base_support/SPIRV-LLVM-Translator|g_opt
+%step/base_support/SPIRV-LLVM-Translator|g_opt;!llvm_git
+%step/base_support/SPIRV-LLVM-Translator_git|g_opt;llvm_git
 %step/base_support/libclc|g_opt;!llvm_git
 %step/base_support/libclc_git|g_opt;llvm_git
 %step/base_support/mesa|g_opt;!mesa_git

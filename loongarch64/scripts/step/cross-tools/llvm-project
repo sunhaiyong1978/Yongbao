@@ -32,6 +32,8 @@ pushd llvm
 #              ${SYSROOT_DIR}/usr/bin/${CROSS_TARGET}-llvm-config
 #        ln -sfv ${SYSROOT_DIR}/usr/bin/${CROSS_TARGET}-llvm-config \
 #                ${CROSSTOOLS_DIR}/bin/
+
+	save_package_version cross-tools_llvm-project
 popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.6.src

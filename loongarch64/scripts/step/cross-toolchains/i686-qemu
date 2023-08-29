@@ -15,11 +15,11 @@ pushd ${BUILD_DIRECTORY}/qemu-8.1.0
         cp qemu-i386 ${PREFIX}/${X86_HOST}/bin/qemu-i386.bin
     popd
     echo "#!/bin/bash -e
-${PREFIX}/${X86_HOST}/bin/qemu-i386.bin -L ${SYSROOT_DIR}/usr/lib/i686/sys-root \"\$@\"" \
+${PREFIX}/${X86_HOST}/bin/qemu-i386.bin -L ${SYSROOT_DIR}/usr/lib/i686/sys-root -E LD_LIBRARY_PATH=${SYSROOT_DIR}/usr/lib/i686/sys-root/usr/lib \"\$@\"" \
 > ${PREFIX}/${X86_HOST}/bin/qemu-i386
 
 echo "#!/bin/bash -e
-${PREFIX}/${X86_HOST}/bin/qemu-i386.bin -L ${SYSROOT_DIR}/usr/lib/i686/sys-root -E LD_TRACE_LOADED_OBJECTS=1 \"\$@\"" \
+${PREFIX}/${X86_HOST}/bin/qemu-i386.bin -L ${SYSROOT_DIR}/usr/lib/i686/sys-root -E LD_TRACE_LOADED_OBJECTS=1 -E LD_LIBRARY_PATH=${SYSROOT_DIR}/usr/lib/i686/sys-root/usr/lib \"\$@\"" \
 > ${PREFIX}/${X86_HOST}/bin/qemu-i386-ldd
 
 chmod +x ${PREFIX}/${X86_HOST}/bin/qemu-i386{,-ldd}
