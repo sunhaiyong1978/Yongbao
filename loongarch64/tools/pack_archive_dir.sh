@@ -65,10 +65,16 @@ echo "正在使用 ${ARCHIVE_MODE} 方式打包 ${ARCHIVE_DIR} 目录中的文�
 if [ -d ${ARCHIVE_DIR} ]; then
 	case "${ARCHIVE_MODE}" in
 		squashfs)
+			if [ -f /usr/bin/mksquashfs ]; then
+				MKSQUASHFS=/usr/bin/mksquashfs
+			fi
+			if [ -f /sbin/mksquashfs ]; then
+				MKSQUASHFS=/sbin/mksquashfs
+			fi
 			mkdir -p ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/
 			if [ ! -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs ] || [ "x${FORCE_CREATE}" == "xTRUE" ]; then
 				rm -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs
-				/sbin/mksquashfs ${ARCHIVE_DIR} ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs -all-root -comp xz
+				${MKSQUASHFS} ${ARCHIVE_DIR} ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs -all-root -comp xz
 			else
 				echo "${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs 文件已创建。"
 			fi
