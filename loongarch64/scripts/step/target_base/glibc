@@ -13,8 +13,8 @@ pushd ${BUILD_DIRECTORY}/glibc-2.38
     sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
     mkdir -p build-64
     pushd build-64
-        BUILD_CC="gcc" CC="${CROSS_TARGET}-gcc -mabi=${MABI} ${CFLAGS}" \
-        CXX="${CROSS_TARGET}-g++ -mabi=${MABI} ${CXXFLAGS}" \
+        BUILD_CC="gcc" CC="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-gcc -mabi=${MABI} ${CFLAGS}" \
+        CXX="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g++ -mabi=${MABI} ${CXXFLAGS}" \
         AS="${CROSS_TARGET}-as" AR="${CROSS_TARGET}-ar" RANLIB="${CROSS_TARGET}-ranlib" \
         ../configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc \

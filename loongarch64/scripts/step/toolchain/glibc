@@ -20,8 +20,8 @@ pushd ${BUILD_DIRECTORY}/glibc-2.38
     sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
     mkdir -p build
     pushd build
-        BUILD_CC="gcc" CC="${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}" \
-        CXX="${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}" \
+        BUILD_CC="gcc" CC="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}" \
+        CXX="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}" \
         AS="${CROSS_TARGET}-as" AR="${CROSS_TARGET}-ar" RANLIB="${CROSS_TARGET}-ranlib" \
         ../configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \

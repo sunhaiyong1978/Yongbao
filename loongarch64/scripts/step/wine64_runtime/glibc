@@ -12,8 +12,8 @@ pushd ${BUILD_DIRECTORY}/glibc-2.38
     
     mkdir -p build-64
     pushd build-64
-        BUILD_CC="gcc" CC="${X86_64_HOST}-gcc -m64 ${CFLAGS}" \
-        CXX="${X86_64_HOST}-gcc -m64 ${CXXFLAGS}" \
+        BUILD_CC="gcc" CC="${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-gcc -m64 ${CFLAGS}" \
+        CXX="${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-gcc -m64 ${CXXFLAGS}" \
         AS="${X86_64_HOST}-as" AR="${X86_64_HOST}-ar" RANLIB="${X86_64_HOST}-ranlib" \
         ../configure --prefix=/usr --host=${X86_64_HOST} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc \
