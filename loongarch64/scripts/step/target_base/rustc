@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.72.0/
 rm -rf ${BUILD_DIRECTORY}/rustc-1.72.0-src
 tar xvf ${DOWNLOADDIR}/rustc-1.72.0-src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/rustc-1.72.0-src
-    
+    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.72.0/patches/d68eea61c3e3d249602d66d28e8f6dbd76e7c30f.diff 
+	 
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
     LDFLAGS="" \

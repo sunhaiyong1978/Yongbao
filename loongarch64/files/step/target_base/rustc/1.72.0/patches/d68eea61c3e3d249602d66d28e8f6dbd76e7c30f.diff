@@ -1,0 +1,13 @@
+diff --git a/src/bootstrap/bootstrap.py b/src/bootstrap/bootstrap.py
+index 149350e62a014..e5a710c0a9646 100644
+--- a/src/bootstrap/bootstrap.py
++++ b/src/bootstrap/bootstrap.py
+@@ -256,7 +256,7 @@ def default_build_triple(verbose):
+     if uname is None:
+         return 'x86_64-pc-windows-msvc'
+ 
+-    kernel, cputype, processor = uname.decode(default_encoding).split()
++    kernel, cputype, processor = uname.decode(default_encoding).split(maxsplit=2)
+ 
+     # The goal here is to come up with the same triple as LLVM would,
+     # at least for the subset of platforms we're willing to target.

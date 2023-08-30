@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/rustc/1.72.0/
 rm -rf ${BUILD_DIRECTORY}/rustc-1.72.0-src
 tar xvf ${DOWNLOADDIR}/rustc-1.72.0-src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/rustc-1.72.0-src
-	
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/rustc/1.72.0/patches/d68eea61c3e3d249602d66d28e8f6dbd76e7c30f.diff 
+	 
 	sed -i "s@ifdef LLVM_RUSTLLVM@if 0@g" compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp
 	find vendor -name .cargo-checksum.json \
           -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
