@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/qemu_git-8.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
     mkdir -p build
     pushd build
-        CFLAGS="-Wno-error=unused-function" ../configure --prefix=${CROSSTOOLS_DIR} --target-list=${YONGBAO_TARGET_ARCH}-linux-user --static
+        CFLAGS="-Wno-error=unused-function" ../configure --prefix=${CROSSTOOLS_DIR} --target-list=${YONGBAO_TARGET_ARCH}-linux-user --disable-docs --static
         ninja
         cp qemu-${YONGBAO_TARGET_ARCH} ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin
     popd
