@@ -8,6 +8,10 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa_git/main_git-def
 rm -rf ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
 tar xvf ${DOWNLOADDIR}/mesa_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
+    
+    tar xf ${RESOURCEDIR}/files/mesa_git-DirectX-Headers_git.tar.gz -C subprojects/
+    mv subprojects/{mesa_git-DirectX-Headers_git,DirectX-Headers-1.0}
+
     sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
     mkdir cross-build

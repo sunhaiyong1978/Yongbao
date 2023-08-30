@@ -11,6 +11,9 @@ tar xvf ${DOWNLOADDIR}/mesa_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY
 pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
     patch -Np1 -i ${SYSDIR}/files/wine64_runtime/mesa/main_git-default/patches/0001-fix-amdgpu-for-wine.patch 
 	 
+    tar xf ${RESOURCEDIR}/files/mesa_git-DirectX-Headers_git.tar.gz -C subprojects/
+    mv subprojects/{mesa_git-DirectX-Headers_git,DirectX-Headers-1.0}
+
     sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
     mkdir cross-build
