@@ -88,6 +88,23 @@ function get_arch_parm
 
 }
 
+
+function replace_arch_parm
+{
+	if [ "x${2}" == "x" ]; then
+		SEARCH_ARCH=$(uname -m)
+	else
+		SEARCH_ARCH=${2}
+	fi
+	RET_VAL="${1}"
+	for replace in $(echo "${1}" | grep -o "<<<[^>]*>>>")
+	do
+		RET_VAL="$(echo "${RET_VAL}" | sed "s@${replace}@$(get_arch_parm "${SEARCH_ARCH}" ${replace:3:-3})@g")"
+	done
+	echo "${RET_VAL}"
+	return
+}
+
 function archname_to_name
 {
 	if [ "x${1}" == "x" ]; then

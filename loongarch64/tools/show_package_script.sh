@@ -35,6 +35,8 @@ fi
 export NEW_TARGET_SYSDIR="${PWD}/workbase"
 export BASE_DIR="${PWD}"
 
+source env/function.sh
+
 PACKAGE_FILE=scripts/step/${1}
 
 if [ ! -f ${PACKAGE_FILE} ]; then
@@ -74,6 +76,8 @@ if [ "x${EXPORT_ENV_VAR}" == "x0" ]; then
 
 	SHOW_BODY="$(echo "${SHOW_BODY}" | sed -e "s@#%%%#@\${@g" -e "s@#\*\*\*#@}@g")"
 fi
+
+SHOW_BODY="$(replace_arch_parm "$(echo "${SHOW_BODY}")")"
 
 envsubst <<< "${SHOW_BODY}" | sed "s@#{@\${@g"
 

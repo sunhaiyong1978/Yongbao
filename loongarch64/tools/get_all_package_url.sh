@@ -1,7 +1,8 @@
 #!/bin/bash
 
 BASE_DIR="${PWD}"
-
+NEW_TARGET_SYSDIR="${PWD}/workbase"
+source env/function.sh
 
 function set_proxy
 {
@@ -96,8 +97,8 @@ do
 	PKG_NAME="$(cat scripts/step/${i}.info | awk -F'|' '{ print $1 }')"
 	PKG_VERSION="$(cat scripts/step/${i}.info | awk -F'|' '{ print $2 }')"
 	DOWNLOAD_TYPE=$(cat sources/url/${i} | awk -F'|' '{ print $1 }')
-	URL=$(cat sources/url/${i} | awk -F'|' '{ print $2 }')
-	SAVE_FILENAME=$(cat sources/url/${i} | awk -F'|' '{ print $3 }')
+	URL="$(replace_arch_parm "$(cat sources/url/${i} | awk -F'|' '{ print $2 }')" )"
+	SAVE_FILENAME="$(replace_arch_parm "$(cat sources/url/${i} | awk -F'|' '{ print $3 }')" )"
 	if [ "x${SAVE_FILENAME}" == "x" ]; then
 		SAVE_FILENAME="${URL##*/}"
 	fi
@@ -207,7 +208,7 @@ ${i} 没有下载路径，请检查。"
 		echo "发现${i}存在需要下载的资源文件……"
 		for url_i in $(ls ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/*.url)
 		do
-			RESOURCES_URL="$(cat ${url_i} | grep ^URL= | awk -F'=' '{ print $2 }')"
+			RESOURCES_URL="$(cat ${url_i} | grep ^URL= | awk -F'=' '{ print $2 }' | sed "s@<<<PACKAGE_VERSION>>>@${PKG_VERSION}@g")"
 			RESOURCES_FILENAME="$(cat ${url_i} | grep ^FILENAME= | awk -F'=' '{ print $2 }' | sed "s@<<<PACKAGE_VERSION>>>@${PKG_VERSION}@g")"
 			RESOURCES_MODE="$(cat ${url_i} | grep ^MODE= | awk -F'=' '{ print $2 }')"
 			PKG_GIT_BRANCH=""
