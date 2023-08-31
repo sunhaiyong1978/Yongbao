@@ -1,0 +1,15 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=PyYAML
+export PACKAGE_VERSION=6.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/PyYAML/6.0.1/
+rm -rf ${BUILD_DIRECTORY}/PyYAML-6.0.1
+tar xvf ${DOWNLOADDIR}/PyYAML-6.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/PyYAML-6.0.1
+	
+	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user PyYAML --root=${SYSROOT_DIR} --prefix=/usr
+popd 
+rm -rf ${BUILD_DIRECTORY}/PyYAML-6.0.1

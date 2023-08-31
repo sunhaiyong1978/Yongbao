@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=vim
-export PACKAGE_VERSION=9.0.1787
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/vim/9.0.1787/
-rm -rf ${BUILD_DIRECTORY}/vim-9.0.1787
-tar xvf ${DOWNLOADDIR}/vim-9.0.1787.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vim-9.0.1787
+export PACKAGE_VERSION=9.0.1822
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/vim/9.0.1822/
+rm -rf ${BUILD_DIRECTORY}/vim-9.0.1822
+tar xvf ${DOWNLOADDIR}/vim-9.0.1822.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vim-9.0.1822
 	echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 cat > src/auto/config.cache << EOF
 	vim_cv_getcwd_broken=no
@@ -34,4 +34,4 @@ if (&term == "xterm") || (&term == "putty")
 endif
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/vim-9.0.1787
+rm -rf ${BUILD_DIRECTORY}/vim-9.0.1822

@@ -5,9 +5,9 @@ export STEP_BUILDNAME=bootstrap
 export STEP_PACKAGENAME=rust-bootstrap
 export PACKAGE_VERSION=1.71.0-default
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/bootstrap/rust-bootstrap/1.71.0-default/
-rm -rf ${BUILD_DIRECTORY}/rust-1.71.0-x86_64-unknown-linux-gnu
-tar xvf ${DOWNLOADDIR}/rust-1.71.0-x86_64-unknown-linux-gnu.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rust-1.71.0-x86_64-unknown-linux-gnu
+rm -rf ${BUILD_DIRECTORY}/rust-1.71.0-<<<RUST_ARCHNAME>>>
+tar xvf ${DOWNLOADDIR}/rust-1.71.0-<<<RUST_ARCHNAME>>>.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rust-1.71.0-<<<RUST_ARCHNAME>>>
 ./install.sh --destdir=${CROSSTOOLS_DIR}/rust
 popd 
-rm -rf ${BUILD_DIRECTORY}/rust-1.71.0-x86_64-unknown-linux-gnu
+rm -rf ${BUILD_DIRECTORY}/rust-1.71.0-<<<RUST_ARCHNAME>>>

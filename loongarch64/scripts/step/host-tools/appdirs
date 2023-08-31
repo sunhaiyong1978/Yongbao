@@ -1,0 +1,15 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=appdirs
+export PACKAGE_VERSION=1.4.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/appdirs/1.4.4/
+rm -rf ${BUILD_DIRECTORY}/appdirs-1.4.4
+tar xvf ${DOWNLOADDIR}/appdirs-1.4.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/appdirs-1.4.4
+	
+	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user appdirs
+popd 
+rm -rf ${BUILD_DIRECTORY}/appdirs-1.4.4

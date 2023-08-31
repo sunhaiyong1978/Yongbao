@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/73_2/
 rm -rf ${BUILD_DIRECTORY}/icu
 tar xvf ${DOWNLOADDIR}/icu4c-73_2-src.tgz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/icu
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     pushd source
     CC=gcc CXX=g++ ./configure --prefix=${CROSSTOOLS_DIR}
     eval ${MAKE_AND_INSTALL}

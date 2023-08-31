@@ -1,0 +1,15 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=typing-extensions
+export PACKAGE_VERSION=4.7.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/typing-extensions/4.7.1/
+rm -rf ${BUILD_DIRECTORY}/typing_extensions-4.7.1
+tar xvf ${DOWNLOADDIR}/typing_extensions-4.7.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/typing_extensions-4.7.1
+	
+	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user typing-extensions
+popd 
+rm -rf ${BUILD_DIRECTORY}/typing_extensions-4.7.1

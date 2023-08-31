@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/glean-parser/8.1.1/
 rm -rf ${BUILD_DIRECTORY}/glean_parser-8.1.1
 tar xvf ${DOWNLOADDIR}/glean_parser-8.1.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/glean_parser-8.1.1
-	
+	patch -Np1 -i ${SYSDIR}/files/host-tools/glean-parser/8.1.1/patches/0001-glean_parser-fix-MarkupSafe-requires-version.patch 
+	 
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user glean-parser
 popd 

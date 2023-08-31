@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
     mkdir cross-build
     pushd cross-build
+	CFLAGS="${CFLAGS} -Wno-error=format"
         meson ${MESON_CONFIG} \
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dosmesa=true \

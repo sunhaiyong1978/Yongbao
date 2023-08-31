@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/gpm-1.20.7
 	patch -Np1 -i ${SYSDIR}/files/target_base/gpm/1.20.7/patches/gpm-1.20.1-weak-wgetch.patch 
 	 
 	./autogen.sh
-	./configure ${COMMON_CONFIG}
+	./configure ${COMMON_CONFIG} ac_cv_path_emacs=no
 	eval ${MAKE_AND_INSTALL}
 	ln -sfv libgpm.so.2.1.0 ${SYSROOT_DIR}/usr/lib64/libgpm.so
 
