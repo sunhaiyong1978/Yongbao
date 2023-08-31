@@ -23,6 +23,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
 		make -j${JOBS}
 		make install-strip
+		ln -sf ${CROSS_TARGET}-gcc ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-cc
 	popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0

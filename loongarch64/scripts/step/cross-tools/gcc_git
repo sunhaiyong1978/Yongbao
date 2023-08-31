@@ -24,6 +24,7 @@ pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
 		make -j${JOBS}
 		make install-strip
+		ln -sf ${CROSS_TARGET}-gcc ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-cc
 	popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
