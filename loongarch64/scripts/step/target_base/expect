@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/expect5.45.4
 	./configure --prefix=/usr --libdir=/usr/lib64 \
 	            --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 	            --with-tcl=${SYSROOT_DIR}/usr/lib64 \
+		    --with-tclinclude=${SYSROOT_DIR}/usr/include \
 	            --enable-shared
 	make -j${JOBS}
 	make TCLSH_PROG=/usr/bin/tclsh DESTDIR=${SYSROOT_DIR} install
