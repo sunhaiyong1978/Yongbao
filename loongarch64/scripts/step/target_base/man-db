@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/man-db-2.11.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --sysconfdir=/etc --disable-setuid  --enable-cache-owner=bin 	--with-browser=/usr/bin/lynax  --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap
+	 ./configure ${COMMON_CONFIG}  --sysconfdir=/etc --disable-setuid  --enable-cache-owner=bin 	--with-browser=/usr/bin/lynax  --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap PO4A=""
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
