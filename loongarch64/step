@@ -121,6 +121,7 @@
 %step/cross-tools/Parse-Yapp|
 %step/cross-tools/JSON|
 %step/cross-tools/gdb|
+%step/cross-tools/pkgconf|
 %step/host-tools/hiredis|
 %step/host-tools/ccache|
 %step/host-tools/appdirs|
@@ -735,6 +736,7 @@
 %step/base_support/typing-extensions|g_opt
 %step/base_support/semantic-version|g_opt
 %step/base_support/rpds-py|g_opt
+%step/base_support/graphviz|g_opt
 %step/base_support/create_files|g_opt
 %step/base_support/final_run|g_opt
 %step/target_base/blfs-systemd-units|
@@ -985,6 +987,7 @@
 %step/desktop-app/wxWidgets|g_opt+desk-app
 %step/desktop-app/FileZilla|g_opt+desk-app
 %step/desktop-app/Imath|g_opt+desk-app
+%step/desktop-app/libdeflate|g_opt+desk-app
 %step/desktop-app/openexr|g_opt+desk-app
 %step/desktop-app/robin-map|g_opt+desk-app
 %step/desktop-app/oiio|g_opt+desk-app

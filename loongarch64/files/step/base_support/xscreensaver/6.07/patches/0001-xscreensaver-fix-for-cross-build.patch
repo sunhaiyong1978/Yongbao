@@ -1,0 +1,39 @@
+From ea39a42cd58978f9079f36a9e1ae2acd869867f7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 1 Sep 2023 08:34:22 +0000
+Subject: [PATCH] xscreensaver fix for cross build.
+
+---
+ hacks/Makefile.in     | 2 +-
+ hacks/glx/Makefile.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/hacks/Makefile.in b/hacks/Makefile.in
+index 5942315..d4b9458 100644
+--- a/hacks/Makefile.in
++++ b/hacks/Makefile.in
+@@ -456,7 +456,7 @@ check_men:
+ 	 fi
+ 
+ validate_xml:
+-	@cd $(srcdir) && ./check-configs.pl $(EXES)
++	@cd $(srcdir) && perl ./check-configs.pl $(EXES)
+ 
+ munge_ad_file:
+ 	@echo "Updating hack list in XScreenSaver.ad.in..." ; \
+diff --git a/hacks/glx/Makefile.in b/hacks/glx/Makefile.in
+index 942e9f5..2811e02 100644
+--- a/hacks/glx/Makefile.in
++++ b/hacks/glx/Makefile.in
+@@ -556,7 +556,7 @@ check_men:
+ 	 fi
+ 
+ validate_xml:
+-	@cd $(HACK_SRC) && ./check-configs.pl $(EXES) $(RETIRED_EXES)
++	@cd $(HACK_SRC) && perl ./check-configs.pl $(EXES) $(RETIRED_EXES)
+ 
+ distdepend:: check_men validate_xml
+ 
+-- 
+2.31.1
+

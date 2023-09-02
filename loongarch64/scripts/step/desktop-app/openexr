@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=openexr
-export PACKAGE_VERSION=3.1.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/openexr/3.1.11/
-rm -rf ${BUILD_DIRECTORY}/openexr-3.1.11
-tar xvf ${DOWNLOADDIR}/openexr-3.1.11.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/openexr-3.1.11
+export PACKAGE_VERSION=3.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/openexr/3.2.0/
+rm -rf ${BUILD_DIRECTORY}/openexr-3.2.0
+tar xvf ${DOWNLOADDIR}/openexr-3.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openexr-3.2.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -31,4 +31,4 @@ pushd ${BUILD_DIRECTORY}/openexr-3.1.11
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/openexr-3.1.11
+rm -rf ${BUILD_DIRECTORY}/openexr-3.2.0

@@ -5,12 +5,12 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=perf
 export PACKAGE_VERSION=6.5
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/perf/6.5/
-rm -rf ${BUILD_DIRECTORY}/linux-6.5
-tar xvf ${DOWNLOADDIR}/linux-6.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.5
+rm -rf ${BUILD_DIRECTORY}/linux_git-6.5_git
+tar xvf ${DOWNLOADDIR}/linux_git-6.5_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux_git-6.5_git
 	pushd tools/perf
 		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}-  NO_LIBTRACEEVENT=1
 		cp -a perf ${SYSROOT_DIR}/usr/bin/
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.5
+rm -rf ${BUILD_DIRECTORY}/linux_git-6.5_git

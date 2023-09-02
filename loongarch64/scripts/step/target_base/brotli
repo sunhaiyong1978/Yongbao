@@ -3,14 +3,20 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=brotli
-export PACKAGE_VERSION=1.0.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/brotli/1.0.9/
-rm -rf ${BUILD_DIRECTORY}/brotli-1.0.9
-tar xvf ${DOWNLOADDIR}/brotli-1.0.9.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/brotli-1.0.9
-    ./bootstrap
-    sed -i "s@-R@-Wl,-rpath-link=@g" scripts/libbrotli{common,dec,enc}.pc.in
-    ./configure ${COMMON_CONFIG}
-    eval ${MAKE_AND_INSTALL}
+export PACKAGE_VERSION=1.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/brotli/1.1.0/
+rm -rf ${BUILD_DIRECTORY}/brotli-1.1.0
+tar xvf ${DOWNLOADDIR}/brotli-1.1.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/brotli-1.1.0
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+       		      -DCMAKE_INSTALL_PREFIX=/usr  -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/brotli-1.0.9
+rm -rf ${BUILD_DIRECTORY}/brotli-1.1.0

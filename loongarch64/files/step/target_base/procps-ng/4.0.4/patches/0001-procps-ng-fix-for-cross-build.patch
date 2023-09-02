@@ -1,0 +1,25 @@
+From 6ba8860a595bf6cb17dc0571d4006e6a7cbefeb2 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 1 Sep 2023 07:23:52 +0000
+Subject: [PATCH] procps-ng fix for cross build.
+
+---
+ Makefile.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 24540aa..5cde3b1 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -1464,7 +1464,7 @@ library/uptime.lo: library/$(am__dirstamp) \
+ 	library/$(DEPDIR)/$(am__dirstamp)
+ 
+ library/libproc2.la: $(library_libproc2_la_OBJECTS) $(library_libproc2_la_DEPENDENCIES) $(EXTRA_library_libproc2_la_DEPENDENCIES) library/$(am__dirstamp)
+-	$(AM_V_CCLD)$(library_libproc2_la_LINK) -rpath $(libdir) $(library_libproc2_la_OBJECTS) $(library_libproc2_la_LIBADD) $(LIBS)
++	$(AM_V_CCLD)$(library_libproc2_la_LINK) $(library_libproc2_la_OBJECTS) $(library_libproc2_la_LIBADD) $(LIBS)
+ library/tests/$(am__dirstamp):
+ 	@$(MKDIR_P) library/tests
+ 	@: > library/tests/$(am__dirstamp)
+-- 
+2.31.1
+

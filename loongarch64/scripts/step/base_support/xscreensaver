@@ -3,17 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xscreensaver
-export PACKAGE_VERSION=6.06
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xscreensaver/6.06/
-rm -rf ${BUILD_DIRECTORY}/xscreensaver-6.06
-tar xvf ${DOWNLOADDIR}/xscreensaver-6.06.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xscreensaver-6.06
+export PACKAGE_VERSION=6.07
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xscreensaver/6.07/
+rm -rf ${BUILD_DIRECTORY}/xscreensaver-6.07
+tar xvf ${DOWNLOADDIR}/xscreensaver-6.07.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xscreensaver-6.07
+    patch -Np1 -i ${SYSDIR}/files/base_support/xscreensaver/6.07/patches/0001-xscreensaver-fix-for-cross-build.patch 
+	 
     cp ${SYSROOT_DIR}/usr/share/automake-*/config.* ./
     ./configure $COMMON_CONFIG --includedir=${SYSROOT_DIR}/usr/include || true
     make -j${JOBS}
     make install_prefix=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/xscreensaver-6.06
+rm -rf ${BUILD_DIRECTORY}/xscreensaver-6.07
 
 cat > ${SYSROOT_DIR}/etc/pam.d/xscreensaver << "EOF"
 # Begin /etc/pam.d/xscreensaver

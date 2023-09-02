@@ -15,6 +15,8 @@ pushd ${BUILD_DIRECTORY}/texinfo-7.0.3
                 cp ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
         done
 	./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET}
+        make -j${JOBS} -C tools/gnulib/lib
+        make -j${JOBS} -C tools/info makedoc
 	eval ${MAKE_AND_INSTALL}
 	make DESTDIR=${SYSROOT_DIR} TEXMF=/usr/share/texmf install-tex
 popd 

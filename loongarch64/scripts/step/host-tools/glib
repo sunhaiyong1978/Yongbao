@@ -3,18 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.77.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/glib/2.77.2/
-rm -rf ${BUILD_DIRECTORY}/glib-2.77.2
-tar xvf ${DOWNLOADDIR}/glib-2.77.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.77.2
+export PACKAGE_VERSION=2.77.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/glib/2.77.3/
+rm -rf ${BUILD_DIRECTORY}/glib-2.77.3
+tar xvf ${DOWNLOADDIR}/glib-2.77.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.77.3
     
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} --default-library=both \
+        meson --prefix=${CROSSTOOLS_DIR} --default-library=both -Dtests=false \
               --buildtype=release ..
         ninja
         ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.77.2
+rm -rf ${BUILD_DIRECTORY}/glib-2.77.3
