@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gnome-keyring/42.1/
 rm -rf ${BUILD_DIRECTORY}/gnome-keyring-42.1
 tar xvf ${DOWNLOADDIR}/gnome-keyring-42.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gnome-keyring-42.1
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     sed -i 's:"/desktop:"/org:' schema/*.xml
     ./configure ${COMMON_CONFIG}
     eval ${MAKE_AND_INSTALL}

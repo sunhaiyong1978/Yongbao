@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libgphoto2
-export PACKAGE_VERSION=2.5.30
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libgphoto2/2.5.30/
-rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.30
-tar xvf ${DOWNLOADDIR}/libgphoto2-2.5.30.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.30
+export PACKAGE_VERSION=2.5.31
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libgphoto2/2.5.31/
+rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.31
+tar xvf ${DOWNLOADDIR}/libgphoto2-2.5.31.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.31
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.30
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.30
+rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.31

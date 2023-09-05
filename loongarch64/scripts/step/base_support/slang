@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/slang/2.3.3/
 rm -rf ${BUILD_DIRECTORY}/slang-2.3.3
 tar xvf ${DOWNLOADDIR}/slang-2.3.3.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/slang-2.3.3
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     ./configure ${COMMON_CONFIG} --with-readline=gnu
     make -j1
     make DESTDIR=${SYSROOT_DIR} install

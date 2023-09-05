@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/luit/1.1.1/
 rm -rf ${BUILD_DIRECTORY}/luit-1.1.1
 tar xvf ${DOWNLOADDIR}/luit-1.1.1.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/luit-1.1.1
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+
 	sed -i -e "/D_XOPEN/s/5/6/" configure
 	./configure ${COMMON_CONFIG}
 	eval ${MAKE_AND_INSTALL}

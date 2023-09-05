@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=Vulkan-Headers
-export PACKAGE_VERSION=1.3.262
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Headers/1.3.262/
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.3.262
-tar xvf ${DOWNLOADDIR}/Vulkan-Headers-1.3.262.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Vulkan-Headers-1.3.262
+export PACKAGE_VERSION=1.3.263
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Headers/1.3.263/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.3.263
+tar xvf ${DOWNLOADDIR}/Vulkan-Headers-1.3.263.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Headers-1.3.263
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Headers-1.3.262
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.3.262
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.3.263

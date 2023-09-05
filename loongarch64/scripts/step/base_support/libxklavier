@@ -9,6 +9,11 @@ rm -rf ${BUILD_DIRECTORY}/libxklavier-5.4
 tar xvf ${DOWNLOADDIR}/libxklavier-5.4.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libxklavier-5.4
 	
+	for config_i in $(find -name "config.sub")
+	do
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+	done
+
 	sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
 	sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
 	mkdir cross-build

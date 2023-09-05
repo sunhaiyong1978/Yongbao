@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=libgphoto2
-export PACKAGE_VERSION=2.5.30
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libgphoto2/2.5.30/
-rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.30
-tar xvf ${DOWNLOADDIR}/libgphoto2-2.5.30.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.30
+export PACKAGE_VERSION=2.5.31
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libgphoto2/2.5.31/
+rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.31
+tar xvf ${DOWNLOADDIR}/libgphoto2-2.5.31.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.31
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.30
         make DESTDIR=${X86_64_SYSROOT_DIR} install
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.30
+rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.31

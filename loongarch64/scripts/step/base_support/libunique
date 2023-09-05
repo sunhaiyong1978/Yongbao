@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libunique/3.0.2/
 rm -rf ${BUILD_DIRECTORY}/libunique-3.0.2
 tar xvf ${DOWNLOADDIR}/libunique-3.0.2.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libunique-3.0.2
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     mkdir cross-build
     pushd cross-build
         ../configure $COMMON_CONFIG --enable-introspection

@@ -37,7 +37,13 @@ sed -i -e "s@${SYSROOT_DIR}@@g" \
        ${TEMP_DIRECTORY}/strip-foo
 
 sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
+       -e "s@${SYSROOT_DIR}/usr@/usr@g" \
        $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
+       ${TEMP_DIRECTORY}/strip-foo
+
+sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
+       $(find ${SYSROOT_DIR}/usr -name "*.py" | grep -l "${CROSSTOOLS_DIR}") \
+       $(find ${SYSROOT_DIR}/usr -name "*.pl" | grep -l "${CROSSTOOLS_DIR}") \
        ${TEMP_DIRECTORY}/strip-foo
 
 sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \

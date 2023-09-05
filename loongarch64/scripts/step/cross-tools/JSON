@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/JSON/4.10/
 rm -rf ${BUILD_DIRECTORY}/JSON-4.10
 tar xvf ${DOWNLOADDIR}/JSON-4.10.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/JSON-4.10
+	
 	${CROSSTOOLS_DIR}/bin/perl Makefile.PL
 	eval ${MAKE_AND_INSTALL}
 popd 

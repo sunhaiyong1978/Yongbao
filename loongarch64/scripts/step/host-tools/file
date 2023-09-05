@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/file-5.45
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-	 ./configure --prefix=${CROSSTOOLS_DIR} 
+	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/file-5.45

@@ -1,0 +1,17 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=po4a
+export PACKAGE_VERSION=0.69
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/po4a/0.69/
+rm -rf ${BUILD_DIRECTORY}/po4a-0.69
+tar xvf ${DOWNLOADDIR}/po4a-0.69.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/po4a-0.69
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/po4a/0.69/patches/0001-po4a-fix-for-cross-build.patch 
+	 
+        ${CROSSTOOLS_DIR}/bin/perl Build.PL
+	./Build
+	./Build install
+popd 
+rm -rf ${BUILD_DIRECTORY}/po4a-0.69

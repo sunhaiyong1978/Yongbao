@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fltk/1.3.8/
 rm -rf ${BUILD_DIRECTORY}/fltk-1.3.8
 tar xvf ${DOWNLOADDIR}/fltk-1.3.8-source.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/fltk-1.3.8
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     sed -i "/^DIRS/s@test@@g" Makefile
     ./configure ${COMMON_CONFIG} --enable-shared
     eval ${MAKE_AND_INSTALL}

@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/mpc-1.3.1
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-	 ./configure --prefix=${CROSSTOOLS_DIR} --disable-static --with-gmp=${PREFIX}
+	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --disable-static --with-gmp=${PREFIX}
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/mpc-1.3.1

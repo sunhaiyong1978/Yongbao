@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sharutils/4.15.2/
 rm -rf ${BUILD_DIRECTORY}/sharutils-4.15.2
 tar xvf ${DOWNLOADDIR}/sharutils-4.15.2.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/sharutils-4.15.2
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     sed -i 's/BUFSIZ/rw_base_size/' src/unshar.c
     sed -i '/program_name/s/^/extern /' src/*opts.h
     sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c

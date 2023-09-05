@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
     mv subprojects/glib/subprojects/gobject-introspection-gvdb_git subprojects/glib/subprojects/gvdb
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} \
+        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
               --buildtype=release ..
         LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/:${CROSSTOOLS_DIR}/lib ninja
         ninja install

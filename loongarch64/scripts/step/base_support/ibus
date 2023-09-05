@@ -17,7 +17,12 @@ pushd ${BUILD_DIRECTORY}/ibus-1.5.28
     patch -Np1 -i ${SYSDIR}/files/base_support/ibus/1.5.28/patches/0001-ibus-1.5.28-change-for-cross-compiler.patch 
 	 
     autoreconf -ifv
-    cp ${CROSSTOOLS_DIR}/share/automake-1.16/config.* ./
+#    cp ${CROSSTOOLS_DIR}/share/automake-1.16/config.* ./
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     mkdir cross-prebuild
     pushd cross-prebuild
         ../configure ${COMMON_CONFIG} \

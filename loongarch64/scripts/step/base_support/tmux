@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/tmux/3.3a/
 rm -rf ${BUILD_DIRECTORY}/tmux-3.3a
 tar xvf ${DOWNLOADDIR}/tmux-3.3a.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/tmux-3.3a
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     ./configure ${COMMON_CONFIG} --with-TERM=screen
     eval ${MAKE_AND_INSTALL}
     install -m 644 example_tmux.conf ${SYSROOT_DIR}/etc/example_tmux.conf

@@ -1,0 +1,28 @@
+From f5c594a640e979363c26941562045e12533e866b Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 4 Sep 2023 11:03:38 +0000
+Subject: [PATCH] po4a fix for cross build.
+
+---
+ Po4aBuilder.pm | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Po4aBuilder.pm b/Po4aBuilder.pm
+index 64949af..b7f0087 100755
+--- a/Po4aBuilder.pm
++++ b/Po4aBuilder.pm
+@@ -251,9 +251,9 @@ sub ACTION_man {
+             system("xsltproc -o $outdir/$outfile.$section --nonet /usr/share/xml/docbook/stylesheet/docbook-xsl/manpages/docbook.xsl $file") and die;
+             } else { # Not found locally, use the XSL file online
+             print "Convert $outdir/$outfile.$section (online docbook.xsl file). ";
+-            system("xsltproc -o $outdir/$outfile.$section --nonet http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl $file") and die;
++#            system("xsltproc -o $outdir/$outfile.$section --nonet http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl $file") and die;
+             }
+-                system ("gzip -9 -n -f $outdir/$outfile.$section") and die;
++#                system ("gzip -9 -n -f $outdir/$outfile.$section") and die;
+             }
+             unlink "$file" || die;
+         }
+-- 
+2.31.1
+

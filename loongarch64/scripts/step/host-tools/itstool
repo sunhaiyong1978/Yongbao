@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/itstool-2.0.7
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-	PYTHON=${CROSSTOOLS_DIR}/bin/python3 ./configure --prefix=${CROSSTOOLS_DIR} 
+	PYTHON=${CROSSTOOLS_DIR}/bin/python3 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/itstool-2.0.7

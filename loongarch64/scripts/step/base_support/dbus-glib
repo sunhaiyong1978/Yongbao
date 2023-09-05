@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus-glib/0.112/
 rm -rf ${BUILD_DIRECTORY}/dbus-glib-0.112
 tar xvf ${DOWNLOADDIR}/dbus-glib-0.112.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dbus-glib-0.112
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+
 	./configure ${COMMON_CONFIG}
 	make -j${JOBS} DBUS_BINDING_TOOL=/bin/dbus-binding-tool
 	make DESTDIR=${SYSROOT_DIR} install

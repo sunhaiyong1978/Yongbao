@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/XML-Parser/2.46/
 rm -rf ${BUILD_DIRECTORY}/XML-Parser-2.46
 tar xvf ${DOWNLOADDIR}/XML-Parser-2.46.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/XML-Parser-2.46
+	
 	${CROSSTOOLS_DIR}/bin/perl Makefile.PL
 	eval ${MAKE_AND_INSTALL}
 popd 

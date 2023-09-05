@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=alsa-lib
-export PACKAGE_VERSION=1.2.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/alsa-lib/1.2.9/
-rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.9
-tar xvf ${DOWNLOADDIR}/alsa-lib-1.2.9.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.9
+export PACKAGE_VERSION=1.2.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/alsa-lib/1.2.10/
+rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.10
+tar xvf ${DOWNLOADDIR}/alsa-lib-1.2.10.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.10
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.9
         make DESTDIR=${X86_SYSROOT_DIR} install
 	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.9
+rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.10

@@ -9,9 +9,12 @@ rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.47
 tar xvf ${DOWNLOADDIR}/libgpg-error-1.47.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libgpg-error-1.47
     cp ${SYSROOT_DIR}/usr/share/automake-*/config.* build-aux/
-    ./configure ${COMMON_CONFIG}
+    ./configure ${COMMON_CONFIG} --enable-install-gpg-error-config
     eval ${MAKE_AND_INSTALL}
     rm -f ${SYSROOT_DIR}/usr/lib64/*.la
     cp -av ${SYSROOT_DIR}/bin/gpgrt-config  ${CROSSTOOLS_DIR}/bin/
+    cp -av ${SYSROOT_DIR}/bin/gpg-error-config  ${CROSSTOOLS_DIR}/bin/
 popd 
 rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.47
+sed -i "/^prefix/s@=\/usr@${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config
+sed -i "/^libdir/s@=\/usr@${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config

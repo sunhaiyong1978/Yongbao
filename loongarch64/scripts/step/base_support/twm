@@ -8,6 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/twm/1.0.12/
 rm -rf ${BUILD_DIRECTORY}/twm-1.0.12
 tar xvf ${DOWNLOADDIR}/twm-1.0.12.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/twm-1.0.12
+    for config_i in $(find -name "config.sub")
+    do
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     sed -i -e '/^rcdir =/s,^\(rcdir = \).*,\1/etc/X11/app-defaults,' src/Makefile.in
     ./configure ${COMMON_CONFIG}
     eval ${MAKE_AND_INSTALL}

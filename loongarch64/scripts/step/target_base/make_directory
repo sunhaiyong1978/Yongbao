@@ -30,6 +30,7 @@ pushd ${SYSROOT_DIR} > /dev/null
 	if [ ! -d ./boot/boot ]; then
   	 ln -sf . ./boot/boot
 	fi
+	mkdir -p ./var/Yongbao/status/
 popd > /dev/null
 
 pushd ${COMMON_DIR} > /dev/null
