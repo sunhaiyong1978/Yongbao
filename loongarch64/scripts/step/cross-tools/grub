@@ -1,6 +1,7 @@
 source env/cross-tools/config
 source env/distro.info
 source env/function.sh
+source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=grub
 export PACKAGE_VERSION=2.12

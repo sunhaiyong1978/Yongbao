@@ -1,0 +1,25 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=pkg-config
+export PACKAGE_VERSION=0.29.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pkg-config/0.29.2/
+rm -rf ${BUILD_DIRECTORY}/pkg-config-0.29.2
+tar xvf ${DOWNLOADDIR}/pkg-config-0.29.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pkg-config-0.29.2
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+
+	./configure --prefix=${CROSSTOOLS_DIR}/host-tools \
+		--with-pc_path=${CROSSTOOLS_DIR}/lib64/pkgconfig:${CROSSTOOLS_DIR}/lib/pkgconfig --with-internal-glib --disable-host-tool
+
+        eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/pkg-config-0.29.2

@@ -1150,21 +1150,23 @@ mkdir -p ${NEW_TARGET_SYSDIR}/common_files
 mkdir -p ${NEW_TARGET_SYSDIR}/scripts/os_{first,start}_run
 
 if [ -f ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} ]; then
-	md5sum -c ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} 2>/dev/null > /dev/null
-	if [ "$?" != "0" ] || [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
-		if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
-			echo "强制指定进行软件包下载检查，开始进行必要的下载..."
-		else
-			echo "本次创建的索引文件与上次的内容不同，可能会存在需要下载的软件包，开始进行必要的下载..."
+	if [ "x$(cat ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE})" != "x0" ]; then
+		md5sum -c ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} 2>/dev/null > /dev/null
+		if [ "$?" != "0" ] || [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
+			if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
+				echo "强制指定进行软件包下载检查，开始进行必要的下载..."
+			else
+				echo "本次创建的索引文件与上次的内容不同，可能会存在需要下载的软件包，开始进行必要的下载..."
+			fi
+			if [ -f proxy.set ]; then
+#				tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+				tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
+			else
+#				tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+				tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
+			fi
+			echo "下载完成。"
 		fi
-		if [ -f proxy.set ]; then
-#			tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
-			tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
-		else
-#			tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
-			tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
-		fi
-		echo "下载完成。"
 	fi
 else
 	echo "开始下载必要的软件包..."
@@ -1335,6 +1337,10 @@ do
 
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ] && [ "x${PACKAGE_SET_STATUS_FILE}" == "x1" ]; then
 		echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE}
+		if [ ! -d ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/ ]; then
+			mkdir -p ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}
+		fi
+		cp -f ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/
 	fi
 
 	create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}"

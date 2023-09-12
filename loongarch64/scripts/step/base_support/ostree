@@ -1,0 +1,26 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=ostree
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ostree/git-default/
+rm -rf ${BUILD_DIRECTORY}/ostree-git-default_git
+tar xvf ${DOWNLOADDIR}/ostree-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ostree-git-default_git
+        
+        NOCONFIGURE=1 ./autogen.sh
+        ./configure ${COMMON_CONFIG} --enable-introspection=yes
+        make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+                   INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+	           INTROSPECTION_SCANNER_ENV="" \
+                   VAPIGEN=${CROSS_TARGET}-vapigen
+        make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+
+#        ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
+#        make -j${JOBS}
+#        make DESTDIR=${SYSROOT_DIR} install
+#        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/ostree-git-default_git

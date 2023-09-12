@@ -371,5 +371,30 @@ function get_package_version
 	return
 }
 
+function get_system_pkg_config_path
+{
+	if [ -f /bin/pkgconf ]; then
+		PKGCONF_NAME=/bin/pkgconf
+		GET_PKG_VERSION=$(${PKGCONF_NAME} --version)
+	else
+		if [ -f /bin/pkg-config ]; then
+			PKGCONF_NAME=/bin/pkg-config
+			GET_PKG_VERSION=$(${PKGCONF_NAME} --version)
+		else
+			GET_PKG_VERSION="0"
+		fi
+	fi
+	case "x${GET_PKG_VERSION:0:1}" in
+		x1|x2)
+			echo "$(${PKGCONF_NAME} --dump-personality | grep "^DefaultSearchPaths:" | awk -F':' '{ print $2 }' | sed "s@ @:@g" | sed "s@^:@@g" | sed "s@:\$@@g")"
+			;;
+		*)
+			echo "/usr/lib${LIB_SUFF}/pkgconfig"
+			;;
+	esac
+	return
+}
+
+
 source ${NEW_TARGET_SYSDIR}/set_env.conf
 source ${NEW_TARGET_SYSDIR}/package_env.conf

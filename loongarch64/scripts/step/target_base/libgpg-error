@@ -16,5 +16,5 @@ pushd ${BUILD_DIRECTORY}/libgpg-error-1.47
     cp -av ${SYSROOT_DIR}/bin/gpg-error-config  ${CROSSTOOLS_DIR}/bin/
 popd 
 rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.47
-sed -i "/^prefix/s@=\/usr@${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config
-sed -i "/^libdir/s@=\/usr@${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config
+sed -i "/^prefix/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config
+sed -i "/^libdir/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config

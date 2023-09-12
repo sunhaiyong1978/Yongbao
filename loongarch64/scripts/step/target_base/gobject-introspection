@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gobject-introspection
-export PACKAGE_VERSION=1.76.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gobject-introspection/1.76.1/
-rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
-tar xvf ${DOWNLOADDIR}/gobject-introspection-1.76.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
+export PACKAGE_VERSION=1.78.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gobject-introspection/1.78.0/
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.78.0
+tar xvf ${DOWNLOADDIR}/gobject-introspection-1.78.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gobject-introspection-1.78.0
     sed -i -e "/gircompiler_command/s@gircompiler,@'${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler',@g" \
            -e "/g-ir-scanner/s@'g-ir-scanner'@'${CROSS_TARGET}-g-ir-scanner'@g" \
            gir/meson.build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.76.1
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.78.0

@@ -33,7 +33,7 @@ pushd ${BUILD_DIRECTORY}/highway-1.0.7
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		       -Wno-dev ..
+		      -DHWY_SYSTEM_GTEST=ON -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

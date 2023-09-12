@@ -1,0 +1,1 @@
+export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:$(get_system_pkg_config_path)

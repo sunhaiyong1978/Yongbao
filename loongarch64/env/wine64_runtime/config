@@ -22,6 +22,7 @@ export LIB_SUFF=64
 export PKG_CONFIG_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/x86_64/sys-root"
 export X86_64_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/x86_64/sys-root"
 export PKG_CONFIG_PATH="${X86_64_SYSROOT_DIR}/usr/lib64/pkgconfig:${X86_64_SYSROOT_DIR}/usr/share/pkgconfig"
+export PKG_CONFIG_LIBDIR="${X86_64_SYSROOT_DIR}/usr/lib64/pkgconfig:${X86_64_SYSROOT_DIR}/usr/share/pkgconfig"
 export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib/x86_64/sys-root/usr/lib64"
 export X86_64_HOST=x86_64-unknown-linux-gnu
 export COMMON_CONFIG="--prefix=/usr --build=${CROSS_HOST} --host=${X86_64_HOST} --libdir=/usr/lib64 --sysconfdir=/etc"

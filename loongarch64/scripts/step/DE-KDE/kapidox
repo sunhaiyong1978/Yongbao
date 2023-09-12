@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kapidox
-export PACKAGE_VERSION=5.109.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kapidox/5.109.0/
-rm -rf ${BUILD_DIRECTORY}/kapidox-5.109.0
-tar xvf ${DOWNLOADDIR}/kapidox-5.109.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kapidox-5.109.0
+export PACKAGE_VERSION=5.110.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kapidox/5.110.0/
+rm -rf ${BUILD_DIRECTORY}/kapidox-5.110.0
+tar xvf ${DOWNLOADDIR}/kapidox-5.110.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kapidox-5.110.0
 	
 	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user kapidox --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/kapidox-5.109.0
+rm -rf ${BUILD_DIRECTORY}/kapidox-5.110.0

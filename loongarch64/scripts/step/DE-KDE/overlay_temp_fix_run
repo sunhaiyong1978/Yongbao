@@ -33,13 +33,14 @@ do
 	fi
 done
 
-for kf5_file in KF5CoreAddons/KF5CoreAddonsToolingTargets-release.cmake KF5DocTools/KF5DocToolsToolsTargets-release.cmake KF5DesignerPlugin/KF5DesignerPluginTargets-release.cmake
+for kf5_file in KF5CoreAddons/KF5CoreAddonsToolingTargets-release.cmake KF5DocTools/KF5DocToolsToolsTargets-release.cmake KF5DesignerPlugin/KF5DesignerPluginTargets-release.cmake KF5Package/KF5PackageToolsTargets-release.cmake
 do
 	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/${kf5_file} ]; then
 		sed -i.orig "s@\${_IMPORT_PREFIX}@${CROSSTOOLS_DIR}@g" \
 			${SYSROOT_DIR}/usr/lib64/cmake/${kf5_file}
 	fi
 done
+
 
 
 # for kf5_file in KF5Archive/KF5ArchiveTargets-release.cmake \
@@ -67,7 +68,8 @@ done
 
 for kf5_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake")) \
 		${SYSROOT_DIR}/usr/lib64/cmake/Qca-qt5/Qca-qt5Targets.cmake \
-		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt5-1/PolkitQt5-1Targets.cmake
+		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt5-1/PolkitQt5-1Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
 do
 	if [ -f ${kf5_file} ]; then
 		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${kf5_file}
@@ -82,9 +84,17 @@ do
 done
 
 for kf5_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF5ModemManagerQt/KF5ModemManagerQtTargets.cmake \
-		${SYSROOT_DIR}/usr/lib64/cmake/KSysGuard/KSysGuardLibraryTargets.cmake
+		${SYSROOT_DIR}/usr/lib64/cmake/KSysGuard/KSysGuardLibraryTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
 do
 	if [ -f ${kf5_file} ]; then
 		sed -i.orig "s@;/usr@;${SYSROOT_DIR}/usr@g" ${kf5_file}
+	fi
+done
+
+for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig "s@-L/usr@-L${SYSROOT_DIR}/usr@g" ${fix_file}
 	fi
 done

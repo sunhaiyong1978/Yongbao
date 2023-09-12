@@ -1,6 +1,7 @@
 source env/cross-tools/config
 source env/distro.info
 source env/function.sh
+source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=SPIRV-LLVM-Translator
 export PACKAGE_VERSION=16.0.0

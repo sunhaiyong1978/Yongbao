@@ -1,13 +1,14 @@
 source env/cross-tools/config
 source env/distro.info
 source env/function.sh
+source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qemu
-export PACKAGE_VERSION=8.1.0-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu/8.1.0-default/
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
-tar xvf ${DOWNLOADDIR}/qemu_git-8.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
+export PACKAGE_VERSION=8.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu/8.1.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.1.0
+tar xvf ${DOWNLOADDIR}/qemu-8.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.1.0
     mkdir -p build
     pushd build
         CFLAGS="-Wno-error=unused-function" ../configure --prefix=${CROSSTOOLS_DIR} --target-list=${YONGBAO_TARGET_ARCH}-linux-user --disable-docs --static
@@ -24,4 +25,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_TR
 
 chmod +x ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}{,-ldd}
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
+rm -rf ${BUILD_DIRECTORY}/qemu-8.1.0

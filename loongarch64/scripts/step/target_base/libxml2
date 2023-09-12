@@ -25,5 +25,5 @@ pushd ${BUILD_DIRECTORY}/libxml2-2.11.5
 popd 
 rm -rf ${BUILD_DIRECTORY}/libxml2-2.11.5
 
-sed -i "/^prefix/s@=\/usr@${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/xml2-config
-sed -i "/^libdir/s@=\/usr@${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/xml2-config
+sed -i "/^prefix/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/xml2-config
+sed -i "/^libdir/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/xml2-config

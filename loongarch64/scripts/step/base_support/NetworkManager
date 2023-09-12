@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=NetworkManager
-export PACKAGE_VERSION=1.45.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.45.1/
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.1
-tar xvf ${DOWNLOADDIR}/NetworkManager-1.45.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/NetworkManager-1.45.1
+export PACKAGE_VERSION=1.45.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.45.2/
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.2
+tar xvf ${DOWNLOADDIR}/NetworkManager-1.45.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/NetworkManager-1.45.2
     sed -i "s@jansson_libdir,@'${SYSROOT_DIR}' + &@g" meson.build
     mkdir cross-build
     pushd cross-build
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/NetworkManager-1.45.1
         DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.1
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.2

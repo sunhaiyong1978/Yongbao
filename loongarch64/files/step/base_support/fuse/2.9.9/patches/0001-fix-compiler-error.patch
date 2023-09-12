@@ -1,0 +1,54 @@
+From 06e93eef4e18d76c3afc9b948f1b7ea2b095eb36 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 5 Aug 2023 08:28:21 +0000
+Subject: [PATCH] fix compiler error.
+
+---
+ include/fuse_kernel.h  |  1 +
+ util/ulockmgr_server.c | 18 ------------------
+ 2 files changed, 1 insertion(+), 18 deletions(-)
+
+diff --git a/include/fuse_kernel.h b/include/fuse_kernel.h
+index c632b58..9ea6de1 100644
+--- a/include/fuse_kernel.h
++++ b/include/fuse_kernel.h
+@@ -89,6 +89,7 @@
+ #define _LINUX_FUSE_H
+ 
+ #include <sys/types.h>
++#include <linux/types.h>
+ #define __u64 uint64_t
+ #define __s64 int64_t
+ #define __u32 uint32_t
+diff --git a/util/ulockmgr_server.c b/util/ulockmgr_server.c
+index 273c7d9..4a7d284 100644
+--- a/util/ulockmgr_server.c
++++ b/util/ulockmgr_server.c
+@@ -124,24 +124,6 @@ static int receive_message(int sock, void *buf, size_t buflen, int *fdp,
+ 	return res;
+ }
+ 
+-static int closefrom(int minfd)
+-{
+-	DIR *dir = opendir("/proc/self/fd");
+-	if (dir) {
+-		int dfd = dirfd(dir);
+-		struct dirent *ent;
+-		while ((ent = readdir(dir))) {
+-			char *end;
+-			int fd = strtol(ent->d_name, &end, 10);
+-			if (ent->d_name[0] && !end[0] && fd >= minfd &&
+-			    fd != dfd)
+-				close(fd);
+-		}
+-		closedir(dir);
+-	}
+-	return 0;
+-}
+-
+ static void send_reply(int cfd, struct message *msg)
+ {
+ 	int res = send(cfd, msg, sizeof(struct message), MSG_NOSIGNAL);
+-- 
+2.31.1
+

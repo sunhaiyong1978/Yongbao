@@ -1,0 +1,20 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=xdg-desktop-portal
+export PACKAGE_VERSION=1.17.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xdg-desktop-portal/1.17.2/
+rm -rf ${BUILD_DIRECTORY}/xdg-desktop-portal-1.17.2
+tar xvf ${DOWNLOADDIR}/xdg-desktop-portal-1.17.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xdg-desktop-portal-1.17.2
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/xdg-desktop-portal-1.17.2

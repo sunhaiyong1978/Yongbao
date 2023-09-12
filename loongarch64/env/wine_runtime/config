@@ -22,6 +22,7 @@ export LIB_SUFF=""
 export PKG_CONFIG_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/i686/sys-root"
 export X86_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/i686/sys-root"
 export PKG_CONFIG_PATH="${X86_SYSROOT_DIR}/usr/lib/pkgconfig:${X86_SYSROOT_DIR}/usr/share/pkgconfig"
+export PKG_CONFIG_LIBDIR="${X86_SYSROOT_DIR}/usr/lib/pkgconfig:${X86_SYSROOT_DIR}/usr/share/pkgconfig"
 export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib/i686/sys-root/usr/lib"
 export X86_HOST=i686-unknown-linux-gnu
 export COMMON_CONFIG="--prefix=/usr --build=${CROSS_HOST} --host=${X86_HOST} --libdir=/usr/lib --sysconfdir=/etc"

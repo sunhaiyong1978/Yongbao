@@ -1,0 +1,20 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=flatpak
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/flatpak/git-default/
+rm -rf ${BUILD_DIRECTORY}/flatpak-git-default_git
+tar xvf ${DOWNLOADDIR}/flatpak-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/flatpak-git-default_git
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} -Dseccomp=disabled -Dtests=false -Dwayland_security_context=disabled \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/flatpak-git-default_git

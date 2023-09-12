@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=libreoffice
-export PACKAGE_VERSION=7.6.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/7.6.1.1/
-rm -rf ${BUILD_DIRECTORY}/libreoffice-7.6.1.1
-tar xvf ${DOWNLOADDIR}/libreoffice-7.6.1.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libreoffice-7.6.1.1
+export PACKAGE_VERSION=7.6.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/7.6.1.2/
+rm -rf ${BUILD_DIRECTORY}/libreoffice-7.6.1.2
+tar xvf ${DOWNLOADDIR}/libreoffice-7.6.1.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libreoffice-7.6.1.2
     mkdir -p external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-7.6.1.1.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-help-7.6.1.1.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-translations-7.6.1.1.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-7.6.1.2.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-help-7.6.1.2.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-translations-7.6.1.2.tar.xz external/tarballs/
     tar xvf ${RESOURCEDIR}/files/tarballs.listfile_dir.tar.gz
     mv tarballs.listfile_dir/* external/tarballs/
     rmdir tarballs.listfile_dir
@@ -19,18 +19,18 @@ pushd ${BUILD_DIRECTORY}/libreoffice-7.6.1.1
     mv tarballs_extern.listfile_dir/* external/tarballs/
     rmdir tarballs_extern.listfile_dir
     mkdir -p src
-#    tar xvf external/tarballs/libreoffice-dictionaries-7.6.1.1.tar.xz -C src
-#    tar xvf external/tarballs/libreoffice-help-7.6.1.1.tar.xz -C src
-#    tar xvf external/tarballs/libreoffice-translations-7.6.1.1.tar.xz -C src
-    ln -sv src/libreoffice-help-7.6.1.1/helpcontent2
-    ln -sv src/libreoffice-dictionaries-7.6.1.1/dictionaries
-    ln -sv src/libreoffice-translations-7.6.1.1/translations
+#    tar xvf external/tarballs/libreoffice-dictionaries-7.6.1.2.tar.xz -C src
+#    tar xvf external/tarballs/libreoffice-help-7.6.1.2.tar.xz -C src
+#    tar xvf external/tarballs/libreoffice-translations-7.6.1.2.tar.xz -C src
+    ln -sv src/libreoffice-help-7.6.1.2/helpcontent2
+    ln -sv src/libreoffice-dictionaries-7.6.1.2/dictionaries
+    ln -sv src/libreoffice-translations-7.6.1.2/translations
     cp ${CROSSTOOLS_DIR}/share/automake-*/config.* ./
     aclocal -I m4
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.1/patches/libreoffice-7.5-for-clfs.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.1/patches/libreoffice-7.5-libgpg-error-add-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.1/patches/0001-external-curl-configure-add-without-ssl.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.1/patches/0001-fix-build-error-at-use-without-java.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.2/patches/libreoffice-7.5-for-clfs.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.2/patches/0001-external-curl-configure-add-without-ssl.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.2/patches/0001-fix-build-error-at-use-without-java.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.1.2/patches/0001-libreoffice-fix-for-gcc-14.patch 
 	 
     autoconf -I .
     PKG_CONFIG_FOR_BUILD=/bin/pkg-config \
@@ -42,12 +42,12 @@ pushd ${BUILD_DIRECTORY}/libreoffice-7.6.1.1
                       --without-junit --without-system-dicts --disable-dconf --disable-odk \
                       --enable-release-build=yes --without-java \
                       --with-system-curl --with-system-epoxy \
-                      --with-system-expat --with-system-graphite --with-system-harfbuzz \
+                      --with-system-expat --with-system-graphite --with-system-harfbuzz --with-system-gpgmepp \
                       --with-system-jpeg --with-system-lcms2 --with-system-libtiff \
                       --with-system-libatomic_ops --with-system-libpng --with-system-libxml \
-                      --with-system-nss --with-system-openssl \
+                      --with-system-nss --with-system-openldap --with-system-openssl \
                       --with-system-zlib --with-system-openjpeg --with-system-icu \
-                      LIBS="-lstdc++" \
+                      LIBS="-lstdc++" CXXFLAGS="${CXXFLAGS} -I${SYSROOT_DIR}/usr/include/gpgme++" \
                       --disable-coinmp --enable-python=no
     LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" make -j${JOBS} gb_Side=build -rs -f Makefile.gbuild build-tools
     ZIC=/usr/sbin/zic make -j${JOBS} build
@@ -61,4 +61,4 @@ pushd ${BUILD_DIRECTORY}/libreoffice-7.6.1.1
     cp -a ${PWD}/dest/opt/libreoffice/lib/libreoffice/share/xdg/*.desktop \
            ${SYSROOT_DIR}/usr/share/xdg/
 popd 
-rm -rf ${BUILD_DIRECTORY}/libreoffice-7.6.1.1
+rm -rf ${BUILD_DIRECTORY}/libreoffice-7.6.1.2

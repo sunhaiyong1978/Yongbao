@@ -1,13 +1,14 @@
 source env/cross-tools/config
 source env/distro.info
 source env/function.sh
+source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=gcc_git_nolibc
-export PACKAGE_VERSION=13.1.0-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gcc_git_nolibc/13.1.0-default/
-rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
-tar xvf ${DOWNLOADDIR}/gcc_git-13.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gcc_git_nolibc/git-default/
+rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
+tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 	mkdir -p tools-build
 	pushd tools-build
 		AR=ar LDFLAGS="-Wl,-rpath,${CROSSTOOLS_DIR}/lib" \
@@ -20,9 +21,10 @@ pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
 		             --disable-libsanitizer --disable-libquadmath --disable-threads \
 		             --disable-target-zlib --with-system-zlib --enable-checking=release \
 		             --enable-default-pie \
+			     --disable-multilib --with-simd=lsx \
 		             --enable-languages=c
 		make -j${JOBS} all-gcc all-target-libgcc
 		make install-strip-gcc install-strip-target-libgcc
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
+rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git

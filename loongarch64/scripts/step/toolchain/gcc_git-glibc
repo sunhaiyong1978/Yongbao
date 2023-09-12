@@ -3,17 +3,17 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=gcc_git-glibc
-export PACKAGE_VERSION=13.1.0-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc_git-glibc/13.1.0-default/
-rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
-tar xvf ${DOWNLOADDIR}/gcc_git-13.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc_git-glibc/git-default/
+rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
+tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
 #    CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target ${CROSS_TARGET})")
 #    LIB_SUFF=$(archname_to_lib_suff "${CROSS_ARCH_BIT}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
 
-    patch -Np1 -i ${SYSDIR}/files/toolchain/gcc_git-glibc/13.1.0-default/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
+    patch -Np1 -i ${SYSDIR}/files/toolchain/gcc_git-glibc/git-default/patches/fix-any-div.patch 
 	 
     sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
     tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
         make install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc_git-13.1.0-default_git
+rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git

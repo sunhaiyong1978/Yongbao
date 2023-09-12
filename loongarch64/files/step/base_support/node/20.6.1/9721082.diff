@@ -1,0 +1,39 @@
+From 9721082687c9529fe6ae3c5304dcf079158e8a77 Mon Sep 17 00:00:00 2001
+From: Sam James <sam@gentoo.org>
+Date: Sun, 04 Jun 2023 04:15:16 +0100
+Subject: [PATCH] heap: Add missing <algorithm> include for std::remove
+
+GCC 14 changes some internal includes within libstdc++ so this transient
+include gets lost. Include <algorithm> explicitly for std::remove.
+
+Change-Id: Iab8a2c751a0f9c9dc6a770d6296ad6de724ef3bb
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/4583222
+Reviewed-by: Michael Lippautz <mlippautz@chromium.org>
+Commit-Queue: Michael Lippautz <mlippautz@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#88037}
+---
+
+diff --git a/AUTHORS b/AUTHORS
+index 2b393ad..d920925 100644
+--- a/AUTHORS
++++ b/AUTHORS
+@@ -241,6 +241,7 @@
+ Sander Mathijs van Veen <sander@leaningtech.com>
+ Sandro Santilli <strk@keybit.net>
+ Sanjoy Das <sanjoy@playingwithpointers.com>
++Sam James <sam@gentoo.org>
+ Seo Sanghyeon <sanxiyn@gmail.com>
+ Shawn Anastasio <shawnanastasio@gmail.com>
+ Shawn Presser <shawnpresser@gmail.com>
+diff --git a/src/heap/cppgc/stats-collector.h b/src/heap/cppgc/stats-collector.h
+index 2cf7284..d8414ae 100644
+--- a/src/heap/cppgc/stats-collector.h
++++ b/src/heap/cppgc/stats-collector.h
+@@ -8,6 +8,7 @@
+ #include <stddef.h>
+ #include <stdint.h>
+ 
++#include <algorithm>
+ #include <atomic>
+ #include <vector>
+ 

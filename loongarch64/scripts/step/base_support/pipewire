@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/pipewire-0.3.79
 	
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG} -Dsession-managers= \
+		meson ${MESON_CONFIG} -Dsession-managers="[]" \
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd

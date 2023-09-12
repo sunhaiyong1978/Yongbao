@@ -1,0 +1,22 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=Kooha
+export PACKAGE_VERSION=2.2.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/Kooha/2.2.3/
+rm -rf ${BUILD_DIRECTORY}/Kooha-2.2.3
+tar xvf ${DOWNLOADDIR}/Kooha-2.2.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Kooha-2.2.3
+        
+        mkdir cross-build
+        pushd cross-build
+		meson ${MESON_CONFIG} ..
+		sed -i.orig "s@src/kooha\$@@g" build.ninja
+		ninja all
+		RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" CARGO_HOME=.cargo  cargo build --release --target ${CROSS_TARGET} --target-dir ${PWD}/src
+		cp -a src/${CROSS_TARGET}/release/kooha src/
+		DESTDIR=${SYSROOT_DIR} meson install --no-rebuild
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/Kooha-2.2.3

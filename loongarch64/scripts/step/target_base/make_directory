@@ -47,6 +47,7 @@ echo "vala = '${CROSS_TARGET}-valac'" >> meson-cross.txt
 echo "g-ir-scanner = '${CROSS_TARGET}-g-ir-scanner'" >> meson-cross.txt
 echo "g-ir-compiler = '${CROSS_TARGET}-g-ir-compiler'" >> meson-cross.txt
 echo "vapigen = '${CROSS_TARGET}-vapigen'" >> meson-cross.txt
+echo "rust = 'rustc'" >> meson-cross.txt
 echo "exe_wrapper = 'qemu-${ARCH_NAME}'" >> meson-cross.txt
 echo "[properties]" >> meson-cross.txt
 echo "skip_sanity_check = true" >> meson-cross.txt

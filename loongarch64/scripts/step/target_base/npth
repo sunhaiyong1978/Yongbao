@@ -21,5 +21,7 @@ pushd ${BUILD_DIRECTORY}/npth-1.6
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 	cp -a ${SYSROOT_DIR}/usr/bin/npth-config ${CROSSTOOLS_DIR}/bin/
+	sed -i "/^prefix/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/npth-config
+	sed -i "/^libs/s@-L\/usr@-L${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/npth-config
 popd 
 rm -rf ${BUILD_DIRECTORY}/npth-1.6

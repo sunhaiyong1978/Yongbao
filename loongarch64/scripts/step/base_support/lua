@@ -21,18 +21,18 @@ pushd ${BUILD_DIRECTORY}/lua-5.4.6
     ln -sf liblua.so.${LUA_VERSION}.${LUA_VERSION_RELEASE} ${SYSROOT_DIR}/usr/lib64/liblua.so.${LUA_VERSION}
     ln -sf liblua.so.${LUA_VERSION} ${SYSROOT_DIR}/usr/lib64/liblua.so
 
-cat > ${SYSROOT_DIR}/usr/lib64/pkgconfig/lua.pc << "EOF"
+cat > ${SYSROOT_DIR}/usr/lib64/pkgconfig/lua.pc << EOF
 prefix=/usr
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib64
-includedir=${prefix}/include/lua
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib64
+includedir=\${prefix}/include/lua
 
 Name: Lua
 Description: An Extensible Extension Language
-Version: ${R}
+Version: ${LUA_VERSION}.${LUA_VERSION_RELEASE}
 Requires:
-Libs: -L${libdir} -llua -lm -ldl
-Cflags: -I${includedir}
+Libs: -L\${libdir} -llua -lm -ldl
+Cflags: -I\${includedir}
 EOF
 popd 
 rm -rf ${BUILD_DIRECTORY}/lua-5.4.6

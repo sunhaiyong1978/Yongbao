@@ -1,0 +1,9 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=highway
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/highway//
+sed -i.orig "s@_IMPORT_PREFIX \"/usr\"@_IMPORT_PREFIX \"${SYSROOT_DIR}/usr\"@g" ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake/GTest/GTestTargets.cmake
+sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake/GTest/GTestTargets-release.cmake

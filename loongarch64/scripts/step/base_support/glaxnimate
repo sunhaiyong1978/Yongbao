@@ -9,23 +9,21 @@ rm -rf ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
 tar xvf ${DOWNLOADDIR}/glaxnimate-0.5.3-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
         
-	sed -i "s@COMMAND \${QT_QMAKE_EXECUTABLE}@COMMAND ${CROSSTOOLS_DIR}/bin/qmake@g" external/Qt-Color-Widgets/color_widgets_designer_plugin/CMakeLists.txt
-        sed -i "s@COMMAND lupdate @COMMAND ${PWD}/lupdate @g" cmake/qt.cmake
-        sed -i "s@COMMAND lrelease @COMMAND ${PWD}/lrelease @g" cmake/qt.cmake
-        sed -i "s@COMMAND \${lupdate_cmd} @COMMAND ${PWD}/lupdate @g" cmake/qt.cmake
-        sed -i "s@COMMAND \${lrelease_cmd} @COMMAND ${PWD}/lrelease @g" cmake/qt.cmake
-        echo "qemu-loongarch64 ${SYSROOT_DIR}/bin/lupdate \"\$@\"" > ${PWD}/lupdate
-        echo "qemu-loongarch64 ${SYSROOT_DIR}/bin/lrelease \"\$@\"" > ${PWD}/lrelease
-        chmod +x ${PWD}/lupdate ${PWD}/lrelease
+#	sed -i "s@COMMAND \${QT_QMAKE_EXECUTABLE}@COMMAND ${CROSSTOOLS_DIR}/bin/qmake@g" external/Qt-Color-Widgets/color_widgets_designer_plugin/CMakeLists.txt
+#        sed -i "s@COMMAND lupdate @COMMAND ${PWD}/lupdate @g" cmake/qt.cmake
+#        sed -i "s@COMMAND lrelease @COMMAND ${PWD}/lrelease @g" cmake/qt.cmake
+#        sed -i "s@COMMAND \${lupdate_cmd} @COMMAND ${PWD}/lupdate @g" cmake/qt.cmake
+#        sed -i "s@COMMAND \${lrelease_cmd} @COMMAND ${PWD}/lrelease @g" cmake/qt.cmake
+#        echo "qemu-loongarch64 ${SYSROOT_DIR}/bin/lupdate \"\$@\"" > ${PWD}/lupdate
+#        echo "qemu-loongarch64 ${SYSROOT_DIR}/bin/lrelease \"\$@\"" > ${PWD}/lrelease
+#        chmod +x ${PWD}/lupdate ${PWD}/lrelease
         mkdir cross-build
         pushd cross-build
-                CC="clang" CXX="clang++" \
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
                       -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
                       -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
                       -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \
-		      -DCMAKE_AR=${CROSSTOOLS_DIR}/bin/llvm-ar \
-		      -DCMAKE_RANLIB=${CROSSTOOLS_DIR}/bin/llvm-ranlib \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
                       -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
                       -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
@@ -45,11 +43,11 @@ pushd ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-                       -Wno-dev ..
+                      -Wno-dev ..
 		make -j${JOBS} -C share/glaxnimate/glaxnimate translations
-		sed -i "/QT_MOC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/moc@${CROSSTOOLS_DIR}/bin/moc@g" $(grep -rl "QT_MOC_EXECUTABLE" *)
-                sed -i "/QT_UIC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/uic@${CROSSTOOLS_DIR}/bin/uic@g" $(grep -rl "QT_UIC_EXECUTABLE" *)
-                sed -i "s@${SYSROOT_DIR}/usr/bin/rcc@${CROSSTOOLS_DIR}/bin/rcc@g" $(grep -rl "${SYSROOT_DIR}/usr/bin/rcc" *)
+#		sed -i "/QT_MOC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/moc@${CROSSTOOLS_DIR}/bin/moc@g" $(grep -rl "QT_MOC_EXECUTABLE" *)
+#                sed -i "/QT_UIC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/uic@${CROSSTOOLS_DIR}/bin/uic@g" $(grep -rl "QT_UIC_EXECUTABLE" *)
+#                sed -i "s@${SYSROOT_DIR}/usr/bin/rcc@${CROSSTOOLS_DIR}/bin/rcc@g" $(grep -rl "${SYSROOT_DIR}/usr/bin/rcc" *)
                 make -j${JOBS}
 		make -j${JOBS} DESTDIR=${SYSROOT_DIR} install
 		make -j${JOBS} -C external/Qt-Color-Widgets DESTDIR=${SYSROOT_DIR} install
