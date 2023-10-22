@@ -13,8 +13,6 @@ pushd ${BUILD_DIRECTORY}/gtk+-3.24.38
         pushd cross-build
                 meson ${MESON_CONFIG} -Dbroadway_backend=true \
                       ..
-                sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
-                sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/vapigen@\1bin/${CROSS_TARGET}-vapigen@g" build.ninja
                 eval ${NINJA_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

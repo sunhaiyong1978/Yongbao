@@ -1,0 +1,16 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=iniparser
+export PACKAGE_VERSION=4.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/iniparser/4.1/
+rm -rf ${BUILD_DIRECTORY}/iniparser-4.1
+tar xvf ${DOWNLOADDIR}/iniparser-4.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/iniparser-4.1
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make -j${JOBS}
+	cp -a libiniparser.a libiniparser.so.* ${SYSROOT_DIR}/usr/lib64/
+	ln -sfv libiniparser.so.1 ${SYSROOT_DIR}/usr/lib64/libiniparser.so
+	cp -a src/dictionary.h src/iniparser.h ${SYSROOT_DIR}/usr/include/
+popd 
+rm -rf ${BUILD_DIRECTORY}/iniparser-4.1

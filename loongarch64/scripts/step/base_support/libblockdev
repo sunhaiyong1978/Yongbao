@@ -1,0 +1,37 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libblockdev
+export PACKAGE_VERSION=3.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libblockdev/3.0.4/
+rm -rf ${BUILD_DIRECTORY}/libblockdev-3.0.4
+tar xvf ${DOWNLOADDIR}/libblockdev-3.0.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libblockdev-3.0.4
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+
+	sed -i "s@\$PKG_CONFIG_SYSROOT_DIR@@g" configure
+        mkdir cross-prebuild
+        pushd cross-prebuild
+                ../configure ${COMMON_CONFIG} --enable-introspection=no
+                make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+                     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+                     VAPIGEN=${CROSS_TARGET}-vapigen
+                make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+        popd
+
+        mkdir cross-build
+        pushd cross-build
+                ../configure ${COMMON_CONFIG} --enable-introspection=yes
+                make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+                     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+                     VAPIGEN=${CROSS_TARGET}-vapigen
+                make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libblockdev-3.0.4

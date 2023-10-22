@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xterm
-export PACKAGE_VERSION=384
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xterm/384/
-rm -rf ${BUILD_DIRECTORY}/xterm-384
-tar xvf ${DOWNLOADDIR}/xterm-384.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xterm-384
+export PACKAGE_VERSION=387
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xterm/387/
+rm -rf ${BUILD_DIRECTORY}/xterm-387
+tar xvf ${DOWNLOADDIR}/xterm-387.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xterm-387
     sed -i '/v0/{n;s/new:/new:kb=^?:/}' termcap
     printf '\tkbs=\\177,\n' >> terminfo
     TERMINFO=/usr/share/terminfo \
@@ -23,4 +23,4 @@ cat >> ${SYSROOT_DIR}/etc/X11/app-defaults/XTerm << "EOF"
 *ptyInitialErase: true
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/xterm-384
+rm -rf ${BUILD_DIRECTORY}/xterm-387

@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/nspr-4.35
     done
     ./configure ${COMMON_CONFIG} \
                 --with-mozilla --with-pthreads --enable-64bit
-    make CC="gcc" -C config
+    make CC="gcc" CFLAGS="" -C config
     eval ${MAKE_AND_INSTALL}
     popd
 popd 

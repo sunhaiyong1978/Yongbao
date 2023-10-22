@@ -1,0 +1,21 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=gst-plugins-bad
+export PACKAGE_VERSION=1.22.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/gst-plugins-bad/1.22.6/
+rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.22.6
+tar xvf ${DOWNLOADDIR}/gst-plugins-bad-1.22.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gst-plugins-bad-1.22.6
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG} --default-library=both  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.22.6

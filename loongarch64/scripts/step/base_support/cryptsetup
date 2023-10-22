@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/cryptsetup-2.6.1
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --disable-asciidoc --disable-ssh-token --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --with-tmpfilesdir=/usr/lib/tmpfiles.d --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

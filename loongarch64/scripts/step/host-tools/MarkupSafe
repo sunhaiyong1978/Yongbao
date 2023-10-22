@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/MarkupSafe-2.1.3
 tar xvf ${DOWNLOADDIR}/MarkupSafe-2.1.3.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/MarkupSafe-2.1.3
 	
-	${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user MarkupSafe
 popd 
 rm -rf ${BUILD_DIRECTORY}/MarkupSafe-2.1.3

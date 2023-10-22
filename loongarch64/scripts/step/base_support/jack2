@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/jack2/1.9.22/
 rm -rf ${BUILD_DIRECTORY}/jack2-1.9.22
 tar xvf ${DOWNLOADDIR}/jack2-1.9.22.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/jack2-1.9.22
-    sed -i "s@'rU'@'r'@g" waflib/ConfigSet.py waflib/Context.py
+    patch -Np1 -i ${SYSDIR}/files/base_support/jack2/1.9.22/patches/0001-jack2-fix-for-python3.12.patch 
+	 
     CXX=${CROSS_TARGET}-g++ CC=${CROSS_TARGET}-gcc \
     PREFIX=/usr \
     python3 ./waf configure --libdir=/usr/lib64 \

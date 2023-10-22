@@ -1,0 +1,16 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=keyutils
+export PACKAGE_VERSION=1.6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/keyutils/1.6.1/
+rm -rf ${BUILD_DIRECTORY}/keyutils-1.6.1
+tar xvf ${DOWNLOADDIR}/keyutils-1.6.1.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/keyutils-1.6.1
+	patch -Np1 -i ${SYSDIR}/files/base_support/keyutils/1.6.1/patches/0001-keyutils-fix-for-cross-build.patch 
+	 
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make -j${JOBS}
+	make NO_ARLIB=1 LIBDIR=/usr/lib${LIB_SUFF} BINDIR=/usr/bin SBINDIR=/usr/sbin DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/keyutils-1.6.1

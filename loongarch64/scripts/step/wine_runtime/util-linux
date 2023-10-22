@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/util-linux-2.39.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --with-systemdsystemunitdir=/usr/lib/systemd/system --enable-malloc0returnsnull
 	CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" make -j${JOBS}
         make DESTDIR=${X86_SYSROOT_DIR} install
 	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la

@@ -9,12 +9,12 @@ rm -rf ${BUILD_DIRECTORY}/librsvg-2.54.5
 tar xvf ${DOWNLOADDIR}/librsvg-2.54.5.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/librsvg-2.54.5
     patch -Np1 -i ${SYSDIR}/files/base_support/librsvg/2.54.5/patches/0001-librsvg-2.54.5-fix-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/librsvg/2.54.5/patches/0001-librsvg-fix-gdk-pixbuf-dir-for-cross-build.patch 
 	 
     find vendor -name .cargo-checksum.json \
           -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
-    sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
-    sed -i "/VAPIGEN_VAPIDIR=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
     sed -i "/GI_DOCGEN/s@ generate @ generate --add-include-path=${SYSROOT_DIR}/usr/share/gir-1.0 @g" doc/Makefile.in
+    sed -i "s@\$PKG_CONFIG_SYSROOT_DIR@@g" configure
     mkdir cross-build
     pushd cross-build
         PKG_CONFIG=${CROSS_TARGET}-pkg-config \

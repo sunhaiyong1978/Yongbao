@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=ktextaddons
-export PACKAGE_VERSION=1.5.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/ktextaddons/1.5.0/
-rm -rf ${BUILD_DIRECTORY}/ktextaddons-v1.5.0
-tar xvf ${DOWNLOADDIR}/ktextaddons-v1.5.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ktextaddons-v1.5.0
+export PACKAGE_VERSION=1.5.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/ktextaddons/1.5.2/
+rm -rf ${BUILD_DIRECTORY}/ktextaddons-v1.5.2
+tar xvf ${DOWNLOADDIR}/ktextaddons-v1.5.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ktextaddons-v1.5.2
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/ktextaddons-v1.5.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/ktextaddons-v1.5.0
+rm -rf ${BUILD_DIRECTORY}/ktextaddons-v1.5.2

@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/font-adobe-utopia-type1-1.0.5
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --with-fontrootdir=/usr/share/fonts/X11 --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

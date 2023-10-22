@@ -3,16 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=linux-firmware
-export PACKAGE_VERSION=20230804
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-firmware/20230804/
-rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230804
-tar xvf ${DOWNLOADDIR}/linux-firmware-20230804.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-firmware-20230804
+export PACKAGE_VERSION=20230919
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-firmware/20230919/
+rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230919
+tar xvf ${DOWNLOADDIR}/linux-firmware-20230919.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-firmware-20230919
 	make DESTDIR=${SYSROOT_DIR} install
-#	mv ${SYSROOT_DIR}/usr/lib/firmware{,.orig}
-#	mkdir -pv ${SYSROOT_DIR}/usr/lib/firmware
-#	cp -a ${SYSROOT_DIR}/usr/lib/firmware.orig/{amd*,radeon,iwlwifi-*,rt*} \
-#	      ${SYSROOT_DIR}/usr/lib/firmware/
-#	rm -rf ${SYSROOT_DIR}/usr/lib/firmware.orig
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230804
+rm -rf ${BUILD_DIRECTORY}/linux-firmware-20230919

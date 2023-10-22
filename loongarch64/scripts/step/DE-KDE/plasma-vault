@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=plasma-vault
-export PACKAGE_VERSION=5.27.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/plasma-vault/5.27.7/
-rm -rf ${BUILD_DIRECTORY}/plasma-vault-5.27.7
-tar xvf ${DOWNLOADDIR}/plasma-vault-5.27.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/plasma-vault-5.27.7
+export PACKAGE_VERSION=5.27.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/plasma-vault/5.27.8/
+rm -rf ${BUILD_DIRECTORY}/plasma-vault-5.27.8
+tar xvf ${DOWNLOADDIR}/plasma-vault-5.27.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/plasma-vault-5.27.8
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/plasma-vault-5.27.7
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/plasma-vault-5.27.7
+rm -rf ${BUILD_DIRECTORY}/plasma-vault-5.27.8

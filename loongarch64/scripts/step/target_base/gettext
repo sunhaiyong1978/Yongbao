@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gettext
-export PACKAGE_VERSION=0.22
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gettext/0.22/
-rm -rf ${BUILD_DIRECTORY}/gettext-0.22
-tar xvf ${DOWNLOADDIR}/gettext-0.22.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gettext-0.22
+export PACKAGE_VERSION=0.22.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gettext/0.22.3/
+rm -rf ${BUILD_DIRECTORY}/gettext-0.22.3
+tar xvf ${DOWNLOADDIR}/gettext-0.22.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gettext-0.22.3
 	sed -i "/hello-c++-kde/d" gettext-tools/examples/Makefile.in
 	for config_i in $(find -name "config.sub")
         do
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/gettext-0.22
 	            --with-libncurses-prefix=${SYSROOT_DIR}
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/gettext-0.22
+rm -rf ${BUILD_DIRECTORY}/gettext-0.22.3

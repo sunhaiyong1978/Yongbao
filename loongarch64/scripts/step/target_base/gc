@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gc
-export PACKAGE_VERSION=8.2.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gc/8.2.2/
-rm -rf ${BUILD_DIRECTORY}/gc-8.2.2
-tar xvf ${DOWNLOADDIR}/gc-8.2.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gc-8.2.2
-	patch -Np1 -i ${SYSDIR}/files/target_base/gc/8.2.2/patches/gc-8.0.6-add-loongarch.patch 
-	 
+export PACKAGE_VERSION=8.2.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gc/8.2.4/
+rm -rf ${BUILD_DIRECTORY}/gc-8.2.4
+tar xvf ${DOWNLOADDIR}/gc-8.2.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gc-8.2.4
+	
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}
@@ -23,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/gc-8.2.2
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gc-8.2.2
+rm -rf ${BUILD_DIRECTORY}/gc-8.2.4

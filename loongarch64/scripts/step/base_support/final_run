@@ -22,6 +22,7 @@ sed -i "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
 sed -i -e "s@${SYSROOT_DIR}/lib@/usr/lib@g" \
        -e "s@${SYSROOT_DIR}/usr@/usr@g" \
        -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
        $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.sh") \
        $(find ${SYSROOT_DIR}/usr/lib64/pkgconfig/ -type f) \
@@ -31,6 +32,7 @@ sed -i -e "s@${SYSROOT_DIR}/lib@/usr/lib@g" \
        ${TEMP_DIRECTORY}/strip-foo
        
 sed -i -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.py") \
        $(file ${SYSROOT_DIR}/usr/lib64/rustlib/* | grep ASCII | awk -F':' '{ print $1 }') \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.pri") \
@@ -54,5 +56,7 @@ sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
 
 find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.la" -exec rm '{}' ';'
 find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.prl" -exec rm '{}' ';'
+
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/sbin/ldconfig -r ${SYSROOT_DIR}/
 
 rm -f ${TEMP_DIRECTORY}/strip-foo

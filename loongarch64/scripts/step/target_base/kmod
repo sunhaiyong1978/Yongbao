@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=kmod
-export PACKAGE_VERSION=30
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/kmod/30/
-rm -rf ${BUILD_DIRECTORY}/kmod-30
-tar xvf ${DOWNLOADDIR}/kmod-30.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kmod-30
+export PACKAGE_VERSION=31
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/kmod/31/
+rm -rf ${BUILD_DIRECTORY}/kmod-31
+tar xvf ${DOWNLOADDIR}/kmod-31.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kmod-31
 	./configure --prefix=/usr --libdir=/usr/lib64 --bindir=/bin \
 	            --sysconfdir=/etc --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 	            --with-xz --with-zstd --with-zlib
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/kmod-30
 	done
 	ln -sfv kmod ${SYSROOT_DIR}/bin/lsmod
 popd 
-rm -rf ${BUILD_DIRECTORY}/kmod-30
+rm -rf ${BUILD_DIRECTORY}/kmod-31

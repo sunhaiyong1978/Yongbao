@@ -3,20 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dconf-editor
-export PACKAGE_VERSION=43.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dconf-editor/43.0/
-rm -rf ${BUILD_DIRECTORY}/dconf-editor-43.0
-tar xvf ${DOWNLOADDIR}/dconf-editor-43.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dconf-editor-43.0
+export PACKAGE_VERSION=45.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dconf-editor/45.0.1/
+rm -rf ${BUILD_DIRECTORY}/dconf-editor-45.0.1
+tar xvf ${DOWNLOADDIR}/dconf-editor-45.0.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dconf-editor-45.0.1
         
         mkdir cross-build
         pushd cross-build
                 meson ${MESON_CONFIG} \
                       ..
-#                sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
                 sed -i -e "s@command = valac @command = ${CROSS_TARGET}-valac @g" build.ninja
                 eval ${NINJA_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/dconf-editor-43.0
+rm -rf ${BUILD_DIRECTORY}/dconf-editor-45.0.1

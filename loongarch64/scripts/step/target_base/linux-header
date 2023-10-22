@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=linux-header
-export PACKAGE_VERSION=6.5.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/linux-header/6.5.2/
-rm -rf ${BUILD_DIRECTORY}/linux-6.5.2
-tar xvf ${DOWNLOADDIR}/linux-6.5.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.5.2
+export PACKAGE_VERSION=6.5.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/linux-header/6.5.8/
+rm -rf ${BUILD_DIRECTORY}/linux-6.5.8
+tar xvf ${DOWNLOADDIR}/linux-6.5.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.5.8
 	
 	make ARCH=${ARCH_FAMILY} mrproper
 	make ARCH=${ARCH_FAMILY} INSTALL_HDR_PATH=dest headers_install
@@ -15,7 +15,5 @@ pushd ${BUILD_DIRECTORY}/linux-6.5.2
 	sed -i "/__ARCH_WANT_NEW_STAT/d" dest/include/asm/unistd.h
 	mkdir -pv ${SYSROOT_DIR}/usr/include
 	cp -rv dest/include/* ${SYSROOT_DIR}/usr/include
-#	mkdir -pv ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include
-#	cp -rv dest/include/* ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include/
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.5.2
+rm -rf ${BUILD_DIRECTORY}/linux-6.5.8

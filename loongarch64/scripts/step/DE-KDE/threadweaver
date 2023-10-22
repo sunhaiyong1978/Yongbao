@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=threadweaver
-export PACKAGE_VERSION=5.110.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/threadweaver/5.110.0/
-rm -rf ${BUILD_DIRECTORY}/threadweaver-5.110.0
-tar xvf ${DOWNLOADDIR}/threadweaver-5.110.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/threadweaver-5.110.0
+export PACKAGE_VERSION=5.111.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/threadweaver/5.111.0/
+rm -rf ${BUILD_DIRECTORY}/threadweaver-5.111.0
+tar xvf ${DOWNLOADDIR}/threadweaver-5.111.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/threadweaver-5.111.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/threadweaver-5.110.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/threadweaver-5.110.0
+rm -rf ${BUILD_DIRECTORY}/threadweaver-5.111.0

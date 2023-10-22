@@ -33,7 +33,7 @@ do
 	fi
 done
 
-for kf5_file in KF5CoreAddons/KF5CoreAddonsToolingTargets-release.cmake KF5DocTools/KF5DocToolsToolsTargets-release.cmake KF5DesignerPlugin/KF5DesignerPluginTargets-release.cmake KF5Package/KF5PackageToolsTargets-release.cmake
+for kf5_file in KF5CoreAddons/KF5CoreAddonsToolingTargets-release.cmake KF5DocTools/KF5DocToolsToolsTargets-release.cmake KF5DesignerPlugin/KF5DesignerPluginTargets-release.cmake KF5Package/KF5PackageToolsTargets-release.cmake KDSoap/KDSoapTargets-release.cmake
 do
 	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/${kf5_file} ]; then
 		sed -i.orig "s@\${_IMPORT_PREFIX}@${CROSSTOOLS_DIR}@g" \
@@ -43,32 +43,11 @@ done
 
 
 
-# for kf5_file in KF5Archive/KF5ArchiveTargets-release.cmake \
-#		libavif/libavif-config-release.cmake \
-#		KF5Archive/KF5ArchiveTargets.cmake \
-#		KF5CoreAddons/KF5CoreAddonsTargets-release.cmake \
-#		PolkitQt5-1/PolkitQt5-1Targets-release.cmake \
-#		KF5CoreAddons/KF5CoreAddonsTargets.cmake \
-#		KF5Config/KF5ConfigTargets-release.cmake \
-#		KF5Config/KF5ConfigTargets.cmake \
-#		KF5WidgetsAddons/KF5WidgetsAddonsTargets-release.cmake \
-#		KF5WidgetsAddons/KF5WidgetsAddonsTargets.cmake \
-#		KF5I18n/KF5I18nTargets-release.cmake \
-#		KF5I18n/KF5I18nTargets.cmake \
-#		KF5Codecs/KF5CodecsTargets-release.cmake \
-#		KF5DocTools/KF5DocToolsTargets-release.cmake \
-#		KF5GuiAddons/KF5GuiAddonsTargets-release.cmake \
-#		KF5Auth/KF5AuthTargets-release.cmake \
-#		KF5GuiAddons/KF5GuiAddonsTargets.cmake \
-#		KF5Codecs/KF5CodecsTargets.cmake \
-#		KF5Auth/KF5AuthTargets.cmake \
-#		KF5DBusAddons/KF5DBusAddonsTargets-release.cmake \
-#		KF5DBusAddons/KF5DBusAddonsTargets.cmake \
-#		KF5Crash/KF5CrashTargets-release.cmake
 
 for kf5_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake")) \
 		${SYSROOT_DIR}/usr/lib64/cmake/Qca-qt5/Qca-qt5Targets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt5-1/PolkitQt5-1Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/utf8_range/utf8_range-targets-release.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
 do
 	if [ -f ${kf5_file} ]; then
@@ -96,5 +75,12 @@ for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
 do
 	if [ -f ${fix_file} ]; then
 		sed -i.orig "s@-L/usr@-L${SYSROOT_DIR}/usr@g" ${fix_file}
+	fi
+done
+
+for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF5Wallet/KF5WalletConfig.cmake
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig "/KWALLETD_BIN_PATH/s@\${PACKAGE_PREFIX_DIR}@/usr@g" ${fix_file}
 	fi
 done

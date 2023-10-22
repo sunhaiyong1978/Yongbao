@@ -12,10 +12,8 @@ pushd ${BUILD_DIRECTORY}/gcr-3.41.1
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} \
-              -Dgtk_doc=false \
+              -Dgtk_doc=false -Dsystemd=disabled \
               ..
-#        sed -i -e "s@\(${SYSDIR}/\)sysroot/usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@\1cross-tools\2${CROSS_TARGET}-\3@g" build.ninja
-#	sed -i -e "s@\(${CROSSTOOLS_DIR}/\)bin/vapigen@\1bin/${CROSS_TARGET}-vapigen@g" build.ninja
         CC="${CROSS_TARGET}-gcc" ninja
         DESTDIR=${SYSROOT_DIR} ninja install
     popd

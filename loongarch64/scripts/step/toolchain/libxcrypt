@@ -11,16 +11,15 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.36
     patch -Np1 -i ${SYSDIR}/files/toolchain/libxcrypt/4.4.36/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
 	 
     CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
-#    CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target)" "${ARCH_BIT}")
-#    LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
     LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
-#    ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
 
     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
 
     if [ ! -f configure ]; then
             autoreconf -ifv
     fi
+
+    export CFLAGS="${CFLAGS} -Wno-error=stringop-overread"
 
     ./configure  --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
                  --libdir=/usr/lib${LIB_SUFF} 

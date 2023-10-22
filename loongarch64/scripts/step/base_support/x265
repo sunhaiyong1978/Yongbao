@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/x265-20230215
     pushd cross-build
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_INSTALL_PREFIX=/usr -DLIB_INSTALL_DIR=/usr/lib64 \
+              -DCMAKE_INSTALL_PREFIX=/usr -DLIB_INSTALL_DIR=/usr/lib64 -DENABLE_ASSEMBLY=OFF \
               -DGIT_ARCHETYPE=1 ../source
 	eval ${MAKE_AND_INSTALL}
     popd

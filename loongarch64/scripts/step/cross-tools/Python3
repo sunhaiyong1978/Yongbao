@@ -4,30 +4,21 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=Python3
-export PACKAGE_VERSION=3.11.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Python3/3.11.5/
-rm -rf ${BUILD_DIRECTORY}/Python-3.11.5
-tar xvf ${DOWNLOADDIR}/Python-3.11.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.11.5
+export PACKAGE_VERSION=3.12.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Python3/3.12.0/
+rm -rf ${BUILD_DIRECTORY}/Python-3.12.0
+tar xvf ${DOWNLOADDIR}/Python-3.12.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.12.0
 	./configure --prefix=${CROSSTOOLS_DIR} --with-platlibdir=lib64 \
 	            --disable-shared --with-system-expat --with-system-ffi \
 	            --with-ensurepip=yes --enable-optimizations \
 	            ac_cv_broken_sem_getvalue=yes LIBSQLITE3_LIBS="-L${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Wl,-rpath=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -lsqlite3"
 	eval ${MAKE_AND_INSTALL}
 
-#	echo "${PACKAGE_VERSION%\.*}" > ${COMMON_DIR}/Python3.version
 	save_package_version Python3 "${PACKAGE_VERSION%\.*}"
 	PYTHON_VERSION="$(get_package_version Python3)"
 
 	sed -i "s@-lutil @@g" ${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config
 
-#	PYTHON_EXT="$(python3-config --extension-suffix | grep -o "$(echo $(get_package_version Python3) | sed "s@\.@@g")\(.*\).so" | sed "s@^$(echo $(get_package_version Python3) | sed "s@\.@@g")@@g" | sed "s@\.so\$@@g" | sed "s@^-@@g")"
-#	cp ${CROSSTOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_{${PYTHON_EXT},${CROSS_TARGET}}.py
-#	sed -i -e "/'CC'/s@'gcc@'${CROSS_TARGET}-gcc@g" \
-#	       -e "/'CXX'/s@'g++@'${CROSS_TARGET}-g++@g" \
-#	       -e "/'LDSHARED'/s@'gcc@'${CROSS_TARGET}-gcc@g" \
-#	       -e "/'SOABI'/s@-$(uname -m)-linux-gnu@@g" \
-#	       -e "/'EXT_SUFFIX'/s@-$(uname -m)-linux-gnu@@g" \
-#	       ${CROSSTOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.11.5
+rm -rf ${BUILD_DIRECTORY}/Python-3.12.0

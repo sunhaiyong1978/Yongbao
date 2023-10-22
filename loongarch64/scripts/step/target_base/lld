@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=lld
-export PACKAGE_VERSION=16.0.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/lld/16.0.6/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
-tar xvf ${DOWNLOADDIR}/llvm-project-16.0.6.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
-    patch -Np1 -i ${SYSDIR}/files/target_base/lld/16.0.6/patches/D138135.diff 
+export PACKAGE_VERSION=17.0.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/lld/17.0.3/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.3.src
+tar xvf ${DOWNLOADDIR}/llvm-project-17.0.3.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-17.0.3.src
+    patch -Np1 -i ${SYSDIR}/files/target_base/lld/17.0.3/patches/D138135.diff 
 	 
     pushd lld
     mkdir cross-build
@@ -35,4 +35,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
     popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-16.0.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.3.src

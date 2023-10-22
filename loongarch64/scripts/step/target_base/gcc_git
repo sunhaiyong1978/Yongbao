@@ -9,7 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
 tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 	patch -Np1 -i ${SYSDIR}/files/target_base/gcc_git/git-default/patches/0001-gcc-13-add-cmodule-medium-for-loongarch-libgcc.patch 
-	patch -Np1 -i ${SYSDIR}/files/target_base/gcc_git/git-default/patches/fix-any-div.patch 
 	 
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv cross-build

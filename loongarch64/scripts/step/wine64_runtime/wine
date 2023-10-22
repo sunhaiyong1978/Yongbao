@@ -21,8 +21,6 @@ pushd ${BUILD_DIRECTORY}/wine-8.0.2
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 
-#        make DESTDIR=${X86_64_SYSROOT_DIR} install
-#        rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 
 	mkdir -p ${SYSROOT_DIR}/opt/wine64/share/wine/{mono,gecko}
 	cp -a ${RESOURCEDIR}/files/wine-mono-$(grep "MONO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86.msi ${SYSROOT_DIR}/opt/wine64/share/wine/mono/
@@ -30,9 +28,3 @@ pushd ${BUILD_DIRECTORY}/wine-8.0.2
 
 popd 
 rm -rf ${BUILD_DIRECTORY}/wine-8.0.2
-
-# mkdir -p ${SYSROOT_DIR}/etc/binfmt.d/
-# echo -n ":Windows64:M::MZ::/usr/bin/wine64:" > ${SYSROOT_DIR}/etc/binfmt.d/wine64.conf
-
-# [[[7.0.0]]]
-# EXTRA_PARM=--with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-lpulse -lpthread ${X86_64_SYSROOT_DIR}/usr/lib64/pulseaudio/libpulsecommon-16.1.so" NETAPI_LIBS="-Wl,-rpath-link=${X86_64_SYSROOT_DIR}/usr/lib64/samba -lnetapi"

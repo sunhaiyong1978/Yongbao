@@ -18,3 +18,5 @@ pushd ${BUILD_DIRECTORY}/wayland-1.22.0
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/wayland-1.22.0
+mkdir -p ${CROSSTOOLS_DIR}/host-tools/bin/
+cp -a ${CROSSTOOLS_DIR}/bin/wayland-scanner ${CROSSTOOLS_DIR}/host-tools/bin/

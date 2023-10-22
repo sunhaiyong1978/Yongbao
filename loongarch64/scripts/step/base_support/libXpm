@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libXpm
-export PACKAGE_VERSION=3.5.16
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libXpm/3.5.16/
-rm -rf ${BUILD_DIRECTORY}/libXpm-3.5.16
-tar xvf ${DOWNLOADDIR}/libXpm-3.5.16.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libXpm-3.5.16
+export PACKAGE_VERSION=3.5.17
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libXpm/3.5.17/
+rm -rf ${BUILD_DIRECTORY}/libXpm-3.5.17
+tar xvf ${DOWNLOADDIR}/libXpm-3.5.17.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libXpm-3.5.17
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/libXpm-3.5.16
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libXpm-3.5.16
+rm -rf ${BUILD_DIRECTORY}/libXpm-3.5.17

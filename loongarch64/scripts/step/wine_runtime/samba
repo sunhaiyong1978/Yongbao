@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=samba
-export PACKAGE_VERSION=4.19.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/samba/4.19.0/
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.0
-tar xvf ${DOWNLOADDIR}/samba-4.19.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/samba-4.19.0
+export PACKAGE_VERSION=4.19.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/samba/4.19.2/
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.2
+tar xvf ${DOWNLOADDIR}/samba-4.19.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.19.2
         
         for config_i in $(find -name "config.sub")
         do
@@ -19,8 +19,21 @@ pushd ${BUILD_DIRECTORY}/samba-4.19.0
         fi
 	sed -i.orig "/test_args/s@cmd = \[self@cmd = \['qemu-i386'\] + \[self@g" third_party/waf/waflib/Tools/c_config.py
 
-        NCURSES_CONFIG=${X86_SYSROOT_DIR}/bin/ncursesw6-config PKGCONFIG=${X86_HOST}-pkg-config CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --with-piddir=/run/samba --with-pammodulesdir=/usr/lib/security --enable-fhs --without-ad-dc --hostcc=gcc --with-system-mitkrb5 --disable-python --without-ldap --without-ads --without-pam
+        NCURSES_CONFIG=${X86_SYSROOT_DIR}/bin/ncursesw6-config \
+	PKGCONFIG=${X86_HOST}-pkg-config CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" \
+	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --with-piddir=/run/samba --with-pammodulesdir=/usr/lib/security \
+		    --enable-fhs --without-ad-dc --hostcc=gcc --with-system-mitkrb5 --disable-python --without-ldap --without-ads --without-pam \
+		    --with-sockets-dir=/run/samba --with-modulesdir=/usr/lib${LIB_SUFF}/samba --with-lockdir=/var/lib/samba/lock --with-statedir=/var/lib/samba --with-cachedir=/var/lib/samba
         eval ${MAKE_AND_INSTALL}
-        rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+        rm -f ${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.0
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.2
+
+install -dvm 755 ${X86_SYSROOT_DIR}/usr/lib/cups/backend &&
+ln -v -sf /usr/bin/smbspool ${X86_SYSROOT_DIR}/usr/lib/cups/backend/smb
+
+mkdir -p ${X86_SYSROOT_DIR}/etc/ld.so.conf.d/
+echo "/usr/lib${LIB_SUFF}/samba" > ${X86_SYSROOT_DIR}/etc/ld.so.conf.d/samba.conf
+
+mkdir -p ${X86_SYSROOT_DIR}/run/samba
+mkdir -p ${X86_SYSROOT_DIR}/var/lib/samba/lock

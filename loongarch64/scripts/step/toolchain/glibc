@@ -16,7 +16,6 @@ pushd ${BUILD_DIRECTORY}/glibc-2.38
 
     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
 
-#    cp ${CROSSTOOLS_DIR}/share/automake*/config.* ./
     sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
     mkdir -p build
     pushd build

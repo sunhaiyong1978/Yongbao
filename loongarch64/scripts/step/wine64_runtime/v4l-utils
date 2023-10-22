@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/v4l-utils-1.24.1
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --with-udevdir=/usr/lib/udev --with-systemdsystemunitdir=/usr/lib/systemd/system --enable-malloc0returnsnull
 	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
         make DESTDIR=${X86_64_SYSROOT_DIR} install
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la

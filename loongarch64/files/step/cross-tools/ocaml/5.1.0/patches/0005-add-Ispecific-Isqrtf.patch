@@ -1,0 +1,91 @@
+From e441287e4733ad35ae7123f5fb5320c493b7ec4d Mon Sep 17 00:00:00 2001
+From: yala <zhaojunchao@loongson.cn>
+Date: Tue, 7 Feb 2023 19:48:24 +0800
+Subject: [PATCH 5/6] add Ispecific Isqrtf
+
+---
+ asmcomp/loongarch64/arch.ml      | 4 ++++
+ asmcomp/loongarch64/arch.mli     | 1 +
+ asmcomp/loongarch64/emit.mlp     | 4 +++-
+ asmcomp/loongarch64/selection.ml | 2 ++
+ 4 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/asmcomp/loongarch64/arch.ml b/asmcomp/loongarch64/arch.ml
+index 0b12d5d..fee0526 100644
+--- a/asmcomp/loongarch64/arch.ml
++++ b/asmcomp/loongarch64/arch.ml
+@@ -26,6 +26,7 @@ let command_line_options = []
+ type specific_operation =
+   | Imultaddf of bool        (* multiply, optionally negate, and add *)
+   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
++  | Isqrtf                   (* floating-point square root *)
+ 
+ (* Addressing modes *)
+ 
+@@ -82,6 +83,9 @@ let print_specific_operation printreg op ppf arg =
+   | Imultsubf true ->
+       fprintf ppf "-f (%a *f %a -f %a)"
+         printreg arg.(0) printreg arg.(1) printreg arg.(2)
++  | Isqrtf ->
++      fprintf ppf "sqrtf %a"
++        printreg arg.(0)
+ 
+ (* Specific operations that are pure *)
+ 
+diff --git a/asmcomp/loongarch64/arch.mli b/asmcomp/loongarch64/arch.mli
+index 089edcf..57174fa 100644
+--- a/asmcomp/loongarch64/arch.mli
++++ b/asmcomp/loongarch64/arch.mli
+@@ -24,6 +24,7 @@ val command_line_options : (string * Arg.spec * string) list
+ type specific_operation =
+   | Imultaddf of bool        (* multiply, optionally negate, and add *)
+   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
++  | Isqrtf                   (* floating-point square root *)
+ 
+ (* Addressing modes *)
+ 
+diff --git a/asmcomp/loongarch64/emit.mlp b/asmcomp/loongarch64/emit.mlp
+index f750784..08e572d 100644
+--- a/asmcomp/loongarch64/emit.mlp
++++ b/asmcomp/loongarch64/emit.mlp
+@@ -242,6 +242,7 @@ let name_for_intop_imm = function
+ let name_for_floatop1 = function
+   | Inegf -> "fneg.d"
+   | Iabsf -> "fabs.d"
++  | Ispecific Isqrtf -> "fsqrt.d"
+   | _ -> Misc.fatal_error "Emit.Iopf1"
+ 
+ let name_for_floatop2 = function
+@@ -256,6 +257,7 @@ let name_for_specific = function
+   | Imultaddf true  -> "fnmadd.d"
+   | Imultsubf false -> "fmsub.d"
+   | Imultsubf true  -> "fnmsub.d"
++  | _ -> Misc.fatal_error "Emit.Iopf3"
+ 
+ (* Output the assembly code for an instruction *)
+ 
+@@ -492,7 +494,7 @@ let emit_instr env i =
+           ` addi.d   {emit_reg reg_tmp2}, $zero, {emit_int n}\n {emit_string instr}    {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg reg_tmp2} \n`
+       else
+       `	{emit_string instri}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_int n}\n`
+-  | Lop(Inegf | Iabsf as op) ->
++  | Lop(Inegf | Iabsf | Ispecific Isqrtf as op) ->
+       let instr = name_for_floatop1 op in
+       `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n`
+   | Lop(Iaddf | Isubf | Imulf | Idivf as op) ->
+diff --git a/asmcomp/loongarch64/selection.ml b/asmcomp/loongarch64/selection.ml
+index 497faf5..be29364 100644
+--- a/asmcomp/loongarch64/selection.ml
++++ b/asmcomp/loongarch64/selection.ml
+@@ -59,6 +59,8 @@ method! select_operation op args dbg =
+   | (Cstore (Word_int | Word_val as memory_chunk, Assignment), [arg1; arg2]) ->
+       (* Use trivial addressing mode for non-initializing stores *)
+       (Istore (memory_chunk, Iindexed 0, true), [arg2; arg1])
++  | (Cextcall("sqrt", _, _, _), []) ->
++          (Ispecific Isqrtf, args)
+   | _ ->
+       super#select_operation op args dbg
+ 
+-- 
+2.31.1
+

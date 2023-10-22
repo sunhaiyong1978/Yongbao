@@ -1,0 +1,18 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=i686-pkgconf
+export PACKAGE_VERSION=2.0.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/i686-pkgconf/2.0.3/
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.0.3
+tar xvf ${DOWNLOADDIR}/pkgconf-2.0.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pkgconf-2.0.3
+        
+        ./configure --prefix=${PREFIX}/${X86_HOST} --build=${CROSS_HOST} \
+                --host=${CROSS_HOST} --target=${X86_HOST}
+        make -j${JOBS}
+	make install
+        cp -f ${PREFIX}/${X86_HOST}/bin/pkgconf ${PREFIX}/${X86_HOST}/bin/${X86_HOST}-pkg-config
+popd 
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.0.3

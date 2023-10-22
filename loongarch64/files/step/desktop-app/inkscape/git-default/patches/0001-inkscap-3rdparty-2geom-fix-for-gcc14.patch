@@ -1,0 +1,24 @@
+From c29c569476560b491eba6a63e38d216ff7d0963e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 22 Oct 2023 15:48:18 +0000
+Subject: [PATCH] inkscap 3rdparty 2geom fix for gcc14.
+
+---
+ src/3rdparty/2geom/include/2geom/generic-interval.h | 1 +
+ 1 file changed, 1 insertions(+)
+
+diff --git a/src/3rdparty/2geom/include/2geom/generic-interval.h b/src/3rdparty/2geom/include/2geom/generic-interval.h
+index 8c0c800..6d15748 100644
+--- a/src/3rdparty/2geom/include/2geom/generic-interval.h
++++ b/src/3rdparty/2geom/include/2geom/generic-interval.h
+@@ -37,6 +37,7 @@
+ #include <tuple>
+ #include <boost/functional/hash.hpp>
+ #include <2geom/coord.h>
++#include <algorithm>
+ 
+ namespace Geom {
+ 
+-- 
+2.31.1
+

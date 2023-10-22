@@ -4,12 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.72.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/rustc/1.72.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.72.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.72.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.72.0-src
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/rustc/1.72.0/patches/d68eea61c3e3d249602d66d28e8f6dbd76e7c30f.diff 
+export PACKAGE_VERSION=1.73.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/rustc/1.73.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.73.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.73.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.73.0-src
 	 
 	sed -i "s@ifdef LLVM_RUSTLLVM@if 0@g" compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp
 	find vendor -name .cargo-checksum.json \
@@ -22,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/rustc-1.72.0-src
 	make -j${JOBS} TARGET_CC="${CROSS_TARGET}-gcc"
 	make TARGET_CC="${CROSS_TARGET}-gcc" install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.72.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.73.0-src

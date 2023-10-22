@@ -13,7 +13,6 @@ pushd ${BUILD_DIRECTORY}/pygobject-3.46.0
         PYTHON=${CROSSTOOLS_DIR}/bin/python3 \
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
         meson ${MESON_CONFIG} -Dtests=false ..
-#        sed -i -e "s@\(${SYSDIR}/\)sysroot/usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@\1cross-tools\2${CROSS_TARGET}-\3@g" build.ninja
         CC="${CROSS_TARGET}-gcc" ninja
         DESTDIR=${SYSROOT_DIR} ninja install
     popd

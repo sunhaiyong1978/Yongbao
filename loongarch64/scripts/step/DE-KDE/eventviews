@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=eventviews
-export PACKAGE_VERSION=23.08.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/eventviews/23.08.0/
-rm -rf ${BUILD_DIRECTORY}/eventviews-23.08.0
-tar xvf ${DOWNLOADDIR}/eventviews-23.08.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/eventviews-23.08.0
+export PACKAGE_VERSION=23.08.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/eventviews/23.08.2/
+rm -rf ${BUILD_DIRECTORY}/eventviews-23.08.2
+tar xvf ${DOWNLOADDIR}/eventviews-23.08.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/eventviews-23.08.2
         
 	mkdir cross-build
 	pushd cross-build
@@ -33,9 +33,9 @@ pushd ${BUILD_DIRECTORY}/eventviews-23.08.0
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		       -Wno-dev ..
+		      -DBUILD_TESTING=OFF -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/eventviews-23.08.0
+rm -rf ${BUILD_DIRECTORY}/eventviews-23.08.2

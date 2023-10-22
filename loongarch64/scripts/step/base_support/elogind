@@ -12,8 +12,9 @@ pushd ${BUILD_DIRECTORY}/elogind-252.9
 	 
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG} -Dcgroup-controller=elogind -Ddbuspolicydir=/etc/dbus-1/system.d -Ddefault-kill-user-processes=false \
+		meson ${MESON_CONFIG} -Dcgroup-controller=elogind -Ddbuspolicydir=/etc/dbus-1/system.d -Ddefault-kill-user-processes=false -Ddbussessionservicedir=/usr/share/dbus-1/services -Ddbussystemservicedir=/usr/share/dbus-1/system-services \
                       ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

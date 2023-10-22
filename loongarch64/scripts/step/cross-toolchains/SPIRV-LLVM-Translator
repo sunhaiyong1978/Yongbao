@@ -3,23 +3,23 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=SPIRV-LLVM-Translator
-export PACKAGE_VERSION=16.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/SPIRV-LLVM-Translator/16.0.0/
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-16.0.0
-tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-16.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-16.0.0
+export PACKAGE_VERSION=18.0.0-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/SPIRV-LLVM-Translator/18.0.0-default/
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator_git-18.0.0-default_git
+tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator_git-18.0.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator_git-18.0.0-default_git
         
 	export PATH=${PREFIX}/llvm-project/bin:${PATH}
-	tar xvf ${RESOURCEDIR}/files/SPIRV-Headers-sdk-1.3.250.1.tar.gz
+	tar xvf ${RESOURCEDIR}/files/SPIRV-LLVM-Translator_git-headers_git.tar.gz
         mkdir -p build
         pushd build
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX}/llvm-project \
 		      -DLLVM_DIR:PATH=${SYSDIR}/cross-toolchains/llvm-project/lib64/cmake/llvm \
 		      -DCMAKE_INSTALL_RPATH="${PREFIX}/llvm-project/lib64;\\\${ORIGIN}/../lib64" \
                       -DBUILD_SHARED_LIBS=OFF -DCCACHE_ALLOWED=OFF \
-		      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${PWD}/../SPIRV-Headers-sdk-1.3.250.1 \
+		      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${PWD}/../SPIRV-LLVM-Translator_git-headers_git \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-16.0.0
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator_git-18.0.0-default_git

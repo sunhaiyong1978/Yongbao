@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=desktop-file-utils
-export PACKAGE_VERSION=0.26
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/desktop-file-utils/0.26/
-rm -rf ${BUILD_DIRECTORY}/desktop-file-utils-0.26
-tar xvf ${DOWNLOADDIR}/desktop-file-utils-0.26.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/desktop-file-utils-0.26
+export PACKAGE_VERSION=0.27
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/desktop-file-utils/0.27/
+rm -rf ${BUILD_DIRECTORY}/desktop-file-utils-0.27
+tar xvf ${DOWNLOADDIR}/desktop-file-utils-0.27.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/desktop-file-utils-0.27
 	if [ -f ${SYSROOT_DIR}/usr/bin/desktop-file-edit ]; then
 		rm -f ${SYSROOT_DIR}/usr/bin/desktop-file-edit
 	fi
@@ -16,9 +16,8 @@ pushd ${BUILD_DIRECTORY}/desktop-file-utils-0.26
 	pushd cross-build
 		meson ${MESON_CONFIG}  \
                       ..
-#		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/desktop-file-utils-0.26
+rm -rf ${BUILD_DIRECTORY}/desktop-file-utils-0.27

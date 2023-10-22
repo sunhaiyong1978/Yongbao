@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=make-ca
-export PACKAGE_VERSION=1.12
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/make-ca/1.12/
-rm -rf ${BUILD_DIRECTORY}/make-ca-1.12
-tar xvf ${DOWNLOADDIR}/make-ca-1.12.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/make-ca-1.12
+export PACKAGE_VERSION=1.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/make-ca/1.13/
+rm -rf ${BUILD_DIRECTORY}/make-ca-1.13
+tar xvf ${DOWNLOADDIR}/make-ca-1.13.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/make-ca-1.13
 	make DESTDIR=${SYSROOT_DIR} install
 	install -vdm755 ${SYSROOT_DIR}/etc/ssl/local
 	cp ${SYSROOT_DIR}/usr/sbin/make-ca ${CROSSTOOLS_DIR}/bin/
@@ -24,13 +24,13 @@ pushd ${BUILD_DIRECTORY}/make-ca-1.12
 	        > ${SYSROOT_DIR}/etc/ssl/local/CAcert_Class_3_root.pem
 	${CROSSTOOLS_DIR}/bin/make-ca --destdir ${SYSROOT_DIR} -r
 popd 
-rm -rf ${BUILD_DIRECTORY}/make-ca-1.12
+rm -rf ${BUILD_DIRECTORY}/make-ca-1.13
 
 mkdir -pv ${SYSROOT_DIR}/etc/profile.d &&
 cat > ${SYSROOT_DIR}/etc/profile.d/pythoncerts.sh << "EOF"
-# Begin /etc/profile.d/pythoncerts.sh
+## Begin /etc/profile.d/pythoncerts.sh
 
 export _PIP_STANDALONE_CERT=/etc/pki/tls/certs/ca-bundle.crt
 
-# End /etc/profile.d/pythoncerts.sh
+## End /etc/profile.d/pythoncerts.sh
 EOF

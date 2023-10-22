@@ -21,8 +21,6 @@ cp -a ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils/${CROSS_TOOLCH
 cp -a ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
 cp -a ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gdb/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
 cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/target ${TEMP_DIRECTORY}/cross-tools/
-# cp -a ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/* ${TEMP_DIRECTORY}/cross-tools/target/
-# cp -a ${TOOLCHAIN_DIRECTORY}/${CROSS_TARGET}/glibc/* ${TEMP_DIRECTORY}/cross-tools/target/
 
 pushd ${TEMP_DIRECTORY}
 	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc-libc.tar.xz ]; then

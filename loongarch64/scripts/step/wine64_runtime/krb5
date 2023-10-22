@@ -10,7 +10,6 @@ rm -rf ${BUILD_DIRECTORY}/krb5-1.21.2
 tar xvf ${DOWNLOADDIR}/krb5-1.21.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/krb5-1.21.2
     pushd src
-#        sed -i "s@error=discarded-qualifiers@@g" configure
         ./configure ${COMMON_CONFIG} --runstatedir=/run \
                     --with-system-ss --with-system-verto=no \
                     --enable-dns-for-realm \

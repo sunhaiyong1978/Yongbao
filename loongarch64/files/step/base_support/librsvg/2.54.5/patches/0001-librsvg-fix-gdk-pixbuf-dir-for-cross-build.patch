@@ -1,0 +1,29 @@
+From 4ebfc6db34156547f3888c9d8c4d01d4f8e8df7d Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 26 Sep 2023 10:42:18 +0000
+Subject: [PATCH] librsvg fix gdk pixbuf dir for cross build.
+
+---
+ configure | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/configure b/configure
+index c53de7f..6718665 100755
+--- a/configure
++++ b/configure
+@@ -15349,9 +15349,9 @@ fi
+ 
+   # First try the standalone gdk-pixbuf
+   gdk_pixbuf_binary_version="`$PKG_CONFIG --variable=gdk_pixbuf_binary_version gdk-pixbuf-2.0`"
+-  gdk_pixbuf_binarydir="`$PKG_CONFIG --variable=gdk_pixbuf_binarydir gdk-pixbuf-2.0`"
+-  gdk_pixbuf_moduledir=`$PKG_CONFIG --variable gdk_pixbuf_moduledir gdk-pixbuf-2.0`
+-  gdk_pixbuf_cache_file=`$PKG_CONFIG --variable gdk_pixbuf_cache_file gdk-pixbuf-2.0`
++  gdk_pixbuf_binarydir="`$PKG_CONFIG --define-variable=libdir=/usr/lib64 --variable=gdk_pixbuf_binarydir gdk-pixbuf-2.0`"
++  gdk_pixbuf_moduledir=`$PKG_CONFIG --define-variable=gdk_pixbuf_binarydir=${gdk_pixbuf_binarydir} --variable gdk_pixbuf_moduledir gdk-pixbuf-2.0`
++  gdk_pixbuf_cache_file=`$PKG_CONFIG --define-variable=gdk_pixbuf_binarydir=${gdk_pixbuf_binarydir} --variable gdk_pixbuf_cache_file gdk-pixbuf-2.0`
+ 
+ fi
+ 
+-- 
+2.31.1
+

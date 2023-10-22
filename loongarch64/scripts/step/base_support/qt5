@@ -3,16 +3,17 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt5
-export PACKAGE_VERSION=5.15.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt5/5.15.10/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.10
-tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.10.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.10
-    patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.10/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.10/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.10/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+export PACKAGE_VERSION=5.15.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt5/5.15.11/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.11
+tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.11.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.11
+    patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.11/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.11/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.11/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.11/patches/0001-qt5-fix-for-xkbcommon-1.6.0.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.11/patches/0001-qt-5.15.11-fix-for-gcc-14.patch 
 	 
-#    cp qtbase/src/corelib/thread/qtsan_impl.h qtbase/include/QtCore/
     sed -i "s@defined(__aarch64__)@& || defined(__loongarch__)@g" qtbase/src/3rdparty/forkfd/forkfd_linux.c
     mkdir host-build
     pushd host-build
@@ -58,9 +59,8 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.10
 	make -j${JOBS}
         make INSTALL_ROOT=${SYSROOT_DIR} install
     popd
-#    cp -v qtbase/src/corelib/thread/qtsan_impl.h ${SYSROOT_DIR}/usr/include/qt5/QtCore/
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.10
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.11
 
 
 cat > ${SYSROOT_DIR}/etc/profile.d/qt5.sh << "EOF"

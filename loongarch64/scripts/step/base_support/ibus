@@ -17,7 +17,6 @@ pushd ${BUILD_DIRECTORY}/ibus-1.5.28
     patch -Np1 -i ${SYSDIR}/files/base_support/ibus/1.5.28/patches/0001-ibus-1.5.28-change-for-cross-compiler.patch 
 	 
     autoreconf -ifv
-#    cp ${CROSSTOOLS_DIR}/share/automake-1.16/config.* ./
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -27,7 +26,7 @@ pushd ${BUILD_DIRECTORY}/ibus-1.5.28
     pushd cross-prebuild
         ../configure ${COMMON_CONFIG} \
                      --disable-emoji-dict --disable-unicode-dict --enable-introspection=no
-	make -j${JOBS}
+	make -j${JOBS} GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
         make DESTDIR=${SYSROOT_DIR} install-exec
     popd
     sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
@@ -42,11 +41,12 @@ pushd ${BUILD_DIRECTORY}/ibus-1.5.28
                      --enable-xim --enable-gtk4 --enable-wayland \
                      --disable-python2 --with-python=${CROSSTOOLS_DIR}/bin/python3
         sed -i "/pyoverridesdir/s@${CROSSTOOLS_DIR}@/usr@g" bindings/pygobject/Makefile
-	make -C src unicode-parser emoji-parser
+	make -C src unicode-parser emoji-parser GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
 	sed -i '/exec \"\$progdir\/\$program\"/s@exec \"@exec qemu-${ARCH_NAME} \"@g' src/unicode-parser
 	sed -i '/exec \"\$progdir\/\$program\"/s@exec \"@exec qemu-${ARCH_NAME} \"@g' src/emoji-parser
         make -j${JOBS} INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
              INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
+	     GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources \
              VAPIGEN=${CROSS_TARGET}-vapigen
         make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
     popd

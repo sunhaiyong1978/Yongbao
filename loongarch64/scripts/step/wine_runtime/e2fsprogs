@@ -13,7 +13,9 @@ pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.0
 	pushd build
 		../configure ${COMMON_CONFIG} \
 		             --enable-elf-shlibs --disable-libblkid \
-		             --disable-libuuid --disable-uuidd --disable-fsck
+		             --disable-libuuid --disable-uuidd --disable-fsck \
+			     --with-systemd-unit-dir=/usr/lib/systemd/system \
+			     --with-udev-rules-dir=/usr/lib/udev/rules.d
 		eval ${MAKE_AND_INSTALL}
 		rm -fv ${X86_SYSROOT_DIR}/usr/lib${LIB_SUFF}/{libcom_err,libe2p,libext2fs,libss}.la
 	popd

@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/wheel-0.41.2
 tar xvf ${DOWNLOADDIR}/wheel-0.41.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/wheel-0.41.2
 	
-	${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user wheel
 popd 
 rm -rf ${BUILD_DIRECTORY}/wheel-0.41.2

@@ -9,14 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
 tar xvf ${DOWNLOADDIR}/glaxnimate-0.5.3-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
         
-#	sed -i "s@COMMAND \${QT_QMAKE_EXECUTABLE}@COMMAND ${CROSSTOOLS_DIR}/bin/qmake@g" external/Qt-Color-Widgets/color_widgets_designer_plugin/CMakeLists.txt
-#        sed -i "s@COMMAND lupdate @COMMAND ${PWD}/lupdate @g" cmake/qt.cmake
-#        sed -i "s@COMMAND lrelease @COMMAND ${PWD}/lrelease @g" cmake/qt.cmake
-#        sed -i "s@COMMAND \${lupdate_cmd} @COMMAND ${PWD}/lupdate @g" cmake/qt.cmake
-#        sed -i "s@COMMAND \${lrelease_cmd} @COMMAND ${PWD}/lrelease @g" cmake/qt.cmake
-#        echo "qemu-loongarch64 ${SYSROOT_DIR}/bin/lupdate \"\$@\"" > ${PWD}/lupdate
-#        echo "qemu-loongarch64 ${SYSROOT_DIR}/bin/lrelease \"\$@\"" > ${PWD}/lrelease
-#        chmod +x ${PWD}/lupdate ${PWD}/lrelease
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
@@ -45,9 +37,6 @@ pushd ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
                       -DBUILD_SHARED_LIBS=ON \
                       -Wno-dev ..
 		make -j${JOBS} -C share/glaxnimate/glaxnimate translations
-#		sed -i "/QT_MOC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/moc@${CROSSTOOLS_DIR}/bin/moc@g" $(grep -rl "QT_MOC_EXECUTABLE" *)
-#                sed -i "/QT_UIC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/uic@${CROSSTOOLS_DIR}/bin/uic@g" $(grep -rl "QT_UIC_EXECUTABLE" *)
-#                sed -i "s@${SYSROOT_DIR}/usr/bin/rcc@${CROSSTOOLS_DIR}/bin/rcc@g" $(grep -rl "${SYSROOT_DIR}/usr/bin/rcc" *)
                 make -j${JOBS}
 		make -j${JOBS} DESTDIR=${SYSROOT_DIR} install
 		make -j${JOBS} -C external/Qt-Color-Widgets DESTDIR=${SYSROOT_DIR} install

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=sphinx
-export PACKAGE_VERSION=7.2.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sphinx/7.2.5/
-rm -rf ${BUILD_DIRECTORY}/sphinx-7.2.5
-tar xvf ${DOWNLOADDIR}/sphinx-7.2.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinx-7.2.5
+export PACKAGE_VERSION=7.2.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sphinx/7.2.6/
+rm -rf ${BUILD_DIRECTORY}/sphinx-7.2.6
+tar xvf ${DOWNLOADDIR}/sphinx-7.2.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinx-7.2.6
 	
 	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user sphinx --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinx-7.2.5
+rm -rf ${BUILD_DIRECTORY}/sphinx-7.2.6

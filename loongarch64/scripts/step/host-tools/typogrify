@@ -10,6 +10,7 @@ tar xvf ${DOWNLOADDIR}/typogrify-2.0.7.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/typogrify-2.0.7
 	
 	${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+        ${CROSSTOOLS_DIR}/bin/python3 setup.py install
+ #       ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
 popd 
 rm -rf ${BUILD_DIRECTORY}/typogrify-2.0.7

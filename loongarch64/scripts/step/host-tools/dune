@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=dune
-export PACKAGE_VERSION=3.10.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/dune/3.10.0/
-rm -rf ${BUILD_DIRECTORY}/dune-3.10.0
-tar xvf ${DOWNLOADDIR}/dune-3.10.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dune-3.10.0
+export PACKAGE_VERSION=3.11.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/dune/3.11.1/
+rm -rf ${BUILD_DIRECTORY}/dune-3.11.1
+tar xvf ${DOWNLOADDIR}/dune-3.11.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dune-3.11.1
 	./configure --mandir=${CROSSTOOLS_DIR}/share/man --docdir=${CROSSTOOLS_DIR}/share/doc --etcdir=${CROSSTOOLS_DIR}/etc --datadir=${CROSSTOOLS_DIR}/share --sbindir=${CROSSTOOLS_DIR}/sbin --bindir=${CROSSTOOLS_DIR}/bin --libexecdir=${CROSSTOOLS_DIR}/libexec --libdir=${CROSSTOOLS_DIR}/lib
 	make -j${JOBS} release
 	make install
 popd 
-rm -rf ${BUILD_DIRECTORY}/dune-3.10.0
+rm -rf ${BUILD_DIRECTORY}/dune-3.11.1

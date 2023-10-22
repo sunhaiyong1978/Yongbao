@@ -1,0 +1,76 @@
+diff -Nurp firefox-100.0.orig/ipc/chromium/src/build/build_config.h firefox-100.0/ipc/chromium/src/build/build_config.h
+--- firefox-100.0.orig/ipc/chromium/src/build/build_config.h	2022-04-28 22:02:47.000000000 +0000
++++ firefox-100.0/ipc/chromium/src/build/build_config.h	2022-06-08 07:15:25.232514650 +0000
+@@ -125,6 +125,9 @@
+ #elif defined(__riscv) && __riscv_xlen == 64
+ #  define ARCH_CPU_RISCV64 1
+ #  define ARCH_CPU_64_BITS 1
++#elif defined(__loongarch64)
++#  define ARCH_CPU_LOONGARCH64 1
++#  define ARCH_CPU_64_BITS 1
+ #else
+ #  error Please add support for your architecture in build/build_config.h
+ #endif
+diff -Nurp firefox-100.0.orig/js/moz.configure firefox-100.0/js/moz.configure
+--- firefox-100.0.orig/js/moz.configure	2022-04-28 23:01:46.000000000 +0000
++++ firefox-100.0/js/moz.configure	2022-06-08 07:15:25.233514649 +0000
+@@ -244,6 +244,7 @@ set_config("JS_CODEGEN_ARM64", jit_codeg
+ set_config("JS_CODEGEN_MIPS32", jit_codegen.mips32)
+ set_config("JS_CODEGEN_MIPS64", jit_codegen.mips64)
+ set_config("JS_CODEGEN_LOONG64", jit_codegen.loong64)
++set_config("JS_CODEGEN_LOONG64", jit_codegen.loongarch64)
+ set_config("JS_CODEGEN_X86", jit_codegen.x86)
+ set_config("JS_CODEGEN_X64", jit_codegen.x64)
+ set_define("JS_CODEGEN_NONE", jit_codegen.none)
+@@ -252,6 +253,7 @@ set_define("JS_CODEGEN_ARM64", jit_codeg
+ set_define("JS_CODEGEN_MIPS32", jit_codegen.mips32)
+ set_define("JS_CODEGEN_MIPS64", jit_codegen.mips64)
+ set_define("JS_CODEGEN_LOONG64", jit_codegen.loong64)
++set_define("JS_CODEGEN_LOONG64", jit_codegen.loongarch64)
+ set_define("JS_CODEGEN_X86", jit_codegen.x86)
+ set_define("JS_CODEGEN_X64", jit_codegen.x64)
+ 
+diff -Nurp firefox-100.0.orig/js/src/wasm/WasmSignalHandlers.cpp firefox-100.0/js/src/wasm/WasmSignalHandlers.cpp
+--- firefox-100.0.orig/js/src/wasm/WasmSignalHandlers.cpp	2022-04-28 22:02:59.000000000 +0000
++++ firefox-100.0/js/src/wasm/WasmSignalHandlers.cpp	2022-06-08 07:15:25.233514649 +0000
+@@ -158,10 +158,10 @@ using mozilla::DebugOnly;
+ #      define R32_sig(p) ((p)->uc_mcontext.gp_regs[32])
+ #    endif
+ #    if defined(__linux__) && defined(__loongarch__)
+-#      define EPC_sig(p) ((p)->uc_mcontext.pc)
+-#      define RRA_sig(p) ((p)->uc_mcontext.gregs[1])
+-#      define RSP_sig(p) ((p)->uc_mcontext.gregs[3])
+-#      define RFP_sig(p) ((p)->uc_mcontext.gregs[22])
++#      define EPC_sig(p) ((p)->uc_mcontext.__pc)
++#      define RRA_sig(p) ((p)->uc_mcontext.__gregs[1])
++#      define RSP_sig(p) ((p)->uc_mcontext.__gregs[3])
++#      define RFP_sig(p) ((p)->uc_mcontext.__gregs[22])
+ #    endif
+ #  elif defined(__NetBSD__)
+ #    define EIP_sig(p) ((p)->uc_mcontext.__gregs[_REG_EIP])
+diff -Nurp firefox-100.0.orig/third_party/libwebrtc/build/build_config.h firefox-100.0/third_party/libwebrtc/build/build_config.h
+--- firefox-100.0.orig/third_party/libwebrtc/build/build_config.h	2022-04-28 22:03:52.000000000 +0000
++++ firefox-100.0/third_party/libwebrtc/build/build_config.h	2022-06-08 07:15:25.233514649 +0000
+@@ -206,6 +206,10 @@
+ #define ARCH_CPU_SPARC 1
+ #define ARCH_CPU_32_BITS 1
+ #define ARCH_CPU_BIG_ENDIAN 1
++#elif defined(__loongarch64)
++#define ARCH_CPU_LOONGARCH64 1
++#define ARCH_CPU_64_BITS 1
++#define ARCH_CPU_LITTLE_ENDIAN 1
+ #else
+ #error Please add support for your architecture in build/build_config.h
+ #endif
+diff -Nurp firefox-100.0.orig/toolkit/moz.configure firefox-100.0/toolkit/moz.configure
+--- firefox-100.0.orig/toolkit/moz.configure	2022-04-28 23:01:47.000000000 +0000
++++ firefox-100.0/toolkit/moz.configure	2022-06-08 07:15:25.234514649 +0000
+@@ -2156,7 +2156,7 @@ with only_when(compile_environment | art
+                 flac_only = True
+         elif target.cpu == "x86_64":
+             flags = ["-D__x86_64__", "-DPIC", "-DELF", "-Pconfig_unix64.asm"]
+-        elif target.cpu in ("x86", "arm", "aarch64"):
++        elif target.cpu in ("x86", "arm", "aarch64", "loongarch64"):
+             flac_only = True
+         else:
+             enable = False

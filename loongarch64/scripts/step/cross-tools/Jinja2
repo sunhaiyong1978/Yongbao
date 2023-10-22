@@ -9,7 +9,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Jinja2/3.1.2/
 rm -rf ${BUILD_DIRECTORY}/Jinja2-3.1.2
 tar xvf ${DOWNLOADDIR}/Jinja2-3.1.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/Jinja2-3.1.2
-	${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+	
+	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user Jinja2
 popd 
 rm -rf ${BUILD_DIRECTORY}/Jinja2-3.1.2

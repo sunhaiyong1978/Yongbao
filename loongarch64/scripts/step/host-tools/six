@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/six-1.16.0
 tar xvf ${DOWNLOADDIR}/six-1.16.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/six-1.16.0
 	
-	${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user six
 popd 
 rm -rf ${BUILD_DIRECTORY}/six-1.16.0

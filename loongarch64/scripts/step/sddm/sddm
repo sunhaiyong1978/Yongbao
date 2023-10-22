@@ -18,6 +18,12 @@ pushd ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
               -DENABLE_JOURNALD:BOOL=ON \
               -DSESSION_COMMAND:PATH=/etc/sddm/Xsession \
               -DWAYLAND_SESSION_COMMAND:PATH=/etc/sddm/wayland-session \
+	      -DSYSTEMD_SYSTEM_UNIT_DIR=/usr/lib/systemd/system \
+	      -DSYSTEMD_SYSUSERS_DIR=/usr/lib/sysusers.d \
+	      -DSYSTEMD_TMPFILES_DIR=/usr/lib/tmpfiles.d \
+	      -DRUNTIME_DIR=/run/sddm \
+	      -DDATA_INSTALL_DIR=/usr/share/sddm \
+	      -DDBUS_CONFIG_FILENAME=sddm_org.freedesktop.DisplayManager.conf \
               -DCMAKE_INSTALL_PREFIX=/usr ..
         eval ${MAKE_AND_INSTALL}
     popd
@@ -51,19 +57,19 @@ EOF
 cat > ${SYSROOT_DIR}/etc/pam.d/sddm-greeter << "EOF"
 #%PAM-1.0
 
-# Load environment from /etc/environment and ~/.pam_environment
+## Load environment from /etc/environment and ~/.pam_environment
 auth            required pam_env.so
 
-# Always let the greeter start without authentication
+## Always let the greeter start without authentication
 auth            required pam_permit.so
 
-# No action required for account management
+## No action required for account management
 account         required pam_permit.so
 
-# Can't change password
+## Can't change password
 password        required pam_deny.so
 
-# Setup session
+## Setup session
 session         required pam_unix.so
 session         optional pam_systemd.so
 EOF

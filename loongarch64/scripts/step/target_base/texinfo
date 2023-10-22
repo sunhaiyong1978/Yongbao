@@ -3,21 +3,21 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=texinfo
-export PACKAGE_VERSION=7.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/texinfo/7.0.3/
-rm -rf ${BUILD_DIRECTORY}/texinfo-7.0.3
-tar xvf ${DOWNLOADDIR}/texinfo-7.0.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/texinfo-7.0.3
+export PACKAGE_VERSION=7.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/texinfo/7.1/
+rm -rf ${BUILD_DIRECTORY}/texinfo-7.1
+tar xvf ${DOWNLOADDIR}/texinfo-7.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/texinfo-7.1
 	sed -e 's/__attribute_nonnull__/__nonnull/' \
 	    -i gnulib/lib/malloc/dynarray-skeleton.c
         for config_i in $(find -name "config.sub")
         do
                 cp ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
         done
-	./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET}
+	./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET} texinfo_cv_sys_iconv_converts_euc_cn=y
         make -j${JOBS} -C tools/gnulib/lib
         make -j${JOBS} -C tools/info makedoc
 	eval ${MAKE_AND_INSTALL}
 	make DESTDIR=${SYSROOT_DIR} TEXMF=/usr/share/texmf install-tex
 popd 
-rm -rf ${BUILD_DIRECTORY}/texinfo-7.0.3
+rm -rf ${BUILD_DIRECTORY}/texinfo-7.1

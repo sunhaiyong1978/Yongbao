@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/grub-2.12_git
         
 	tar xvf ${RESOURCEDIR}/files/grub-gnulib_git.tar.gz
 	mv grub-gnulib_git gnulib
-	./bootstrap
+	PATH=/usr/bin:/bin ./bootstrap
         ./configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} \
                 --host=${CROSS_HOST} --target=${CROSS_TARGET} \
 		--program-transform-name=s,grub,${CROSS_TARGET}-grub, --with-platform=efi --with-utils=host --disable-werror

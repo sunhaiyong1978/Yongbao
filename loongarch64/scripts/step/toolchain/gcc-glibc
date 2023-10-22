@@ -9,8 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
 tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc-13.2.0
     CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
-#    CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target ${CROSS_TARGET})")
-#    LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
 
     patch -Np1 -i ${SYSDIR}/files/toolchain/gcc-glibc/13.2.0/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
@@ -37,6 +35,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
         make -j${JOBS} all-gcc LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"
         make -j${JOBS}
         make install-strip
+	ln -sf ${CROSS_TARGET}-gcc ${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-cc
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0

@@ -9,7 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
 tar xvf ${DOWNLOADDIR}/zstd-1.5.5.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/zstd-1.5.5
 	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
-#	CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target)" "${ARCH_BIT}")
 	LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
 	ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
 

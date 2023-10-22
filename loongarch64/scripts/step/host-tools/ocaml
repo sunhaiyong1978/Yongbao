@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=ocaml
-export PACKAGE_VERSION=5.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ocaml/5.0.0/
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.0.0
-tar xvf ${DOWNLOADDIR}/ocaml-5.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ocaml-5.0.0
-	patch -Np1 -i ${SYSDIR}/files/host-tools/ocaml/5.0.0/patches/ocaml-5.0.0-add-loongarch64-support.patch 
-	 
+export PACKAGE_VERSION=5.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ocaml/5.1.0/
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.0_git
+tar xvf ${DOWNLOADDIR}/ocaml-5.1.0_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ocaml-5.1.0_git
+	
         for config_i in $(find -name "config.sub")
         do
                 cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -20,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/ocaml-5.0.0
 	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.0.0
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.0_git

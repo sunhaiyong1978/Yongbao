@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kcmutils
-export PACKAGE_VERSION=5.110.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kcmutils/5.110.0/
-rm -rf ${BUILD_DIRECTORY}/kcmutils-5.110.0
-tar xvf ${DOWNLOADDIR}/kcmutils-5.110.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kcmutils-5.110.0
+export PACKAGE_VERSION=5.111.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kcmutils/5.111.0/
+rm -rf ${BUILD_DIRECTORY}/kcmutils-5.111.0
+tar xvf ${DOWNLOADDIR}/kcmutils-5.111.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kcmutils-5.111.0
         
 	sed -i.orig "s@COMMAND KF5::kcmdesktopfilegenerator@COMMAND qemu-loongarch64 ${PWD}/cross-build/bin/kcmdesktopfilegenerator@g" KF5KCMUtilsMacros.cmake
         mkdir cross-build
@@ -40,7 +40,7 @@ pushd ${BUILD_DIRECTORY}/kcmutils-5.110.0
 	cp KF5KCMUtilsMacros.cmake.orig ${SYSROOT_DIR}/usr/lib64/cmake/KF5KCMUtils/KF5KCMUtilsMacros.cmake
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kcmutils-5.110.0
+rm -rf ${BUILD_DIRECTORY}/kcmutils-5.111.0
 
 mkdir -pv ${CROSSTOOLS_DIR}/lib64/libexec/kf5
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/lib64/libexec/kf5/kcmdesktopfilegenerator \"\$@\"" \

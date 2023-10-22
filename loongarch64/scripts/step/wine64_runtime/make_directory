@@ -49,7 +49,6 @@ set(CMAKE_FIND_ROOT_PATH ${X86_64_SYSROOT_DIR}/usr)
 
 set(CMAKE_INSTALL_PREFIX /usr)
 
-# set(CMAKE_STAGING_PREFIX /home/devel/stage)
 
 set(tools ${CROSS_TOOLS_PREFIX})
 set(CMAKE_C_COMPILER \${tools}/bin/${X86_64_HOST}-gcc)

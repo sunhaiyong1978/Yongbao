@@ -3,42 +3,32 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=node
-export PACKAGE_VERSION=20.6.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/node/20.6.1/
-rm -rf ${BUILD_DIRECTORY}/node-20.6.1
-tar xvf ${DOWNLOADDIR}/node-20.6.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/node-20.6.1
+export PACKAGE_VERSION=21.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/node/21.0.0/
+rm -rf ${BUILD_DIRECTORY}/node-21.0.0
+tar xvf ${DOWNLOADDIR}/node-21.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/node-21.0.0
     
-    pushd deps/v8
-        patch -Np1 -i ${RESOURCEDIR}/9721082.diff
-    popd
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
 
     sed -i "s@registry.npmjs.org@registry.loongnix.cn:5873@g" deps/npm/node_modules/@npmcli/config/lib/definitions/definitions.js
     mkdir -pv out/Release
-    for i in bytecode_builtins_list_generator gen-regexp-special-case torque mksnapshot node_js2c
+    for i in bytecode_builtins_list_generator gen-regexp-special-case torque mksnapshot node_js2c node_mksnapshot
     do
         sed -i "/EXECUTABLE_SUFFIX/s@$i<@$i.host<@g" tools/v8_gypfiles/v8.gyp
         echo -e '#!/bin/bash -e \n' "qemu-${ARCH_NAME} ${PWD}/out/Release/$i \"\$@\"" > ${PWD}/out/Release/$i.host
         chmod +x ${PWD}/out/Release/$i.host
     done
     sed -i "/EXECUTABLE_SUFFIX/s@node_js2c<@node_js2c.host<@g" node.gyp
+    sed -i "/EXECUTABLE_SUFFIX/s@node_mksnapshot<@node_mksnapshot.host<@g" node.gyp
+    sed -i.orig "s@\[ '<(PRODUCT_DIR)@\[ 'qemu-${ARCH_NAME}', '<(PRODUCT_DIR)@g" tools/icu/icu-generic.gyp
     PKG_CONFIG=${CROSS_TARGET}-pkg-config \
     CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-    ./configure --prefix /usr --dest-cpu=$(echo ${ARCH_NAME} | sed 's@arch@@g') --shared-openssl \
-                --with-intl=system-icu --shared
+    ./configure --prefix /usr --dest-cpu=$(echo ${ARCH_NAME} | sed 's@arch@@g') --shared-openssl
     make -j${JOBS} -C out bytecode_builtins_list_generator gen-regexp-special-case torque
     make -j${JOBS} -C out mksnapshot
     make -j${JOBS} -C out node_js2c
     eval ${MAKE_AND_INSTALL}
-    cp -av out/Release/node ${SYSROOT_DIR}/usr/bin/
-    mv -v ${SYSROOT_DIR}/usr/lib/libnode.so* ${SYSROOT_DIR}/usr/lib64/
-    NODE_MODULE_VERSION=$(grep -r "#define NODE_MODULE_VERSION"  src/node_version.h | awk -F' ' '{ print $3 }')
-    if [ -f ${SYSROOT_DIR}/usr/lib64/libnode.so.${NODE_MODULE_VERSION} ]; then
-        ln -sfv libnode.so.${NODE_MODULE_VERSION} ${SYSROOT_DIR}/usr/lib64/libnode.so
-    else
-        exit 1
-    fi
 popd 
-rm -rf ${BUILD_DIRECTORY}/node-20.6.1
+rm -rf ${BUILD_DIRECTORY}/node-21.0.0

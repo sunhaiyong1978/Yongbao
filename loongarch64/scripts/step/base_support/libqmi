@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libqmi/1.30.8/
 rm -rf ${BUILD_DIRECTORY}/libqmi-1.30.8
 tar xvf ${DOWNLOADDIR}/libqmi-1.30.8.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libqmi-1.30.8
+    sed -i "s@\$PKG_CONFIG_SYSROOT_DIR@@g" configure
     mkdir cross-build
     pushd cross-build
         ../configure ${COMMON_CONFIG} --enable-introspection

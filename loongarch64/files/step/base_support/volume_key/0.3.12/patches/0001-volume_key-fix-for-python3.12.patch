@@ -1,0 +1,70 @@
+From 30ad33d3973aafdc84f1969bb9cc01b23ef17ef7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 9 Oct 2023 14:32:54 +0000
+Subject: [PATCH] volume_key fix for python3.12
+
+---
+ admin/py-compile             | 10 +++++-----
+ python/python3/volume_key.py |  5 ++---
+ 2 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/admin/py-compile b/admin/py-compile
+index 3693d96..19b04a8 100755
+--- a/admin/py-compile
++++ b/admin/py-compile
+@@ -116,7 +116,7 @@ else
+ fi
+ 
+ $PYTHON -c "
+-import sys, os, py_compile, imp
++import sys, os, py_compile, importlib
+ 
+ files = '''$files'''
+ 
+@@ -129,8 +129,8 @@ for file in files.split():
+ 	    continue
+     sys.stdout.write(file)
+     sys.stdout.flush()
+-    if hasattr(imp, 'get_tag'):
+-        py_compile.compile(filepath, imp.cache_from_source(filepath), path)
++    if hasattr(sys.implementation, 'cache_tag'):
++        py_compile.compile(filepath, importlib.util.cache_from_source(filepath), path)
+     else:
+         py_compile.compile(filepath, filepath + 'c', path)
+ sys.stdout.write('\n')" || exit $?
+@@ -153,8 +153,8 @@ for file in files.split():
+ 	    continue
+     sys.stdout.write(file)
+     sys.stdout.flush()
+-    if hasattr(imp, 'get_tag'):
+-        py_compile.compile(filepath, imp.cache_from_source(filepath, False), path)
++    if hasattr(sys.implementation, 'cache_tag'):
++        py_compile.compile(filepath, importlib.util.cache_from_source(filepath, False), path)
+     else:
+         py_compile.compile(filepath, filepath + 'o', path)
+ sys.stdout.write('\n')" 2>/dev/null || :
+diff --git a/python/python3/volume_key.py b/python/python3/volume_key.py
+index 0a5166f..fecd90c 100644
+--- a/python/python3/volume_key.py
++++ b/python/python3/volume_key.py
+@@ -19,15 +19,14 @@ if _swig_python_version_info >= (2, 7, 0):
+ elif _swig_python_version_info >= (2, 6, 0):
+     def swig_import_helper():
+         from os.path import dirname
+-        import imp
+         fp = None
+         try:
+-            fp, pathname, description = imp.find_module('_volume_key', [dirname(__file__)])
++            fp, pathname, description = importlib.util.find_spec('_volume_key', [dirname(__file__)])
+         except ImportError:
+             import _volume_key
+             return _volume_key
+         try:
+-            _mod = imp.load_module('_volume_key', fp, pathname, description)
++            _mod = importlib.import_module('_volume_key', fp, pathname, description)
+         finally:
+             if fp is not None:
+                 fp.close()
+-- 
+2.31.1
+

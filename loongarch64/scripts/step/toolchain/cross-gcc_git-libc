@@ -11,8 +11,7 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
-    patch -Np1 -i ${SYSDIR}/files/toolchain/cross-gcc_git-libc/git-default/patches/fix-any-div.patch 
-	 
+    
 
     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
@@ -32,12 +31,13 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     mkdir cross-build
     pushd cross-build
         LDFLAGS="-static" \
-        ../configure --prefix=${PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} \
+        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} \
                      --target=${HOST_TARGET} \
                      --enable-__cxa_atexit --enable-threads=posix \
                      --enable-libstdcxx-time \
                      --enable-checking=release \
-                     --with-sysroot=${PREFIX}/cross-tools/target \
+                     --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
+		     --with-build-sysroot=${PREFIX}/cross-tools/target \
                      --enable-default-pie --disable-multilib --enable-linker-build-id \
                      --with-abi=${ARCH_ABI} \
                      --enable-languages=c,c++,fortran,objc,obj-c++,lto

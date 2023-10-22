@@ -4,20 +4,24 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=ocaml
-export PACKAGE_VERSION=5.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/ocaml/5.0.0/
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.0.0
-tar xvf ${DOWNLOADDIR}/ocaml-5.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ocaml-5.0.0
-        patch -Np1 -i ${SYSDIR}/files/cross-tools/ocaml/5.0.0/patches/ocaml-5.0.0-add-loongarch64-support.patch 
+export PACKAGE_VERSION=5.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/ocaml/5.1.0/
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.0_git
+tar xvf ${DOWNLOADDIR}/ocaml-5.1.0_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ocaml-5.1.0_git
+        patch -Np1 -i ${SYSDIR}/files/cross-tools/ocaml/5.1.0/patches/0001-Add-loongarch-architecture-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/ocaml/5.1.0/patches/0003-Hygiene.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/ocaml/5.1.0/patches/0004-update-Makefile.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/ocaml/5.1.0/patches/0005-add-Ispecific-Isqrtf.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/ocaml/5.1.0/patches/0006-Share-some-duplicate-files-with-riscv.patch 
 	 
 	cp ${CROSSTOOLS_DIR}/share/automake*/config.* build-aux/
 	autoconf
 	./configure --host=${CROSS_TARGET} --prefix=${CROSSTOOLS_DIR}/ocaml-cross  --libdir=${SYSROOT_DIR}/usr/lib64/ocaml
 	make -j${JOBS} runtime/sak SAK_CC=cc SAK_CFLAGS= SAK_LINK='cc -o $(1) $(2)'
 	make -j${JOBS} ocamlopt ocamlc OCAMLRUN=ocamlrun NEW_OCAMLRUN=ocamlrun CAMLC="`which ocamlc`"
-	make -j${JOBS} -C tools ocamlmklib OCAMLRUN=ocamlrun NEW_OCAMLRUN=ocamlrun CAMLC="`which ocamlc`"
-	make -j${JOBS} boot/ocamlruns
+	make -j${JOBS} ocamlmklib      OCAMLRUN=ocamlrun NEW_OCAMLRUN=ocamlrun CAMLC="`which ocamlc`"
+	make -j${JOBS} boot/ocamlrun
 	make -j${JOBS} runtime
 	make -j${JOBS} -C stdlib OCAMLRUN=ocamlrun COMPILER="${PWD}/boot/ocamlc"
 	make -j${JOBS} coldstart OCAMLRUN=ocamlrun NEW_OCAMLRUN=ocamlrun
@@ -30,7 +34,6 @@ pushd ${BUILD_DIRECTORY}/ocaml-5.0.0
 		MKLIB="ocamlrun \"${PWD}/tools/ocamlmklib\"" \
 		OCAMLYACC=ocamlyacc
 	done
-	make -j${JOBS} -C tools ocamlmktop ocamlmktop.opt othertools OCAMLRUN=ocamlrun NEW_OCAMLRUN=ocamlrun CAMLC="`which ocamlc`"
 	mv boot/ocamlrun{,.orig}
 	echo "qemu-loongarch64 ${PWD}/boot/ocamlrun.orig \"\$@\"" > boot/ocamlrun
 	chmod +x boot/ocamlrun
@@ -38,7 +41,7 @@ pushd ${BUILD_DIRECTORY}/ocaml-5.0.0
 	mkdir -p ${CROSSTOOLS_DIR}/ocaml-cross/bin.orig/
 	cp -a ${PWD}/dest/${CROSSTOOLS_DIR}/ocaml-cross/bin/ocaml* ${CROSSTOOLS_DIR}/ocaml-cross/bin.orig/
 popd 
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.0.0
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.0_git
 
 mkdir -p ${CROSSTOOLS_DIR}/ocaml-cross/bin/
 

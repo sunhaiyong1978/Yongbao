@@ -34,6 +34,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
                      --enable-languages=c,c++
         make -j${JOBS} all-gcc all-target-libgcc LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"
         make install-strip-gcc install-strip-target-libgcc
+	ln -sf ${CROSS_TARGET}-gcc ${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-cc
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0

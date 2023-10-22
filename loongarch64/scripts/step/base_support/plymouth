@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/plymouth-22.02.122.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/plymouth-22.02.122
     cp ${CROSSTOOLS_DIR}/share/automake-1.16/config.* build-tools/
     sed -i "/linux\/fs.h/d" src/libply/ply-utils.c
-    ./configure ${COMMON_CONFIG}
+    ./configure ${COMMON_CONFIG} --with-systemdunitdir=/usr/lib/systemd/system
     eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/plymouth-22.02.122

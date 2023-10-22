@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=iptables
-export PACKAGE_VERSION=1.8.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/iptables/1.8.9/
-rm -rf ${BUILD_DIRECTORY}/iptables-1.8.9
-tar xvf ${DOWNLOADDIR}/iptables-1.8.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/iptables-1.8.9
+export PACKAGE_VERSION=1.8.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/iptables/1.8.10/
+rm -rf ${BUILD_DIRECTORY}/iptables-1.8.10
+tar xvf ${DOWNLOADDIR}/iptables-1.8.10.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/iptables-1.8.10
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/iptables-1.8.9
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/iptables-1.8.9
+rm -rf ${BUILD_DIRECTORY}/iptables-1.8.10

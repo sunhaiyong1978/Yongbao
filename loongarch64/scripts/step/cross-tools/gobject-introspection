@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=gobject-introspection
-export PACKAGE_VERSION=1.78.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gobject-introspection/1.78.0/
-rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.78.0
-tar xvf ${DOWNLOADDIR}/gobject-introspection-1.78.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gobject-introspection-1.78.0
+export PACKAGE_VERSION=1.78.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gobject-introspection/1.78.1/
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.78.1
+tar xvf ${DOWNLOADDIR}/gobject-introspection-1.78.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gobject-introspection-1.78.1
     
     tar xvf ${RESOURCEDIR}/files/gobject-introspection-glib_git.tar.gz -C subprojects/
     mv subprojects/gobject-introspection-glib_git subprojects/glib
@@ -41,4 +41,4 @@ ${CROSSTOOLS_DIR}/bin/g-ir-compiler \
 EOF
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler
 popd 
-rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.78.0
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.78.1

@@ -14,7 +14,10 @@ pushd ${BUILD_DIRECTORY}/dbus-1.15.8
 	            --enable-user-session \
 	            --disable-static --disable-doxygen-docs --disable-xml-docs \
 	            --with-console-auth-dir=/run/console \
-	            --with-system-socket=/run/dbus/system_bus_socket
+                    --with-system-socket=/run/dbus/system_bus_socket \
+                    --with-systemdsystemunitdir=/usr/lib/systemd/system \
+                    --with-systemduserunitdir=/usr/lib/systemd/user
+
 	eval ${MAKE_AND_INSTALL}
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/libdbus*.la
 popd 

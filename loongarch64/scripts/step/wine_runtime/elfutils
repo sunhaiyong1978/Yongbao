@@ -4,14 +4,25 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=elfutils
-export PACKAGE_VERSION=0.189
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/elfutils/0.189/
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.189
-tar xvf ${DOWNLOADDIR}/elfutils-0.189.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elfutils-0.189
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/elfutils/git-default/
+rm -rf ${BUILD_DIRECTORY}/elfutils-git-default_git
+tar xvf ${DOWNLOADDIR}/elfutils-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-git-default_git
 	
-	./configure ${COMMON_CONFIG} --disable-debuginfod --enable-libdebuginfod=dummy \
+        for config_i in $(find -name "config.sub")
+        do
+                chmod 0644 $(dirname ${config_i})/config.{sub,guess}
+                cp ${CROSSTOOLS_DIR}/share/automake*/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+
+	sed -i.orig "s@GENDIS_ENV) \./i386_gendis@GENDIS_ENV) qemu-${QEMU_ARCH} \./i386_gendis@g" libcpu/Makefile.am
+
+	./configure ${COMMON_CONFIG} --disable-debuginfod --enable-libdebuginfod=dummy --enable-maintainer-mode \
 				ac_cv_null_dereference=no
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.189
+rm -rf ${BUILD_DIRECTORY}/elfutils-git-default_git

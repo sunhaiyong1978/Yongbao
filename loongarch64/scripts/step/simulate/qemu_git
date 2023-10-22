@@ -24,5 +24,11 @@ pushd ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
 	done
 
 	mkdir -p ${SYSROOT_DIR}/usr/gnemul
+        echo "allow br0" > ${SYSROOT_DIR}/etc/qemu/bridge.conf
 popd 
 rm -rf ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
+
+mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
+cat > ${SYSROOT_DIR}/etc/sysctl.d/60-net-forward.conf << EOF
+net.ipv4.ip_forward=1
+EOF

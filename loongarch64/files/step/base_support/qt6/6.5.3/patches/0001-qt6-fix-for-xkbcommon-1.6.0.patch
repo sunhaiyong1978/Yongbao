@@ -1,0 +1,27 @@
+From 9fb945886f8268e44e9f404685e6798e14b1c56f Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 14 Oct 2023 15:22:17 +0000
+Subject: [PATCH] qt6 fix for xkbcommon 1.6.0
+
+---
+ qtbase/src/gui/platform/unix/qxkbcommon.cpp | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/qtbase/src/gui/platform/unix/qxkbcommon.cpp b/qtbase/src/gui/platform/unix/qxkbcommon.cpp
+index fc014b3..af1cbbd 100644
+--- a/qtbase/src/gui/platform/unix/qxkbcommon.cpp
++++ b/qtbase/src/gui/platform/unix/qxkbcommon.cpp
+@@ -239,10 +239,6 @@ static constexpr const auto KeyTbl = qMakeArray(
+         Xkb2Qt<XKB_KEY_dead_small_schwa,        Qt::Key_Dead_Small_Schwa>,
+         Xkb2Qt<XKB_KEY_dead_capital_schwa,      Qt::Key_Dead_Capital_Schwa>,
+         Xkb2Qt<XKB_KEY_dead_greek,              Qt::Key_Dead_Greek>,
+-        Xkb2Qt<XKB_KEY_dead_lowline,            Qt::Key_Dead_Lowline>,
+-        Xkb2Qt<XKB_KEY_dead_aboveverticalline,  Qt::Key_Dead_Aboveverticalline>,
+-        Xkb2Qt<XKB_KEY_dead_belowverticalline,  Qt::Key_Dead_Belowverticalline>,
+-        Xkb2Qt<XKB_KEY_dead_longsolidusoverlay, Qt::Key_Dead_Longsolidusoverlay>,
+ 
+         // Special keys from X.org - This include multimedia keys,
+         // wireless/bluetooth/uwb keys, special launcher keys, etc.
+-- 
+2.31.1
+

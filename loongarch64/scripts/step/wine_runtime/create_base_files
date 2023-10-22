@@ -4,9 +4,29 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=create_base_files
-export PACKAGE_VERSION=
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/create_base_files//
+export PACKAGE_VERSION=1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/create_base_files/1.0/
 mkdir -p ${SYSROOT_DIR}/usr/gnemul/
 ln -sf ../../usr/lib/i686/sys-root ${SYSROOT_DIR}/usr/gnemul/qemu-i386
 ln -sf ../../usr/lib/i686/sys-root ${SYSROOT_DIR}/usr/gnemul/latx-i386
 echo "vm.mmap_min_addr=65536" > ${SYSROOT_DIR}/etc/sysctl.d/99-wine_runtime.conf
+
+cp -a ${RESOURCEDIR}/etc-passwd ${X86_SYSROOT_DIR}/etc/passwd
+cp -a ${RESOURCEDIR}/etc-group ${X86_SYSROOT_DIR}/etc/group
+cp -a ${RESOURCEDIR}/etc-bashrc ${X86_SYSROOT_DIR}/etc/bashrc
+mkdir -pv ${X86_SYSROOT_DIR}/etc/skel
+cp -a ${RESOURCEDIR}/etc-ld.so.conf ${X86_SYSROOT_DIR}/etc/ld.so.conf
+mkdir -pv ${X86_SYSROOT_DIR}/etc/ld.so.conf.d
+cp -a ${RESOURCEDIR}/etc-nsswitch.conf ${X86_SYSROOT_DIR}/etc/nsswitch.conf
+cp -a ${RESOURCEDIR}/etc-systemd_network_10-eth-dhcp.network ${X86_SYSROOT_DIR}/etc/systemd/network/10-eth-dhcp.network
+ln -sfv /run/systemd/resolve/resolv.conf ${X86_SYSROOT_DIR}/etc/resolv.conf
+cp -a ${RESOURCEDIR}/etc-hostname ${X86_SYSROOT_DIR}/etc/hostname
+cp -a ${RESOURCEDIR}/etc-hosts ${X86_SYSROOT_DIR}/etc/hosts
+cp -a ${RESOURCEDIR}/etc-hostconf ${X86_SYSROOT_DIR}/etc/host.conf
+cp -a ${RESOURCEDIR}/etc-locale.conf ${X86_SYSROOT_DIR}/etc/locale.conf
+cp -a ${RESOURCEDIR}/etc-inputrc ${X86_SYSROOT_DIR}/etc/inputrc
+cp -a ${RESOURCEDIR}/etc-adjtime ${X86_SYSROOT_DIR}/etc/adjtime
+mkdir -pv ${X86_SYSROOT_DIR}/var/lib/hwclock
+ln -sfv /etc/adjtime ${X86_SYSROOT_DIR}/var/lib/hwclock/adjtime
+cp -a ${RESOURCEDIR}/etc-shells ${X86_SYSROOT_DIR}/etc/shells
+cp -a ${RESOURCEDIR}/etc-fstab ${X86_SYSROOT_DIR}/etc/fstab

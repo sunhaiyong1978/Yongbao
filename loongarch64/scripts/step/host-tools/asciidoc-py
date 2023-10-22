@@ -10,6 +10,7 @@ tar xvf ${DOWNLOADDIR}/asciidoc-py-10.2.0.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/asciidoc-py-10.2.0
 	
 	${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+        ${CROSSTOOLS_DIR}/bin/python3 setup.py install
+ #       ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
 popd 
 rm -rf ${BUILD_DIRECTORY}/asciidoc-py-10.2.0

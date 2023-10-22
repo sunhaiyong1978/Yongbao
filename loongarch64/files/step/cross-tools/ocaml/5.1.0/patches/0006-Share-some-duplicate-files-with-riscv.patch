@@ -1,0 +1,154 @@
+From 04b4258518e721710d41b9146f5f024633cf7590 Mon Sep 17 00:00:00 2001
+From: yala <zhaojunchao@loongson.cn>
+Date: Thu, 18 May 2023 15:29:28 +0800
+Subject: [PATCH 6/6] Share some duplicate files with riscv
+
+---
+ Makefile                          |  10 +++++++-
+ asmcomp/loongarch64/CSE.ml        |  39 ------------------------------
+ asmcomp/loongarch64/reload.ml     |  19 ---------------
+ asmcomp/loongarch64/scheduling.ml |  30 -----------------------
+ 4 files changed, 9 insertions(+), 89 deletions(-)
+ delete mode 100644 asmcomp/loongarch64/CSE.ml
+ delete mode 100644 asmcomp/loongarch64/reload.ml
+ delete mode 100644 asmcomp/loongarch64/scheduling.ml
+
+diff --git a/Makefile b/Makefile
+index 2c1a6b6..5b3f75a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -548,8 +548,15 @@ partialclean::
+ 
+ beforedepend:: lambda/runtimedef.ml
+ 
+-# Choose the right machine-dependent files
++# If need to modify the following loongarch files, please copy the corresponding files from rsicv to asmcomp/loongarch64, and delete the following statements
++asmcomp/loongarch64/CSE.ml: asmcomp/riscv/CSE.ml
++	cp $< $@
++asmcomp/loongarch64/reload.ml: asmcomp/riscv/reload.ml
++	cp $< $@
++asmcomp/loongarch64/scheduling.ml: asmcomp/riscv/scheduling.ml
++	cp $< $@
+ 
++# Choose the right machine-dependent files
+ asmcomp/arch.mli: asmcomp/$(ARCH)/arch.mli
+ 	cd asmcomp; $(LN) $(ARCH)/arch.mli .
+ 
+@@ -1050,6 +1057,7 @@ clean::
+ 	rm -f runtime/domain_state*.inc
+ 	rm -rf $(DEPDIR)
+ 	rm -f stdlib/libcamlrun.a stdlib/libcamlrun.lib
++	rm -f asmcomp/loongarch64/CSE.ml asmcomp/loongarch64/reload.ml asmcomp/loongarch64/scheduling.ml
+ 
+ .PHONY: runtimeopt
+ runtimeopt: stdlib/libasmrun.$(A)
+diff --git a/asmcomp/loongarch64/CSE.ml b/asmcomp/loongarch64/CSE.ml
+deleted file mode 100644
+index 658bb66..0000000
+--- a/asmcomp/loongarch64/CSE.ml
++++ /dev/null
+@@ -1,39 +0,0 @@
+-# 2 "asmcomp/loongarch64/CSE.ml"
+-(**************************************************************************)
+-(*                                                                        *)
+-(*                                 OCaml                                  *)
+-(*                                                                        *)
+-(*                yala <zhaojunchao@loongson.cn>                          *)
+-(*                                                                        *)
+-(*               Copyright © 2008-2023 LOONGSON                           *)
+-(*                                                                        *)
+-(*   All rights reserved.  This file is distributed under the terms of    *)
+-(*   the GNU Lesser General Public License version 2.1, with the          *)
+-(*   special exception on linking described in the file LICENSE.          *)
+-(*                                                                        *)
+-(**************************************************************************)
+-
+-(* CSE for the LoongArch *)
+-
+-open Arch
+-open Mach
+-open CSEgen
+-
+-class cse = object (_self)
+-
+-inherit cse_generic as super
+-
+-method! class_of_operation op =
+-  match op with
+-  | Ispecific(Imultaddf _ | Imultsubf _) -> Op_pure
+-  | _ -> super#class_of_operation op
+-
+-method! is_cheap_operation op =
+-  match op with
+-  | Iconst_int n -> n <= 0x7FFF_FFFFn && n >= -0x8000_0000n
+-  | _ -> false
+-
+-end
+-
+-let fundecl f =
+-  (new cse)#fundecl f
+diff --git a/asmcomp/loongarch64/reload.ml b/asmcomp/loongarch64/reload.ml
+deleted file mode 100644
+index a997f12..0000000
+--- a/asmcomp/loongarch64/reload.ml
++++ /dev/null
+@@ -1,19 +0,0 @@
+-# 2 "asmcomp/loongarch64/reload.ml"
+-(**************************************************************************)
+-(*                                                                        *)
+-(*                                 OCaml                                  *)
+-(*                                                                        *)
+-(*                yala <zhaojunchao@loongson.cn>                          *)
+-(*                                                                        *)
+-(*               Copyright © 2008-2023 LOONGSON                           *)
+-(*                                                                        *)
+-(*   All rights reserved.  This file is distributed under the terms of    *)
+-(*   the GNU Lesser General Public License version 2.1, with the          *)
+-(*   special exception on linking described in the file LICENSE.          *)
+-(*                                                                        *)
+-(**************************************************************************)
+-
+-(* Reloading for the LoongArch *)
+-
+-let fundecl f =
+-  (new Reloadgen.reload_generic)#fundecl f
+diff --git a/asmcomp/loongarch64/scheduling.ml b/asmcomp/loongarch64/scheduling.ml
+deleted file mode 100644
+index 86febf1..0000000
+--- a/asmcomp/loongarch64/scheduling.ml
++++ /dev/null
+@@ -1,30 +0,0 @@
+-# 2 "asmcomp/loongarch64/scheduling.ml"
+-(**************************************************************************)
+-(*                                                                        *)
+-(*                                 OCaml                                  *)
+-(*                                                                        *)
+-(*                yala <zhaojunchao@loongson.cn>                          *)
+-(*                                                                        *)
+-(*               Copyright © 2008-2023 LOONGSON                           *)
+-(*                                                                        *)
+-(*   All rights reserved.  This file is distributed under the terms of    *)
+-(*   the GNU Lesser General Public License version 2.1, with the          *)
+-(*   special exception on linking described in the file LICENSE.          *)
+-(*                                                                        *)
+-(**************************************************************************)
+-
+-(* Instruction scheduling for the LoongArch *)
+-
+-(* The "open!" directive below is necessary because, although
+-   this module does not actually depend on Schedgen in this backend, the
+-   dependency exists in other backends and our build system requires
+-   that all the backends have the same dependencies.
+-   We thus have to use "open!" and disable the corresponding warning
+-   only for this compilation unit.
+-*)
+-
+-open! Schedgen [@@warning "-66"]
+-
+-(* Scheduling is turned off. *)
+-
+-let fundecl f = f
+
+-- 
+2.31.1
+

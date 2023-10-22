@@ -3,18 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libxkbcommon
-export PACKAGE_VERSION=1.5.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libxkbcommon/1.5.0/
-rm -rf ${BUILD_DIRECTORY}/libxkbcommon-1.5.0
-tar xvf ${DOWNLOADDIR}/libxkbcommon-1.5.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxkbcommon-1.5.0
+export PACKAGE_VERSION=1.6.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libxkbcommon/1.6.0/
+rm -rf ${BUILD_DIRECTORY}/libxkbcommon-1.6.0
+tar xvf ${DOWNLOADDIR}/libxkbcommon-1.6.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxkbcommon-1.6.0
     sed -i -e "/wayland_scanner_dep =/s@, native: true@@g" \
            -e "/wayland_scanner =/s@find_program\(.*\)\$@find_program('wayland-scanner')@g" \
            meson.build
     mkdir cross-build
     pushd cross-build
-        meson ${MESON_CONFIG} ..
+        meson ${MESON_CONFIG} -Dxkb-config-root=/usr/share/X11/xkb ..
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxkbcommon-1.5.0
+rm -rf ${BUILD_DIRECTORY}/libxkbcommon-1.6.0

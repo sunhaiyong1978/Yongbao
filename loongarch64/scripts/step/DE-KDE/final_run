@@ -22,15 +22,19 @@ sed -i "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
 sed -i -e "s@${SYSROOT_DIR}/lib@/usr/lib@g" \
        -e "s@${SYSROOT_DIR}/usr@/usr@g" \
        -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
        $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.sh") \
        $(find ${SYSROOT_DIR}/usr/lib64/pkgconfig/ -type f) \
        $(find ${SYSROOT_DIR}/usr/share/pkgconfig/ -type f) \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.cmake") \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "Makefile*") \
+       $(find ${SYSROOT_DIR}/usr/lib/systemd/ -type f -name "*.service") \
+       $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.desktop") \
        ${TEMP_DIRECTORY}/strip-foo
        
 sed -i -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.py") \
        $(file ${SYSROOT_DIR}/usr/lib64/rustlib/* | grep ASCII | awk -F':' '{ print $1 }') \
        $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.pri") \
