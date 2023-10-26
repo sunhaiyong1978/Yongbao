@@ -20,6 +20,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		             --with-gmp=${CROSSTOOLS_DIR} --with-mpc=${CROSSTOOLS_DIR} \
 		             --enable-__cxa_atexit --enable-threads=posix --with-system-zlib \
 		             --enable-libstdcxx-time --enable-checking=release --disable-multilib \
+			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
 		             --enable-default-pie \
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
 		make -j${JOBS}

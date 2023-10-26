@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=wm-lxde
 export STEP_PACKAGENAME=vte
-export PACKAGE_VERSION=0.74.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/vte/0.74.0/
-rm -rf ${BUILD_DIRECTORY}/vte-0.74.0
-tar xvf ${DOWNLOADDIR}/vte-0.74.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vte-0.74.0
+export PACKAGE_VERSION=0.74.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/vte/0.74.1/
+rm -rf ${BUILD_DIRECTORY}/vte-0.74.1
+tar xvf ${DOWNLOADDIR}/vte-0.74.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vte-0.74.1
 	
 	mkdir cross-build
 	pushd cross-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/vte-0.74.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/vte-0.74.0
+rm -rf ${BUILD_DIRECTORY}/vte-0.74.1

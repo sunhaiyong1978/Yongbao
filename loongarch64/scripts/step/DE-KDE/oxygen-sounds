@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=oxygen-sounds
-export PACKAGE_VERSION=5.27.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/oxygen-sounds/5.27.8/
-rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.8
-tar xvf ${DOWNLOADDIR}/oxygen-sounds-5.27.8.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/oxygen-sounds-5.27.8
+export PACKAGE_VERSION=5.27.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/oxygen-sounds/5.27.9/
+rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.9
+tar xvf ${DOWNLOADDIR}/oxygen-sounds-5.27.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/oxygen-sounds-5.27.9
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/oxygen-sounds-5.27.8
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.8
+rm -rf ${BUILD_DIRECTORY}/oxygen-sounds-5.27.9

@@ -20,8 +20,8 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 		             --disable-decimal-float --disable-libgomp --disable-libitm \
 		             --disable-libsanitizer --disable-libquadmath --disable-threads \
 		             --disable-target-zlib --with-system-zlib --enable-checking=release \
-		             --enable-default-pie \
-			     --disable-multilib --with-simd=lsx \
+			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
+			     --disable-multilib \
 		             --enable-languages=c
 		make -j${JOBS} all-gcc all-target-libgcc
 		make install-strip-gcc install-strip-target-libgcc

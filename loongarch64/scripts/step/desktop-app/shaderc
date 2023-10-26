@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=shaderc
-export PACKAGE_VERSION=2023.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/shaderc/2023.6/
-rm -rf ${BUILD_DIRECTORY}/shaderc-2023.6
-tar xvf ${DOWNLOADDIR}/shaderc-2023.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/shaderc-2023.6
+export PACKAGE_VERSION=2023.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/shaderc/2023.7/
+rm -rf ${BUILD_DIRECTORY}/shaderc-2023.7
+tar xvf ${DOWNLOADDIR}/shaderc-2023.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/shaderc-2023.7
 	tar xvf ${RESOURCEDIR}/files/SPIRV-Tools-2023.2.tar.gz -C third_party/
 	mv third_party/SPIRV-Tools-2023.2 third_party/spirv-tools
 	tar xvf ${RESOURCEDIR}/files/glslang-13.0.0.tar.gz -C third_party/
@@ -45,4 +45,4 @@ pushd ${BUILD_DIRECTORY}/shaderc-2023.6
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/shaderc-2023.6
+rm -rf ${BUILD_DIRECTORY}/shaderc-2023.7

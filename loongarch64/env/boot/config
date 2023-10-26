@@ -15,8 +15,8 @@ export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
 export ARCH_BIT=64
-export CFLAGS="-O3"
-export CXXFLAGS="-O3"
+export CFLAGS="-O2"
+export CXXFLAGS="-O2"
 export PREFIX=/usr
 export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib${LIB_SUFF}"
 export PKG_CONFIG_SYSROOT_DIR=${SYSROOT_DIR}

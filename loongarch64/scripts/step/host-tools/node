@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=node
-export PACKAGE_VERSION=21.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/node/21.0.0/
-rm -rf ${BUILD_DIRECTORY}/node-21.0.0
-tar xvf ${DOWNLOADDIR}/node-21.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/node-21.0.0
+export PACKAGE_VERSION=21.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/node/21.1.0/
+rm -rf ${BUILD_DIRECTORY}/node-21.1.0
+tar xvf ${DOWNLOADDIR}/node-21.1.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/node-21.1.0
     
     export CFLAGS=""
     export CXXFLAGS=""
@@ -15,4 +15,4 @@ pushd ${BUILD_DIRECTORY}/node-21.0.0
     eval ${MAKE_AND_INSTALL}
     cp -av out/Release/node ${CROSSTOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/node-21.0.0
+rm -rf ${BUILD_DIRECTORY}/node-21.1.0

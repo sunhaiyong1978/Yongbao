@@ -1,0 +1,159 @@
+From 31db05ddc138fdfa529192ae3423dec037fe9793 Mon Sep 17 00:00:00 2001
+From: Sun haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 23 Oct 2023 17:23:40 +0800
+Subject: [PATCH] libvirt 9.8.0 add loongarch64 support.
+
+---
+ src/cpu/cpu.c                | 2 ++
+ src/cpu/meson.build          | 1 +
+ src/qemu/qemu_capabilities.c | 2 ++
+ src/qemu/qemu_domain.c       | 4 ++++
+ src/util/virarch.c           | 6 ++++++
+ src/util/virarch.h           | 4 ++++
+ src/util/virhostcpu.c        | 2 ++
+ src/util/virsysinfo.c        | 3 ++-
+ 8 files changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/src/cpu/cpu.c b/src/cpu/cpu.c
+index bb5737e..59c45a3 100644
+--- a/src/cpu/cpu.c
++++ b/src/cpu/cpu.c
+@@ -28,6 +28,7 @@
+ #include "cpu_s390.h"
+ #include "cpu_arm.h"
+ #include "cpu_riscv64.h"
++#include "cpu_loongarch64.h"
+ #include "capabilities.h"
+ 
+ 
+@@ -41,6 +42,7 @@ static struct cpuArchDriver *drivers[] = {
+     &cpuDriverS390,
+     &cpuDriverArm,
+     &cpuDriverRiscv64,
++    &cpuDriverLoongArch64,
+ };
+ 
+ 
+diff --git a/src/cpu/meson.build b/src/cpu/meson.build
+index 5539690..c75aded 100644
+--- a/src/cpu/meson.build
++++ b/src/cpu/meson.build
+@@ -1,6 +1,7 @@
+ cpu_sources = [
+   'cpu.c',
+   'cpu_arm.c',
++  'cpu_loongarch64.c',
+   'cpu_map.c',
+   'cpu_ppc64.c',
+   'cpu_riscv64.c',
+diff --git a/src/qemu/qemu_capabilities.c b/src/qemu/qemu_capabilities.c
+index 3a1bfbf..7ac4d19 100644
+--- a/src/qemu/qemu_capabilities.c
++++ b/src/qemu/qemu_capabilities.c
+@@ -2696,6 +2696,8 @@ static const char *preferredMachines[] =
+ 
+     "sim", /* VIR_ARCH_XTENSA */
+     "sim", /* VIR_ARCH_XTENSAEB */
++
++    "virt", /* VIR_ARCH_LOONGARCH64 */
+ };
+ G_STATIC_ASSERT(G_N_ELEMENTS(preferredMachines) == VIR_ARCH_LAST);
+ 
+diff --git a/src/qemu/qemu_domain.c b/src/qemu/qemu_domain.c
+index eec7bed..6d90d76 100644
+--- a/src/qemu/qemu_domain.c
++++ b/src/qemu/qemu_domain.c
+@@ -4215,6 +4215,10 @@ qemuDomainDefAddDefaultDevices(virQEMUDriver *driver,
+             addPCIRoot = true;
+         break;
+ 
++    case VIR_ARCH_LOONGARCH64:
++	addPCIRoot = true;
++	break;
++
+     case VIR_ARCH_ARMV7B:
+     case VIR_ARCH_CRIS:
+     case VIR_ARCH_ITANIUM:
+diff --git a/src/util/virarch.c b/src/util/virarch.c
+index 2134dd6..5c48ee5 100644
+--- a/src/util/virarch.c
++++ b/src/util/virarch.c
+@@ -83,6 +83,8 @@ static const struct virArchData {
+ 
+     { "xtensa",       32, VIR_ARCH_LITTLE_ENDIAN },
+     { "xtensaeb",     32, VIR_ARCH_BIG_ENDIAN },
++
++    { "loongarch64",  64, VIR_ARCH_LITTLE_ENDIAN },
+ };
+ 
+ G_STATIC_ASSERT(G_N_ELEMENTS(virArchData) == VIR_ARCH_LAST);
+@@ -196,6 +198,8 @@ virArch virArchFromHost(void)
+         return VIR_ARCH_ARMV7L;
+     case PROCESSOR_ARCHITECTURE_ARM64:
+         return VIR_ARCH_AARCH64;
++    case PROCESSOR_ARCHITECTURE_LOONGARCH64:
++        return VIR_ARCH_LOONGARCH64;
+     default:
+         VIR_WARN("Unknown host arch '%d', report to libvir-list@redhat.com",
+                  info.wProcessorArchitecture);
+@@ -222,6 +226,8 @@ virArch virArchFromHost(void)
+         arch = VIR_ARCH_X86_64;
+     } else if (STREQ(ut.machine, "arm64")) {
+         arch = VIR_ARCH_AARCH64;
++    } else if (STREQ(ut.machine, "loongarch64")) {
++        arch = VIR_ARCH_LOONGARCH64;
+     } else {
+         /* Otherwise assume the canonical name */
+         if ((arch = virArchFromString(ut.machine)) == VIR_ARCH_NONE) {
+diff --git a/src/util/virarch.h b/src/util/virarch.h
+index 81b1b27..a381ac8 100644
+--- a/src/util/virarch.h
++++ b/src/util/virarch.h
+@@ -69,6 +69,8 @@ typedef enum {
+     VIR_ARCH_XTENSA,       /* XTensa      32 LE https://en.wikipedia.org/wiki/Xtensa#Processor_Cores */
+     VIR_ARCH_XTENSAEB,     /* XTensa      32 BE https://en.wikipedia.org/wiki/Xtensa#Processor_Cores */
+ 
++    VIR_ARCH_LOONGARCH64,  /* LoongArch   64 LE */
++
+     VIR_ARCH_LAST,
+ } virArch;
+ 
+@@ -103,6 +105,8 @@ typedef enum {
+ #define ARCH_IS_MIPS64(arch) ((arch) == VIR_ARCH_MIPS64 ||\
+                               (arch) == VIR_ARCH_MIPS64EL)
+ 
++#define ARCH_IS_LOONGARCH64(arch) ((arch) == VIR_ARCH_LOONGARCH64)
++
+ typedef enum {
+     VIR_ARCH_LITTLE_ENDIAN,
+     VIR_ARCH_BIG_ENDIAN,
+diff --git a/src/util/virhostcpu.c b/src/util/virhostcpu.c
+index 0389012..338e53a 100644
+--- a/src/util/virhostcpu.c
++++ b/src/util/virhostcpu.c
+@@ -553,6 +553,8 @@ virHostCPUParseFrequency(FILE *cpuinfo,
+         prefix = "clock";
+     else if (ARCH_IS_S390(arch))
+         prefix = "cpu MHz dynamic";
++    else if (ARCH_IS_LOONGARCH64(arch))
++	prefix = "CPU MHz";
+ 
+     if (!prefix) {
+         VIR_WARN("%s is not supported by the %s parser",
+diff --git a/src/util/virsysinfo.c b/src/util/virsysinfo.c
+index 36a861c..4a03fc3 100644
+--- a/src/util/virsysinfo.c
++++ b/src/util/virsysinfo.c
+@@ -1248,7 +1248,8 @@ virSysinfoRead(void)
+ #elif !defined(WIN32) && \
+     (defined(__x86_64__) || \
+      defined(__i386__) || \
+-     defined(__amd64__))
++     defined(__amd64__) || \
++     defined(__loongarch__))
+     return virSysinfoReadDMI();
+ #else /* WIN32 || not supported arch */
+     /*
+-- 
+2.42.0
+

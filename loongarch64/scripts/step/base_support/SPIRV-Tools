@@ -3,17 +3,17 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=SPIRV-Tools
-export PACKAGE_VERSION=2023.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SPIRV-Tools/2023.2/
-rm -rf ${BUILD_DIRECTORY}/SPIRV-Tools-2023.2
-tar xvf ${DOWNLOADDIR}/SPIRV-Tools-2023.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SPIRV-Tools-2023.2
+export PACKAGE_VERSION=ulkan-sdk-1.3.268.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SPIRV-Tools/ulkan-sdk-1.3.268.0/
+rm -rf ${BUILD_DIRECTORY}/SPIRV-Tools-vulkan-sdk-1.3.268.0
+tar xvf ${DOWNLOADDIR}/SPIRV-Tools-ulkan-sdk-1.3.268.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SPIRV-Tools-vulkan-sdk-1.3.268.0
         
-	tar xvf ${RESOURCEDIR}/files/SPIRV-Headers-sdk-1.3.250.1.tar.gz
+	tar xvf ${RESOURCEDIR}/files/SPIRV-Headers-vulkan-sdk-1.3.268.0.tar.gz
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CXXFLAGS="-Wno-error=switch" \
-                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
                       -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
                       -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \
@@ -22,6 +22,7 @@ pushd ${BUILD_DIRECTORY}/SPIRV-Tools-2023.2
                       -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
                       -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
                       -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+		      -D_Python3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
                       -DPERL_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-perl \
                       -DRuby_EXECUTABLE=${SYSDIR}/cross-tools/bin/ruby \
                       -DGPERF_EXECUTABLE=/bin/gperf \
@@ -29,9 +30,9 @@ pushd ${BUILD_DIRECTORY}/SPIRV-Tools-2023.2
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-                      -DSPIRV-Headers_SOURCE_DIR=${BUILD_DIRECTORY}/SPIRV-Tools-2023.2/SPIRV-Headers-sdk-1.3.250.1 -Wno-dev ..
+                      -DSPIRV-Headers_SOURCE_DIR=${BUILD_DIRECTORY}/SPIRV-Tools-vulkan-sdk-1.3.268.0/SPIRV-Headers-vulkan-sdk-1.3.268.0 -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/SPIRV-Tools-2023.2
+rm -rf ${BUILD_DIRECTORY}/SPIRV-Tools-vulkan-sdk-1.3.268.0

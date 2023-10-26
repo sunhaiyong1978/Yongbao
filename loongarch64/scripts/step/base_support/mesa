@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/mesa-23.2.1
               -Dplatforms=x11,wayland \
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true -Dosmesa=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dgallium-opencl=icd \
-              -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast" \
+              -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast,virtio" \
                ..
 	eval ${NINJA_AND_INSTALL}
     popd

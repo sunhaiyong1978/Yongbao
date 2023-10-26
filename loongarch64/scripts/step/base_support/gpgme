@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gpgme
-export PACKAGE_VERSION=1.22.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gpgme/1.22.0/
-rm -rf ${BUILD_DIRECTORY}/gpgme-1.22.0
-tar xvf ${DOWNLOADDIR}/gpgme-1.22.0.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gpgme-1.22.0
+export PACKAGE_VERSION=1.23.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gpgme/1.23.0/
+rm -rf ${BUILD_DIRECTORY}/gpgme-1.23.0
+tar xvf ${DOWNLOADDIR}/gpgme-1.23.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gpgme-1.23.0
 	./configure ${COMMON_CONFIG} --disable-gpg-test --enable-malloc0returnsnull
 	make -j${JOBS} PYTHONS=
 	make DESTDIR=${SYSROOT_DIR} install PYTHONS=
 	cp -av ${SYSROOT_DIR}/bin/gpgme-config  ${CROSSTOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/gpgme-1.22.0
+rm -rf ${BUILD_DIRECTORY}/gpgme-1.23.0
 sed -i "/^prefix/s@=\"\/usr@=\"${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpgme-config
 sed -i "/^libs/s@=\"-L\/usr@=\"-L${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpgme-config

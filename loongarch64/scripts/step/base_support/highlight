@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=highlight
-export PACKAGE_VERSION=4.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/highlight/4.9/
-rm -rf ${BUILD_DIRECTORY}/highlight-4.9
-tar xvf ${DOWNLOADDIR}/highlight-4.9.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/highlight-4.9
+export PACKAGE_VERSION=4.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/highlight/4.10/
+rm -rf ${BUILD_DIRECTORY}/highlight-4.10
+tar xvf ${DOWNLOADDIR}/highlight-4.10.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/highlight-4.10
     make -j${JOBS} CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar"
     make -j${JOBS} CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" gui
     make CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" DESTDIR=${SYSROOT_DIR} install
     make CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" DESTDIR=${SYSROOT_DIR} install-gui
 popd 
-rm -rf ${BUILD_DIRECTORY}/highlight-4.9
+rm -rf ${BUILD_DIRECTORY}/highlight-4.10

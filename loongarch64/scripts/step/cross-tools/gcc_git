@@ -19,9 +19,8 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 		             --with-gmp=${CROSSTOOLS_DIR} --with-mpc=${CROSSTOOLS_DIR} \
 		             --enable-__cxa_atexit --enable-threads=posix --with-system-zlib \
 		             --enable-libstdcxx-time --enable-checking=release \
-		             --enable-default-pie \
 			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
-		             --disable-multilib --with-simd=lsx \
+		             --disable-multilib \
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
 		make -j${JOBS}
 		make install-strip
