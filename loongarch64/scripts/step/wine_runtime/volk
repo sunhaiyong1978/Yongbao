@@ -1,0 +1,24 @@
+source env/wine_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine_runtime/custom
+export STEP_BUILDNAME=wine_runtime
+export STEP_PACKAGENAME=volk
+export PACKAGE_VERSION=1.3.270
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/volk/1.3.270/
+rm -rf ${BUILD_DIRECTORY}/volk-1.3.270
+tar xvf ${DOWNLOADDIR}/volk-1.3.270.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/volk-1.3.270
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${X86_HOST}-gcc" CXX="${X86_HOST}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-i686.cmake \
+       		      -DCMAKE_INSTALL_PREFIX=/usr -DVOLK_INSTALL=ON -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/volk-1.3.270

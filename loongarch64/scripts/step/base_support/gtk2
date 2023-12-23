@@ -12,6 +12,7 @@ pushd ${BUILD_DIRECTORY}/gtk+-2.24.33
     sed -i.orig -e "s@gtk-builder-convert@@g" \
         -e "/\tgtk-update-icon-cache\$(EXEEXT)/s@gtk-update-icon-cache\$(EXEEXT)@@g" \
         gtk/Makefile.in
+    export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types -Wno-implicit-int"
     mkdir cross-prebuild
     pushd cross-prebuild
         ../configure ${COMMON_CONFIG} --disable-introspection \

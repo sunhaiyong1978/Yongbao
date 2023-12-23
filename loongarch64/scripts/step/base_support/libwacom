@@ -3,19 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libwacom
-export PACKAGE_VERSION=2.8.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libwacom/2.8.0/
-rm -rf ${BUILD_DIRECTORY}/libwacom-2.8.0
-tar xvf ${DOWNLOADDIR}/libwacom-2.8.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libwacom-2.8.0
+export PACKAGE_VERSION=2.9.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libwacom/2.9.0/
+rm -rf ${BUILD_DIRECTORY}/libwacom-2.9.0
+tar xvf ${DOWNLOADDIR}/libwacom-2.9.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libwacom-2.9.0
 	
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG}  -Dtests=disabled \
+		 meson ${MESON_CONFIG}  -Dtests=disabled \
                       ..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libwacom-2.8.0
+rm -rf ${BUILD_DIRECTORY}/libwacom-2.9.0

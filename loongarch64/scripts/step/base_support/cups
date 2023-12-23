@@ -19,3 +19,5 @@ cp -a ${SYSROOT_DIR}/bin/cups-config ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-cups-
 sed -i "s@${SYSROOT_DIR}@@g" ${SYSROOT_DIR}/usr/bin/cups-config
 popd 
 rm -rf ${BUILD_DIRECTORY}/cups-2.4.7
+
+set_strip_step "/usr/lib/cups" "0"

@@ -1,0 +1,55 @@
+From 4fc7bacb3ebf8386dfeeb55ca37bc0627893e80d Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 7 Nov 2023 11:13:32 +0000
+Subject: [PATCH] wine staging 8.0 Fix for wine 8.0.2.
+
+---
+ patches/patchinstall.sh | 18 ------------------
+ 1 file changed, 18 deletions(-)
+
+diff --git a/patches/patchinstall.sh b/patches/patchinstall.sh
+index a2f34b2..4c2db80 100755
+--- a/patches/patchinstall.sh
++++ b/patches/patchinstall.sh
+@@ -2368,18 +2368,6 @@ if test "$enable_packager_DllMain" -eq 1; then
+ 	patch_apply packager-DllMain/0001-packager-Prefer-native-version.patch
+ fi
+ 
+-# Patchset programs-findstr
+-# |
+-# | This patchset fixes the following Wine bugs:
+-# |   *	[#35254] findstr: Add minimal implementation
+-# |
+-# | Modified files:
+-# |   *	programs/findstr/Makefile.in, programs/findstr/findstr.rc, programs/findstr/main.c, programs/findstr/resources.h
+-# |
+-if test "$enable_programs_findstr" -eq 1; then
+-	patch_apply programs-findstr/0001-findstr-add-basic-functionality-also-support-literal.patch
+-fi
+-
+ # Patchset programs-systeminfo
+ # |
+ # | This patchset fixes the following Wine bugs:
+@@ -3339,9 +3327,6 @@ fi
+ # | Modified files:
+ # |   *	dlls/mshtml/mshtml.inf, loader/wine.inf.in, programs/winemenubuilder/winemenubuilder.c
+ # |
+-if test "$enable_winemenubuilder_integration" -eq 1; then
+-	patch_apply winemenubuilder-integration/0001-winemenubuilder-Blacklist-desktop-integration-for-ce.patch
+-fi
+ 
+ # Patchset wineps.drv-PostScript_Fixes
+ # |
+@@ -3487,9 +3472,6 @@ fi
+ # | Modified files:
+ # |   *	dlls/opengl32/tests/opengl.c, dlls/winex11.drv/opengl.c
+ # |
+-if test "$enable_winex11_wglShareLists" -eq 1; then
+-	patch_apply winex11-wglShareLists/0001-winex11.drv-Only-warn-about-used-contexts-in-wglShar.patch
+-fi
+ 
+ # Patchset winex11.drv-Query_server_position
+ # |
+-- 
+2.31.1
+

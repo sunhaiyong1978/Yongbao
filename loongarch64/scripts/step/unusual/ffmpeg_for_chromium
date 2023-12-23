@@ -1,0 +1,26 @@
+source env/unusual/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=unusual
+export STEP_PACKAGENAME=ffmpeg_for_chromium
+export PACKAGE_VERSION=6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/ffmpeg_for_chromium/6.1/
+rm -rf ${BUILD_DIRECTORY}/ffmpeg-6.1
+tar xvf ${DOWNLOADDIR}/ffmpeg-6.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ffmpeg-6.1
+	./configure --prefix=/usr --libdir=/usr/lib64 \
+                --cross-prefix=${CROSS_TARGET}- --sysroot=${SYSROOT_DIR} \
+                --enable-gpl         \
+                --enable-version3    \
+                --enable-nonfree     \
+                --disable-static     \
+                --enable-shared      \
+                --disable-debug      \
+                --enable-libfreetype \
+                --enable-libopus     \
+                --enable-libvorbis   \
+                --enable-openssl --enable-libpulse --enable-libdrm \
+                --arch=${ARCH_NAME} --target-os=linux --cc=${CROSS_TARGET}-gcc --host-cc=gcc
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/ffmpeg-6.1

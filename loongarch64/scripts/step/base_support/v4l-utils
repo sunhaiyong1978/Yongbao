@@ -3,22 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=v4l-utils
-export PACKAGE_VERSION=1.24.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/v4l-utils/1.24.1/
-rm -rf ${BUILD_DIRECTORY}/v4l-utils-1.24.1
-tar xvf ${DOWNLOADDIR}/v4l-utils-1.24.1.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/v4l-utils-1.24.1
+export PACKAGE_VERSION=1.26.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/v4l-utils/1.26.1/
+rm -rf ${BUILD_DIRECTORY}/v4l-utils-1.26.1
+tar xvf ${DOWNLOADDIR}/v4l-utils-1.26.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/v4l-utils-1.26.1
 	
-	for config_i in $(find -name "config.sub")
-	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
-	done
-	if [ ! -f configure ]; then
-		autoreconf -ifv
-	fi
-	 ./configure ${COMMON_CONFIG} --with-udevdir=/usr/lib/udev --with-systemdsystemunitdir=/usr/lib/systemd/system --enable-malloc0returnsnull
-	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} -Dudevdir=/usr/lib/udev -Dsystemdsystemunitdir=/usr/lib/systemd/system \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/v4l-utils-1.24.1
+rm -rf ${BUILD_DIRECTORY}/v4l-utils-1.26.1

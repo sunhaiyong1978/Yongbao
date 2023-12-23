@@ -23,7 +23,7 @@ ar = '${X86_HOST}-ar'
 strip = '${X86_HOST}-strip'
 objcopy = '${X86_HOST}-objcopy'
 pkgconfig = '${X86_HOST}-pkg-config'
-llvm-config = 'llvm-config'
+llvm-config = '${X86_HOST}-llvm-config'
 exe_wrapper = 'qemu-i386'
 [properties]"
 skip_sanity_check = true
@@ -58,3 +58,9 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 EOF
+
+set_strip_step "/usr/lib/i686/sys-root/usr/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_HOST}-strip"
+set_strip_step "/usr/lib/i686/sys-root/usr/sbin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_HOST}-strip"
+set_strip_step "/usr/lib/i686/sys-root/usr/libexec/" "0" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_HOST}-strip"
+set_strip_step "/usr/lib/i686/sys-root/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${X86_HOST}-strip"
+set_strip_step "/usr/lib/i686/sys-root/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded" "${CROSS_TOOLS_PREFIX}/bin/${X86_HOST}-strip"

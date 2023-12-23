@@ -13,9 +13,6 @@ pushd ${BUILD_DIRECTORY}/gobject-introspection-1.78.1
            gir/meson.build
     mkdir -v cross-build
     pushd cross-build
-	PATH=${CROSSTOOLS_DIR}/tmp/bin:${PATH} \
-        PYTHON=${CROSSTOOLS_DIR}/bin/python3 \
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
         meson ${MESON_CONFIG} \
               --buildtype=release -Dgi_cross_use_prebuilt_gi=true \
               ..

@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/at-spi2-core-2.50.0
 	
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG} --default-library=both -Ddefault_bus=dbus-broker -Ddbus_broker=/usr/bin/dbus-broker -Ddbus_daemon=/usr/bin/dbus-daemon \
+		 meson ${MESON_CONFIG} --default-library=both -Ddefault_bus=dbus-broker -Ddbus_broker=/usr/bin/dbus-broker -Ddbus_daemon=/usr/bin/dbus-daemon \
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd

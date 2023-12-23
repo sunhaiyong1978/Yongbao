@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/udisks-2.10.1
 	sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
 	mkdir cross-build
 	pushd cross-build
-	        ../configure ${COMMON_CONFIG} --enable-introspection=yes --with-udevdir=/usr/lib/udev --with-systemdsystemunitdir=/usr/lib/systemd/system --with-tmpfilesdir=/usr/lib/tmpfiles.d
+	         ../configure ${COMMON_CONFIG} --enable-introspection=yes --with-udevdir=/usr/lib/udev --with-systemdsystemunitdir=/usr/lib/systemd/system --with-tmpfilesdir=/usr/lib/tmpfiles.d
         	make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
 		     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
 		     VAPIGEN=${CROSS_TARGET}-vapigen

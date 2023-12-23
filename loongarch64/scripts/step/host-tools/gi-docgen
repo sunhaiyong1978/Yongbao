@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=gi-docgen
-export PACKAGE_VERSION=2023.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gi-docgen/2023.1/
-rm -rf ${BUILD_DIRECTORY}/gi-docgen-2023.1
-tar xvf ${DOWNLOADDIR}/gi-docgen-2023.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gi-docgen-2023.1
+export PACKAGE_VERSION=2023.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gi-docgen/2023.3/
+rm -rf ${BUILD_DIRECTORY}/gi-docgen-2023.3
+tar xvf ${DOWNLOADDIR}/gi-docgen-2023.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gi-docgen-2023.3
 	
 	${CROSSTOOLS_DIR}/bin/python3 setup.py build
         ${CROSSTOOLS_DIR}/bin/python3 setup.py install
  #       ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
 popd 
-rm -rf ${BUILD_DIRECTORY}/gi-docgen-2023.1
+rm -rf ${BUILD_DIRECTORY}/gi-docgen-2023.3

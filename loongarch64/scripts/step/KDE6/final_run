@@ -1,0 +1,56 @@
+source env/KDE6/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=KDE6
+export STEP_PACKAGENAME=final_run
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/final_run//
+touch ${TEMP_DIRECTORY}/strip-foo
+
+sed -i "s@${CROSSTOOLS_DIR}/bin/perl@/usr/bin/perl@g" \
+       $(file ${SYSROOT_DIR}/usr/{bin,libexec}/* | grep "Perl script text" | awk -F':' '{ print $1 }') \
+       ${TEMP_DIRECTORY}/strip-foo
+
+sed -i "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
+       $(file ${SYSROOT_DIR}/usr/{bin,libexec}/* | grep "Python script, ASCII text" | awk -F':' '{ print $1 }') \
+       ${TEMP_DIRECTORY}/strip-foo
+
+sed -i -e "s@${SYSROOT_DIR}/lib@/usr/lib@g" \
+       -e "s@${SYSROOT_DIR}/usr@/usr@g" \
+       -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
+       $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
+       $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.sh") \
+       $(find ${SYSROOT_DIR}/usr/lib64/pkgconfig/ -type f) \
+       $(find ${SYSROOT_DIR}/usr/share/pkgconfig/ -type f) \
+       $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.cmake") \
+       $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "Makefile*") \
+       $(find ${SYSROOT_DIR}/usr/lib/systemd/ -type f -name "*.service") \
+       $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.desktop") \
+       ${TEMP_DIRECTORY}/strip-foo
+       
+sed -i -e "s@${SYSROOT_DIR}@@g" \
+       -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
+       $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.py") \
+       $(file ${SYSROOT_DIR}/usr/lib64/rustlib/* | grep ASCII | awk -F':' '{ print $1 }') \
+       $(find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.pri") \
+       ${TEMP_DIRECTORY}/strip-foo
+
+sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
+       $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
+       ${TEMP_DIRECTORY}/strip-foo
+
+sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
+       $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep ASCII | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
+       $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep text | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
+       $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.pl") \
+       ${TEMP_DIRECTORY}/strip-foo
+
+sed -i -e "s@${CROSSTOOLS_DIR}/qt6/bin@/usr/bin@g" \
+	$(find ${SYSROOT_DIR}/usr/lib/ -type f -name "*.service") \
+       ${TEMP_DIRECTORY}/strip-foo
+
+find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.la" -exec rm '{}' ';'
+find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.prl" -exec rm '{}' ';'
+
+rm -f ${TEMP_DIRECTORY}/strip-foo

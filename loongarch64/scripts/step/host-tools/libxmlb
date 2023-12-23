@@ -1,0 +1,20 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=libxmlb
+export PACKAGE_VERSION=0.3.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxmlb/0.3.14/
+rm -rf ${BUILD_DIRECTORY}/libxmlb-0.3.14
+tar xvf ${DOWNLOADDIR}/libxmlb-0.3.14.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxmlb-0.3.14
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Dintrospection=false \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/libxmlb-0.3.14

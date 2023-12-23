@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
     rm -rf gdb* libdecnumber readline sim
     mkdir cross-build
     pushd cross-build
-        LDFLAGS="--static" \
+        LDFLAGS="--static" CFLAGS="${CFLAGS} -Wno-error=format-truncation" \
         ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} --target=${HOST_TARGET} \
                      --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-nls \
                      --enable-64-bit-bfd --disable-shared

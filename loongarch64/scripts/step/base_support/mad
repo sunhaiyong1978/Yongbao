@@ -1,0 +1,39 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=mad
+export PACKAGE_VERSION=0.15.1b
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mad/0.15.1b/
+rm -rf ${BUILD_DIRECTORY}/libmad-0.15.1b
+tar xvf ${DOWNLOADDIR}/libmad-0.15.1b.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libmad-0.15.1b
+        patch -Np1 -i ${SYSDIR}/files/base_support/mad/0.15.1b/patches/md_size.diff 
+	 
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+         ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libmad-0.15.1b
+
+cat << EOF > ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig/mad.pc
+prefix=%{_prefix}
+exec_prefix=%{_prefix}
+libdir=%{_libdir}
+includedir=%{_includedir}
+
+Name: mad
+Description: MPEG Audio Decoder
+Requires:
+Version: %{version}
+Libs: -L%{_libdir} -lmad -lm
+Cflags: -I%{_includedir}
+EOF

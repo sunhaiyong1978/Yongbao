@@ -1,0 +1,34 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libime
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libime//
+sed -i.orig "s@\${_qt5Core_install_prefix}@${CROSSTOOLS_DIR}@g" \
+            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtras.cmake
+sed -i.orig "s@\${_qt5_linguisttools_install_prefix}@${CROSSTOOLS_DIR}@g" \
+            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5LinguistTools/Qt5LinguistToolsConfig.cmake
+sed -i.orig "s@\${_qt5DBus_install_prefix}@${CROSSTOOLS_DIR}@g" \
+            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5DBus/Qt5DBusConfigExtras.cmake
+sed -i.orig "s@\${_qt5Widgets_install_prefix}@${CROSSTOOLS_DIR}@g" \
+            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake
+
+
+sed -i.orig "s@pkgdatadir=\${datarootdir}/wayland@pkgdatadir=${SYSROOT_DIR}/usr/share/wayland@g"  ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc
+
+for cmake_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake")) \
+		$(find ${SYSROOT_DIR}/usr/lib64/cmake/Fcitx5* -name "*.cmake")
+do
+        if [ -f ${cmake_file} ]; then
+                sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${cmake_file}
+        fi
+done
+
+
+for cmake_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake"))
+do
+        if [ -f ${cmake_file} ]; then
+                sed -i.orig "s@_IMPORT_PREFIX \"/usr\"@_IMPORT_PREFIX \"${SYSROOT_DIR}/usr\"@g" ${cmake_file}
+        fi
+done

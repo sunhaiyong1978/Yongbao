@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=thunderbird
-export PACKAGE_VERSION=115.4.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/115.4.1/
-rm -rf ${BUILD_DIRECTORY}/thunderbird-115.4.1
-tar xvf ${DOWNLOADDIR}/thunderbird-115.4.1.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/thunderbird-115.4.1
+export PACKAGE_VERSION=115.6.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/115.6.0/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-115.6.0
+tar xvf ${DOWNLOADDIR}/thunderbird-115.6.0.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-115.6.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
@@ -21,14 +21,16 @@ pushd ${BUILD_DIRECTORY}/thunderbird-115.4.1
     rm -rf third_party/python/urllib3/*
     rm -rf third_party/python/requests/*
 
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/0001-thunderbird-115-add-loongarch-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/firefox-110-fix-rust.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/0001_xpcom_add_loongarch64_support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/firefox-100-for-clfs.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/0001-thunderbird-116.0-fix-for-gcc13.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/0001-thunderbird-115-fix-for-python3.12.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.4.1/patches/0001-thunderbird-115.3.2-fix-tools-power-mach_commands-fo.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0001-thunderbird-115-add-loongarch-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/firefox-110-fix-rust.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0001_xpcom_add_loongarch64_support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/firefox-100-for-clfs.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0001-thunderbird-116.0-fix-for-gcc13.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0001-thunderbird-115-fix-for-python3.12.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0001-thunderbird-115.3.2-fix-tools-power-mach_commands-fo.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/115.6.0/patches/0006-Enable-WebRTC-for-LoongArch.patch 
 	 
     find third_party/rust/ -name .cargo-checksum.json \
          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
@@ -116,4 +118,4 @@ ln -sfv /usr/lib64/thunderbird/chrome/icons/default/default256.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/thunderbird-115.4.1
+rm -rf ${BUILD_DIRECTORY}/thunderbird-115.6.0

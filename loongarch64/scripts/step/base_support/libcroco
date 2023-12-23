@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libcroco/0.6.13/
 rm -rf ${BUILD_DIRECTORY}/libcroco-0.6.13
 tar xvf ${DOWNLOADDIR}/libcroco-0.6.13.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libcroco-0.6.13
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/libcroco/0.6.13/patches/0001-remove-Werror-implicit-function-declaration-flags.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
@@ -16,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/libcroco-0.6.13
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -Wno-int-conversion" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

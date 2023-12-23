@@ -1,0 +1,21 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=libproxy
+export PACKAGE_VERSION=0.5.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libproxy/0.5.0/
+rm -rf ${BUILD_DIRECTORY}/libproxy-libproxy-0.5.0
+tar xvf ${DOWNLOADDIR}/libproxy-0.5.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libproxy-libproxy-0.5.0
+	
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} --default-library=both -Dpacrunner-duktape=false -Dintrospection=false -Ddocs=false \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libproxy-libproxy-0.5.0

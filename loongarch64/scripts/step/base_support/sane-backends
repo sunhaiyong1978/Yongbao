@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/backends-1.2.1-103c2b5d8e6d4e43026e90c5fb3b6b6a19cd5ee5
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-         ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+        CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -Wno-int-conversion" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

@@ -1,0 +1,50 @@
+From 0c923765bc2644c617b00b7ef16543f247a6ca69 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 3 Dec 2023 09:52:47 +0000
+Subject: [PATCH 3/3] qtwebkit fix for gcc14.
+
+---
+ Source/bmalloc/bmalloc/IsoSharedPageInlines.h | 1 +
+ Source/WTF/wtf/Vector.h | 1 +
+ Source/WTF/wtf/text/IntegerToStringConversion.h | 1 +
+ 3 file changed, 3 insertion(+)
+
+diff --git a/Source/bmalloc/bmalloc/IsoSharedPageInlines.h b/Source/bmalloc/bmalloc/IsoSharedPageInlines.h                                                                                                        
+index c4216b51da..c08e5abc4e 100644
+--- a/Source/bmalloc/bmalloc/IsoSharedPageInlines.h
++++ b/Source/bmalloc/bmalloc/IsoSharedPageInlines.h
+@@ -28,6 +28,7 @@
+ #include "IsoPage.h"
+ #include "StdLibExtras.h"
+ #include "VMAllocate.h"
++#include <cstdio>
+
+ namespace bmalloc {
+
+diff --git a/Source/WTF/wtf/Vector.h b/Source/WTF/wtf/Vector.h
+index 9faa4f4c8f..3e49063a9c 100644
+--- a/Source/WTF/wtf/Vector.h
++++ b/Source/WTF/wtf/Vector.h
+@@ -25,6 +25,7 @@
+ #include <string.h>
+ #include <type_traits>
+ #include <utility>
++#include <iostream>
+ #include <wtf/CheckedArithmetic.h>
+ #include <wtf/FastMalloc.h>
+ #include <wtf/Forward.h>
+diff --git a/Source/WTF/wtf/text/IntegerToStringConversion.h b/Source/WTF/wtf/text/IntegerToStringConversion.h
+index 9faa4f4c8f..3e49063a9c 100644
+--- a/Source/WTF/wtf/text/IntegerToStringConversion.h
++++ b/Source/WTF/wtf/text/IntegerToStringConversion.h
+@@ -22,6 +22,7 @@
+ #pragma once
+ 
+ #include <wtf/text/LChar.h>
++#include <iostream>
+ 
+ namespace WTF {
+ 
+-- 
+2.31.1
+

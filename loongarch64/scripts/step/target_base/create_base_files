@@ -48,6 +48,8 @@ echo ${DISTRO_DEFAULT_USER}:${DISTRO_DEFAULT_USER_PASSWD} | chpasswd
 usermod -a -G video ${DISTRO_DEFAULT_USER}
 usermod -a -G input ${DISTRO_DEFAULT_USER}
 usermod -a -G wheel ${DISTRO_DEFAULT_USER}
+usermod -a -G usershares ${DISTRO_DEFAULT_USER}
+usermod -a -G netdev ${DISTRO_DEFAULT_USER}
 EOF
 
 mkdir -pv ${SYSROOT_DIR}/var/unit/{dm,wm}
@@ -70,3 +72,23 @@ PRETTY_NAME="${DISTRO_NAME} Linux ${DISTRO_VERSION} for ${DISTRO_ARCH_NAME}"
 VERSION_CODENAME="${DISTRO_NAME}"
 HOME_URL="https://github.com/sunhaiyong1978/Yongbao"
 EOF
+
+set_strip_step "/usr/bin/"
+set_strip_step "/usr/sbin/"
+set_strip_step "/usr/libexec/" "0"
+set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-debug"
+set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded" "${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-strip"
+
+set_strip_step "/usr/lib${LIB_SUFF}/guile/" "0" "*.go" "--strip-unneeded"
+set_strip_step "/usr/lib${LIB_SUFF}/gettext/"
+set_strip_step "/usr/lib${LIB_SUFF}/qt6/bin/"
+set_strip_step "/usr/lib${LIB_SUFF}/rustlib/" "0"
+
+set_split_conf "devel" "/usr/include"
+set_split_conf "devel" "/usr/lib${LIB_SUFF}" "*.a"
+set_split_conf "devel" "/usr/lib${LIB_SUFF}/pkgconfig"
+set_split_conf "devel" "/usr/share/pkgconfig"
+
+set_split_conf "docs" "/usr/share/doc"
+set_split_conf "docs" "/usr/share/man"
+set_split_conf "docs" "/usr/share/gtk-doc/html/"

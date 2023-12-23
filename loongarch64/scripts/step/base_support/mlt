@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mlt
-export PACKAGE_VERSION=7.20.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mlt/7.20.0/
-rm -rf ${BUILD_DIRECTORY}/mlt-7.20.0
-tar xvf ${DOWNLOADDIR}/mlt-7.20.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mlt-7.20.0
+export PACKAGE_VERSION=7.22.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mlt/7.22.0/
+rm -rf ${BUILD_DIRECTORY}/mlt-7.22.0
+tar xvf ${DOWNLOADDIR}/mlt-7.22.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mlt-7.22.0
         
         mkdir cross-build
         pushd cross-build
@@ -36,10 +36,10 @@ pushd ${BUILD_DIRECTORY}/mlt-7.20.0
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
                       -DBUILD_TESTING=OFF -DMOD_GLAXNIMATE=ON -Wno-dev ..
-		sed -i "/QT_MOC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/moc@${CROSSTOOLS_DIR}/bin/moc@g" $(grep -rl "QT_MOC_EXECUTABLE" *)
-                sed -i "/QT_UIC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/uic@${CROSSTOOLS_DIR}/bin/uic@g" $(grep -rl "QT_UIC_EXECUTABLE" *)
+		sed -i "/QT_MOC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/moc@${CROSSTOOLS_DIR}/qt5/bin/moc@g" $(grep -rl "QT_MOC_EXECUTABLE" *)
+                sed -i "/QT_UIC_EXECUTABLE/s@${SYSROOT_DIR}/usr/bin/uic@${CROSSTOOLS_DIR}/qt5/bin/uic@g" $(grep -rl "QT_UIC_EXECUTABLE" *)
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mlt-7.20.0
+rm -rf ${BUILD_DIRECTORY}/mlt-7.22.0

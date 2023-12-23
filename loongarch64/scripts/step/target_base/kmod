@@ -10,7 +10,8 @@ tar xvf ${DOWNLOADDIR}/kmod-31.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/kmod-31
 	./configure --prefix=/usr --libdir=/usr/lib64 --bindir=/bin \
 	            --sysconfdir=/etc --build=${CROSS_HOST} --host=${CROSS_TARGET} \
-	            --with-xz --with-zstd --with-zlib
+	            --with-xz --with-zstd --with-zlib \
+		    --with-bashcompletiondir=/usr/share/bash-completion/completions
 	eval ${MAKE_AND_INSTALL}
 	
 	for target in depmod insmod lsmod modinfo modprobe rmmod; do

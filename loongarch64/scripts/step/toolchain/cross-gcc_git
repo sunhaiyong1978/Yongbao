@@ -23,6 +23,7 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     mv mpc-* mpc
     mkdir cross-build
     pushd cross-build
+	LDFLAGS="-static" CFLAGS="-Wno-implicit-function-declaration" \
         ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} \
                      --target=${HOST_TARGET} \
                      --with-newlib --disable-shared --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=254
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/254/
-rm -rf ${BUILD_DIRECTORY}/systemd-254
-tar xvf ${DOWNLOADDIR}/systemd-254.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-254
+export PACKAGE_VERSION=255
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/255/
+rm -rf ${BUILD_DIRECTORY}/systemd-255
+tar xvf ${DOWNLOADDIR}/systemd-255.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-255
 	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
@@ -21,9 +21,10 @@ pushd ${BUILD_DIRECTORY}/systemd-254
 		meson ${MESON_CONFIG} \
 		      -Ddefault-dnssec=no -Dfirstboot=false \
 		      -Dinstall-tests=false -Dldconfig=false -Dsysusers=false \
-		      -Drpmmacrosdir=no -Dhomed=false -Duserdb=false -Dman=false -Dmode=release \
+		      -Drpmmacrosdir=no -Dhomed=false -Duserdb=false -Dman=false -Dmode=release -Dlogind=true \
 		      -Dpamconfdir=/etc/pam.d -Ddefault-kill-user-processes=false \
 		      -Ddbuspolicydir=/usr/share/dbus-1/system.d -Ddbussessionservicedir=/usr/share/dbus-1/services -Ddbussystemservicedir=/usr/share/dbus-1/system-services \
+		      -Dbashcompletiondir=/usr/share/bash-completion/completions \
 		      ..
 		eval ${NINJA_AND_INSTALL}
 	popd
@@ -49,4 +50,6 @@ password required    pam_deny.so
 EOF
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-254
+rm -rf ${BUILD_DIRECTORY}/systemd-255
+
+set_strip_step "/usr/lib/systemd" "0"

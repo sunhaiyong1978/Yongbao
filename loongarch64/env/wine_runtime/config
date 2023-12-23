@@ -15,8 +15,8 @@ export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
 export ARCH_BIT=64
-export CFLAGS="-O2"
-export CXXFLAGS="-O2"
+export CFLAGS="-O3"
+export CXXFLAGS="-O3"
 export PREFIX=/usr
 export LIB_SUFF=""
 export PKG_CONFIG_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/i686/sys-root"
@@ -32,9 +32,11 @@ export NINJA_AND_INSTALL="CC=${X86_HOST}-gcc ninja && DESTDIR=${X86_SYSROOT_DIR}
 
 export CROSS_TARGET=${X86_HOST}
 
-export CFLAGS="-O3 -g -m32 -march=i686 -mtune=generic -msse2 -mfpmath=sse -mstackrealign -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
-export CXXFLAGS="-O3 -g -m32 -march=i686 -mtune=generic -msse2 -mfpmath=sse -mstackrealign -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
+#export CFLAGS="-O3 -g -m32 -march=i686 -mtune=generic -msse2 -mfpmath=sse -mstackrealign -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
+#export CXXFLAGS="-O3 -g -m32 -march=i686 -mtune=generic -msse2 -mfpmath=sse -mstackrealign -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 
+export CFLAGS="-Os -g -m32 -march=i686 -mtune=generic -msse2 -mfpmath=sse -mstackrealign -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
+export CXXFLAGS="-Os -g -m32 -march=i686 -mtune=generic -msse2 -mfpmath=sse -mstackrealign -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 
 export CROSS_TOOLS_PREFIX=${SYSDIR}/cross-toolchains/${X86_HOST}
 export PATH=${CROSS_TOOLS_PREFIX}/bin:${SYSDIR}/cross-toolchains/llvm-project/bin:$PATH

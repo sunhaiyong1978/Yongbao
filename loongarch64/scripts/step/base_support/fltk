@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fltk
-export PACKAGE_VERSION=1.3.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fltk/1.3.8/
-rm -rf ${BUILD_DIRECTORY}/fltk-1.3.8
-tar xvf ${DOWNLOADDIR}/fltk-1.3.8-source.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fltk-1.3.8
+export PACKAGE_VERSION=1.3.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fltk/1.3.9/
+rm -rf ${BUILD_DIRECTORY}/fltk-1.3.9
+tar xvf ${DOWNLOADDIR}/fltk-1.3.9-source.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fltk-1.3.9
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/fltk-1.3.8
     eval ${MAKE_AND_INSTALL}
     cp -v ${SYSROOT_DIR}/usr/bin/fltk-config ${CROSSTOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/fltk-1.3.8
+rm -rf ${BUILD_DIRECTORY}/fltk-1.3.9

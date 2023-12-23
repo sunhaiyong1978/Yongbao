@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.5.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.5.3/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.5.3
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.5.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.5.3
-        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.5.3/patches/0001-qt6-qt3d-fix-for-gcc13.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.5.3/patches/0001-qt6-fix-for-xkbcommon-1.6.0.patch 
+export PACKAGE_VERSION=6.6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.6.1/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.6.1/patches/0001-qt6-qt3d-fix-for-gcc13.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -54,4 +53,10 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.5.3
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.5.3
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+
+cat > ${SYSROOT_DIR}/etc/profile.d/qt6.sh << "EOF"
+export QT_PLUGIN_PATH=${QT_PLUGIN_PATH}:/usr/lib64/qt6/plugins
+export QT_IMPORTS_DIR=${QT_IMPORTS_PATH}:/usr/lib64/qt6/qml
+export QML2_IMPORT_PATH=${QML2_IMPORT_PATH}:/usr/lib64/qt6/qml
+EOF

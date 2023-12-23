@@ -1,0 +1,3 @@
+overlay_dir=KDE6
+parent_dirs=sysroot
+temp_fix=1

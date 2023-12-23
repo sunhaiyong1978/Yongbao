@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=sonnet
-export PACKAGE_VERSION=5.111.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/sonnet/5.111.0/
-rm -rf ${BUILD_DIRECTORY}/sonnet-5.111.0
-tar xvf ${DOWNLOADDIR}/sonnet-5.111.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sonnet-5.111.0
+export PACKAGE_VERSION=5.113.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/sonnet/5.113.0/
+rm -rf ${BUILD_DIRECTORY}/sonnet-5.113.0
+tar xvf ${DOWNLOADDIR}/sonnet-5.113.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sonnet-5.113.0
         
 	sed -i "s@COMMAND KF5::parsetrigrams@COMMAND qemu-loongarch64 ../../bin/parsetrigrams@g" \
                        src/core/CMakeLists.txt
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/sonnet-5.111.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/sonnet-5.111.0
+rm -rf ${BUILD_DIRECTORY}/sonnet-5.113.0

@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/screen-4.9.1
 tar xvf ${DOWNLOADDIR}/screen-4.9.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/screen-4.9.1
     ./autogen.sh
+    CFLAGS="${CFLAGS} -Wno-implicit-function-declaration" \
     ./configure ${COMMON_CONFIG} --with-socket-dir=/run/screen \
             --with-pty-group=5 --with-sys-screenrc=/etc/screenrc
     sed -i -e "s%/usr/local/etc/screenrc%/etc/screenrc%" {etc,doc}/*

@@ -51,28 +51,65 @@ else
 	exit 1
 fi
 
-for i in $(cat ${BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
-do
-	if [ "x${OVERLAY_NAME}" != "x" ]; then
-		if [ "x${i}" != "x${OVERLAY_NAME}" ]; then
-			continue
+if [ "x${OVERLAY_NAME}" == "x" ]; then
+	for i in $(cat ${BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
+	do
+		echo "清理 $i 目录内的文件..."
+		if [ -d ${BASE_DIR}/workbase/overlaydir/$i ]; then
+			if [ ! -d ${BASE_DIR}/workbase/overlaydir_strip/$i ]; then
+				cp -a ${BASE_DIR}/workbase/overlaydir{,_strip}/$i
+			else
+				if [ "x${FORCE_COPY}" == "xTRUE" ]; then
+					echo "当前 ${BASE_DIR}/workbase/overlaydir_strip/ 目录中已存在 $i 目录,备份目录，并重新复制。"
+					mv ${BASE_DIR}/workbase/overlaydir_strip/$i{,.$(date +%Y%m%d%H%M%S)}
+					if [ -f ${BASE_DIR}/workbase/overlaydir/${i}.split ]; then
+						for j in $(cat ${BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
+						do
+							if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i.$j ]; then
+								mv ${BASE_DIR}/workbase/overlaydir_strip/$i.$j{,.$(date +%Y%m%d%H%M%S)}
+							fi
+						done
+					fi
+
+					cp -a ${BASE_DIR}/workbase/overlaydir{,_strip}/$i
+				fi
+			fi
+#			STEP_NAME=$(grep -r "overlay_dir=$i" env/*/overlay.set | head -n1 | awk -F'/' '{ print $2 }')
+#			tools/strip_step.sh ${STEP_NAME} ${BASE_DIR}/workbase/overlaydir_strip/$i || true
+			tools/strip_step.sh ${i} ${BASE_DIR}/workbase/overlaydir_strip/$i || true
+
+			tools/split_step.sh ${i} ${BASE_DIR}/workbase/overlaydir_strip/$i || true
+		else
+			echo "${BASE_DIR}/workbase/overlaydir 中没有发现 $i 目录，跳过。"
 		fi
-	fi
-	echo "清理 $i 目录内的文件..."
-	if [ -d ${BASE_DIR}/workbase/overlaydir/$i ]; then
-		if [ ! -d ${BASE_DIR}/workbase/overlaydir_strip/$i ]; then
-			cp -a ${BASE_DIR}/workbase/overlaydir{,_strip}/$i
+
+	done
+else
+	if [ -d ${BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME} ]; then
+		echo "清理 ${OVERLAY_NAME} 目录内的文件..."
+		if [ ! -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} ]; then
+			cp -a ${BASE_DIR}/workbase/overlaydir{,_strip}/${OVERLAY_NAME}
 		else
 			if [ "x${FORCE_COPY}" == "xTRUE" ]; then
-				echo "当前 ${BASE_DIR}/workbase/overlaydir_strip/ 目录中已存在 $i 目录,备份目录，并重新复制。"
-				mv ${BASE_DIR}/workbase/overlaydir_strip/$i{,.$(date +%Y%m%d%H%M%S)}
-				cp -a ${BASE_DIR}/workbase/overlaydir{,_strip}/$i
+				echo "当前 ${BASE_DIR}/workbase/overlaydir_strip/ 目录中已存在 ${OVERLAY_NAME} 目录,备份目录，并重新复制。"
+				mv ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}{,.$(date +%Y%m%d%H%M%S)}
+				if [ -f ${BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split ]; then
+					for j in $(cat ${BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split | awk -F' ' '{ print $1 }' | sort | uniq)
+					do
+						if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}.$j ]; then
+							mv ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}.$j{,.$(date +%Y%m%d%H%M%S)}
+						fi
+					done
+				fi
+				cp -a ${BASE_DIR}/workbase/overlaydir{,_strip}/${OVERLAY_NAME}
 			fi
 		fi
-		STEP_NAME=$(grep -r "overlay_dir=$i" env/*/overlay.set | head -n1 | awk -F'/' '{ print $2 }')
-		tools/strip_step.sh ${STEP_NAME} ${BASE_DIR}/workbase/overlaydir_strip/$i || true
+		tools/strip_step.sh ${OVERLAY_NAME} ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} || true
+		tools/split_step.sh ${OVERLAY_NAME} ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} || true
 	else
-		echo "${BASE_DIR}/workbase/overlaydir 中没有发现 $i 目录，跳过。"
+		echo "${BASE_DIR}/workbase/overlaydir 中没有发现 ${OVERLAY_NAME} 目录，跳过。"
 	fi
-
-done
+#	if [ "x${i}" != "x${OVERLAY_NAME}" ]; then
+#		continue
+#	fi
+fi

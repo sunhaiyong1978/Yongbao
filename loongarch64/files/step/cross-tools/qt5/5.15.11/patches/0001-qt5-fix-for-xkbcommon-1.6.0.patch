@@ -1,0 +1,27 @@
+From df355b6defe8818246b3c7bcea3fe98a60cb6b91 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 14 Oct 2023 06:00:54 +0000
+Subject: [PATCH] qt5 fix for xkbcommon 1.6.0
+
+---
+ qtbase/src/platformsupport/input/xkbcommon/qxkbcommon.cpp | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/qtbase/src/platformsupport/input/xkbcommon/qxkbcommon.cpp b/qtbase/src/platformsupport/input/xkbcommon/qxkbcommon.cpp
+index 9aa8f10..29da41c 100644
+--- a/qtbase/src/platformsupport/input/xkbcommon/qxkbcommon.cpp
++++ b/qtbase/src/platformsupport/input/xkbcommon/qxkbcommon.cpp
+@@ -273,10 +273,6 @@ static constexpr const auto KeyTbl = qMakeArray(
+         Xkb2Qt<XKB_KEY_dead_small_schwa,        Qt::Key_Dead_Small_Schwa>,
+         Xkb2Qt<XKB_KEY_dead_capital_schwa,      Qt::Key_Dead_Capital_Schwa>,
+         Xkb2Qt<XKB_KEY_dead_greek,              Qt::Key_Dead_Greek>,
+-        Xkb2Qt<XKB_KEY_dead_lowline,            Qt::Key_Dead_Lowline>,
+-        Xkb2Qt<XKB_KEY_dead_aboveverticalline,  Qt::Key_Dead_Aboveverticalline>,
+-        Xkb2Qt<XKB_KEY_dead_belowverticalline,  Qt::Key_Dead_Belowverticalline>,
+-        Xkb2Qt<XKB_KEY_dead_longsolidusoverlay, Qt::Key_Dead_Longsolidusoverlay>,
+ 
+         // Special keys from X.org - This include multimedia keys,
+         // wireless/bluetooth/uwb keys, special launcher keys, etc.
+-- 
+2.31.1
+

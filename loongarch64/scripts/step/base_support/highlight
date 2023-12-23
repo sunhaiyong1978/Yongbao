@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/highlight-4.10
 tar xvf ${DOWNLOADDIR}/highlight-4.10.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/highlight-4.10
     make -j${JOBS} CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar"
-    make -j${JOBS} CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" gui
+    make -j${JOBS} CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" QMAKE=${SYSROOT_DIR}/usr/bin/qmake gui
     make CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" DESTDIR=${SYSROOT_DIR} install
     make CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" DESTDIR=${SYSROOT_DIR} install-gui
 popd 

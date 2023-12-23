@@ -1,0 +1,134 @@
+diff -Nurp libreoffice-7.6.3.1/drawinglayer/source/tools/primitive2dxmldump.cxx libreoffice-7.6.3.1.test/drawinglayer/source/tools/primitive2dxmldump.cxx
+--- libreoffice-7.6.3.1/drawinglayer/source/tools/primitive2dxmldump.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/drawinglayer/source/tools/primitive2dxmldump.cxx	2023-11-20 14:16:38.551791021 +0000
+@@ -16,6 +16,7 @@
+ #include <math.h>
+ #include <memory>
+ #include <sal/log.hxx>
++#include <libxml/parser.h>
+ 
+ #include <drawinglayer/primitive2d/bitmapprimitive2d.hxx>
+ #include <drawinglayer/primitive2d/pointarrayprimitive2d.hxx>
+diff -Nurp libreoffice-7.6.3.1/include/xmloff/xmltoken.hxx libreoffice-7.6.3.1.test/include/xmloff/xmltoken.hxx
+--- libreoffice-7.6.3.1/include/xmloff/xmltoken.hxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/include/xmloff/xmltoken.hxx	2023-11-20 15:02:43.879723452 +0000
+@@ -24,6 +24,7 @@
+ #include <xmloff/dllapi.h>
+ #include <rtl/ustring.hxx>
+ #include <sax/fastattribs.hxx>
++#undef XML_EMPTY
+ 
+ /**
+  * Handling of tokens in XML:
+diff -Nurp libreoffice-7.6.3.1/sc/source/core/tool/interpr7.cxx libreoffice-7.6.3.1.test/sc/source/core/tool/interpr7.cxx
+--- libreoffice-7.6.3.1/sc/source/core/tool/interpr7.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/sc/source/core/tool/interpr7.cxx	2023-11-20 14:27:13.237787575 +0000
+@@ -20,6 +20,7 @@
+ 
+ #include <officecfg/Office/Common.hxx>
+ #include <libxml/xpath.h>
++#include <libxml/parser.h>
+ #include <datastreamgettime.hxx>
+ #include <dpobject.hxx>
+ #include <document.hxx>
+diff -Nurp libreoffice-7.6.3.1/sw/source/core/bastyp/calc.cxx libreoffice-7.6.3.1.test/sw/source/core/bastyp/calc.cxx
+--- libreoffice-7.6.3.1/sw/source/core/bastyp/calc.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/sw/source/core/bastyp/calc.cxx	2023-11-20 14:36:06.923937800 +0000
+@@ -1083,7 +1083,7 @@ SwSbxValue SwCalc::PrimFunc(bool &rChkPo
+             return StdFunc(&acos, true);
+         case CALC_ABS:
+             SAL_INFO("sw.calc", "abs");
+-            return StdFunc(&abs, false);
++            return StdFunc(&std::abs, false);
+         case CALC_SIGN:
+         {
+             SAL_INFO("sw.calc", "sign");
+diff -Nurp libreoffice-7.6.3.1/unoxml/source/dom/attr.cxx libreoffice-7.6.3.1.test/unoxml/source/dom/attr.cxx
+--- libreoffice-7.6.3.1/unoxml/source/dom/attr.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/unoxml/source/dom/attr.cxx	2023-11-20 15:13:30.728856262 +0000
+@@ -30,6 +30,8 @@
+ 
+ #include "document.hxx"
+ 
++#include <libxml/parser.h>
++
+ using namespace css::uno;
+ using namespace css::xml::dom;
+ using namespace css::xml::dom::events;
+diff -Nurp libreoffice-7.6.3.1/unoxml/source/dom/document.cxx libreoffice-7.6.3.1.test/unoxml/source/dom/document.cxx
+--- libreoffice-7.6.3.1/unoxml/source/dom/document.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/unoxml/source/dom/document.cxx	2023-11-20 15:08:32.705255807 +0000
+@@ -41,6 +41,7 @@
+ #include <eventdispatcher.hxx>
+ 
+ #include <string.h>
++#include <libxml/parser.h>
+ 
+ #include <osl/diagnose.h>
+ 
+diff -Nurp libreoffice-7.6.3.1/unoxml/source/dom/documentbuilder.cxx libreoffice-7.6.3.1.test/unoxml/source/dom/documentbuilder.cxx
+--- libreoffice-7.6.3.1/unoxml/source/dom/documentbuilder.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/unoxml/source/dom/documentbuilder.cxx	2023-11-20 15:10:47.580074986 +0000
+@@ -22,6 +22,7 @@
+ #include <string.h>
+ 
+ #include <libxml/xmlerror.h>
++#include <libxml/parser.h>
+ 
+ #include <memory>
+ 
+diff -Nurp libreoffice-7.6.3.1/unoxml/source/dom/entity.cxx libreoffice-7.6.3.1.test/unoxml/source/dom/entity.cxx
+--- libreoffice-7.6.3.1/unoxml/source/dom/entity.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/unoxml/source/dom/entity.cxx	2023-11-20 15:11:56.589982466 +0000
+@@ -22,6 +22,7 @@
+ #include <osl/diagnose.h>
+ 
+ #include <string.h>
++#include <libxml/parser.h>
+ 
+ using namespace css::uno;
+ using namespace css::xml::dom;
+diff -Nurp libreoffice-7.6.3.1/xmlsecurity/inc/pch/precompiled_xsec_xmlsec.hxx libreoffice-7.6.3.1.test/xmlsecurity/inc/pch/precompiled_xsec_xmlsec.hxx
+--- libreoffice-7.6.3.1/xmlsecurity/inc/pch/precompiled_xsec_xmlsec.hxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/xmlsecurity/inc/pch/precompiled_xsec_xmlsec.hxx	2023-11-20 14:24:53.138010651 +0000
+@@ -118,6 +118,7 @@
+ #include <cppuhelper/supportsservice.hxx>
+ #include <cppuhelper/weak.hxx>
+ #include <libxml/tree.h>
++#include <libxml/parser.h>
+ #include <o3tl/typed_flags_set.hxx>
+ #include <o3tl/underlyingenumvalue.hxx>
+ #include <salhelper/singletonref.hxx>
+diff -Nurp libreoffice-7.6.3.1/xmlsecurity/inc/xmlsec/saxhelper.hxx libreoffice-7.6.3.1.test/xmlsecurity/inc/xmlsec/saxhelper.hxx
+--- libreoffice-7.6.3.1/xmlsecurity/inc/xmlsec/saxhelper.hxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/xmlsecurity/inc/xmlsec/saxhelper.hxx	2023-11-20 14:25:01.370997538 +0000
+@@ -24,6 +24,7 @@
+ #include <string_view>
+ 
+ #include <libxml/tree.h>
++#include <libxml/parser.h>
+ 
+ #include <rtl/ustring.hxx>
+ 
+diff -Nurp libreoffice-7.6.3.1/xmlsecurity/source/xmlsec/mscrypt/seinitializer_mscryptimpl.hxx libreoffice-7.6.3.1.test/xmlsecurity/source/xmlsec/mscrypt/seinitializer_mscryptimpl.hxx
+--- libreoffice-7.6.3.1/xmlsecurity/source/xmlsec/mscrypt/seinitializer_mscryptimpl.hxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/xmlsecurity/source/xmlsec/mscrypt/seinitializer_mscryptimpl.hxx	2023-11-20 14:24:33.882041315 +0000
+@@ -28,6 +28,7 @@
+ #include <cppuhelper/implbase.hxx>
+ 
+ #include <libxml/tree.h>
++#include <libxml/parser.h>
+ 
+ class SEInitializer_MSCryptImpl : public cppu::WeakImplHelper
+ <
+diff -Nurp libreoffice-7.6.3.1/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx libreoffice-7.6.3.1.test/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx
+--- libreoffice-7.6.3.1/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx	2023-11-02 21:37:04.000000000 +0000
++++ libreoffice-7.6.3.1.test/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx	2023-11-20 15:06:54.182387890 +0000
+@@ -36,6 +36,7 @@
+ #include <comphelper/singletonref.hxx>
+ #include <comphelper/sequence.hxx>
+ 
++#include <nss/nss.h>
+ #include <nss/nssinitializer.hxx>
+ 
+ #include "digestcontext.hxx"

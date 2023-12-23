@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-gdb
-export PACKAGE_VERSION=13.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gdb/13.2/
-rm -rf ${BUILD_DIRECTORY}/gdb-13.2
-tar xvf ${DOWNLOADDIR}/gdb-13.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gdb-13.2
+export PACKAGE_VERSION=14.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gdb/14.1/
+rm -rf ${BUILD_DIRECTORY}/gdb-14.1
+tar xvf ${DOWNLOADDIR}/gdb-14.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdb-14.1
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -27,4 +27,4 @@ pushd ${BUILD_DIRECTORY}/gdb-13.2
 	make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gdb install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gdb-13.2
+rm -rf ${BUILD_DIRECTORY}/gdb-14.1

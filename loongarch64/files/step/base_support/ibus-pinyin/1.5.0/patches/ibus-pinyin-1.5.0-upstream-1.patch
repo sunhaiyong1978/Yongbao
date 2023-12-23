@@ -1,0 +1,348 @@
+diff -Nurp ibus-pinyin-1.5.0/data/db/english/english.awk ibus-pinyin-git-default_git/data/db/english/english.awk
+--- ibus-pinyin-1.5.0/data/db/english/english.awk	2012-06-01 15:47:06.000000000 +0000
++++ ibus-pinyin-git-default_git/data/db/english/english.awk	2023-09-05 03:42:47.000000000 +0000
+@@ -16,10 +16,10 @@ BEGIN {
+ }
+ 
+     # Insert data into english table
+-    {   printf "INSERT INTO english (word, freq) VALUES (\"%s\", \"%f\");\n", $1, $2}
++    {   printf "INSERT INTO english (word, freq) VALUES ('%s', %f);\n", $1, $2}
+ 
+     #quit sqlite3
+ END {
+     # Commit the transcation
+     print "COMMIT;"
+-}
+\ No newline at end of file
++}
+diff -Nurp ibus-pinyin-1.5.0/setup/ibus-setup-pinyin.in ibus-pinyin-git-default_git/setup/ibus-setup-pinyin.in
+--- ibus-pinyin-1.5.0/setup/ibus-setup-pinyin.in	2012-07-09 14:32:10.000000000 +0000
++++ ibus-pinyin-git-default_git/setup/ibus-setup-pinyin.in	2023-09-05 03:42:47.000000000 +0000
+@@ -26,5 +26,5 @@ export IBUS_PREFIX=@prefix@
+ export IBUS_DATAROOTDIR=@datarootdir@
+ export IBUS_LOCALEDIR=@localedir@
+ cd @prefix@/share/ibus-pinyin/setup/
+-exec python main.py $@
++exec @PYTHON@ main.py $@
+ 
+diff -Nurp ibus-pinyin-1.5.0/setup/main.py ibus-pinyin-git-default_git/setup/main.py
+--- ibus-pinyin-1.5.0/setup/main.py	2012-07-09 14:32:10.000000000 +0000
++++ ibus-pinyin-git-default_git/setup/main.py	2023-09-05 03:42:47.000000000 +0000
+@@ -20,15 +20,21 @@
+ # along with this program; if not, write to the Free Software
+ # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+ 
++from __future__ import print_function
++
+ import gettext
+ import locale
+ import os
+ import sys
+ 
++from gi import require_version as gi_require_version
++gi_require_version('GLib', '2.0')
++gi_require_version('Gtk', '3.0')
++gi_require_version('IBus', '1.0')
++
+ from gi.repository import GLib
+ from gi.repository import Gtk
+ from gi.repository import IBus
+-from xdg import BaseDirectory
+ 
+ import version
+ 
+@@ -39,7 +45,12 @@ class PreferencesDialog:
+         locale.setlocale(locale.LC_ALL, "")
+         localedir = os.getenv("IBUS_LOCALEDIR")
+         gettext.bindtextdomain("ibus-pinyin", localedir)
+-        gettext.bind_textdomain_codeset("ibus-pinyin", "UTF-8")
++        # Python's gettext module doesn't provide all methods in
++        # new Python version since Python 3.10
++        try:
++            gettext.bind_textdomain_codeset("ibus-pinyin", "UTF-8")
++        except AttributeError:
++            pass
+ 
+         self.__bus = IBus.Bus()
+         self.__config = self.__bus.get_config()
+@@ -100,7 +111,7 @@ class PreferencesDialog:
+         self.__init_full_punct = self.__builder.get_object("InitFullPunct")
+         self.__init_half_punct = self.__builder.get_object("InitHalfPunct")
+         self.__init_simp = self.__builder.get_object("InitSimplifiedChinese")
+-        self.__init_trad = self.__builder.get_object("IniTraditionalChinese")
++        self.__init_trad = self.__builder.get_object("InitTraditionalChinese")
+ 
+         # UI
+         self.__lookup_table_page_size = self.__builder.get_object("LookupTablePageSize")
+@@ -250,8 +261,8 @@ class PreferencesDialog:
+ 
+         def __correct_pinyin_toggled_cb(widget):
+             val = widget.get_active()
+-            map(lambda w: self.__builder.get_object(w[0]).set_sensitive(val),
+-                self.__correct_pinyin_widgets)
++            for w in self.__correct_pinyin_widgets:
++                self.__builder.get_object(w[0]).set_sensitive(val)
+         self.__correct_pinyin.connect("toggled", __correct_pinyin_toggled_cb)
+ 
+         # init value
+@@ -300,8 +311,8 @@ class PreferencesDialog:
+ 
+         def __fuzzy_pinyin_toggled_cb(widget):
+             val = widget.get_active()
+-            map(lambda w: self.__builder.get_object(w[0]).set_sensitive(val),
+-                self.__fuzzy_pinyin_widgets)
++            for w in self.__fuzzy_pinyin_widgets:
++                self.__builder.get_object(w[0]).set_sensitive(val)
+         self.__fuzzy_pinyin.connect("toggled", __fuzzy_pinyin_toggled_cb)
+ 
+         # init value
+@@ -404,7 +415,7 @@ class PreferencesDialog:
+         elif isinstance(val, str):
+             var = GLib.Variant.new_string(val)
+         else:
+-            print >> sys.stderr, "val(%s) is not in support type." % repr(val)
++            print("val(%s) is not in support type." % repr(val), file=sys.stderr)
+             return
+ 
+         self.__values[name] = val
+diff -Nurp ibus-pinyin-1.5.0/src/PYBopomofoEngine.cc ibus-pinyin-git-default_git/src/PYBopomofoEngine.cc
+--- ibus-pinyin-1.5.0/src/PYBopomofoEngine.cc	2012-07-09 14:32:10.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYBopomofoEngine.cc	2023-09-05 03:42:47.000000000 +0000
+@@ -72,6 +72,9 @@ BopomofoEngine::processKeyEvent (guint k
+ {
+     gboolean retval = FALSE;
+ 
++    if (contentIsPassword())
++        return retval;
++
+     /* check Shift + Release hotkey,
+      * and then ignore other Release key event */
+     if (modifiers & IBUS_RELEASE_MASK) {
+@@ -139,6 +142,8 @@ BopomofoEngine::focusIn (void)
+ void
+ BopomofoEngine::focusOut (void)
+ {
++    Engine::focusOut();
++
+     reset ();
+ }
+ 
+diff -Nurp ibus-pinyin-1.5.0/src/PYConfig.cc ibus-pinyin-git-default_git/src/PYConfig.cc
+--- ibus-pinyin-1.5.0/src/PYConfig.cc	2012-08-02 14:22:38.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYConfig.cc	2023-09-05 03:42:47.000000000 +0000
+@@ -114,6 +114,7 @@ Config::initDefaultValues (void)
+     m_init_full_punct = TRUE;
+     m_init_simp_chinese = TRUE;
+     m_special_phrases = TRUE;
++    m_double_pinyin = FALSE;
+     updateContext (PyZy::InputContext::PROPERTY_SPECIAL_PHRASE,
+                    PyZy::Variant::fromBool (m_special_phrases));
+ }
+diff -Nurp ibus-pinyin-1.5.0/src/PYEngine.cc ibus-pinyin-git-default_git/src/PYEngine.cc
+--- ibus-pinyin-1.5.0/src/PYEngine.cc	2012-08-02 14:22:38.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYEngine.cc	2023-09-05 03:42:47.000000000 +0000
+@@ -67,6 +67,12 @@ static gboolean ibus_pinyin_engine_proce
+                                                  guint                   modifiers);
+ static void     ibus_pinyin_engine_focus_in     (IBusEngine             *engine);
+ static void     ibus_pinyin_engine_focus_out    (IBusEngine             *engine);
++#if IBUS_CHECK_VERSION (1, 5, 4)
++static void     ibus_pinyin_engine_set_content_type
++                                                (IBusEngine     *engine,
++                                                 guint           purpose,
++                                                 guint           hints);
++#endif
+ static void     ibus_pinyin_engine_reset        (IBusEngine             *engine);
+ static void     ibus_pinyin_engine_enable       (IBusEngine             *engine);
+ static void     ibus_pinyin_engine_disable      (IBusEngine             *engine);
+@@ -123,6 +129,10 @@ ibus_pinyin_engine_class_init (IBusPinyi
+     engine_class->focus_in = ibus_pinyin_engine_focus_in;
+     engine_class->focus_out = ibus_pinyin_engine_focus_out;
+ 
++#if IBUS_CHECK_VERSION (1, 5, 4)
++    engine_class->set_content_type = ibus_pinyin_engine_set_content_type;
++#endif
++
+     engine_class->page_up = ibus_pinyin_engine_page_up;
+     engine_class->page_down = ibus_pinyin_engine_page_down;
+ 
+@@ -182,6 +192,17 @@ ibus_pinyin_engine_process_key_event (IB
+     return pinyin->engine->processKeyEvent (keyval, keycode, modifiers);
+ }
+ 
++#if IBUS_CHECK_VERSION (1, 5, 4)
++static void
++ibus_pinyin_engine_set_content_type (IBusEngine     *engine,
++                                     guint purpose,
++                                     guint hints)
++{
++    IBusPinyinEngine *pinyin = (IBusPinyinEngine *) engine;
++    return pinyin->engine->setContentType (purpose, hints);
++}
++#endif
++
+ static void
+ ibus_pinyin_engine_property_activate (IBusEngine    *engine,
+                                       const gchar   *prop_name,
+@@ -220,6 +241,39 @@ FUNCTION(cursor_up,   cursorUp)
+ FUNCTION(cursor_down, cursorDown)
+ #undef FUNCTION
+ 
++Engine::Engine (IBusEngine *engine) : m_engine (engine)
++{
++#if IBUS_CHECK_VERSION (1, 5, 4)
++    m_input_purpose = IBUS_INPUT_PURPOSE_FREE_FORM;
++#endif
++}
++
++gboolean
++Engine::contentIsPassword()
++{
++#if IBUS_CHECK_VERSION (1, 5, 4)
++   return IBUS_INPUT_PURPOSE_PASSWORD == m_input_purpose;
++#else
++   return false;
++#endif
++}
++
++void
++Engine::focusOut (void)
++{
++#if IBUS_CHECK_VERSION (1, 5, 4)
++    m_input_purpose = IBUS_INPUT_PURPOSE_FREE_FORM;
++#endif
++}
++
++#if IBUS_CHECK_VERSION(1, 5, 4)
++void
++Engine::setContentType (guint purpose, guint hints)
++{
++    m_input_purpose = (IBusInputPurpose) purpose;
++}
++#endif
++
+ Engine::~Engine (void)
+ {
+ }
+diff -Nurp ibus-pinyin-1.5.0/src/PYEngine.h ibus-pinyin-git-default_git/src/PYEngine.h
+--- ibus-pinyin-1.5.0/src/PYEngine.h	2012-07-09 14:32:10.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYEngine.h	2023-09-05 03:42:47.000000000 +0000
+@@ -37,13 +37,18 @@ GType   ibus_pinyin_engine_get_type    (
+ 
+ class Engine {
+ public:
+-    Engine (IBusEngine *engine) : m_engine (engine) { }
++    Engine (IBusEngine *engine);
+     virtual ~Engine (void);
+ 
++    gboolean contentIsPassword();
++
+     // virtual functions
+     virtual gboolean processKeyEvent (guint keyval, guint keycode, guint modifiers) = 0;
+     virtual void focusIn (void) = 0;
+-    virtual void focusOut (void) = 0;
++    virtual void focusOut (void);
++#if IBUS_CHECK_VERSION (1, 5, 4)
++    virtual void setContentType (guint purpose, guint hints);
++#endif
+     virtual void reset (void) = 0;
+     virtual void enable (void) = 0;
+     virtual void disable (void) = 0;
+@@ -122,6 +127,11 @@ protected:
+ 
+ protected:
+     Pointer<IBusEngine>  m_engine;      // engine pointer
++
++#if IBUS_CHECK_VERSION (1, 5, 4)
++    IBusInputPurpose m_input_purpose;
++#endif
++
+ };
+ 
+ };
+diff -Nurp ibus-pinyin-1.5.0/src/PYExtEditor.cc ibus-pinyin-git-default_git/src/PYExtEditor.cc
+--- ibus-pinyin-1.5.0/src/PYExtEditor.cc	2012-07-09 14:32:10.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYExtEditor.cc	2023-09-05 03:42:47.000000000 +0000
+@@ -494,7 +494,7 @@ ExtEditor::updateStateFromInput (void)
+         return FALSE;
+     }
+ 
+-    if ( ! 'i' == m_text[0] ) {
++    if (m_text[0] != 'i') {
+         g_warning ("i is expected in m_text string.\n");
+         return FALSE;
+     }
+diff -Nurp ibus-pinyin-1.5.0/src/PYPhoneticEditor.cc ibus-pinyin-git-default_git/src/PYPhoneticEditor.cc
+--- ibus-pinyin-1.5.0/src/PYPhoneticEditor.cc	2012-08-02 14:22:38.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYPhoneticEditor.cc	2023-09-05 03:42:47.000000000 +0000
+@@ -32,7 +32,8 @@ namespace PY {
+ PhoneticEditor::PhoneticEditor (PinyinProperties & props, Config & config)
+     : Editor (props, config),
+       m_observer (PinyinObserver(*this)),
+-      m_lookup_table (m_config.pageSize ())
++      m_lookup_table (m_config.pageSize ()),
++      m_dont_update_preedit (FALSE)
+ {
+ }
+ 
+@@ -382,7 +383,18 @@ PhoneticEditor::commit (void)
+ void
+ PhoneticEditor::reset (void)
+ {
++    const String &selected_text = m_context->selectedText ();
++    const String &conversion_text = m_context->conversionText ();
++    const String &rest_text = m_context->restText ();
++
++    if (selected_text.empty () && conversion_text.empty () &&
++        rest_text.empty ())
++        m_dont_update_preedit = TRUE;
++    else
++        m_dont_update_preedit = FALSE;
++
+     m_context->reset();
++    m_dont_update_preedit = FALSE;
+ }
+ 
+ void
+@@ -424,6 +436,9 @@ PhoneticEditor::updateAuxiliaryTextBefor
+ void
+ PhoneticEditor::updatePreeditText (void)
+ {
++    if (m_dont_update_preedit)
++        return;
++
+     const String &selected_text = m_context->selectedText ();
+     const String &conversion_text = m_context->conversionText ();
+     const String &rest_text = m_context->restText ();
+diff -Nurp ibus-pinyin-1.5.0/src/PYPhoneticEditor.h ibus-pinyin-git-default_git/src/PYPhoneticEditor.h
+--- ibus-pinyin-1.5.0/src/PYPhoneticEditor.h	2012-08-02 14:22:38.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYPhoneticEditor.h	2023-09-05 03:42:47.000000000 +0000
+@@ -88,6 +88,7 @@ protected:
+     std::unique_ptr<PyZy::InputContext>  m_context;
+     PinyinObserver                       m_observer;
+     LookupTable                          m_lookup_table;
++    gboolean                             m_dont_update_preedit;
+ };
+ };
+ 
+diff -Nurp ibus-pinyin-1.5.0/src/PYPinyinEngine.cc ibus-pinyin-git-default_git/src/PYPinyinEngine.cc
+--- ibus-pinyin-1.5.0/src/PYPinyinEngine.cc	2012-08-02 14:22:38.000000000 +0000
++++ ibus-pinyin-git-default_git/src/PYPinyinEngine.cc	2023-09-05 03:42:47.000000000 +0000
+@@ -82,6 +82,9 @@ PinyinEngine::processKeyEvent (guint key
+ {
+     gboolean retval = FALSE;
+ 
++    if (contentIsPassword())
++        return retval;
++
+     /* check Shift + Release hotkey,
+      * and then ignore other Release key event */
+     if (modifiers & IBUS_RELEASE_MASK) {
+@@ -195,6 +198,8 @@ PinyinEngine::focusIn (void)
+ void
+ PinyinEngine::focusOut (void)
+ {
++    Engine::focusOut ();
++
+     reset ();
+ }
+ 

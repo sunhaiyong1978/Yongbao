@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/bison-3.8.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} 
+	M4=/usr/bin/m4 ./configure ${COMMON_CONFIG} 
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

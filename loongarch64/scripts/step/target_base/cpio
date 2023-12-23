@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/cpio-2.14
 tar xvf ${DOWNLOADDIR}/cpio-2.14.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/cpio-2.14
     sed -i '/The name/,+2 d' src/global.c
+    CFLAGS="${CFLAGS} -Wno-implicit-function-declaration" \
     ./configure ${COMMON_CONFIG} --enable-mt \
                 --with-rmt=/usr/libexec/rmt
     eval ${MAKE_AND_INSTALL}

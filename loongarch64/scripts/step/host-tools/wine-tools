@@ -12,8 +12,29 @@ pushd ${BUILD_DIRECTORY}/wine-8.0.2
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        ./configure ${COMMON_CONFIG} --enable-win64 --without-x
+
+	tar xvf ${RESOURCEDIR}/files/wine-wine-staging_git.tar.gz
+	pushd wine-wine-staging_git
+		patch -Np1 -i ${RESOURCEDIR}/0001-wine-staging-8.0-Fix-for-wine-8.0.2.patch
+	popd
+
+	wine-wine-staging_git/patches/patchinstall.sh DESTDIR=${PWD} --all
+
+	sed -i  -e "s@\\\\\"\$(CC)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-gcc\\\\\"@g" \
+		-e "s@\\\\\"\$(CXX)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-g++\\\\\"@g" \
+		-e "s@\\\\\"\$(CPPBIN)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-cpp\\\\\"@g" \
+		-e "s@\\\\\"\$(LD)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-ld\\\\\"@g" \
+		-e "s@\${includedir}@${SYSROOT_DIR}/opt/wine64/include@g" \
+		-e "s@\${libdir}@${SYSROOT_DIR}/opt/wine64/lib@g" \
+		-e "s@\${bindir}@${SYSROOT_DIR}/opt/wine64/bin@g" \
+		tools/winegcc/Makefile.in
+	sed -i  -e "s@\${nlsdir}@${SYSROOT_DIR}/opt/wine64/share/wine/nls@g" \
+		-e "s@\${includedir}@${SYSROOT_DIR}/opt/wine64/include@g" \
+		-e "s@\${bindir}@${SYSROOT_DIR}/opt/wine64/bin@g" \
+		tools/wrc/Makefile.in
+        ./configure ${COMMON_CONFIG} --enable-archs=i386,x86_64 --enable-win64 --without-x
 	make __tooldeps__
+	make tools/widl/install-dev tools/winebuild/install-dev tools/winedump/install-dev tools/winegcc/install-dev tools/winemaker/install-dev tools/wmc/install-dev tools/wrc/install-dev
 	mkdir -p ${CROSSTOOLS_DIR}/wine-tools
 	cp -a ${PWD}/* ${CROSSTOOLS_DIR}/wine-tools/
 popd 

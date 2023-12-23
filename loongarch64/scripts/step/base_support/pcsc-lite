@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pcsc-lite
-export PACKAGE_VERSION=2.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pcsc-lite/2.0.0/
-rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.0.0
-tar xvf ${DOWNLOADDIR}/pcsc-lite-2.0.0.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pcsc-lite-2.0.0
-	
+export PACKAGE_VERSION=2.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pcsc-lite/2.0.1/
+rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.0.1
+tar xvf ${DOWNLOADDIR}/pcsc-lite-2.0.1.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pcsc-lite-2.0.1
+	patch -Np1 -i ${SYSDIR}/files/base_support/pcsc-lite/2.0.1/patches/0001-set-polkit_policy_dir-to-hard-directory-for-cross-bu.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
@@ -21,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/pcsc-lite-2.0.0
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.0.0
+rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.0.1

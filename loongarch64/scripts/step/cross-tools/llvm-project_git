@@ -26,6 +26,7 @@ pushd llvm
                  -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib64;\\\${ORIGIN}/../lib64" \
                  -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
                  -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+		 -DLLVM_VERSION_SUFFIX='' \
                  -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
         ninja
         ninja install

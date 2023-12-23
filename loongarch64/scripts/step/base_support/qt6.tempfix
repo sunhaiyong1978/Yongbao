@@ -5,16 +5,6 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt6
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6//
-sed -i.orig "s@\${_qt5Core_install_prefix}@${CROSSTOOLS_DIR}@g" \
-            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtras.cmake
-sed -i.orig "s@\${_qt5_linguisttools_install_prefix}@${CROSSTOOLS_DIR}@g" \
-            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5LinguistTools/Qt5LinguistToolsConfig.cmake
-sed -i.orig "s@\${_qt5DBus_install_prefix}@${CROSSTOOLS_DIR}@g" \
-            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5DBus/Qt5DBusConfigExtras.cmake
-sed -i.orig "s@\${_qt5Widgets_install_prefix}@${CROSSTOOLS_DIR}@g" \
-            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake
-
-
 sed -i.orig "s@pkgdatadir=\${datarootdir}/wayland@pkgdatadir=${SYSROOT_DIR}/usr/share/wayland@g"  ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc
 
 for cmake_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake"))

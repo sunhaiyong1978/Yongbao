@@ -4,18 +4,19 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.5.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.5.3/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.5.3
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.5.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.5.3
+export PACKAGE_VERSION=6.6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.6.1/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
 	mkdir -p native-build
 	pushd native-build
 		cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}/qt6 \
 		      -DCMAKE_BUILD_TYPE=RELEASE \
-		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia \
+		      -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};\\\${ORIGIN}/../lib${LIB_SUFF}" \
+		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat \
 		      ..
 		eval ${MAKE_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.5.3
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kwin
-export PACKAGE_VERSION=5.27.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kwin/5.27.9/
-rm -rf ${BUILD_DIRECTORY}/kwin-5.27.9
-tar xvf ${DOWNLOADDIR}/kwin-5.27.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kwin-5.27.9
+export PACKAGE_VERSION=5.27.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kwin/5.27.10/
+rm -rf ${BUILD_DIRECTORY}/kwin-5.27.10
+tar xvf ${DOWNLOADDIR}/kwin-5.27.10.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kwin-5.27.10
         
 	sed -i "s@COMMAND qtwaylandscanner_kde@COMMAND qemu-loongarch64 ${PWD}/cross-build/bin/qtwaylandscanner_kde@g" src/wayland/tools/CMakeLists.txt
         mkdir cross-build
@@ -32,12 +32,20 @@ pushd ${BUILD_DIRECTORY}/kwin-5.27.9
                       -DFLEX_EXECUTABLE=/bin/flex \
                       -DBISON_EXECUTABLE=/bin/bison \
                       -Dgzip_EXECUTABLE=/bin/gzip \
+		      -DSETCAP_EXECUTABLE=/usr/bin/setcap \
+		      -DQMLPLUGINDUMP_PROGRAM=${CROSSTOOLS_DIR}/qt5/bin/qmlplugindump-qt5 \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-		      -DQtWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/qtwaylandscanner -Wno-dev ..
+		      -DQtWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/qt5/bin/qtwaylandscanner -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kwin-5.27.9
+rm -rf ${BUILD_DIRECTORY}/kwin-5.27.10
+
+cat > ${SYSROOT_DIR}/etc/xdg/kwinrc << "EOF"
+[Wayland]
+InputMethod[$e]=/usr/share/applications/org.fcitx.Fcitx5.desktop
+VirtualKeyboardEnabled=true
+EOF

@@ -4,13 +4,13 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=libclc
-export PACKAGE_VERSION=17.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libclc/17.0.3/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.3.src
-tar xvf ${DOWNLOADDIR}/llvm-project-17.0.3.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-17.0.3.src
+export PACKAGE_VERSION=17.0.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libclc/17.0.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-17.0.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
     pushd libclc
-	sed -i "s@COMMAND prepare_builtins@COMMAND qemu-${ARCH_NAME} prepare_builtins@g" CMakeLists.txt
+	sed -i "s@COMMAND prepare_builtins@COMMAND qemu-${ARCH_NAME} ${PWD}/cross-build/prepare_builtins@g" CMakeLists.txt
         mkdir cross-build
         pushd cross-build
             CC="clang" CXX="clang++" \
@@ -34,9 +34,10 @@ pushd ${BUILD_DIRECTORY}/llvm-project-17.0.3.src
                   -DCMAKE_SYSROOT=${X86_64_SYSROOT_DIR} \
                   -DCMAKE_FIND_ROOT_PATH=${X86_64_SYSROOT_DIR}/usr \
                   -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+		  -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIB_SUFF} -DLIB_SUFFIX=${LIB_SUFF} -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec -DCMAKE_INSTALL_DATADIR=lib${LIB_SUFF} \
                   -DLLVM_HOST_TRIPLE=${X86_64_HOST}
              eval ${NINJA_AND_INSTALL}
         popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.3.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.6.src

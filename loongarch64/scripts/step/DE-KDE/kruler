@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kruler
-export PACKAGE_VERSION=23.08.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kruler/23.08.2/
-rm -rf ${BUILD_DIRECTORY}/kruler-23.08.2
-tar xvf ${DOWNLOADDIR}/kruler-23.08.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kruler-23.08.2
+export PACKAGE_VERSION=23.08.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kruler/23.08.4/
+rm -rf ${BUILD_DIRECTORY}/kruler-23.08.4
+tar xvf ${DOWNLOADDIR}/kruler-23.08.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kruler-23.08.4
         
 	mkdir cross-build
 	pushd cross-build
-        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
 	              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
 	              -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
@@ -20,16 +20,24 @@ pushd ${BUILD_DIRECTORY}/kruler-23.08.2
 		      -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
 		      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
 		      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+		      -DKI18N_PYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+		      -DKDE_CLANG_FORMAT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/clang-format \
 	              -DPERL_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl \
         	      -DRuby_EXECUTABLE=${CROSSTOOLS_DIR}/bin/ruby \
 	              -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
 		      -DDOXYGEN_EXECUTABLE=/bin/doxygen \
 		      -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
-		      -DQtWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/qtwaylandscanner \
+		      -DQtWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/qt5/bin/qtwaylandscanner \
 		      -DLIBXML2_XMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/xmllint \
+		      -DUPDATE_MIME_DATABASE_EXECUTABLE=${CROSSTOOLS_DIR}/bin/update-mime-database \
+		      -DGTK_UPDATE_ICON_CACHE_EXECUTABLE=${CROSSTOOLS_DIR}/bin/gtk-update-icon-cache \
+		      -DXwayland_EXECUTABLE=${CROSSTOOLS_DIR}/bin/Xwayland \
+		      -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname \
 		      -DFLEX_EXECUTABLE=/bin/flex \
 		      -DBISON_EXECUTABLE=/bin/bison \
 		      -Dgzip_EXECUTABLE=/bin/gzip \
+		      -DSETCAP_EXECUTABLE=/usr/bin/setcap \
+		      -DAPPSTREAMCLI=${CROSSTOOLS_DIR}/bin/appstreamcli \
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
@@ -38,4 +46,4 @@ pushd ${BUILD_DIRECTORY}/kruler-23.08.2
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kruler-23.08.2
+rm -rf ${BUILD_DIRECTORY}/kruler-23.08.4

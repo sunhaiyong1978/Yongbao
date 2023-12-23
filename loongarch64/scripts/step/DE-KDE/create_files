@@ -40,10 +40,16 @@ auth    include system-auth
 account include system-account
 EOF
 
-mkdir -p ${SYSROOT_DIR}/etc/sddm.conf.d/
-cat > ${SYSROOT_DIR}/etc/sddm.conf.d/kde_settings.conf << EOF
-[Theme]
-Current=breeze
-CursorTheme=breeze_cursors
-Font=Noto Sans,10,-1,0,50,0,0,0,0,0
-EOF
+
+set_strip_step "/usr/bin/"
+set_strip_step "/usr/libexec/" "0"
+set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-debug"
+set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded"
+
+set_split_conf "devel" "/usr/include"
+set_split_conf "devel" "/usr/lib${LIB_SUFF}" "*.a"
+set_split_conf "devel" "/usr/lib${LIB_SUFF}/pkgconfig"
+set_split_conf "devel" "/usr/share/pkgconfig"
+set_split_conf "docs" "/usr/share/doc"
+set_split_conf "docs" "/usr/share/man"
+set_split_conf "docs" "/usr/share/gtk-doc/html/"

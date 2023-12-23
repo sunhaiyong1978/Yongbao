@@ -1,0 +1,25 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=dxvk
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/dxvk/git-default/
+rm -rf ${BUILD_DIRECTORY}/dxvk-git-default_git
+tar xvf ${DOWNLOADDIR}/dxvk-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dxvk-git-default_git
+        
+
+	PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
+
+        mkdir cross-build
+        pushd cross-build
+                meson --prefix=/opt/wine64 --buildtype=release --cross-file ${COMMON_DIR}/meson-cross_mingw64.txt \
+		      --default-library=both \
+                      ..
+		CC=${X86_64_HOST}-gcc ninja 
+		DESTDIR=${SYSROOT_DIR} ninja install
+        popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/dxvk-git-default_git

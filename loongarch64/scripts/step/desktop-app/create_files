@@ -1,0 +1,19 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=create_files
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/create_files//
+set_strip_step "/usr/bin/"
+set_strip_step "/usr/libexec/" "0"
+set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-debug"
+set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded"
+
+set_split_conf "devel" "/usr/include"
+set_split_conf "devel" "/usr/lib${LIB_SUFF}" "*.a"
+set_split_conf "devel" "/usr/lib${LIB_SUFF}/pkgconfig"
+set_split_conf "devel" "/usr/share/pkgconfig"
+set_split_conf "docs" "/usr/share/doc"
+set_split_conf "docs" "/usr/share/man"
+set_split_conf "docs" "/usr/share/gtk-doc/html/"

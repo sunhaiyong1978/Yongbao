@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=webkitgtk
-export PACKAGE_VERSION=2.42.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.42.1/
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.42.1
-tar xvf ${DOWNLOADDIR}/webkitgtk-2.42.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/webkitgtk-2.42.1
+export PACKAGE_VERSION=2.43.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.43.2/
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.43.2
+tar xvf ${DOWNLOADDIR}/webkitgtk-2.43.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webkitgtk-2.43.2
     
     mkdir cross-build
     pushd cross-build
-        WK_USE_CCACHE=NO CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        WK_USE_CCACHE=NO CC="${CROSS_TARGET}-gcc -fpermissive" CXX="${CROSS_TARGET}-g++ -fpermissive" \
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
               -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
               -DCMAKE_SYSROOT=${SYSROOT_DIR} \
@@ -29,14 +29,10 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.42.1
               -DPORT=GTK \
               -DUSE_GTK4=ON \
               -DLIB_INSTALL_DIR=/usr/lib64 \
-              -DUSE_LIBHYPHEN=OFF \
-              -DUSE_GSTREAMER_TRANSCODER=OFF \
-              -DENABLE_GAMEPAD=OFF \
-              -DENABLE_MINIBROWSER=ON \
-              -DUSE_WOFF2=OFF \
               -DUSE_WPE_RENDERER=ON \
               -DENABLE_BUBBLEWRAP_SANDBOX=OFF \
               -DENABLE_INTROSPECTION=ON \
+	      -DUSE_LIBBACKTRACE=OFF \
               -Wno-dev -G Ninja ..
         sed -i "s@ /usr\(.*\)\(g-ir-compiler\|g-ir-scanner\)@ ${CROSSTOOLS_DIR}\1${CROSS_TARGET}-\2@g" build.ninja
         sed -i "s@${SYSROOT_DIR}/usr/bin/wayland-scanner@${CROSSTOOLS_DIR}/bin/wayland-scanner@g" build.ninja
@@ -48,4 +44,4 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.42.1
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.42.1
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.43.2

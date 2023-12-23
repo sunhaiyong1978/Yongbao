@@ -1,0 +1,24 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=bluez
+export PACKAGE_VERSION=5.66
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/bluez/5.66/
+rm -rf ${BUILD_DIRECTORY}/bluez-5.66
+tar xvf ${DOWNLOADDIR}/bluez-5.66.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bluez-5.66
+	
+	for config_i in $(find -name "config.sub")
+	do
+		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+	done
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --enable-library --with-systemdsystemunitdir=/usr/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd/user --with-dbusconfdir=/etc --with-dbussystembusdir=/usr/share/dbus-1/system-services --with-dbussessionbusdir=/usr/share/dbus-1/services --with-udevdir=/usr/lib/udev --enable-malloc0returnsnull
+	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/bluez-5.66

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kcoreaddons
-export PACKAGE_VERSION=5.111.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kcoreaddons/5.111.0/
-rm -rf ${BUILD_DIRECTORY}/kcoreaddons-5.111.0
-tar xvf ${DOWNLOADDIR}/kcoreaddons-5.111.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kcoreaddons-5.111.0
+export PACKAGE_VERSION=5.113.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kcoreaddons/5.113.0/
+rm -rf ${BUILD_DIRECTORY}/kcoreaddons-5.113.0
+tar xvf ${DOWNLOADDIR}/kcoreaddons-5.113.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kcoreaddons-5.113.0
         
         mkdir cross-build
         pushd cross-build
@@ -26,6 +26,7 @@ pushd ${BUILD_DIRECTORY}/kcoreaddons-5.111.0
                       -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
                       -DDOXYGEN_EXECUTABLE=/bin/doxygen \
                       -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
+		      -DUPDATE_MIME_DATABASE_EXECUTABLE=${CROSSTOOLS_DIR}/bin/update-mime-database \
                       -DFLEX_EXECUTABLE=/bin/flex \
                       -DBISON_EXECUTABLE=/bin/bison \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
@@ -36,7 +37,7 @@ pushd ${BUILD_DIRECTORY}/kcoreaddons-5.111.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kcoreaddons-5.111.0
+rm -rf ${BUILD_DIRECTORY}/kcoreaddons-5.113.0
 
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/desktoptojson --generic-data-path ${SYSROOT_DIR}/usr/share \"\$@\"" \
 	> ${CROSSTOOLS_DIR}/bin/desktoptojson

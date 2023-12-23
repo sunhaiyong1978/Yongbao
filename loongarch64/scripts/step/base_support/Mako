@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=Mako
-export PACKAGE_VERSION=1.2.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Mako/1.2.4/
-rm -rf ${BUILD_DIRECTORY}/Mako-1.2.4
-tar xvf ${DOWNLOADDIR}/Mako-1.2.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Mako-1.2.4
+export PACKAGE_VERSION=1.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Mako/1.3.0/
+rm -rf ${BUILD_DIRECTORY}/Mako-1.3.0
+tar xvf ${DOWNLOADDIR}/Mako-1.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Mako-1.3.0
 	
-	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
+        _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/Mako-1.2.4
+rm -rf ${BUILD_DIRECTORY}/Mako-1.3.0

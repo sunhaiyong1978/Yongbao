@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.78.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/glib/2.78.1/
-rm -rf ${BUILD_DIRECTORY}/glib-2.78.1
-tar xvf ${DOWNLOADDIR}/glib-2.78.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.78.1
+export PACKAGE_VERSION=2.78.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/glib/2.78.3/
+rm -rf ${BUILD_DIRECTORY}/glib-2.78.3
+tar xvf ${DOWNLOADDIR}/glib-2.78.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.78.3
         
         mkdir cross-build
         pushd cross-build
@@ -17,4 +17,12 @@ pushd ${BUILD_DIRECTORY}/glib-2.78.1
                 eval ${NINJA_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.78.1
+rm -rf ${BUILD_DIRECTORY}/glib-2.78.3
+echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${X86_64_SYSROOT_DIR}/usr/bin/glib-compile-resources \"\$@\"" > ${CROSS_TOOLS_PREFIX}/bin/${CROSS_TARGET}-glib-compile-resources
+chmod +x ${CROSS_TOOLS_PREFIX}/bin/${CROSS_TARGET}-glib-compile-resources
+cp -a ${CROSS_TOOLS_PREFIX}/bin/{${CROSS_TARGET}-,}glib-compile-resources
+echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${X86_64_SYSROOT_DIR}/usr/bin/glib-compile-schemas \"\$@\"" > ${CROSS_TOOLS_PREFIX}/bin/${CROSS_TARGET}-glib-compile-schemas
+chmod +x ${CROSS_TOOLS_PREFIX}/bin/${CROSS_TARGET}-glib-compile-schemas
+cp -a ${CROSS_TOOLS_PREFIX}/bin/{${CROSS_TARGET}-,}glib-compile-schemas

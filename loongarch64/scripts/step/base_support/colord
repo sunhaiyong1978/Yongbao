@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/colord-1.4.6
 	 
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG} -Ddaemon_user=colord -Dvapi=true -Dsystemd=false -Dlibcolordcompat=true -Dargyllcms_sensor=false -Dbash_completion=false -Ddocs=false -Dman=false \
+		 meson ${MESON_CONFIG} -Ddaemon_user=colord -Dvapi=true -Dsystemd=false -Dlibcolordcompat=true -Dargyllcms_sensor=false -Dbash_completion=false -Ddocs=false -Dman=false \
                       ..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}

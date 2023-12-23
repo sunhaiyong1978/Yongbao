@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=linux-header
-export PACKAGE_VERSION=6.5.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/linux-header/6.5.9/
-rm -rf ${BUILD_DIRECTORY}/linux-6.5.9
-tar xvf ${DOWNLOADDIR}/linux-6.5.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.5.9
+export PACKAGE_VERSION=6.6.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/linux-header/6.6.7/
+rm -rf ${BUILD_DIRECTORY}/linux-6.6.7
+tar xvf ${DOWNLOADDIR}/linux-6.6.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.6.7
 	make ARCH=${ARCH_FAMILY} mrproper
 	make ARCH=${ARCH_FAMILY} INSTALL_HDR_PATH=dest headers_install
 	find dest/include -name '.*' -delete
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/linux-6.5.9
         mkdir -pv ${TOOLCHAIN_DIRECTORY}/${ARCH_FAMILY}/linux-header/usr/include
         cp -rv dest/include/* ${TOOLCHAIN_DIRECTORY}/${ARCH_FAMILY}/linux-header/usr/include/
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.5.9
+rm -rf ${BUILD_DIRECTORY}/linux-6.6.7

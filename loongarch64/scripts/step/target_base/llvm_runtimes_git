@@ -24,6 +24,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
                   -DCMAKE_SYSROOT=${SYSROOT_DIR} \
                   -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
                   -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+		  -DLLVM_VERSION_SUFFIX='' \
                   -DLLVM_HOST_TRIPLE=${CROSS_TARGET}
              eval ${NINJA_AND_INSTALL}
         popd

@@ -4,19 +4,24 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=wine-dev
-export PACKAGE_VERSION=8.18
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/wine-dev/8.18/
-rm -rf ${BUILD_DIRECTORY}/wine-8.18
-tar xvf ${DOWNLOADDIR}/wine-8.18.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-8.18
+export PACKAGE_VERSION=8.21
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/wine-dev/8.21/
+rm -rf ${BUILD_DIRECTORY}/wine-8.21
+tar xvf ${DOWNLOADDIR}/wine-8.21.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-8.21
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
+
+        tar xvf ${RESOURCEDIR}/files/wine-dev-wine-staging_git.tar.gz
+
+        wine-dev-wine-staging_git/staging/patchinstall.py DESTDIR=${PWD} --all
+
 	PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
 
 	export CROSSCFLAGS="-g -O3"
-        ./configure --prefix=/opt/wine64-dev --build=${CROSS_HOST} --host=${X86_64_HOST} --with-wine-tools=${CROSSTOOLS_DIR}/wine_dev-tools PULSE_LIBS="-Wl,-rpath-link=${X86_64_SYSROOT_DIR}/usr/lib64/pulseaudio -lpulse -lpthread" NETAPI_LIBS="-Wl,-rpath-link=${X86_64_SYSROOT_DIR}/usr/lib64/samba -lnetapi" --enable-malloc0returnsnull --enable-archs=i386,x86_64 --enable-win64 OSSLIBDIR=${X86_64_SYSROOT_DIR}/usr/lib/oss ac_cv_i386_crosscc_c99= ac_cv_x86_64_crosscc_c99=
+        ./configure --prefix=/opt/wine64-dev --build=${CROSS_HOST} --host=${X86_64_HOST} --with-wine-tools=${CROSSTOOLS_DIR}/wine_dev-tools PULSE_LIBS="-Wl,-rpath-link=${X86_64_SYSROOT_DIR}/usr/lib64/pulseaudio -lpulse -lpthread" NETAPI_LIBS="-Wl,-rpath-link=${X86_64_SYSROOT_DIR}/usr/lib64/samba -lnetapi" --enable-malloc0returnsnull --enable-archs=x86_64 --enable-win64 OSSLIBDIR=${X86_64_SYSROOT_DIR}/usr/lib/oss
         CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
@@ -27,4 +32,4 @@ pushd ${BUILD_DIRECTORY}/wine-8.18
 	cp -a ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86_64.msi ${SYSROOT_DIR}/opt/wine64-dev/share/wine/gecko/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-8.18
+rm -rf ${BUILD_DIRECTORY}/wine-8.21

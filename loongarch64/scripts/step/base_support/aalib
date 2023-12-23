@@ -1,0 +1,25 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=aalib
+export PACKAGE_VERSION=1.4rc5-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/aalib/1.4rc5-default/
+rm -rf ${BUILD_DIRECTORY}/aalib-1.4.0
+tar xvf ${DOWNLOADDIR}/aalib-1.4rc5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/aalib-1.4.0
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	sed -i -e '/AM_PATH_AALIB,/s/AM_PATH_AALIB/[&]/' aalib.m4
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CFLAGS="${CFLAGS} -Wno-return-mismatch" ./configure ${COMMON_CONFIG} --with-ncurses=/usr --enable-malloc0returnsnull
+        make -j${JOBS} CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/aalib-1.4.0

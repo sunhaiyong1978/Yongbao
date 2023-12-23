@@ -11,6 +11,7 @@ pushd ${BUILD_DIRECTORY}/expect5.45.4
 	patch -Np1 -i ${SYSDIR}/files/target_base/expect/5.45.4/patches/0001-enable-cross-compilation.patch 
 	 
 	autoreconf -ifv
+	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -Wno-incompatible-pointer-types" \
 	./configure --prefix=/usr --libdir=/usr/lib64 \
 	            --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 	            --with-tcl=${SYSROOT_DIR}/usr/lib64 \

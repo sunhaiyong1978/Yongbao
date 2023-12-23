@@ -8,14 +8,16 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libfuse/fuse-3.16.2/
 rm -rf ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
 tar xvf ${DOWNLOADDIR}/libfuse-fuse-3.16.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
-	
-	mkdir cross-build
-	pushd cross-build
-		meson ${MESON_CONFIG} -Duseroot=false -Dudevrulesdir=/usr/lib/udev/rules.d \
+        patch -Np1 -i ${SYSDIR}/files/base_support/libfuse/fuse-3.16.2/patches/0001-libfuse3-fix-for-cross-build.patch 
+	 
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} -Duseroot=false -Dudevrulesdir=/usr/lib/udev/rules.d \
                       ..
-		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
-		eval ${NINJA_AND_INSTALL}
-	popd
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+                sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+                eval ${NINJA_AND_INSTALL}
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
+chmod +s ${SYSROOT_DIR}/usr/bin/fusermount3

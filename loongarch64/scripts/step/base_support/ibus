@@ -3,18 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ibus
-export PACKAGE_VERSION=1.5.28
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ibus/1.5.28/
-rm -rf ${BUILD_DIRECTORY}/ibus-1.5.28
-tar xvf ${DOWNLOADDIR}/ibus-1.5.28.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ibus-1.5.28
+export PACKAGE_VERSION=1.5.29-rc2-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ibus/1.5.29-rc2-default/
+rm -rf ${BUILD_DIRECTORY}/ibus-1.5.29-rc2
+tar xvf ${DOWNLOADDIR}/ibus-1.5.29-rc2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ibus-1.5.29-rc2
     mkdir -pv ${SYSROOT_DIR}/usr/share/unicode/ucd
     unzip -uo ${RESOURCEDIR}/files/UCD.zip -d ${SYSROOT_DIR}/usr/share/unicode/ucd
     mkdir -pv ${SYSROOT_DIR}/usr/share/unicode/emoji
     cp -av ${RESOURCEDIR}/files/emoji-*.txt ${SYSROOT_DIR}/usr/share/unicode/emoji
     sed -i 's@/desktop/ibus@/org/freedesktop/ibus@g' \
            data/dconf/org.freedesktop.ibus.gschema.xml
-    patch -Np1 -i ${SYSDIR}/files/base_support/ibus/1.5.28/patches/0001-ibus-1.5.28-change-for-cross-compiler.patch 
+    patch -Np1 -i ${SYSDIR}/files/base_support/ibus/1.5.29-rc2-default/patches/0001-ibus-fix-for-cross-compiler.patch 
 	 
     autoreconf -ifv
     for config_i in $(find -name "config.sub")
@@ -22,29 +22,31 @@ pushd ${BUILD_DIRECTORY}/ibus-1.5.28
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
     done
 
+   sed -i "s@\$(builddir)/gen-internal-compose-table@qemu-${ARCH_NAME} \$(builddir)/gen-internal-compose-table@g" src/Makefile.in
+   sed -i "s@\$(builddir)/unicode-parser@qemu-${ARCH_NAME} \$(builddir)/unicode-parser@g" src/Makefile.in
+   sed -i "s@\$(builddir)/emoji-parser@qemu-${ARCH_NAME} \$(builddir)/emoji-parser@g" src/Makefile.in
+   sed -i "s@\$PKG_CONFIG_SYSROOT_DIR@@g" configure
+
+    export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types"
     mkdir cross-prebuild
     pushd cross-prebuild
         ../configure ${COMMON_CONFIG} \
-                     --disable-emoji-dict --disable-unicode-dict --enable-introspection=no
-	make -j${JOBS} GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
+                     --disable-emoji-dict --disable-unicode-dict --enable-introspection=no --disable-python2 --disable-ui
+	make -j${JOBS} CC_FOR_BUILD=${CROSS_TARGET}-gcc GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
         make DESTDIR=${SYSROOT_DIR} install-exec
     popd
-    sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
-    sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG@/bin/pkg-config@g" configure
     mkdir cross-build
     pushd cross-build
-        ../configure ${COMMON_CONFIG} \
+        ../configure ${COMMON_CONFIG} --enable-introspection=yes \
                      --enable-emoji-dict --enable-unicode-dict \
                      --with-ucd-dir=${SYSROOT_DIR}/usr/share/unicode/ucd \
                      --with-unicode-emoji-dir=${SYSROOT_DIR}/usr/share/unicode/emoji \
                      --with-emoji-annotation-dir=${SYSROOT_DIR}/usr/share/unicode/cldr/common/annotations \
                      --enable-xim --enable-gtk4 --enable-wayland \
-                     --disable-python2 --with-python=${CROSSTOOLS_DIR}/bin/python3
-        sed -i "/pyoverridesdir/s@${CROSSTOOLS_DIR}@/usr@g" bindings/pygobject/Makefile
-	make -C src unicode-parser emoji-parser GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
-	sed -i '/exec \"\$progdir\/\$program\"/s@exec \"@exec qemu-${ARCH_NAME} \"@g' src/unicode-parser
-	sed -i '/exec \"\$progdir\/\$program\"/s@exec \"@exec qemu-${ARCH_NAME} \"@g' src/emoji-parser
-        make -j${JOBS} INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
+                     --disable-python2 --with-python=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
+        sed -i "/pyoverridesdir/s@${SYSROOT_DIR}@/usr@g" bindings/pygobject/Makefile
+        make -j${JOBS} CC_FOR_BUILD=${CROSS_TARGET}-gcc \
+             INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
              INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
 	     GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources \
              VAPIGEN=${CROSS_TARGET}-vapigen
@@ -53,15 +55,5 @@ pushd ${BUILD_DIRECTORY}/ibus-1.5.28
 
 rm -v ${SYSROOT_DIR}/usr/lib64/libibus*.la
 
-cat > ${SYSROOT_DIR}/etc/xdg/autostart/ibus.desktoop << "EOF"
-[Desktop Entry]
-Exec=/usr/bin/ibus-daemon --xim
-Type=Application
-Terminal=false
-X-KDE-autostart-after=panel
-X-KDE-StartupNotify=false
-X-DBUS-StartupType=Unique
-Name=IBus
-EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/ibus-1.5.28
+rm -rf ${BUILD_DIRECTORY}/ibus-1.5.29-rc2

@@ -1,0 +1,20 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=appstream
+export PACKAGE_VERSION=1.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/appstream/1.0.1/
+rm -rf ${BUILD_DIRECTORY}/appstream-1.0.1
+tar xvf ${DOWNLOADDIR}/appstream-1.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/appstream-1.0.1
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Dstemming=false -Ddocs=false -Dapidocs=false -Dgir=false \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/appstream-1.0.1

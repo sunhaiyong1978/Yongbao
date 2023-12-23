@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/dconf-editor-45.0.1
                 meson ${MESON_CONFIG} \
                       ..
                 sed -i -e "s@command = valac @command = ${CROSS_TARGET}-valac @g" build.ninja
+                sed -i -e "s@command = ${CROSS_TARGET}-gcc @& -Wno-incompatible-pointer-types @g" build.ninja
                 eval ${NINJA_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

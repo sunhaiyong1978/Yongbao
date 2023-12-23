@@ -22,6 +22,7 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 		             --disable-target-zlib --with-system-zlib --enable-checking=release \
 			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
 			     --disable-multilib \
+			     --with-simd=lsx \
 		             --enable-languages=c
 		make -j${JOBS} all-gcc all-target-libgcc
 		make install-strip-gcc install-strip-target-libgcc

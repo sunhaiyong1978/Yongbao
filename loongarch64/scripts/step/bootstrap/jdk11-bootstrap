@@ -1,0 +1,14 @@
+source env/bootstrap/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=bootstrap
+export STEP_PACKAGENAME=jdk11-bootstrap
+export PACKAGE_VERSION=11.0.0-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/bootstrap/jdk11-bootstrap/11.0.0-default/
+rm -rf ${BUILD_DIRECTORY}/jdk-11.0.0.1
+tar xvf ${DOWNLOADDIR}/openjdk-11.0.0.1_linux-x64_bin.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jdk-11.0.0.1
+    mkdir -pv ${CROSSTOOLS_DIR}/jdk11-bootstrap
+    cp -af * ${CROSSTOOLS_DIR}/jdk11-bootstrap/
+popd 
+rm -rf ${BUILD_DIRECTORY}/jdk-11.0.0.1

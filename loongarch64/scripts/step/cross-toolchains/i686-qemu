@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=i686-qemu
-export PACKAGE_VERSION=8.1.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/i686-qemu/8.1.2/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.1.2
-tar xvf ${DOWNLOADDIR}/qemu-8.1.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.1.2
+export PACKAGE_VERSION=8.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/i686-qemu/8.2.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.0
+tar xvf ${DOWNLOADDIR}/qemu-8.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.2.0
     mkdir -p build
     pushd build
         ../configure --prefix=${PREFIX}/${X86_HOST} --target-list=i386-linux-user --static
@@ -24,4 +24,4 @@ ${PREFIX}/${X86_HOST}/bin/qemu-i386.bin -L ${SYSROOT_DIR}/usr/lib/i686/sys-root 
 
 chmod +x ${PREFIX}/${X86_HOST}/bin/qemu-i386{,-ldd}
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.1.2
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.0

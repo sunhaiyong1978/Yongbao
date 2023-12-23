@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
     pushd llvm
     mkdir cross-build
     pushd cross-build
-	export CC="clang" CXX="clang++"
+	export CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
               -DLLVM_LIBDIR_SUFFIX=64 \
@@ -24,6 +24,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
               -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
               -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
               -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+	      -DLLVM_VERSION_SUFFIX='' \
 	      -Dzstd_LIBRARY:FILEPATH=${SYSROOT_DIR}/usr/lib64/libzstd.so \
               -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
 	eval ${NINJA_AND_INSTALL}

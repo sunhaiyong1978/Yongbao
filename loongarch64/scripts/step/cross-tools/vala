@@ -4,16 +4,17 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=vala
-export PACKAGE_VERSION=0.56.13
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/vala/0.56.13/
-rm -rf ${BUILD_DIRECTORY}/vala-0.56.13
-tar xvf ${DOWNLOADDIR}/vala-0.56.13.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vala-0.56.13
+export PACKAGE_VERSION=0.56.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/vala/0.56.14/
+rm -rf ${BUILD_DIRECTORY}/vala-0.56.14
+tar xvf ${DOWNLOADDIR}/vala-0.56.14.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vala-0.56.14
     ./configure --prefix=${CROSSTOOLS_DIR} --disable-valadoc
     eval ${MAKE_AND_INSTALL}
 
 cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-vapigen << EOF
 #!/bin/bash -e
+LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/:${CROSSTOOLS_DIR}/lib/ \
 ${CROSSTOOLS_DIR}/bin/vapigen --vapidir=${SYSROOT_DIR}/usr/share/vala/vapi \
                                   --girdir=${SYSROOT_DIR}/usr/share/gir-1.0  "\$@"
 EOF
@@ -21,8 +22,9 @@ chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-vapigen
 
 cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-valac << EOF
 #!/bin/bash -e
+LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64/:${CROSSTOOLS_DIR}/lib/ \
 ${CROSSTOOLS_DIR}/bin/valac --vapidir=${SYSROOT_DIR}/usr/share/vala/vapi "\$@"
 EOF
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-valac
 popd 
-rm -rf ${BUILD_DIRECTORY}/vala-0.56.13
+rm -rf ${BUILD_DIRECTORY}/vala-0.56.14

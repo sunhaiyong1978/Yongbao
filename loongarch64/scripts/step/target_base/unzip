@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/unzip/60/
 rm -rf ${BUILD_DIRECTORY}/unzip60
 tar xvf ${DOWNLOADDIR}/unzip60.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/unzip60
+    patch -Np1 -i ${SYSDIR}/files/target_base/unzip/60/patches/0001-replace-NO_DIR-to-NULL.patch 
+	 
     sed -i "s@-DNO_LCHMOD@@g" unix/configure
     make -j${JOBS} -f unix/Makefile CC="${CROSS_TARGET}-gcc \
             -DLARGE_FILE_SUPPORT -DUNICODE_WCHAR -DUNICODE_SUPPORT" generic

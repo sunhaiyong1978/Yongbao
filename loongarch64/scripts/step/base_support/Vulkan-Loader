@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=Vulkan-Loader
-export PACKAGE_VERSION=1.3.269
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Loader/1.3.269/
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.269
-tar xvf ${DOWNLOADDIR}/Vulkan-Loader-1.3.269.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.269
+export PACKAGE_VERSION=1.3.274
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Loader/1.3.274/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.274
+tar xvf ${DOWNLOADDIR}/Vulkan-Loader-1.3.274.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.274
         
 	mkdir cross-build
 	pushd cross-build
-        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
 	              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
 	              -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
@@ -27,10 +27,13 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.269
 		      -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
 		      -DQtWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/qtwaylandscanner \
 		      -DLIBXML2_XMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/xmllint \
+		      -DINTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
+		      -DINTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
+		      -DUPDATE_MIME_DATABASE_EXECUTABLE=${CROSSTOOLS_DIR}/bin/update-mime-database \
 		      -DFLEX_EXECUTABLE=/bin/flex \
 		      -DBISON_EXECUTABLE=/bin/bison \
 		      -Dgzip_EXECUTABLE=/bin/gzip \
-		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
 		       -Wno-dev ..
@@ -38,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.269
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.269
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.3.274

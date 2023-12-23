@@ -1,0 +1,2 @@
+chown -v root:usershares /var/lib/samba/usershares
+chmod -v 1770 /var/lib/samba/usershares

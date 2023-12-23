@@ -3,19 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=sddm
 export STEP_PACKAGENAME=sddm
-export PACKAGE_VERSION=0.20.0-git-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/sddm/0.20.0-git-default/
-rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
-tar xvf ${DOWNLOADDIR}/sddm-0.20.0-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
+export PACKAGE_VERSION=0.20.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/sddm/0.20.0/
+rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0
+tar xvf ${DOWNLOADDIR}/sddm-0.20.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sddm-0.20.0
     mkdir -p build
     pushd build
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
               -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname \
               -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
-              -DQT_IMPORTS_DIR=/usr/lib64/qml \
               -DENABLE_JOURNALD:BOOL=ON \
+              -DQT_IMPORTS_DIR=/usr/lib64/qml \
               -DSESSION_COMMAND:PATH=/etc/sddm/Xsession \
               -DWAYLAND_SESSION_COMMAND:PATH=/etc/sddm/wayland-session \
 	      -DSYSTEMD_SYSTEM_UNIT_DIR=/usr/lib/systemd/system \
@@ -24,7 +24,9 @@ pushd ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
 	      -DRUNTIME_DIR=/run/sddm \
 	      -DDATA_INSTALL_DIR=/usr/share/sddm \
 	      -DDBUS_CONFIG_FILENAME=sddm_org.freedesktop.DisplayManager.conf \
-              -DCMAKE_INSTALL_PREFIX=/usr ..
+              -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DBUILD_WITH_QT6=ON \
+	      ..
         eval ${MAKE_AND_INSTALL}
     popd
     mkdir -p ${SYSROOT_DIR}/etc/sddm
@@ -34,7 +36,7 @@ pushd ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
     chmod a+rw ${SYSROOT_DIR}/var/lib/sddm \
                ${SYSROOT_DIR}/var/run/sddm
 popd 
-rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0-git-default_git
+rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0
 
 cat > ${SYSROOT_DIR}/etc/pam.d/sddm << "EOF"
 #%PAM-1.0
@@ -96,3 +98,14 @@ cat > ${SYSROOT_DIR}/etc/sddm.conf << "EOF"
 InputMethod=
 Numlock=on
 EOF
+
+mkdir -p ${SYSROOT_DIR}/etc/sddm.conf.d/
+cat > ${SYSROOT_DIR}/etc/sddm.conf.d/default_settings.conf << EOF
+[Theme]
+Current=breeze
+CursorTheme=breeze_cursors
+Font=Noto Sans,10,-1,0,50,0,0,0,0,0
+EOF
+
+set_strip_step "/usr/bin/"
+set_strip_step "/usr/libexec/"

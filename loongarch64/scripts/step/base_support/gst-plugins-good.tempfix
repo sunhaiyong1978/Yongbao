@@ -20,10 +20,12 @@ do
         fi
 done
 
-for bin_file in moc uic rcc lrelease
+for bin_file in qmake moc uic rcc lrelease
 do
-	if [ -f ${SYSROOT_DIR}/usr/bin/${bin_file} ]; then
-		mv ${SYSROOT_DIR}/usr/bin/${bin_file}{,.orig}
-		cp -a ${CROSSTOOLS_DIR}/bin/${bin_file} ${SYSROOT_DIR}/usr/bin/${bin_file}
-	fi
+        if [ -f ${SYSROOT_DIR}/usr/bin/${bin_file} ]; then
+                mv ${SYSROOT_DIR}/usr/bin/${bin_file}{,.orig}
+                echo "#!/bin/bash
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/${bin_file}.orig \"\$@\"" > ${SYSROOT_DIR}/usr/bin/${bin_file}
+                chmod +x ${SYSROOT_DIR}/usr/bin/${bin_file}
+        fi
 done

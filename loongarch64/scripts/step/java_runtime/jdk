@@ -1,0 +1,32 @@
+source env/java_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=java_runtime
+export STEP_PACKAGENAME=jdk
+export PACKAGE_VERSION=latest
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/java_runtime/jdk/latest/
+rm -rf ${BUILD_DIRECTORY}/jdk-latest_git
+tar xvf ${DOWNLOADDIR}/jdk-latest_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jdk-latest_git
+    sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
+    LDFLAGS="" CC="${CROSS_TARGET}-gcc" \
+    sh ./configure --prefix=/usr --host=${CROSS_TARGET} \
+                --with-zlib=system --with-libpng=system --enable-unlimited-crypto \
+                --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \
+                --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon" \
+                --with-extra-ldflags="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib64" \
+                --with-stdc++lib=dynamic \
+                --with-boot-jdk=${CROSSTOOLS_DIR}/jdk-latest-bootstrap \
+                --disable-warnings-as-errors
+    make JOBS=${JOBS} LP64=1 LDFLAGS="" BUILD_CC="gcc" images
+    pushd build/linux-${ARCH_NAME}-server-release/images/jdk/
+        find -type f -exec ${CROSS_TARGET}-strip --strip-unneeded '{}' ';'
+	cd ..
+	mv jdk jdk-latest
+	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/
+        tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/jdk-$(echo "latest" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* jdk-latest
+        tar -xvf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/jdk-$(echo "latest" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz -C ${SYSROOT_DIR}/opt/
+	info_pool "生成了可发布的JDK latest 虚拟机压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/jdk-$(echo "latest" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/jdk-latest_git

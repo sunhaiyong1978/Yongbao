@@ -1,0 +1,24 @@
+From b7d8d464cf21a9d48734348ee2ee0b98c8a63b87 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 2 Dec 2023 09:51:09 +0000
+Subject: [PATCH] fcitx5-gtk fix for gcc14.
+
+---
+ gtk3/inputwindow.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/gtk3/inputwindow.cpp b/gtk3/inputwindow.cpp
+index f198837..e9a3a34 100644
+--- a/gtk3/inputwindow.cpp
++++ b/gtk3/inputwindow.cpp
+@@ -10,6 +10,7 @@
+ #include <functional>
+ #include <initializer_list>
+ #include <limits>
++#include <algorithm>
+ #include <pango/pangocairo.h>
+ 
+ namespace fcitx::gtk {
+-- 
+2.31.1
+

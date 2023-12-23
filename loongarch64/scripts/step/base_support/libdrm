@@ -3,19 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libdrm
-export PACKAGE_VERSION=2.4.117
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libdrm/2.4.117/
-rm -rf ${BUILD_DIRECTORY}/libdrm-2.4.117
-tar xvf ${DOWNLOADDIR}/libdrm-2.4.117.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libdrm-2.4.117
+export PACKAGE_VERSION=2.4.118
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libdrm/2.4.118/
+rm -rf ${BUILD_DIRECTORY}/libdrm-2.4.118
+tar xvf ${DOWNLOADDIR}/libdrm-2.4.118.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libdrm-2.4.118
 	
 	mkdir cross-build
 	pushd cross-build
-		meson ${MESON_CONFIG} -Detnaviv=enabled -Dudev=true \
+		 meson ${MESON_CONFIG} -Detnaviv=enabled -Dudev=true -Dintel=enabled \
                       ..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libdrm-2.4.117
+rm -rf ${BUILD_DIRECTORY}/libdrm-2.4.118

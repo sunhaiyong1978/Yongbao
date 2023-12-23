@@ -16,13 +16,21 @@ pushd ${BUILD_DIRECTORY}/mesa_git-main_git-default_git
 
     sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
+    sed -i -e "/LIBCLC_INCLUDEDIR/s@dep_clc.get_variable(pkgconfig : 'includedir')@'/usr/include'@g" \
+           -e "/LIBCLC_LIBEXECDIR/s@dep_clc.get_variable(pkgconfig : 'libexecdir')@'/usr/lib${LIB_SUFF}/clc'@g" src/gallium/frontends/clover/meson.build
+
+    export CFLAGS="${CFLAGS} -fpermissive"
+    export CXXFLAGS="${CXXFLAGS} -fpermissive"
+
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} \
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dosmesa=true -Dgallium-opencl=icd \
               -Dlibunwind=disabled \
-	      -Dgallium-drivers="kmsro,radeonsi,r300,r600,nouveau,freedreno,swrast,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,iris,lima,zink,d3d12,asahi,i915,crocus" \
+	      -Dgallium-drivers="kmsro,radeonsi,r300,r600,nouveau,freedreno,swrast,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,iris,lima,zink,d3d12,i915,crocus" \
+	      -Dvideo-codecs="vc1dec,h264dec,h264enc,h265dec,h265enc" \
+	      -Dgallium-nine=true -Dllvm=enabled -Dshared-llvm=enabled -Ddraw-use-llvm=true -Dgallium-d3d12-video=auto -Dshader-cache-max-size=8G -Dglx-direct=true -Dvulkan-layers=overlay \
               ..
 	eval ${NINJA_AND_INSTALL}
     popd

@@ -28,6 +28,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
               -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
               -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
               -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+	      -DLLVM_VERSION_SUFFIX='' \
               -DLLVM_HOST_TRIPLE=${CROSS_TARGET}
         sed -i "s@${PWD}/bin/clang-ast-dump@qemu-${ARCH_NAME} ${PWD}/bin/clang-ast-dump@g" build.ninja
 	eval ${NINJA_AND_INSTALL}

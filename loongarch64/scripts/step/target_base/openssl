@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=openssl
-export PACKAGE_VERSION=3.1.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/openssl/3.1.4/
-rm -rf ${BUILD_DIRECTORY}/openssl-3.1.4
-tar xvf ${DOWNLOADDIR}/openssl-3.1.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/openssl-3.1.4
+export PACKAGE_VERSION=3.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/openssl/3.2.0/
+rm -rf ${BUILD_DIRECTORY}/openssl-3.2.0
+tar xvf ${DOWNLOADDIR}/openssl-3.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openssl-3.2.0
 	CC="${CROSS_TARGET}-gcc" \
 	./Configure --prefix=/usr --openssldir=/etc/ssl \
 				--libdir=lib64 shared zlib linux-generic64
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/openssl-3.1.4
+rm -rf ${BUILD_DIRECTORY}/openssl-3.2.0

@@ -32,3 +32,13 @@ mkdir -pv ${X86_64_SYSROOT_DIR}/var/lib/hwclock
 ln -sfv /etc/adjtime ${X86_64_SYSROOT_DIR}/var/lib/hwclock/adjtime
 cp -a ${RESOURCEDIR}/etc-shells ${X86_64_SYSROOT_DIR}/etc/shells
 cp -a ${RESOURCEDIR}/etc-fstab ${X86_64_SYSROOT_DIR}/etc/fstab
+
+
+
+set_strip_step "/usr/lib/x86_64/sys-root/usr/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/usr/lib/x86_64/sys-root/usr/sbin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/usr/lib/x86_64/sys-root/usr/libexec/" "0" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/usr/lib/x86_64/sys-root/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/usr/lib/x86_64/sys-root/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/usr/lib/x86_64/sys-root/usr/lib/systemd/" "0" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/usr/lib/x86_64/sys-root/usr/lib/udev/" "0" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"

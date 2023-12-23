@@ -1,0 +1,25 @@
+From dcf495f841986f2c3f5030d0a0cd5ed6932852d4 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 16 Nov 2023 09:19:14 +0000
+Subject: [PATCH] firefox 119 set vaapi enabled as default.
+
+---
+ modules/libpref/init/StaticPrefList.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/libpref/init/StaticPrefList.yaml b/modules/libpref/init/StaticPrefList.yaml
+index 415c2d6..063e3f9 100644
+--- a/modules/libpref/init/StaticPrefList.yaml
++++ b/modules/libpref/init/StaticPrefList.yaml
+@@ -9894,7 +9894,7 @@
+ # Use VA-API for ffmpeg video playback on Linux
+ - name: media.ffmpeg.vaapi.enabled
+   type: bool
+-  value: false
++  value: true
+   mirror: once
+ 
+ # Force to copy dmabuf video frames
+-- 
+2.31.1
+

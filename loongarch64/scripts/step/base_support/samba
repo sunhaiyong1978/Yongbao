@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=samba
-export PACKAGE_VERSION=4.19.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/samba/4.19.2/
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.2
-tar xvf ${DOWNLOADDIR}/samba-4.19.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/samba-4.19.2
+export PACKAGE_VERSION=4.19.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/samba/4.19.3/
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.3
+tar xvf ${DOWNLOADDIR}/samba-4.19.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.19.3
         
         for config_i in $(find -name "config.sub")
         do
@@ -26,19 +26,52 @@ pushd ${BUILD_DIRECTORY}/samba-4.19.2
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
 	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --with-piddir=/run --with-pammodulesdir=/usr/lib${LIB_SUFF}/security \
 		    --with-sockets-dir=/run/samba --with-modulesdir=/usr/lib${LIB_SUFF}/samba --with-lockdir=/var/lib/samba/lock --with-statedir=/var/lib/samba --with-cachedir=/var/lib/samba \
-		    --with-experimental-mit-ad-dc \
 		    --with-systemd --systemd-install-services --with-systemddir=/usr/lib/systemd/system \
 		    --systemd-smb-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" --systemd-nmb-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" \
 		    --systemd-winbind-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" --systemd-samba-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" \
 		    --enable-fhs --hostcc=gcc
         eval ${MAKE_AND_INSTALL}
+
 	install -v -m644 examples/smb.conf.default ${SYSROOT_DIR}/etc/samba
 	sed -e "s;log file =.*;log file = /var/log/samba/%m.log;" \
 	    -e "s;path = /usr/spool/samba;path = /var/spool/samba;" \
             -i ${SYSROOT_DIR}/etc/samba/smb.conf.default
+	mkdir -pv ${SYSROOT_DIR}/etc/openldap/schema
+	install -v -m644 examples/LDAP/samba* ${SYSROOT_DIR}/etc/openldap/schema
+	install -v -m755 examples/LDAP/{get*,ol*} ${SYSROOT_DIR}/etc/openldap/schema
+
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.2
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.3
+
+cat > ${SYSROOT_DIR}/etc/samba/smb.conf << EOF
+[global]
+    workgroup = WORKGROUP
+    dos charset = cp850
+    unix charset = ISO-8859-1
+    usershare path = /var/lib/samba/usershares
+    usershare max shares = 100
+    usershare allow guests = yes
+    usershare owner only = yes
+    guest account = nobody
+
+[homes]
+    comment = Home Directories
+    browseable = no
+    writable = yes
+
+[printers]
+    comment = All Printers
+    path = /var/spool/samba
+    browseable = no
+    guest ok = no
+    printable = yes
+EOF
+
+mkdir -p ${SYSROOT_DIR}/var/lib/samba/usershares
+cat > ${SYSROOT_DIR}/usr/lib/sysusers.d/samba-usershares.conf << EOF
+g     usershares -
+EOF
 
 install -dvm 755 ${SYSROOT_DIR}/usr/lib/cups/backend &&
 ln -v -sf /usr/bin/smbspool ${SYSROOT_DIR}/usr/lib/cups/backend/smb
@@ -46,5 +79,5 @@ ln -v -sf /usr/bin/smbspool ${SYSROOT_DIR}/usr/lib/cups/backend/smb
 mkdir -p ${SYSROOT_DIR}/etc/ld.so.conf.d/
 echo "/usr/lib${LIB_SUFF}/samba" > ${SYSROOT_DIR}/etc/ld.so.conf.d/samba.conf
 
-mkdir -p ${SYSROOT_DIR}/run/samba
+echo "d /run/samba  755 root root" > ${SYSROOT_DIR}/usr/lib/tmpfiles.d/samba.conf
 mkdir -p ${SYSROOT_DIR}/var/lib/samba/lock

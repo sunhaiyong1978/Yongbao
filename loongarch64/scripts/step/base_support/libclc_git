@@ -34,6 +34,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
                   -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
                   -DLLVM_USE_SANITIZER:BOOL=ON \
                   -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+		  -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec -DCMAKE_INSTALL_DATADIR=lib64 \
                   -DLLVM_HOST_TRIPLE=${CROSS_TARGET}
              eval ${NINJA_AND_INSTALL}
         popd

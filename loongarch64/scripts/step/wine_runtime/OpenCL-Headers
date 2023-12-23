@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=OpenCL-Headers
-export PACKAGE_VERSION=2023.04.17
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/OpenCL-Headers/2023.04.17/
-rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2023.04.17
-tar xvf ${DOWNLOADDIR}/OpenCL-Headers-2023.04.17.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OpenCL-Headers-2023.04.17
+export PACKAGE_VERSION=2023.12.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/OpenCL-Headers/2023.12.14/
+rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2023.12.14
+tar xvf ${DOWNLOADDIR}/OpenCL-Headers-2023.12.14.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenCL-Headers-2023.12.14
         
 	mkdir cross-build
 	pushd cross-build
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/OpenCL-Headers-2023.04.17
 	popd
         rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2023.04.17
+rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2023.12.14

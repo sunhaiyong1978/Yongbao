@@ -395,6 +395,111 @@ function get_system_pkg_config_path
 	return
 }
 
+function set_strip_step
+{
+        declare STRIP_SET_DIRECTORY="/usr/bin"
+        declare STRIP_SET_DIRECTORY_DEPTH="1"
+        declare STRIP_SET_FILES="*"
+        declare STRIP_SET_COMMAND="strip"
+        declare STRIP_SET_COMMAND_PARM="--strip-all"
+
+	declare OVERLAY_DIR="sysroot"
+
+        OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+
+	if [ "x${OVERLAY_DIR}" == "x" ]; then
+		return
+	fi
+
+	if [ -d ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR} ]; then
+		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.strip ]; then
+			touch ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.strip
+		fi
+	else
+		return
+	fi
+	
+	if [ "x${1}" == "x" ]; then
+		return
+	fi
+	STRIP_SET_DIRECTORY="${1}"
+
+	if [ "x${2}" == "x0" ]; then
+		STRIP_SET_DIRECTORY_DEPTH="0"
+	else
+		STRIP_SET_DIRECTORY_DEPTH="1"
+	fi
+
+	if [ "x${3}" == "x" ]; then
+		STRIP_SET_FILES="*"
+	else
+		STRIP_SET_FILES="${3}"
+	fi
+
+
+	if [ "x${4}" == "x" ]; then
+		STRIP_SET_COMMAND_PARM="--strip-all"
+	else
+		STRIP_SET_COMMAND_PARM="${4}"
+	fi
+
+	if [ "x${5}" == "x" ]; then
+		STRIP_SET_COMMAND="$(command -v ${CROSS_TARGET}-strip)"
+	else
+		STRIP_SET_COMMAND="$(command -v ${5})"
+	fi
+	if [ "x${STRIP_SET_COMMAND}" == "x" ]; then
+		return
+	fi
+
+
+	echo "${STRIP_SET_DIRECTORY}	${STRIP_SET_DIRECTORY_DEPTH}	${STRIP_SET_FILES}	${STRIP_SET_COMMAND}	${STRIP_SET_COMMAND_PARM}" >> ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.strip
+
+	return
+}
+
+function set_split_conf
+{
+        declare SPLIT_PART_NAME="devel"
+        declare SPLIT_DIRECTORY="/usr/include"
+        declare SPLIT_MATCH_RULE="*"
+
+	declare OVERLAY_DIR="sysroot"
+
+        OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+
+	if [ "x${OVERLAY_DIR}" == "x" ]; then
+		return
+	fi
+
+	if [ -d ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR} ]; then
+		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.split ]; then
+			touch ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.split
+		fi
+	else
+		return
+	fi
+	
+	if [ "x${1}" == "x" ]; then
+		return
+	fi
+	SPLIT_PART_NAME="${1}"
+
+	if [ "x${2}" == "x0" ]; then
+		return
+	fi
+	SPLIT_DIRECTORY="${2}"
+
+	if [ "x${3}" == "x" ]; then
+		SPLIT_MATCH_RULE="*"
+	else
+		SPLIT_MATCH_RULE="${3}"
+	fi
+
+	echo "${SPLIT_PART_NAME}	${SPLIT_DIRECTORY}	${SPLIT_MATCH_RULE}" >> ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.split
+
+	return
+}
 
 source ${NEW_TARGET_SYSDIR}/set_env.conf
 source ${NEW_TARGET_SYSDIR}/package_env.conf

@@ -1,0 +1,14 @@
+source env/bootstrap/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=bootstrap
+export STEP_PACKAGENAME=jdk17-bootstrap
+export PACKAGE_VERSION=17.0.9-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/bootstrap/jdk17-bootstrap/17.0.9-default/
+rm -rf ${BUILD_DIRECTORY}/jdk-17.0.9
+tar xvf ${DOWNLOADDIR}/jdk-17.0.9_linux-x64_bin.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jdk-17.0.9
+    mkdir -pv ${CROSSTOOLS_DIR}/jdk17-bootstrap
+    cp -af * ${CROSSTOOLS_DIR}/jdk17-bootstrap/
+popd 
+rm -rf ${BUILD_DIRECTORY}/jdk-17.0.9

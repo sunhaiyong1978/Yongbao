@@ -21,7 +21,7 @@ pushd ${SYSROOT_DIR} > /dev/null
 	mkdir -p ./var/{cache,local,log,mail,opt,spool}
 	mkdir -p ./var/lib/{color,misc,locate}
 	mkdir -p ./usr/{lib{,64},bin,sbin}
-	ln -sf usr/{lib{,64},bin,sbin} ./
+	ln -sf usr/{lib{,64},bin,sbin,include} ./
 	mkdir -p ./lib/firmware
 	mkdir -p ./{dev,proc,sys}
 	mkdir -p ./run/lock
@@ -44,6 +44,7 @@ echo "objcopy = '${CROSS_TARGET}-objcopy'" >> meson-cross.txt
 echo "pkgconfig = '${CROSS_TARGET}-pkg-config'" >> meson-cross.txt
 echo "cups-config = '${CROSS_TARGET}-cups-config'" >> meson-cross.txt
 echo "llvm-config = '${CROSS_TARGET}-llvm-config'" >> meson-cross.txt
+echo "python = '${CROSS_TARGET}-python3'" >> meson-cross.txt
 echo "vala = '${CROSS_TARGET}-valac'" >> meson-cross.txt
 echo "valac = '${CROSS_TARGET}-valac'" >> meson-cross.txt
 echo "g-ir-scanner = '${CROSS_TARGET}-g-ir-scanner'" >> meson-cross.txt
@@ -78,4 +79,13 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+EOF
+
+cat > ${COMMON_DIR}/cargo-cross.conf << EOF
+[build]
+target = ["${CROSS_TARGET}"]
+
+[target.${CROSS_TARGET}]
+linker = "${CROSS_TARGET}-gcc"
+runner = "qemu-${ARCH_NAME}"
 EOF

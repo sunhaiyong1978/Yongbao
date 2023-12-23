@@ -1,0 +1,44 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+source env/cross-tools/custom
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=qt5
+export PACKAGE_VERSION=5.15.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt5/5.15.11/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.11
+tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.11.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.11
+    patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.11/patches/qt-everywhere-opensource-src-5.15.11-kf5-1.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.11/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.11/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.11/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.11/patches/0001-qt5-fix-for-xkbcommon-1.6.0.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.11/patches/0001-qt-5.15.11-fix-for-gcc-14.patch 
+	 
+    cp qtbase/src/corelib/thread/qtsan_impl.h qtbase/include/QtCore/
+    sed -i "s@defined(__aarch64__)@& || defined(__loongarch__)@g" qtbase/src/3rdparty/forkfd/forkfd_linux.c
+    mkdir host-build
+    pushd host-build
+	../configure -prefix ${CROSSTOOLS_DIR}/qt5 \
+		-confirm-license -opensource \
+                -openssl-linked -system-harfbuzz -system-sqlite \
+                -nomake examples \
+                -journald \
+		-rpath -R "${CROSSTOOLS_DIR}/lib${LIB_SUFF}" -R "\\\${ORIGIN}/../lib${LIB_SUFF}" -R "${CROSSTOOLS_DIR}/lib" \
+		ICU_PREFIX=${CROSSTOOLS_DIR} ICU_LIBS="-licui18n -licuuc -licudata" \
+                -skip qtwebengine
+        make -j${JOBS}
+        make install
+    popd
+    cp -v qtbase/src/corelib/thread/qtsan_impl.h ${CROSSTOOLS_DIR}/qt5/include/QtCore/
+popd 
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.11
+
+echo "#!/bin/bash -e
+if [ \"x\${1:0:1}\" == \"xQ\" ]; then
+        ${CROSSTOOLS_DIR}/qt5/bin/qmlplugindump \"\$@\"
+else
+        ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/qmlplugindump \"\$@\"
+fi" >${CROSSTOOLS_DIR}/qt5/bin/qmlplugindump-qt5
+chmod +x ${CROSSTOOLS_DIR}/qt5/bin/qmlplugindump-qt5

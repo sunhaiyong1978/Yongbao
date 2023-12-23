@@ -1,0 +1,25 @@
+From f0caf2a70080dcd6c722e95f72c0034657175291 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 19 Oct 2023 02:28:07 +0000
+Subject: [PATCH] qt-5.15.11 fix for gcc 14
+
+---
+ .../deps/rapidjson/1.1.0/include/rapidjson/document.h           | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/qtlocation/src/3rdparty/mapbox-gl-native/deps/rapidjson/1.1.0/include/rapidjson/document.h b/qtlocation/src/3rdparty/mapbox-gl-native/deps/rapidjson/1.1.0/include/rapidjson/document.h
+index e3e20df..ad362a6 100644
+--- a/qtlocation/src/3rdparty/mapbox-gl-native/deps/rapidjson/1.1.0/include/rapidjson/document.h
++++ b/qtlocation/src/3rdparty/mapbox-gl-native/deps/rapidjson/1.1.0/include/rapidjson/document.h
+@@ -322,7 +322,7 @@ struct GenericStringRef {
+     operator const Ch *() const { return s; }
+ 
+     const Ch* const s; //!< plain CharType pointer
+-    const SizeType length; //!< length of the string (excluding the trailing NULL terminator)
++    SizeType length; //!< length of the string (excluding the trailing NULL terminator)
+ 
+ private:
+     //! Disallow construction from non-const array
+-- 
+2.31.1
+

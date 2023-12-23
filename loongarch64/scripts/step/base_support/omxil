@@ -1,0 +1,31 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=omxil
+export PACKAGE_VERSION=0.9.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/omxil/0.9.3/
+rm -rf ${BUILD_DIRECTORY}/libomxil-bellagio-0.9.3
+tar xvf ${DOWNLOADDIR}/libomxil-bellagio-0.9.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libomxil-bellagio-0.9.3
+        patch -Np1 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/libomxil-bellagio-0.9.3-fix_Werror.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/libomxil-bellagio-0.9.3-unused.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/libomxil-bellagio-0.9.3-nodoc.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/bellagio-0.9.3-dynamicloader-linking.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/bellagio-0.9.3-parallel-build.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/bellagio-0.9.3-segfault-on-removeFromWaitResource.patch 
+	patch -Np0 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/omxil_version.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/libomxil-bellagio-0.9.3-memcpy.patch 
+	patch -Np0 -i ${SYSDIR}/files/base_support/omxil/0.9.3/patches/libomxil-bellagio-0.9.3-valgrind_register.patch 
+	 
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        autoreconf -ifv
+        CFLAGS="${CFLAGS} -Wno-error=array-bounds -Wno-error=stringop-overflow -Wno-error=maybe-uninitialized -fcommon" ./configure ${COMMON_CONFIG} ac_cv_func_realloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes --enable-malloc0returnsnull
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libomxil-bellagio-0.9.3

@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=usbutils
-export PACKAGE_VERSION=016
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/usbutils/016/
-rm -rf ${BUILD_DIRECTORY}/usbutils-016
-tar xvf ${DOWNLOADDIR}/usbutils-016.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/usbutils-016
+export PACKAGE_VERSION=017
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/usbutils/017/
+rm -rf ${BUILD_DIRECTORY}/usbutils-017
+tar xvf ${DOWNLOADDIR}/usbutils-017.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/usbutils-017
     ./configure ${COMMON_CONFIG} \
                 --datadir=/usr/share/hwdata
     eval ${MAKE_AND_INSTALL}
     mkdir -pv ${SYSROOT_DIR}/usr/share/hwdata/
     cp -a ${RESOURCEDIR}/files/usb.ids ${SYSROOT_DIR}/usr/share/hwdata/usb.ids
 popd 
-rm -rf ${BUILD_DIRECTORY}/usbutils-016
+rm -rf ${BUILD_DIRECTORY}/usbutils-017

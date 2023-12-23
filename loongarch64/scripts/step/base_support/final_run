@@ -40,7 +40,9 @@ sed -i -e "s@${SYSROOT_DIR}@@g" \
 
 sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
        -e "s@${SYSROOT_DIR}/usr@/usr@g" \
+       -e "s@/bin/${CROSS_TARGET}-@/bin/@g" \
        $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
+       $(file ${SYSROOT_DIR}/usr/bin/*-setup | grep ASCII | awk -F':' '{ print $1 }') \
        ${TEMP_DIRECTORY}/strip-foo
 
 sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \

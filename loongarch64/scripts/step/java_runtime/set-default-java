@@ -1,0 +1,16 @@
+source env/java_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=java_runtime
+export STEP_PACKAGENAME=set-default-java
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/java_runtime/set-default-java//
+pushd ${SYSROOT_DIR}/opt
+	for i in $(find -maxdepth 1 -name "jdk-*" | sed "s@\./jdk-@@g" | sort -V -r)
+	do
+		if [ -f jdk-$i/bin/java ]; then
+			ln -sf /opt/jdk-$i/bin/java ${SYSROOT_DIR}/usr/bin/java
+			break;
+		fi
+	done
+popd

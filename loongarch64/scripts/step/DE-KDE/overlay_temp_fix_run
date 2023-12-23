@@ -5,13 +5,13 @@ export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=overlay_temp_fix_run
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/overlay_temp_fix_run//
-sed -i.orig "s@\${_qt5Core_install_prefix}@${CROSSTOOLS_DIR}@g" \
+sed -i.orig "s@\${_qt5Core_install_prefix}@${CROSSTOOLS_DIR}/qt5@g" \
             ${SYSROOT_DIR}/usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtras.cmake
-sed -i.orig "s@\${_qt5_linguisttools_install_prefix}@${CROSSTOOLS_DIR}@g" \
+sed -i.orig "s@\${_qt5_linguisttools_install_prefix}@${CROSSTOOLS_DIR}/qt5@g" \
             ${SYSROOT_DIR}/usr/lib64/cmake/Qt5LinguistTools/Qt5LinguistToolsConfig.cmake
-sed -i.orig "s@\${_qt5DBus_install_prefix}@${CROSSTOOLS_DIR}@g" \
+sed -i.orig "s@\${_qt5DBus_install_prefix}@${CROSSTOOLS_DIR}/qt5@g" \
             ${SYSROOT_DIR}/usr/lib64/cmake/Qt5DBus/Qt5DBusConfigExtras.cmake
-sed -i.orig "s@\${_qt5Widgets_install_prefix}@${CROSSTOOLS_DIR}@g" \
+sed -i.orig "s@\${_qt5Widgets_install_prefix}@${CROSSTOOLS_DIR}/qt5@g" \
             ${SYSROOT_DIR}/usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake
 
 
@@ -28,7 +28,7 @@ done
 for kf5_file in KF5Config/KF5ConfigCompilerTargets-release.cmake KF5Auth/KF5AuthToolsTargets-release.cmake KF5KCMUtils/KF5KCMUtilsToolingTargets-release.cmake
 do
 	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/${kf5_file} ]; then
-		sed -i.orig "s@\"/usr/lib64/libexec@\"${CROSSTOOLS_DIR}/lib64/libexec@g" \
+		sed -i.orig "s@\"/usr/lib64/libexec@\"${CROSSTOOLS_DIR}/qt5/libexec@g" \
 			${SYSROOT_DIR}/usr/lib64/cmake/${kf5_file}
 	fi
 done
@@ -48,7 +48,8 @@ for kf5_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name
 		${SYSROOT_DIR}/usr/lib64/cmake/Qca-qt5/Qca-qt5Targets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt5-1/PolkitQt5-1Targets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/utf8_range/utf8_range-targets-release.cmake \
-		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
+		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Imath/ImathTargets-release.cmake
 do
 	if [ -f ${kf5_file} ]; then
 		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${kf5_file}

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=wheel
-export PACKAGE_VERSION=0.41.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/wheel/0.41.2/
-rm -rf ${BUILD_DIRECTORY}/wheel-0.41.2
-tar xvf ${DOWNLOADDIR}/wheel-0.41.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wheel-0.41.2
+export PACKAGE_VERSION=0.42.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/wheel/0.42.0/
+rm -rf ${BUILD_DIRECTORY}/wheel-0.42.0
+tar xvf ${DOWNLOADDIR}/wheel-0.42.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wheel-0.42.0
 	
 	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user wheel --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/wheel-0.41.2
+rm -rf ${BUILD_DIRECTORY}/wheel-0.42.0

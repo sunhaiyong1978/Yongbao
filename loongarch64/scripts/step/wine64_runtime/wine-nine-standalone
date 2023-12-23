@@ -1,0 +1,42 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=wine-nine-standalone
+export PACKAGE_VERSION=0.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/wine-nine-standalone/0.9/
+rm -rf ${BUILD_DIRECTORY}/wine-nine-standalone-0.9
+tar xvf ${DOWNLOADDIR}/wine-nine-standalone-0.9.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-nine-standalone-0.9
+        
+	export PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
+
+cat > cross-wine64 << EOF
+[binaries]
+c = 'winegcc'
+ar = '${X86_64_HOST}-ar'
+strip = '${X86_64_HOST}-strip'
+pkgconfig = '${X86_64_HOST}-pkg-config'
+
+[properties]
+c_args = ['-m64']
+c_link_args = ['-m64', '-mwindows', '-L/nonexistant']
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+EOF
+
+        mkdir cross-build
+        pushd cross-build
+                meson --cross-file ../cross-wine64 --buildtype release --prefix /opt/wine64 --libdir lib64 \
+		      --default-library=both \
+                      ..
+                eval ${NINJA_AND_INSTALL}
+        popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/wine-nine-standalone-0.9

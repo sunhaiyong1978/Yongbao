@@ -1,0 +1,149 @@
+From 7debb6d61f808bacbc9fd6c4f1f59ee33b493a39 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 20 Nov 2023 11:28:47 +0000
+Subject: [PATCH] external/libcmis add
+ 0001-libcmis-fix-build-error-for-libxml2-2.12.0.patch.1 file.
+
+---
+ ...fix-build-error-for-libxml2-2.12.0.patch.1 | 115 ++++++++++++++++++
+ external/libcmis/UnpackedTarball_libcmis.mk   |   4 +
+ 2 files changed, 119 insertions(+)
+ create mode 100644 external/libcmis/0001-libcmis-fix-build-error-for-libxml2-2.12.0.patch.1
+
+diff --git a/external/libcmis/0001-libcmis-fix-build-error-for-libxml2-2.12.0.patch.1 b/external/libcmis/0001-libcmis-fix-build-error-for-libxml2-2.12.0.patch.1
+new file mode 100644
+index 0000000..7d5eb2b
+--- /dev/null
++++ b/external/libcmis/0001-libcmis-fix-build-error-for-libxml2-2.12.0.patch.1
+@@ -0,0 +1,115 @@
++From 2f6ce8a9cfd5a5430591e29e12e9b41497aeb552 Mon Sep 17 00:00:00 2001
++From: Sun Haiyong <sunhaiyong@zdbr.net>
++Date: Mon, 20 Nov 2023 11:25:26 +0000
++Subject: [PATCH] libcmis fix build error for libxml2 2.12.0.
++
++---
++ inc/libcmis/allowable-actions.hxx | 1 +
++ inc/libcmis/object-type.hxx       | 1 +
++ inc/libcmis/object.hxx            | 1 +
++ inc/libcmis/property-type.hxx     | 1 +
++ inc/libcmis/property.hxx          | 1 +
++ inc/libcmis/rendition.hxx         | 1 +
++ inc/libcmis/repository.hxx        | 1 +
++ inc/libcmis/xml-utils.hxx         | 1 +
++ 8 files changed, 8 insertions(+)
++
++diff --git a/inc/libcmis/allowable-actions.hxx b/inc/libcmis/allowable-actions.hxx
++index 50e9402..0b652c3 100644
++--- a/inc/libcmis/allowable-actions.hxx
+++++ b/inc/libcmis/allowable-actions.hxx
++@@ -33,6 +33,7 @@
++ 
++ #include <boost/shared_ptr.hpp>
++ #include <libxml/tree.h>
+++#include <libxml/parser.h>
++ 
++ #include "libcmis/exception.hxx"
++ #include "libcmis/libcmis-api.h"
++diff --git a/inc/libcmis/object-type.hxx b/inc/libcmis/object-type.hxx
++index 7fbf3e9..7a15c35 100644
++--- a/inc/libcmis/object-type.hxx
+++++ b/inc/libcmis/object-type.hxx
++@@ -30,6 +30,7 @@
++ 
++ #include <boost/shared_ptr.hpp>
++ #include <libxml/tree.h>
+++#include <libxml/parser.h>
++ 
++ #include <string>
++ #include <vector>
++diff --git a/inc/libcmis/object.hxx b/inc/libcmis/object.hxx
++index 5e5b3b5..11ff1fe 100644
++--- a/inc/libcmis/object.hxx
+++++ b/inc/libcmis/object.hxx
++@@ -40,6 +40,7 @@
++ #include <boost/date_time.hpp>
++ #include <boost/shared_ptr.hpp>
++ #include <libxml/tree.h>
+++#include <libxml/parser.h>
++ 
++ #include "libcmis/allowable-actions.hxx"
++ #include "libcmis/exception.hxx"
++diff --git a/inc/libcmis/property-type.hxx b/inc/libcmis/property-type.hxx
++index 350a7b2..b83b573 100644
++--- a/inc/libcmis/property-type.hxx
+++++ b/inc/libcmis/property-type.hxx
++@@ -30,6 +30,7 @@
++ 
++ #include <boost/date_time.hpp>
++ #include <libxml/tree.h>
+++#include <libxml/parser.h>
++ 
++ #include <string>
++ 
++diff --git a/inc/libcmis/property.hxx b/inc/libcmis/property.hxx
++index 9f67b55..c3249a6 100644
++--- a/inc/libcmis/property.hxx
+++++ b/inc/libcmis/property.hxx
++@@ -30,6 +30,7 @@
++ 
++ #include <libxml/tree.h>
++ #include <libxml/xmlwriter.h>
+++#include <libxml/parser.h>
++ 
++ #include <boost/date_time.hpp>
++ #include <boost/shared_ptr.hpp>
++diff --git a/inc/libcmis/rendition.hxx b/inc/libcmis/rendition.hxx
++index 62dc59c..3cd03f8 100644
++--- a/inc/libcmis/rendition.hxx
+++++ b/inc/libcmis/rendition.hxx
++@@ -33,6 +33,7 @@
++ 
++ #include <boost/shared_ptr.hpp>
++ #include <libxml/tree.h>
+++#include <libxml/parser.h>
++ 
++ #include "libcmis/libcmis-api.h"
++ 
++diff --git a/inc/libcmis/repository.hxx b/inc/libcmis/repository.hxx
++index 3c0f67c..04dd988 100644
++--- a/inc/libcmis/repository.hxx
+++++ b/inc/libcmis/repository.hxx
++@@ -33,6 +33,7 @@
++ 
++ #include <boost/shared_ptr.hpp>
++ #include <libxml/tree.h>
+++#include <libxml/parser.h>
++ 
++ #include "libcmis/libcmis-api.h"
++ 
++diff --git a/inc/libcmis/xml-utils.hxx b/inc/libcmis/xml-utils.hxx
++index 929385e..befb8f7 100644
++--- a/inc/libcmis/xml-utils.hxx
+++++ b/inc/libcmis/xml-utils.hxx
++@@ -37,6 +37,7 @@
++ #include <libxml/tree.h>
++ #include <libxml/xpathInternals.h>
++ #include <libxml/xmlwriter.h>
+++#include <libxml/parser.h>
++ 
++ #include "libcmis/exception.hxx"
++ #include "libcmis/libcmis-api.h"
++-- 
++2.31.1
++
+diff --git a/external/libcmis/UnpackedTarball_libcmis.mk b/external/libcmis/UnpackedTarball_libcmis.mk
+index 1c014d9..d4189e3 100644
+--- a/external/libcmis/UnpackedTarball_libcmis.mk
++++ b/external/libcmis/UnpackedTarball_libcmis.mk
+@@ -13,4 +13,8 @@ $(eval $(call gb_UnpackedTarball_set_tarball,libcmis,$(LIBCMIS_TARBALL)))
+ 
+ $(eval $(call gb_UnpackedTarball_set_patchlevel,libcmis,1))
+ 
++$(eval $(call gb_UnpackedTarball_add_patches,libcmis,\
++    external/libcmis/0001-libcmis-fix-build-error-for-libxml2-2.12.0.patch.1 \
++))
++
+ # vim: set noet sw=4 ts=4:
+-- 
+2.31.1
+

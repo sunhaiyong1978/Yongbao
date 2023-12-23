@@ -1,0 +1,14 @@
+source env/bootstrap/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=bootstrap
+export STEP_PACKAGENAME=jdk8-bootstrap
+export PACKAGE_VERSION=8u-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/bootstrap/jdk8-bootstrap/8u-default/
+rm -rf ${BUILD_DIRECTORY}/java-se-8u43-ri
+tar xvf ${DOWNLOADDIR}/openjdk-8u43-linux-x64.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/java-se-8u43-ri
+    mkdir -pv ${CROSSTOOLS_DIR}/jdk8-bootstrap
+    cp -af * ${CROSSTOOLS_DIR}/jdk8-bootstrap
+popd 
+rm -rf ${BUILD_DIRECTORY}/java-se-8u43-ri

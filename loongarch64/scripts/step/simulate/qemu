@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=qemu
-export PACKAGE_VERSION=8.1.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/8.1.2/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.1.2
-tar xvf ${DOWNLOADDIR}/qemu-8.1.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.1.2
+export PACKAGE_VERSION=8.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/8.2.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.0
+tar xvf ${DOWNLOADDIR}/qemu-8.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.2.0
 	
 	mkdir -p cross-build
 	pushd cross-build
@@ -28,7 +28,7 @@ pushd ${BUILD_DIRECTORY}/qemu-8.1.2
 	install -vdm 755 ${SYSROOT_DIR}/etc/qemu
 	echo "allow br0" > ${SYSROOT_DIR}/etc/qemu/bridge.conf
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.1.2
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.0
 
 mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
 cat > ${SYSROOT_DIR}/etc/sysctl.d/60-net-forward.conf << EOF

@@ -13,7 +13,8 @@ pushd ${BUILD_DIRECTORY}/ostree-git-default_git
 	sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
         ./configure ${COMMON_CONFIG} --enable-introspection=yes \
 		    --with-systemdsystemunitdir=/usr/lib/systemd/system \
-		    --with-systemdsystemgeneratordir=/usr/lib/systemd/system-generators
+		    --with-systemdsystemgeneratordir=/usr/lib/systemd/system-generators \
+		    BASH_COMPLETIONSDIR=/usr/share/bash-completion/completions
         make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
                    INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
 	           INTROSPECTION_SCANNER_ENV="" \

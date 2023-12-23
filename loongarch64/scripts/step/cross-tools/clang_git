@@ -23,6 +23,7 @@ pushd clang
                  -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF}  \
                  -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
                  -DLLVM_INCLUDE_TESTS=OFF \
+		 -DLLVM_VERSION_SUFFIX='' \
                  -DDEFAULT_SYSROOT:PATH="${SYSROOT_DIR}"
         ninja
         ninja install

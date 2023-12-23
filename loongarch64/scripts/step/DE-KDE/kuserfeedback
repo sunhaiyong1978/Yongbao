@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kuserfeedback
-export PACKAGE_VERSION=1.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kuserfeedback/1.2.0/
-rm -rf ${BUILD_DIRECTORY}/kuserfeedback-1.2.0
-tar xvf ${DOWNLOADDIR}/kuserfeedback-1.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kuserfeedback-1.2.0
+export PACKAGE_VERSION=1.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kuserfeedback/1.3.0/
+rm -rf ${BUILD_DIRECTORY}/kuserfeedback-1.3.0
+tar xvf ${DOWNLOADDIR}/kuserfeedback-1.3.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kuserfeedback-1.3.0
         
-	sed -i "s@COMMAND Qt\${QT_MAJOR_VERSION}::qdoc@ COMMAND ${CROSSTOOLS_DIR}/bin/qdoc@g" docs/CMakeLists.txt
-	sed -i "s@COMMAND Qt\${QT_MAJOR_VERSION}::qhelpgenerator@ COMMAND ${CROSSTOOLS_DIR}/bin/qhelpgenerator@g" docs/CMakeLists.txt
-	sed -i "s@COMMAND Qt\${QT_MAJOR_VERSION}::qcollectiongenerator@ COMMAND ${CROSSTOOLS_DIR}/bin/qcollectiongenerator@g" docs/CMakeLists.txt
+	sed -i "s@COMMAND Qt\${QT_MAJOR_VERSION}::qdoc@ COMMAND ${CROSSTOOLS_DIR}/qt5/bin/qdoc@g" docs/CMakeLists.txt
+	sed -i "s@COMMAND Qt\${QT_MAJOR_VERSION}::qhelpgenerator@ COMMAND ${CROSSTOOLS_DIR}/qt5/bin/qhelpgenerator@g" docs/CMakeLists.txt
+	sed -i "s@COMMAND Qt\${QT_MAJOR_VERSION}::qcollectiongenerator@ COMMAND ${CROSSTOOLS_DIR}/qt5/bin/qcollectiongenerator@g" docs/CMakeLists.txt
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
@@ -38,10 +38,10 @@ pushd ${BUILD_DIRECTORY}/kuserfeedback-1.2.0
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-		      -DQMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/qmllint \
+		      -DQMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/qt5/bin/qmllint \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kuserfeedback-1.2.0
+rm -rf ${BUILD_DIRECTORY}/kuserfeedback-1.3.0

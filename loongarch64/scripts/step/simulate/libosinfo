@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=libosinfo
-export PACKAGE_VERSION=1.10.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/libosinfo/1.10.0/
-rm -rf ${BUILD_DIRECTORY}/libosinfo-1.10.0
-tar xvf ${DOWNLOADDIR}/libosinfo-1.10.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libosinfo-1.10.0
-	patch -Np1 -i ${SYSDIR}/files/simulate/libosinfo/1.10.0/patches/0001-libosinfo-enable-introspection-for-cross-build.patch 
+export PACKAGE_VERSION=1.11.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/libosinfo/1.11.0/
+rm -rf ${BUILD_DIRECTORY}/libosinfo-1.11.0
+tar xvf ${DOWNLOADDIR}/libosinfo-1.11.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libosinfo-1.11.0
+	patch -Np1 -i ${SYSDIR}/files/simulate/libosinfo/1.11.0/patches/0001-libosinfo-enable-introspection-for-cross-build.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libosinfo-1.10.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libosinfo-1.10.0
+rm -rf ${BUILD_DIRECTORY}/libosinfo-1.11.0

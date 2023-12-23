@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=qemu_git
-export PACKAGE_VERSION=8.1.0-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu_git/8.1.0-default/
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
-tar xvf ${DOWNLOADDIR}/qemu_git-8.1.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
+export PACKAGE_VERSION=8.2.0-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu_git/8.2.0-default/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.0-rc1
+tar xvf ${DOWNLOADDIR}/v8.2.0-rc1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.2.0-rc1
 	
 	mkdir -p cross-build
 	pushd cross-build
@@ -26,7 +26,7 @@ pushd ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
 	mkdir -p ${SYSROOT_DIR}/usr/gnemul
         echo "allow br0" > ${SYSROOT_DIR}/etc/qemu/bridge.conf
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.1.0-default_git
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.0-rc1
 
 mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
 cat > ${SYSROOT_DIR}/etc/sysctl.d/60-net-forward.conf << EOF

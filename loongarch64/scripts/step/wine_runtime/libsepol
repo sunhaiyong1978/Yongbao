@@ -4,12 +4,12 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=libsepol
-export PACKAGE_VERSION=3.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libsepol/3.5/
-rm -rf ${BUILD_DIRECTORY}/libsepol-3.5
-tar xvf ${DOWNLOADDIR}/libsepol-3.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libsepol-3.5
+export PACKAGE_VERSION=3.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libsepol/3.6/
+rm -rf ${BUILD_DIRECTORY}/libsepol-3.6
+tar xvf ${DOWNLOADDIR}/libsepol-3.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libsepol-3.6
 	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make -j${JOBS}
 	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make DESTDIR=${X86_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libsepol-3.5
+rm -rf ${BUILD_DIRECTORY}/libsepol-3.6

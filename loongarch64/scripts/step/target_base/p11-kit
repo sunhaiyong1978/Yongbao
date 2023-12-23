@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=p11-kit
-export PACKAGE_VERSION=0.25.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/p11-kit/0.25.0/
-rm -rf ${BUILD_DIRECTORY}/p11-kit-0.25.0
-tar xvf ${DOWNLOADDIR}/p11-kit-0.25.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/p11-kit-0.25.0
-        patch -Np1 -i ${SYSDIR}/files/target_base/p11-kit/0.25.0/patches/0001-p11-kit-fix-systemd-dir-for-cross-build.patch 
+export PACKAGE_VERSION=0.25.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/p11-kit/0.25.3/
+rm -rf ${BUILD_DIRECTORY}/p11-kit-0.25.3
+tar xvf ${DOWNLOADDIR}/p11-kit-0.25.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/p11-kit-0.25.3
+        patch -Np1 -i ${SYSDIR}/files/target_base/p11-kit/0.25.3/patches/0001-p11-kit-0.25.1-fix-systemd-user-unit-dir-for-cross-b.patch 
 	 
 sed 's/if (gi/& \&\& gi != C_GetInterface/' \
     -i p11-kit/modules.c
@@ -23,7 +23,7 @@ cat >> trust/trust-extract-compat << "EOF"
 EOF
         mkdir cross-build
         pushd cross-build
-                meson ${MESON_CONFIG} -Dtrust_paths=/etc/pki/anchors \
+                meson ${MESON_CONFIG} -Dtrust_paths=/etc/pki/anchors -Dbashcompdir=/usr/share/bash-completion/completions \
                       ..
                 eval ${NINJA_AND_INSTALL}
         popd
@@ -33,4 +33,4 @@ EOF
 
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/p11-kit-0.25.0
+rm -rf ${BUILD_DIRECTORY}/p11-kit-0.25.3

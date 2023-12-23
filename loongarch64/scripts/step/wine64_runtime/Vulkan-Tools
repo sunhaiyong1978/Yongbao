@@ -1,0 +1,25 @@
+source env/wine64_runtime/config
+source env/distro.info
+source env/function.sh
+source env/wine64_runtime/custom
+export STEP_BUILDNAME=wine64_runtime
+export STEP_PACKAGENAME=Vulkan-Tools
+export PACKAGE_VERSION=1.3.274
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/Vulkan-Tools/1.3.274/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.274
+tar xvf ${DOWNLOADDIR}/Vulkan-Tools-1.3.274.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.274
+        
+	sed -i "s@pkg_get_variable(WAYLAND_SCANNER_EXECUTABLE wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER_EXECUTABLE ${CROSSTOOLS_DIR}/bin/wayland-scanner)@g" cube/CMakeLists.txt
+        mkdir cross-build
+        pushd cross-build
+                CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" \
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+                      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-x86_64.cmake \
+                      -DCMAKE_INSTALL_PREFIX=/usr  -Wno-dev ..
+                eval ${MAKE_AND_INSTALL}
+        popd
+        rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.3.274

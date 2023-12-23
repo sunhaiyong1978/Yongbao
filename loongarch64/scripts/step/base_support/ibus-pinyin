@@ -8,8 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ibus-pinyin/1.5.0/
 rm -rf ${BUILD_DIRECTORY}/ibus-pinyin-1.5.0
 tar xvf ${DOWNLOADDIR}/ibus-pinyin-1.5.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ibus-pinyin-1.5.0
-	patch -Np1 -i ${SYSDIR}/files/base_support/ibus-pinyin/1.5.0/patches/0001-Fix-english-db-build-error.patch 
 	patch -Np1 -i ${SYSDIR}/files/base_support/ibus-pinyin/1.5.0/patches/ibus-pinyin-fixes-lua-compile.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/ibus-pinyin/1.5.0/patches/ibus-pinyin-1.5.0-upstream-1.patch 
 	 
 	for config_i in $(find -name "config.sub")
 	do
@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/ibus-pinyin-1.5.0
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	PYTHON=python3 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

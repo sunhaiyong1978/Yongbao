@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
     rm -rf gdb* libdecnumber readline sim
     mkdir cross-build
     pushd cross-build
-        LDFLAGS="--static" CC=gcc AR=ar AS=as CFLAGS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${CFLAGS} -Wno-error=dangling-pointer" || echo "${CFLAGS}")" \
+        LDFLAGS="--static" CC=gcc AR=ar AS=as CFLAGS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${CFLAGS} -Wno-error=dangling-pointer" || echo "${CFLAGS} -Wno-error=format-truncation ")" \
         ../configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
                      --target=${CROSS_TARGET} --with-sysroot=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target --enable-nls \
                      --enable-64-bit-bfd --disable-shared

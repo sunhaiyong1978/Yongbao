@@ -5,9 +5,13 @@ export STEP_BUILDNAME=sddm
 export STEP_PACKAGENAME=overlay_temp_fix_run
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/overlay_temp_fix_run//
-sed -i.orig "s@\${_qt5Core_install_prefix}@${CROSSTOOLS_DIR}@g" \
-            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtras.cmake
-sed -i.orig "s@\${_qt5_linguisttools_install_prefix}@${CROSSTOOLS_DIR}@g" \
-            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5LinguistTools/Qt5LinguistToolsConfig.cmake
-sed -i.orig "s@\${_qt5DBus_install_prefix}@${CROSSTOOLS_DIR}@g" \
-            ${SYSROOT_DIR}/usr/lib64/cmake/Qt5DBus/Qt5DBusConfigExtras.cmake
+
+for bin_file in qmake moc uic rcc lrelease
+do
+        if [ -f ${SYSROOT_DIR}/usr/bin/${bin_file} ]; then
+                mv ${SYSROOT_DIR}/usr/bin/${bin_file}{,.orig}
+                echo "#!/bin/bash
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/${bin_file}.orig \"\$@\"" > ${SYSROOT_DIR}/usr/bin/${bin_file}
+                chmod +x ${SYSROOT_DIR}/usr/bin/${bin_file}
+        fi
+done

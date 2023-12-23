@@ -29,3 +29,5 @@ qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/perl -I${SYSROOT_DIR}/usr/lib64/perl5/5
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
 popd 
 rm -rf ${BUILD_DIRECTORY}/perl-5.38.0
+
+set_strip_step "usr/lib64/perl5" "0"

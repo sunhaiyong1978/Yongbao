@@ -13,9 +13,12 @@ pushd ${BUILD_DIRECTORY}/wine-8.0.2
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
+
+
+
 	PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
 
-	export CROSSCFLAGS="-g -O3"
+	export CROSSCFLAGS="-g -O2"
         ./configure --prefix=/opt/wine64 --build=${CROSS_HOST} --host=${X86_64_HOST} --with-wine-tools=${CROSSTOOLS_DIR}/wine-tools PULSE_LIBS="-Wl,-rpath-link=${X86_64_SYSROOT_DIR}/usr/lib64/pulseaudio -lpulse -lpthread" NETAPI_LIBS="-Wl,-rpath-link=${X86_64_SYSROOT_DIR}/usr/lib64/samba -lnetapi" --enable-malloc0returnsnull --enable-archs=i386,x86_64 --enable-win64 OSSLIBDIR=${X86_64_SYSROOT_DIR}/usr/lib/oss
         CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
@@ -28,3 +31,15 @@ pushd ${BUILD_DIRECTORY}/wine-8.0.2
 
 popd 
 rm -rf ${BUILD_DIRECTORY}/wine-8.0.2
+
+set_strip_step "/opt/wine64/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-unix/" "1" "*.so*" "--strip-unneeded" "${CROSS_TOOLS_PREFIX}/bin/${X86_64_HOST}-strip"
+
+set_strip_step "/opt/wine64/lib/wine/i386-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/i386-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/i386-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+
+set_strip_step "/opt/wine64/lib/wine/x86_64-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"

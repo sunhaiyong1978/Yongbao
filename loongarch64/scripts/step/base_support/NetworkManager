@@ -3,22 +3,42 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=NetworkManager
-export PACKAGE_VERSION=1.45.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.45.5/
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.5
-tar xvf ${DOWNLOADDIR}/NetworkManager-1.45.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/NetworkManager-1.45.5
-    patch -Np1 -i ${SYSDIR}/files/base_support/NetworkManager/1.45.5/patches/0001-NetworkManager-fix-polkit-dir-error-for-cross-build.patch 
+export PACKAGE_VERSION=1.45.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.45.9/
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.9
+tar xvf ${DOWNLOADDIR}/NetworkManager-1.45.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/NetworkManager-1.45.9
+    patch -Np1 -i ${SYSDIR}/files/base_support/NetworkManager/1.45.9/patches/0001-NetworkManager-fix-polkit-dir-error-for-cross-build.patch 
 	 
+    sed -i -e 's/Qt/&5/' meson.build
+    sed -i -e 's/-qt4/-qt5/' -e 's/moc_location/host_bins/' examples/C/qt/meson.build 
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} \
-	      -Dlibaudit=no -Dlibpsl=false -Dnmtui=true -Dovs=false -Dppp=false -Dselinux=false \
-              -Dqt=false -Dsession_tracking=systemd -Dmodem_manager=false -Dpolkit=$((test -f ${CROSSTOOLS_DIR}/bin/rustc) && echo "true" || echo "false") \
+              -Dqt=false \
+	      -Dlibaudit=no -Dselinux=false -Dteamdctl=true \
+	      -Dsession_tracking=systemd \
+	      -Dpolkit=$((test -f ${CROSSTOOLS_DIR}/bin/rustc) && echo "true" || echo "false") \
 	      -Dsystemdsystemunitdir=/usr/lib/systemd/system \
+	      -Dmobile_broadband_provider_info_database=/usr/share/mobile-broadband-provider-info/serviceproviders.xml \
+	      -Dconfig_wifi_backend_default=wpa_supplicant \
+	      -Ddnsmasq=/sbin/dnsmasq -Dpppd=/usr/sbin/pppd \
 	      ..
         CC=${CROSS_TARGET}-gcc ninja
         DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.5
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.45.9
+
+cat > ${SYSROOT_DIR}/usr/share/polkit-1/rules.d/org.freedesktop.NetworkManager.rules << "EOF"
+polkit.addRule(function(action, subject) {
+    if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0 && subject.isInGroup("netdev")) {
+        return polkit.Result.YES;
+    }
+});
+EOF
+
+cat > ${SYSROOT_DIR}/etc/NetworkManager/conf.d/polkit.conf << "EOF"
+[main]
+auth-polkit=false
+EOF

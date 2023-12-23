@@ -1,0 +1,39 @@
+From 2eccc9568435d757db22744f1c5cd5e1edc8770e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 3 Dec 2023 09:51:48 +0000
+Subject: [PATCH 2/3] qtwebkit fix icu patch.
+
+---
+ Source/WTF/wtf/text/icu/UTextProvider.h       | 2 ++
+ Source/WebCore/platform/text/TextCodecICU.cpp | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/Source/WTF/wtf/text/icu/UTextProvider.h b/Source/WTF/wtf/text/icu/UTextProvider.h
+index c8f28d6ed3..bf241edaef 100644
+--- a/Source/WTF/wtf/text/icu/UTextProvider.h
++++ b/Source/WTF/wtf/text/icu/UTextProvider.h
+@@ -26,6 +26,8 @@
+ #pragma once
+ 
+ #include <unicode/utext.h>
++#define TRUE 1
++#define FALSE 0
+ 
+ namespace WTF {
+ 
+diff --git a/Source/WebCore/platform/text/TextCodecICU.cpp b/Source/WebCore/platform/text/TextCodecICU.cpp
+index e5f28166c6..10db41d492 100644
+--- a/Source/WebCore/platform/text/TextCodecICU.cpp
++++ b/Source/WebCore/platform/text/TextCodecICU.cpp
+@@ -36,6 +36,8 @@
+ #include <wtf/text/CString.h>
+ #include <wtf/text/StringBuilder.h>
+ #include <wtf/unicode/CharacterNames.h>
++#define TRUE 1
++#define FALSE 0
+ 
+ namespace WebCore {
+ 
+-- 
+2.31.1
+

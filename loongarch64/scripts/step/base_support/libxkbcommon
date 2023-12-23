@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/libxkbcommon-1.6.0
            meson.build
     mkdir cross-build
     pushd cross-build
-        meson ${MESON_CONFIG} -Dxkb-config-root=/usr/share/X11/xkb ..
+        meson ${MESON_CONFIG} -Dxkb-config-root=/usr/share/X11/xkb -Dbash-completion-path=/usr/share/bash-completion/completions ..
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 

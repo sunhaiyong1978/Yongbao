@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kio-extras
-export PACKAGE_VERSION=23.08.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kio-extras/23.08.2/
-rm -rf ${BUILD_DIRECTORY}/kio-extras-23.08.2
-tar xvf ${DOWNLOADDIR}/kio-extras-23.08.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kio-extras-23.08.2
+export PACKAGE_VERSION=23.08.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kio-extras/23.08.4/
+rm -rf ${BUILD_DIRECTORY}/kio-extras-23.08.4
+tar xvf ${DOWNLOADDIR}/kio-extras-23.08.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kio-extras-23.08.4
         
         mkdir cross-build
         pushd cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/kio-extras-23.08.2
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kio-extras-23.08.2
+rm -rf ${BUILD_DIRECTORY}/kio-extras-23.08.4

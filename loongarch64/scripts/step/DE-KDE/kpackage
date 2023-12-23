@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kpackage
-export PACKAGE_VERSION=5.111.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kpackage/5.111.0/
-rm -rf ${BUILD_DIRECTORY}/kpackage-5.111.0
-tar xvf ${DOWNLOADDIR}/kpackage-5.111.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kpackage-5.111.0
+export PACKAGE_VERSION=5.113.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kpackage/5.113.0/
+rm -rf ${BUILD_DIRECTORY}/kpackage-5.113.0
+tar xvf ${DOWNLOADDIR}/kpackage-5.113.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kpackage-5.113.0
         
         mkdir cross-build
         pushd cross-build
@@ -38,7 +38,7 @@ pushd ${BUILD_DIRECTORY}/kpackage-5.111.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kpackage-5.111.0
+rm -rf ${BUILD_DIRECTORY}/kpackage-5.113.0
 
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/kpackagetool5 \"\$@\"" \
         > ${CROSSTOOLS_DIR}/bin/kpackagetool5

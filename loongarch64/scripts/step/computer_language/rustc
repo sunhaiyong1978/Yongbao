@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.73.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/rustc/1.73.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.73.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.73.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.73.0-src
+export PACKAGE_VERSION=1.74.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/rustc/1.74.1/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.74.1-src
+tar xvf ${DOWNLOADDIR}/rustc-1.74.1-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.74.1-src
     
     LDFLAGS="" \
     PKG_CONFIG_SYSROOT_DIR="" \
@@ -31,7 +31,7 @@ pushd ${BUILD_DIRECTORY}/rustc-1.73.0-src
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          dist
-    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.73.0" | sed "s@-default@@g")/
-    find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.73.0" | sed "s@-default@@g")/ ';'
+    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.74.1" | sed "s@-default@@g")/
+    find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.74.1" | sed "s@-default@@g")/ ';'
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.73.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.74.1-src

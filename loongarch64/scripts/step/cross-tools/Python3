@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=Python3
-export PACKAGE_VERSION=3.12.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Python3/3.12.0/
-rm -rf ${BUILD_DIRECTORY}/Python-3.12.0
-tar xvf ${DOWNLOADDIR}/Python-3.12.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.12.0
+export PACKAGE_VERSION=3.12.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Python3/3.12.1/
+rm -rf ${BUILD_DIRECTORY}/Python-3.12.1
+tar xvf ${DOWNLOADDIR}/Python-3.12.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.12.1
 	./configure --prefix=${CROSSTOOLS_DIR} --with-platlibdir=lib64 \
 	            --disable-shared --with-system-expat --with-system-ffi \
 	            --with-ensurepip=yes --enable-optimizations \
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/Python-3.12.0
 	sed -i "s@-lutil @@g" ${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.12.0
+rm -rf ${BUILD_DIRECTORY}/Python-3.12.1

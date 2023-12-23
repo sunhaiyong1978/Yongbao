@@ -5,4 +5,4 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libcamera
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libcamera//
-cp -a ${CROSSTOOLS_DIR}/bin/{moc,uic,rcc,lrelease} ${SYSROOT_DIR}/usr/bin/
+cp -a ${CROSSTOOLS_DIR}/qt5/bin/{moc,uic,rcc,lrelease} ${SYSROOT_DIR}/usr/bin/

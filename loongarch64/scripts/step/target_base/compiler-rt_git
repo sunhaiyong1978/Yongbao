@@ -20,12 +20,14 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
                   -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
                   -DLLVM_ENABLE_RTTI:BOOL=ON \
                   -DLLVM_ENABLE_ZLIB:BOOL=ON \
+		  -DPython3_EXECUTABLE:PATH=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
                   -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
                   -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
                   -DLLVM_USE_SANITIZER:BOOL=ON \
                   -DCMAKE_SYSROOT=${SYSROOT_DIR} \
                   -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
                   -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+		  -DLLVM_VERSION_SUFFIX='' \
                   -DLLVM_HOST_TRIPLE=${CROSS_TARGET}
              eval ${NINJA_AND_INSTALL}
         popd

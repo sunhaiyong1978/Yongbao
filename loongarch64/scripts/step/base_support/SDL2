@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=SDL2
-export PACKAGE_VERSION=2.28.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SDL2/2.28.4/
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.4
-tar xvf ${DOWNLOADDIR}/SDL2-2.28.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SDL2-2.28.4
+export PACKAGE_VERSION=2.28.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SDL2/2.28.5/
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.5
+tar xvf ${DOWNLOADDIR}/SDL2-2.28.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SDL2-2.28.5
     ./configure ${COMMON_CONFIG}
     make -j${JOBS} WAYLAND_SCANNER=wayland-scanner
     make DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.4
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.28.5

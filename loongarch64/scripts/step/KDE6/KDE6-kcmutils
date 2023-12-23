@@ -1,0 +1,48 @@
+source env/KDE6/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=KDE6
+export STEP_PACKAGENAME=KDE6-kcmutils
+export PACKAGE_VERSION=5.247.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kcmutils/5.247.0/
+rm -rf ${BUILD_DIRECTORY}/kcmutils-5.247.0
+tar xvf ${DOWNLOADDIR}/kcmutils-5.247.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kcmutils-5.247.0
+        
+        sed -i.orig "s@COMMAND KF6::kcmdesktopfilegenerator@COMMAND qemu-loongarch64 ${PWD}/cross-build/bin/kcmdesktopfilegenerator@g" KF6KCMUtilsMacros.cmake
+        mkdir cross-build
+        pushd cross-build
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
+                      -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
+                      -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
+                      -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \
+                      -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
+                      -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
+                      -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPERL_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-perl \
+                      -DRuby_EXECUTABLE=${SYSDIR}/cross-tools/bin/ruby \
+                      -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
+                      -DDOXYGEN_EXECUTABLE=/bin/doxygen \
+                      -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
+                      -DLIBXML2_XMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/xmllint \
+                      -DFLEX_EXECUTABLE=/bin/flex \
+                      -DBISON_EXECUTABLE=/bin/bison \
+                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
+                      -DCMAKE_INSTALL_PREFIX=/usr \
+                      -DBUILD_SHARED_LIBS=ON \
+                      -Wno-dev ..
+                make -j${JOBS} -C tools kcmdesktopfilegenerator
+                eval ${MAKE_AND_INSTALL}
+        popd
+        cp KF6KCMUtilsMacros.cmake.orig ${SYSROOT_DIR}/usr/lib64/cmake/KF6KCMUtils/KF6KCMUtilsMacros.cmake
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/kcmutils-5.247.0
+
+mkdir -pv ${CROSSTOOLS_DIR}/libexec/kf6
+echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/libexec/kf6/kcmdesktopfilegenerator \"\$@\"" \
+        > ${CROSSTOOLS_DIR}/libexec/kf6/kcmdesktopfilegenerator
+chmod +x ${CROSSTOOLS_DIR}/libexec/kf6/kcmdesktopfilegenerator

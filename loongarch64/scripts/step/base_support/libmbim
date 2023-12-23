@@ -16,6 +16,5 @@ pushd ${BUILD_DIRECTORY}/libmbim-1.26.4
              INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler
         make DESTDIR=${SYSROOT_DIR} install
     popd
-    rm -v ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/libmbim-1.26.4

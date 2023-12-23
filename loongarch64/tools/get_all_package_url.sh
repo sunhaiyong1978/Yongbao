@@ -79,9 +79,9 @@ fi
 echo "" > logs/download_fail.log
 
 if [ "x${1}" == "x" ]; then
-        STEP_FILE="$(cat step)"
+        STEP_FILE="$(cat step | grep -v "^#")"
 else
-        STEP_FILE="$(cat step | grep "/${1}")"
+        STEP_FILE="$(cat step | grep -v "^#" | grep "/${1}")"
 fi
 
 declare SAVE_FILENAME=""
@@ -89,7 +89,7 @@ declare SAVE_FILENAME=""
 if [ "x${INDEX_FILE}" == "x" ]; then
 	STEP_ARRAY="$(echo "${STEP_FILE}" | sed "s@%step/@@g" | awk -F'|' '{ print $1 }')"
 else
-	STEP_ARRAY="$(cat ${INDEX_FILE} | awk -F' ' '{ print $2 }' | sed "s@step/@@g" | awk -F'|' '{ print $1 }')"
+	STEP_ARRAY="$(cat ${INDEX_FILE} | grep -v "^#" | awk -F' ' '{ print $2 }' | sed "s@step/@@g" | awk -F'|' '{ print $1 }')"
 fi
 
 for i in ${STEP_ARRAY}

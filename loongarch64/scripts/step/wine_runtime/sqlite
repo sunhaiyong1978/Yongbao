@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=sqlite
-export PACKAGE_VERSION=3.43.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/sqlite/3.43.2/
-rm -rf ${BUILD_DIRECTORY}/sqlite-version-3.43.2
-tar xvf ${DOWNLOADDIR}/sqlite-3.43.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sqlite-version-3.43.2
+export PACKAGE_VERSION=3.44.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/sqlite/3.44.2/
+rm -rf ${BUILD_DIRECTORY}/sqlite-version-3.44.2
+tar xvf ${DOWNLOADDIR}/sqlite-3.44.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sqlite-version-3.44.2
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/sqlite-version-3.43.2
         make DESTDIR=${X86_SYSROOT_DIR} install
 	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/sqlite-version-3.43.2
+rm -rf ${BUILD_DIRECTORY}/sqlite-version-3.44.2

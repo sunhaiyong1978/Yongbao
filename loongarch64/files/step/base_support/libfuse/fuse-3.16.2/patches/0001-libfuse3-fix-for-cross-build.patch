@@ -1,0 +1,30 @@
+From 1306cfa2fb58a49eabc31c5593d192f08a1e55dd Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 27 Oct 2023 02:25:58 +0000
+Subject: [PATCH] libfuse3 fix for cross build.
+
+---
+ util/install_helper.sh | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/util/install_helper.sh b/util/install_helper.sh
+index 76f2b47..17ef4f0 100755
+--- a/util/install_helper.sh
++++ b/util/install_helper.sh
+@@ -28,13 +28,7 @@ install -D -m 644 "${MESON_SOURCE_ROOT}/util/fuse.conf" \
+ 	"${DESTDIR}${sysconfdir}/fuse.conf"
+ 
+ if $useroot; then
+-    chown root:root "${DESTDIR}${bindir}/fusermount3"
+     chmod u+s "${DESTDIR}${bindir}/fusermount3"
+-
+-    if test ! -e "${DESTDIR}/dev/fuse"; then
+-        mkdir -p "${DESTDIR}/dev"
+-        mknod "${DESTDIR}/dev/fuse" -m 0666 c 10 229
+-    fi
+ fi
+ 
+ if [ "${udevrulesdir}" != "" ]; then
+-- 
+2.31.1
+

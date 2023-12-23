@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/cyrus-sasl-2.1.28
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --enable-auth-sasldb --with-sphinx-build=no --with-dbpath=/var/lib/sasl/sasldb2 --with-saslauthd=/var/run/saslauthd ac_cv_gssapi_supports_spnego=yes --enable-malloc0returnsnull
+	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration" ./configure ${COMMON_CONFIG} --enable-auth-sasldb --with-sphinx-build=no --with-dbpath=/var/lib/sasl/sasldb2 --with-saslauthd=/var/run/saslauthd ac_cv_gssapi_supports_spnego=yes --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

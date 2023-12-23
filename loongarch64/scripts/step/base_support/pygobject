@@ -10,8 +10,6 @@ tar xvf ${DOWNLOADDIR}/pygobject-3.46.0.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/pygobject-3.46.0
     mkdir cross-build
     pushd cross-build
-        PYTHON=${CROSSTOOLS_DIR}/bin/python3 \
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
         meson ${MESON_CONFIG} -Dtests=false ..
         CC="${CROSS_TARGET}-gcc" ninja
         DESTDIR=${SYSROOT_DIR} ninja install

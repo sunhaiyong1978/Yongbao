@@ -1,0 +1,35 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=libcaca
+export PACKAGE_VERSION=0.99-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libcaca/0.99-default/
+rm -rf ${BUILD_DIRECTORY}/libcaca-0.99.beta19
+tar xvf ${DOWNLOADDIR}/libcaca-0.99.beta19.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libcaca-0.99.beta19
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" \
+	PYTHON=python3 ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS} \
+	RUBY_SITEARCHDIR=$(ruby -r rbconfig -e 'print RbConfig::CONFIG["sitearchdir"]' | sed -e "s@${CROSSTOOLS_DIR}@/usr@g" -e "s@$(uname -m)@${ARCH_NAME}@g") \
+	RUBY_SITELIBDIR=$(ruby -r rbconfig -e 'print RbConfig::CONFIG["sitelibdir"]' | sed "s@${CROSSTOOLS_DIR}@/usr@g") \
+	RUBY_CFLAGS="$(ruby -r mkmf -e 'conf = RbConfig::CONFIG.merge("hdrdir" => $hdrdir, "arch_hdrdir" => $arch_hdrdir); print RbConfig::expand("#$INCFLAGS", conf)' | sed "s@${CROSSTOOLS_DIR}@/usr@g")" \
+	RUBY_LIBS="-L$(ruby -r rbconfig -e 'print RbConfig::CONFIG["libdir"]' | sed "s@${CROSSTOOLS_DIR}@/usr@g") -l$(ruby -r rbconfig -e 'print RbConfig::CONFIG["RUBY_SO_NAME"]' | sed "s@${CROSSTOOLS_DIR}@/usr@g")"
+        make \
+	RUBY_SITEARCHDIR=$(ruby -r rbconfig -e 'print RbConfig::CONFIG["sitearchdir"]' | sed -e "s@${CROSSTOOLS_DIR}@/usr@g" -e "s@$(uname -m)@${ARCH_NAME}@g") \
+	RUBY_SITELIBDIR=$(ruby -r rbconfig -e 'print RbConfig::CONFIG["sitelibdir"]' | sed "s@${CROSSTOOLS_DIR}@/usr@g") \
+	RUBY_CFLAGS="$(ruby -r mkmf -e 'conf = RbConfig::CONFIG.merge("hdrdir" => $hdrdir, "arch_hdrdir" => $arch_hdrdir); print RbConfig::expand("#$INCFLAGS", conf)' | sed "s@${CROSSTOOLS_DIR}@/usr@g")" \
+	RUBY_LIBS="-L$(ruby -r rbconfig -e 'print RbConfig::CONFIG["libdir"]' | sed "s@${CROSSTOOLS_DIR}@/usr@g") -l$(ruby -r rbconfig -e 'print RbConfig::CONFIG["RUBY_SO_NAME"]' | sed "s@${CROSSTOOLS_DIR}@/usr@g")" \
+	DESTDIR=${SYSROOT_DIR} install
+
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libcaca-0.99.beta19

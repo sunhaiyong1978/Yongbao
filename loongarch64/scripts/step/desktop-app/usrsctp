@@ -1,0 +1,20 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=usrsctp
+export PACKAGE_VERSION=0.9.5.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/usrsctp/0.9.5.0/
+rm -rf ${BUILD_DIRECTORY}/usrsctp-0.9.5.0
+tar xvf ${DOWNLOADDIR}/usrsctp-0.9.5.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/usrsctp-0.9.5.0
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/usrsctp-0.9.5.0
