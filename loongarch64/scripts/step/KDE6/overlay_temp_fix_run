@@ -44,6 +44,8 @@ for kf6_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name
 		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt6-1/PolkitQt6-1Targets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/utf8_range/utf8_range-targets-release.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/QGpgmeQt6/QGpgmeQt6Config.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/xapian/xapian-config.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/Imath/ImathTargets-release.cmake
 do
 	if [ -f ${kf6_file} ]; then
@@ -60,6 +62,8 @@ done
 
 for kf6_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6ModemManagerQt/KF6ModemManagerQtTargets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/KSysGuard/KSysGuardLibraryTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/KPim6AkonadiSearch/KPim6AkonadiSearchTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/QGpgmeQt6/QGpgmeQt6Config.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
 do
 	if [ -f ${kf6_file} ]; then

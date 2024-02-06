@@ -9,6 +9,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/create_base_files/1
 mkdir -p ${SYSROOT_DIR}/usr/gnemul/
 ln -sf ../../usr/lib/x86_64/sys-root ${SYSROOT_DIR}/usr/gnemul/qemu-x86_64
 ln -sf ../../usr/lib/x86_64/sys-root ${SYSROOT_DIR}/usr/gnemul/latx-x86_64
+ln -sf ../../usr/lib/x86_64/sys-root ${SYSROOT_DIR}/usr/gnemul/lat-x86_64
 mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
 echo "vm.mmap_min_addr=65536" > ${SYSROOT_DIR}/etc/sysctl.d/99-wine64_runtime.conf
 

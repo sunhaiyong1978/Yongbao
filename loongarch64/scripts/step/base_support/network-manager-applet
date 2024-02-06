@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=network-manager-applet
-export PACKAGE_VERSION=1.34.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/network-manager-applet/1.34.0/
-rm -rf ${BUILD_DIRECTORY}/network-manager-applet-1.34.0
-tar xvf ${DOWNLOADDIR}/network-manager-applet-1.34.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/network-manager-applet-1.34.0
+export PACKAGE_VERSION=1.36.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/network-manager-applet/1.36.0/
+rm -rf ${BUILD_DIRECTORY}/network-manager-applet-1.36.0
+tar xvf ${DOWNLOADDIR}/network-manager-applet-1.36.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/network-manager-applet-1.36.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/network-manager-applet-1.34.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/network-manager-applet-1.34.0
+rm -rf ${BUILD_DIRECTORY}/network-manager-applet-1.36.0

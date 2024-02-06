@@ -4,13 +4,13 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=Pod-Parser
-export PACKAGE_VERSION=1.66
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Pod-Parser/1.66/
-rm -rf ${BUILD_DIRECTORY}/Pod-Parser-1.66
-tar xvf ${DOWNLOADDIR}/Pod-Parser-1.66.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Pod-Parser-1.66
+export PACKAGE_VERSION=1.67
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/Pod-Parser/1.67/
+rm -rf ${BUILD_DIRECTORY}/Pod-Parser-1.67
+tar xvf ${DOWNLOADDIR}/Pod-Parser-1.67.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Pod-Parser-1.67
 	
 	${CROSSTOOLS_DIR}/bin/perl Makefile.PL
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/Pod-Parser-1.66
+rm -rf ${BUILD_DIRECTORY}/Pod-Parser-1.67

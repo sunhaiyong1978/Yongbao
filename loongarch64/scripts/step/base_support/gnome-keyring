@@ -14,7 +14,7 @@ pushd ${BUILD_DIRECTORY}/gnome-keyring-42.1
     done
 
     sed -i 's:"/desktop:"/org:' schema/*.xml
-    ./configure ${COMMON_CONFIG} --with-pkcs11-modules=/usr/lib${LIB_SUFF}/pkcs11 --with-pkcs11-config=/usr/share/p11-kit/modules systemduserunitdir=/usr/lib/systemd/user
+    ./configure ${COMMON_CONFIG} --with-pkcs11-modules=/usr/lib${LIB_SUFF}/pkcs11 --with-pkcs11-config=/usr/share/p11-kit/modules --disable-doc systemduserunitdir=/usr/lib/systemd/user
     eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/gnome-keyring-42.1

@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=libpciaccess
-export PACKAGE_VERSION=0.17
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libpciaccess/0.17/
-rm -rf ${BUILD_DIRECTORY}/libpciaccess-0.17
-tar xvf ${DOWNLOADDIR}/libpciaccess-0.17.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libpciaccess-0.17
+export PACKAGE_VERSION=0.18
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/libpciaccess/0.18/
+rm -rf ${BUILD_DIRECTORY}/libpciaccess-0.18
+tar xvf ${DOWNLOADDIR}/libpciaccess-0.18.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libpciaccess-0.18
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libpciaccess-0.17
         make DESTDIR=${X86_SYSROOT_DIR} install
 	rm -f ${X86_SYSROOT_DIR}/usr/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libpciaccess-0.17
+rm -rf ${BUILD_DIRECTORY}/libpciaccess-0.18

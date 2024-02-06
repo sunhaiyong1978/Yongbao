@@ -1,0 +1,80 @@
+source env/KDE6/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=KDE6
+export STEP_PACKAGENAME=ktextaddons
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/ktextaddons//
+rm -f ${SYSROOT_DIR}/usr/lib64/libKF6TextAddonsWidgets.*
+rm -f ${SYSROOT_DIR}/usr/lib64/libKF6TextEditTextToSpeech.*
+rm -f ${SYSROOT_DIR}/usr/lib64/libKF6TextEmoticonsCore.*
+
+sed -i.orig "s@pkgdatadir=\${datarootdir}/wayland@pkgdatadir=${SYSROOT_DIR}/usr/share/wayland@g"  ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc
+
+for phonon_file in PhononTargets-release.cmake PhononExperimentalTargets-release.cmake Phonon4Qt6Config.cmake PhononTargets.cmake Phonon4Qt6ExperimentalConfig.cmake PhononExperimentalTargets.cmake
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/phonon4qt6/${phonon_file} ]; then
+		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" \
+			${SYSROOT_DIR}/usr/lib64/cmake/phonon4qt6/${phonon_file}
+	fi
+done
+
+for kf6_file in KF6Config/KF6ConfigCompilerTargets-release.cmake KF6Auth/KF6AuthToolsTargets-release.cmake KF6KCMUtils/KF6KCMUtilsToolingTargets-release.cmake
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file} ]; then
+		sed -i.orig "s@\"/usr/libexec@\"${CROSSTOOLS_DIR}/libexec@g" \
+			${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file}
+	fi
+done
+
+for kf6_file in KF6CoreAddons/KF6CoreAddonsToolingTargets-release.cmake KF6DocTools/KF6DocToolsToolsTargets-release.cmake KF6DesignerPlugin/KF6DesignerPluginTargets-release.cmake KF6Package/KF6PackageToolsTargets-release.cmake KDSoap/KDSoapTargets-release.cmake KDSoap-qt6/KDSoapTargets-release.cmake
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file} ]; then
+		sed -i.orig "s@\${_IMPORT_PREFIX}@${CROSSTOOLS_DIR}@g" \
+			${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file}
+	fi
+done
+
+
+
+for kf6_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake")) \
+		${SYSROOT_DIR}/usr/lib64/cmake/Qca-qt6/Qca-qt6Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt6-1/PolkitQt6-1Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/utf8_range/utf8_range-targets-release.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Imath/ImathTargets-release.cmake
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${kf6_file}
+	fi
+done
+
+for kf6_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake"))
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@_IMPORT_PREFIX \"/usr\"@_IMPORT_PREFIX \"${SYSROOT_DIR}/usr\"@g" ${kf6_file}
+	fi
+done
+
+for kf6_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6ModemManagerQt/KF6ModemManagerQtTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/KSysGuard/KSysGuardLibraryTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@;/usr@;${SYSROOT_DIR}/usr@g" ${kf6_file}
+	fi
+done
+
+for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig "s@-L/usr@-L${SYSROOT_DIR}/usr@g" ${fix_file}
+	fi
+done
+
+for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6Wallet/KF6WalletConfig.cmake
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig "/KWALLETD_BIN_PATH/s@\${PACKAGE_PREFIX_DIR}@/usr@g" ${fix_file}
+	fi
+done

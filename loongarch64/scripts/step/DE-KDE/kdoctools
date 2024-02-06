@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kdoctools
-export PACKAGE_VERSION=5.113.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kdoctools/5.113.0/
-rm -rf ${BUILD_DIRECTORY}/kdoctools-5.113.0
-tar xvf ${DOWNLOADDIR}/kdoctools-5.113.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kdoctools-5.113.0
+export PACKAGE_VERSION=5.114.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kdoctools/5.114.0/
+rm -rf ${BUILD_DIRECTORY}/kdoctools-5.114.0
+tar xvf ${DOWNLOADDIR}/kdoctools-5.114.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kdoctools-5.114.0
         
 	sed -i "s@COMMAND \$<TARGET_FILE:KF5::docbookl10nhelper>@COMMAND qemu-loongarch64 ../bin/docbookl10nhelper@g" \
         	src/CMakeLists.txt
@@ -44,7 +44,7 @@ pushd ${BUILD_DIRECTORY}/kdoctools-5.113.0
 	cp ${SYSROOT_DIR}/usr/share/kf5/kdoctools/customization/xsl/pt{_br,-BR}.xml
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kdoctools-5.113.0
+rm -rf ${BUILD_DIRECTORY}/kdoctools-5.114.0
 
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/meinproc5 --srcdir ${SYSROOT_DIR}/usr/share/kf5/kdoctools \"\$@\"" \
 	> ${CROSSTOOLS_DIR}/bin/meinproc5

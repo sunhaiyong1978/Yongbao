@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=alabaster
-export PACKAGE_VERSION=0.7.13
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alabaster/0.7.13/
-rm -rf ${BUILD_DIRECTORY}/alabaster-0.7.13
-tar xvf ${DOWNLOADDIR}/alabaster-0.7.13.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/alabaster-0.7.13
+export PACKAGE_VERSION=0.7.16
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alabaster/0.7.16/
+rm -rf ${BUILD_DIRECTORY}/alabaster-0.7.16
+tar xvf ${DOWNLOADDIR}/alabaster-0.7.16.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/alabaster-0.7.16
 	
-	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user alabaster --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/alabaster-0.7.13
+rm -rf ${BUILD_DIRECTORY}/alabaster-0.7.16

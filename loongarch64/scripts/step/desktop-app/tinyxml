@@ -1,0 +1,36 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=tinyxml
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/tinyxml/git-default/
+rm -rf ${BUILD_DIRECTORY}/tinyxml-git-default_git
+tar xvf ${DOWNLOADDIR}/tinyxml-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tinyxml-git-default_git
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/tinyxml/git-default/patches/0001-tinyxml-fix-for-lib64.patch 
+	 
+	for i in tinyxml.cpp tinystr.cpp tinyxmlerror.cpp tinyxmlparser.cpp; do
+		${CROSS_TARGET}-g++ -DTIXML_USE_STL -fPIC -o $i.o -c $i
+	done
+	${CROSS_TARGET}-g++ ${LDFLAGS} -shared -o libtinyxml.so.0.2.6.2 \
+			    -Wl,-soname,libtinyxml.so.0 *.cpp.o
+	install -m 755 libtinyxml.so.0.2.6.2 ${SYSROOT_DIR}/usr/lib64/
+	ln -s libtinyxml.so.0.2.6.2 ${SYSROOT_DIR}/usr/lib64/libtinyxml.so.0
+	ln -s libtinyxml.so.0.2.6.2 ${SYSROOT_DIR}/usr/lib64/libtinyxml.so
+	install -p -m 644 tinyxml.h ${SYSROOT_DIR}/usr/include/
+popd 
+rm -rf ${BUILD_DIRECTORY}/tinyxml-git-default_git
+
+cat > ${SYSROOT_DIR}/usr/lib64/pkgconfig/tinyxml.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib64
+includedir=/usr/include
+
+Name: TinyXML
+Description: A simple, small, C++ XML parser
+Version: 2.6.2
+Libs: -L${libdir} -ltinyxml
+Cflags: -I${includedir} -DTIXML_USE_STL=YES
+EOF

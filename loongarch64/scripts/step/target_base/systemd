@@ -28,6 +28,9 @@ pushd ${BUILD_DIRECTORY}/systemd-255
 		      ..
 		eval ${NINJA_AND_INSTALL}
 	popd
+
+	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/systemd-networkd-wait-online.service
+
 popd 
 rm -rf ${BUILD_DIRECTORY}/systemd-255
 

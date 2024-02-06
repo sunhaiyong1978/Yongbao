@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=sqlite
-export PACKAGE_VERSION=3.44.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sqlite/3.44.2/
-rm -rf ${BUILD_DIRECTORY}/sqlite-version-3.44.2
-tar xvf ${DOWNLOADDIR}/sqlite-3.44.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sqlite-version-3.44.2
+export PACKAGE_VERSION=esion-3.45.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sqlite/esion-3.45.1/
+rm -rf ${BUILD_DIRECTORY}/sqlite-vesion-3.45.1
+tar xvf ${DOWNLOADDIR}/sqlite-esion-3.45.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sqlite-vesion-3.45.1
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/sqlite-version-3.44.2
 	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --enable-fts5 --disable-tcl CPPFLAGS="-DSQLITE_ENABLE_FTS3=1  -DSQLITE_ENABLE_FTS4=1  -DSQLITE_ENABLE_COLUMN_METADATA=1  -DSQLITE_ENABLE_UNLOCK_NOTIFY=1  -DSQLITE_ENABLE_DBSTAT_VTAB=1  -DSQLITE_SECURE_DELETE=1 -DSQLITE_ENABLE_FTS3_TOKENIZER=1"
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/sqlite-version-3.44.2
+rm -rf ${BUILD_DIRECTORY}/sqlite-vesion-3.45.1

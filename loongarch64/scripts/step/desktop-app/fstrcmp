@@ -1,0 +1,26 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=fstrcmp
+export PACKAGE_VERSION=0.7.D001
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/fstrcmp/0.7.D001/
+rm -rf ${BUILD_DIRECTORY}/fstrcmp-0.7.D001
+tar xvf ${DOWNLOADDIR}/fstrcmp-0.7.D001.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fstrcmp-0.7.D001
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+        ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
+	cp ${CROSSTOOLS_DIR}/bin/libtool ./
+	sed -i "/^CC=\"gcc\"/d" libtool
+        make -j${JOBS} LIBTOOL=${PWD}/libtool CC=${CROSS_TARGET}-gcc all-bin
+        make DESTDIR=${SYSROOT_DIR} install-bin install-include install-libdir install-man
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/fstrcmp-0.7.D001

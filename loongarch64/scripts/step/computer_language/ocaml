@@ -9,10 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.1
 tar xvf ${DOWNLOADDIR}/ocaml-5.1.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ocaml-5.1.1
         patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.1.1/patches/0001-Add-loongarch-architecture-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.1.1/patches/0003-Hygiene.patch 
-	patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.1.1/patches/0004-update-Makefile.patch 
-	patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.1.1/patches/0005-add-Ispecific-Isqrtf.patch 
-	patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.1.1/patches/0006-Share-some-duplicate-files-with-riscv.patch 
 	 
 	cp ${CROSSTOOLS_DIR}/share/automake*/config.* build-aux/
 	autoconf

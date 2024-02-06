@@ -4,19 +4,17 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=wine-dev
-export PACKAGE_VERSION=8.21
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/wine-dev/8.21/
-rm -rf ${BUILD_DIRECTORY}/wine-8.21
-tar xvf ${DOWNLOADDIR}/wine-8.21.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-8.21
+export PACKAGE_VERSION=9.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/wine-dev/9.1/
+rm -rf ${BUILD_DIRECTORY}/wine-9.1
+tar xvf ${DOWNLOADDIR}/wine-9.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-9.1
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
 
-        tar xvf ${RESOURCEDIR}/files/wine-dev-wine-staging_git.tar.gz
 
-        wine-dev-wine-staging_git/staging/patchinstall.py DESTDIR=${PWD} --all
 
 	PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
 
@@ -32,4 +30,4 @@ pushd ${BUILD_DIRECTORY}/wine-8.21
 	cp -a ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86_64.msi ${SYSROOT_DIR}/opt/wine64-dev/share/wine/gecko/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-8.21
+rm -rf ${BUILD_DIRECTORY}/wine-9.1

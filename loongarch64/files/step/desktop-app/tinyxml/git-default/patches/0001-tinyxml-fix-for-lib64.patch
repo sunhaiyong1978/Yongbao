@@ -1,0 +1,44 @@
+From 54ec2d96f05be99aad54da91f5ebf288e29f5cd9 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 10 Jan 2024 10:50:20 +0000
+Subject: [PATCH] tinyxml fix for lib64.
+
+---
+ CMakeLists.txt | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c76ea74..caea801 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -30,8 +30,8 @@ write_basic_package_version_file(
+ )
+ install(TARGETS tinyXML EXPORT tinyXML
+   RUNTIME DESTINATION bin
+-  ARCHIVE DESTINATION lib
+-  LIBRARY DESTINATION lib)
++  ARCHIVE DESTINATION lib64
++  LIBRARY DESTINATION lib64)
+ install(FILES
+   tinystr.h
+   tinyxml.h
+@@ -43,14 +43,14 @@ install(EXPORT tinyXML
+   NAMESPACE
+     tinyxml::
+   DESTINATION
+-    lib/cmake/tinyXML
++    lib64/cmake/tinyXML
+ )
+ install(
+   FILES
+     cmake/tinyXML-config.cmake
+     ${CMAKE_CURRENT_BINARY_DIR}/tinyXML-config-version.cmake
+   DESTINATION
+-    lib/cmake/tinyXML
++    lib64/cmake/tinyXML
+ )
+ 
+ export(TARGETS tinyXML
+-- 
+2.31.1
+

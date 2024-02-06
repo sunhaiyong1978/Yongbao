@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=gst-libav
-export PACKAGE_VERSION=1.22.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/gst-libav/1.22.8/
-rm -rf ${BUILD_DIRECTORY}/gst-libav-1.22.8
-tar xvf ${DOWNLOADDIR}/gst-libav-1.22.8.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gst-libav-1.22.8
+export PACKAGE_VERSION=1.22.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/gst-libav/1.22.9/
+rm -rf ${BUILD_DIRECTORY}/gst-libav-1.22.9
+tar xvf ${DOWNLOADDIR}/gst-libav-1.22.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gst-libav-1.22.9
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/gst-libav-1.22.8
 	popd
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gst-libav-1.22.8
+rm -rf ${BUILD_DIRECTORY}/gst-libav-1.22.9

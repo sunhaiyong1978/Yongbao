@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/blender-git-default_git
 tar xvf ${DOWNLOADDIR}/blender-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/blender-git-default_git
         patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/git-default/patches/0001-blender-fix-for-python3.12.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/git-default/patches/0001-blender-4.1-git-fix-for-gcc-14.patch 
 	 
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER \"${CROSSTOOLS_DIR}/bin/wayland-scanner\")@g" build_files/cmake/platform/platform_unix.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc@g" build_files/cmake/macros.cmake

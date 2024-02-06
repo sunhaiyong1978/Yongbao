@@ -1,0 +1,200 @@
+From 280606bab9e23733688d948917e9598d2552f0c0 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 24 Jan 2024 14:41:20 +0000
+Subject: [PATCH] qtwebengine chromium update python-six for Python 3.12
+
+---
+ .../catapult/third_party/six/six.py           | 18 +++++++++-
+ .../chromium/third_party/six/src/six.py       | 36 ++++++++++++++-----
+ .../wpt/tools/third_party/six/six.py          | 18 +++++++++-
+ 3 files changed, 61 insertions(+), 11 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/catapult/third_party/six/six.py b/qtwebengine/src/3rdparty/chromium/third_party/catapult/third_party/six/six.py
+index 83f69783d1..4e15675d8b 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/catapult/third_party/six/six.py
++++ b/qtwebengine/src/3rdparty/chromium/third_party/catapult/third_party/six/six.py
+@@ -29,7 +29,7 @@ import sys
+ import types
+ 
+ __author__ = "Benjamin Peterson <benjamin@python.org>"
+-__version__ = "1.15.0"
++__version__ = "1.16.0"
+ 
+ 
+ # Useful for very coarse version differentiation.
+@@ -71,6 +71,11 @@ else:
+             MAXSIZE = int((1 << 63) - 1)
+         del X
+ 
++if PY34:
++    from importlib.util import spec_from_loader
++else:
++    spec_from_loader = None
++
+ 
+ def _add_doc(func, doc):
+     """Add documentation to a function."""
+@@ -186,6 +191,11 @@ class _SixMetaPathImporter(object):
+             return self
+         return None
+ 
++    def find_spec(self, fullname, path, target=None):
++        if fullname in self.known_modules:
++            return spec_from_loader(fullname, self)
++        return None
++
+     def __get_module(self, fullname):
+         try:
+             return self.known_modules[fullname]
+@@ -223,6 +233,12 @@ class _SixMetaPathImporter(object):
+         return None
+     get_source = get_code  # same as get_code
+ 
++    def create_module(self, spec):
++        return self.load_module(spec.name)
++
++    def exec_module(self, module):
++        pass
++
+ _importer = _SixMetaPathImporter(__name__)
+ 
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/six/src/six.py b/qtwebengine/src/3rdparty/chromium/third_party/six/src/six.py
+index 5fe9f8e141..4e15675d8b 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/six/src/six.py
++++ b/qtwebengine/src/3rdparty/chromium/third_party/six/src/six.py
+@@ -29,7 +29,7 @@ import sys
+ import types
+ 
+ __author__ = "Benjamin Peterson <benjamin@python.org>"
+-__version__ = "1.14.0"
++__version__ = "1.16.0"
+ 
+ 
+ # Useful for very coarse version differentiation.
+@@ -71,6 +71,11 @@ else:
+             MAXSIZE = int((1 << 63) - 1)
+         del X
+ 
++if PY34:
++    from importlib.util import spec_from_loader
++else:
++    spec_from_loader = None
++
+ 
+ def _add_doc(func, doc):
+     """Add documentation to a function."""
+@@ -186,6 +191,11 @@ class _SixMetaPathImporter(object):
+             return self
+         return None
+ 
++    def find_spec(self, fullname, path, target=None):
++        if fullname in self.known_modules:
++            return spec_from_loader(fullname, self)
++        return None
++
+     def __get_module(self, fullname):
+         try:
+             return self.known_modules[fullname]
+@@ -223,6 +233,12 @@ class _SixMetaPathImporter(object):
+         return None
+     get_source = get_code  # same as get_code
+ 
++    def create_module(self, spec):
++        return self.load_module(spec.name)
++
++    def exec_module(self, module):
++        pass
++
+ _importer = _SixMetaPathImporter(__name__)
+ 
+ 
+@@ -890,12 +906,11 @@ def ensure_binary(s, encoding='utf-8', errors='strict'):
+       - `str` -> encoded to `bytes`
+       - `bytes` -> `bytes`
+     """
++    if isinstance(s, binary_type):
++        return s
+     if isinstance(s, text_type):
+         return s.encode(encoding, errors)
+-    elif isinstance(s, binary_type):
+-        return s
+-    else:
+-        raise TypeError("not expecting type '%s'" % type(s))
++    raise TypeError("not expecting type '%s'" % type(s))
+ 
+ 
+ def ensure_str(s, encoding='utf-8', errors='strict'):
+@@ -909,12 +924,15 @@ def ensure_str(s, encoding='utf-8', errors='strict'):
+       - `str` -> `str`
+       - `bytes` -> decoded to `str`
+     """
+-    if not isinstance(s, (text_type, binary_type)):
+-        raise TypeError("not expecting type '%s'" % type(s))
++    # Optimization: Fast return for the common case.
++    if type(s) is str:
++        return s
+     if PY2 and isinstance(s, text_type):
+-        s = s.encode(encoding, errors)
++        return s.encode(encoding, errors)
+     elif PY3 and isinstance(s, binary_type):
+-        s = s.decode(encoding, errors)
++        return s.decode(encoding, errors)
++    elif not isinstance(s, (text_type, binary_type)):
++        raise TypeError("not expecting type '%s'" % type(s))
+     return s
+ 
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/wpt_tools/wpt/tools/third_party/six/six.py b/qtwebengine/src/3rdparty/chromium/third_party/wpt_tools/wpt/tools/third_party/six/six.py
+index 83f69783d1..4e15675d8b 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/wpt_tools/wpt/tools/third_party/six/six.py
++++ b/qtwebengine/src/3rdparty/chromium/third_party/wpt_tools/wpt/tools/third_party/six/six.py
+@@ -29,7 +29,7 @@ import sys
+ import types
+ 
+ __author__ = "Benjamin Peterson <benjamin@python.org>"
+-__version__ = "1.15.0"
++__version__ = "1.16.0"
+ 
+ 
+ # Useful for very coarse version differentiation.
+@@ -71,6 +71,11 @@ else:
+             MAXSIZE = int((1 << 63) - 1)
+         del X
+ 
++if PY34:
++    from importlib.util import spec_from_loader
++else:
++    spec_from_loader = None
++
+ 
+ def _add_doc(func, doc):
+     """Add documentation to a function."""
+@@ -186,6 +191,11 @@ class _SixMetaPathImporter(object):
+             return self
+         return None
+ 
++    def find_spec(self, fullname, path, target=None):
++        if fullname in self.known_modules:
++            return spec_from_loader(fullname, self)
++        return None
++
+     def __get_module(self, fullname):
+         try:
+             return self.known_modules[fullname]
+@@ -223,6 +233,12 @@ class _SixMetaPathImporter(object):
+         return None
+     get_source = get_code  # same as get_code
+ 
++    def create_module(self, spec):
++        return self.load_module(spec.name)
++
++    def exec_module(self, module):
++        pass
++
+ _importer = _SixMetaPathImporter(__name__)
+ 
+ 
+-- 
+2.31.1
+

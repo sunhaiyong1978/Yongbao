@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=swig
-export PACKAGE_VERSION=4.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/swig/4.1.1/
-rm -rf ${BUILD_DIRECTORY}/swig-4.1.1
-tar xvf ${DOWNLOADDIR}/swig-4.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/swig-4.1.1
+export PACKAGE_VERSION=4.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/swig/4.2.0/
+rm -rf ${BUILD_DIRECTORY}/swig-4.2.0
+tar xvf ${DOWNLOADDIR}/swig-4.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/swig-4.2.0
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/swig-4.1.1
 	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/swig-4.1.1
+rm -rf ${BUILD_DIRECTORY}/swig-4.2.0

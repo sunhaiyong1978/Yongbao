@@ -1,0 +1,14 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=phc-winner-argon2
+export PACKAGE_VERSION=20190702
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/phc-winner-argon2/20190702/
+rm -rf ${BUILD_DIRECTORY}/phc-winner-argon2-20190702
+tar xvf ${DOWNLOADDIR}/phc-winner-argon2-20190702.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/phc-winner-argon2-20190702
+	make -j${JOBS} CC=${CROSS_TARGET}-gcc LIBRARY_REL=lib64
+	make CC=${CROSS_TARGET}-gcc LIBRARY_REL=lib64 DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/phc-winner-argon2-20190702

@@ -20,6 +20,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
                   -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
 		  -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;pstl;libcxx" \
                   -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+		  -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
                   -DCMAKE_SYSROOT=${SYSROOT_DIR} \
                   -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
                   -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \

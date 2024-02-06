@@ -1,0 +1,66 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=docbook-xsl-nons
+export PACKAGE_VERSION=1.79.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/docbook-xsl-nons/1.79.2/
+export PATH=${CROSSTOOLS_DIR}/host-tools/bin:${PATH}
+rm -rf ${BUILD_DIRECTORY}/docbook-xsl-nons-1.79.2
+tar xvf ${DOWNLOADDIR}/docbook-xsl-nons-1.79.2.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/docbook-xsl-nons-1.79.2
+    patch -Np1 -i ${SYSDIR}/files/host-tools/docbook-xsl-nons/1.79.2/patches/docbook-xsl-nons-1.79.2-stack_fix-1.patch 
+	 
+    install -v -m755 -d ${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2
+    cp -v -R VERSION assembly common eclipse epub epub3 extensions fo \
+         highlighting html htmlhelp images javahelp lib manpages params \
+         profiling roundtrip slides template tests tools webhelp website \
+         xhtml xhtml-1_1 xhtml5 \
+         ${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2
+
+    ln -sf VERSION ${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2/VERSION.xsl
+    install -v -m644 -D README \
+                    ${CROSSTOOLS_DIR}/share/doc/docbook-xsl-nons-1.79.2/README.txt
+    install -v -m644    RELEASE-NOTES* NEWS* \
+                    ${CROSSTOOLS_DIR}/share/doc/docbook-xsl-nons-1.79.2
+
+
+    if [ ! -d ${CROSSTOOLS_DIR}/etc/xml ]; then
+        install -v -m755 -d ${CROSSTOOLS_DIR}/etc/xml;
+    fi
+    if [ ! -f ${CROSSTOOLS_DIR}/etc/xml/catalog ]; then
+        xmlcatalog --noout --create ${CROSSTOOLS_DIR}/etc/xml/catalog
+    fi
+
+    xmlcatalog --noout --add "rewriteSystem" \
+           "https://cdn.docbook.org/release/xsl-nons/1.79.2" \
+           "${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2" \
+    ${CROSSTOOLS_DIR}/etc/xml/catalog
+
+    xmlcatalog --noout --add "rewriteURI" \
+           "https://cdn.docbook.org/release/xsl-nons/1.79.2" \
+           "${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2" \
+    ${CROSSTOOLS_DIR}/etc/xml/catalog &&
+
+    xmlcatalog --noout --add "rewriteSystem" \
+           "https://cdn.docbook.org/release/xsl-nons/current" \
+           "${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2" \
+    ${CROSSTOOLS_DIR}/etc/xml/catalog &&
+
+    xmlcatalog --noout --add "rewriteURI" \
+           "https://cdn.docbook.org/release/xsl-nons/current" \
+           "${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2" \
+    ${CROSSTOOLS_DIR}/etc/xml/catalog &&
+
+    xmlcatalog --noout --add "rewriteSystem" \
+           "http://docbook.sourceforge.net/release/xsl/current" \
+           "${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2" \
+    ${CROSSTOOLS_DIR}/etc/xml/catalog &&
+
+    xmlcatalog --noout --add "rewriteURI" \
+           "http://docbook.sourceforge.net/release/xsl/current" \
+           "${CROSSTOOLS_DIR}/share/xml/docbook/xsl-stylesheets-nons-1.79.2" \
+    ${CROSSTOOLS_DIR}/etc/xml/catalog
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/docbook-xsl-nons-1.79.2

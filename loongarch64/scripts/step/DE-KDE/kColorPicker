@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=kColorPicker
-export PACKAGE_VERSION=0.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kColorPicker/0.2.0/
-rm -rf ${BUILD_DIRECTORY}/kColorPicker-0.2.0
-tar xvf ${DOWNLOADDIR}/kColorPicker-0.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kColorPicker-0.2.0
+export PACKAGE_VERSION=0.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/kColorPicker/0.3.0/
+rm -rf ${BUILD_DIRECTORY}/kColorPicker-0.3.0
+tar xvf ${DOWNLOADDIR}/kColorPicker-0.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kColorPicker-0.3.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -46,4 +46,4 @@ pushd ${BUILD_DIRECTORY}/kColorPicker-0.2.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kColorPicker-0.2.0
+rm -rf ${BUILD_DIRECTORY}/kColorPicker-0.3.0

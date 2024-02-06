@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=glibc_localedata
-export PACKAGE_VERSION=2.38
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/glibc_localedata/2.38/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.38
-tar xvf ${DOWNLOADDIR}/glibc-2.38.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.38
+export PACKAGE_VERSION=2.39
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/glibc_localedata/2.39/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.39
+tar xvf ${DOWNLOADDIR}/glibc-2.39.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.39
         mkdir -p build-locale
         pushd build-locale
 		export LDFLAGS=""
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/glibc-2.38
                 make -j${JOBS}
                 make -j${JOBS} DESTDIR=${X86_64_SYSROOT_DIR} localedata/install-locales
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.38
+rm -rf ${BUILD_DIRECTORY}/glibc-2.39

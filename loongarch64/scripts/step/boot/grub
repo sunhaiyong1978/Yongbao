@@ -5,16 +5,13 @@ export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=grub
 export PACKAGE_VERSION=2.12
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/grub/2.12/
-rm -rf ${BUILD_DIRECTORY}/grub-2.12_git
-tar xvf ${DOWNLOADDIR}/grub-2.12_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/grub-2.12_git
-	tar xvf ${RESOURCEDIR}/files/grub-gnulib_git.tar.gz
-	mv grub-gnulib_git gnulib
-	./bootstrap
-	autoreconf -ifv
+rm -rf ${BUILD_DIRECTORY}/grub-2.12
+tar xvf ${DOWNLOADDIR}/grub-2.12.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/grub-2.12
+	touch grub-core/extra_deps.lst
 	mkdir cross-build
 	pushd cross-build
-		../configure ${COMMON_CONFIG} -with-platform=efi \
+		PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 ../configure ${COMMON_CONFIG} -with-platform=efi \
 		             --with-utils=host --disable-werror
 		eval ${MAKE_AND_INSTALL}
 	popd
@@ -39,4 +36,4 @@ boot
 }
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/grub-2.12_git
+rm -rf ${BUILD_DIRECTORY}/grub-2.12

@@ -1,0 +1,24 @@
+From 960a0d47bcb759f32ff72136ed1f0e2d204af684 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 19 Jan 2024 08:51:28 +0000
+Subject: [PATCH] blender 4.1 git fix for gcc 14.
+
+---
+ source/blender/blenlib/intern/mesh_intersect.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/source/blender/blenlib/intern/mesh_intersect.cc b/source/blender/blenlib/intern/mesh_intersect.cc
+index 45bdce6..85ed411 100644
+--- a/source/blender/blenlib/intern/mesh_intersect.cc
++++ b/source/blender/blenlib/intern/mesh_intersect.cc
+@@ -13,6 +13,7 @@
+ #  include <fstream>
+ #  include <iostream>
+ #  include <memory>
++#  include <functional>
+ 
+ #  include "BLI_allocator.hh"
+ #  include "BLI_array.hh"
+-- 
+2.31.1
+

@@ -1,0 +1,25 @@
+From 2fa23bf75564341cda27bbc7d7b55d473548d93c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 17 Jan 2024 09:28:06 +0000
+Subject: [PATCH] change font setting from Default to Arial.
+
+---
+ system/settings/settings.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/system/settings/settings.xml b/system/settings/settings.xml
+index 6330faf..5c2dcca 100755
+--- a/system/settings/settings.xml
++++ b/system/settings/settings.xml
+@@ -3867,7 +3867,7 @@
+         </setting>
+         <setting id="lookandfeel.font" type="string" parent="lookandfeel.skin" label="13303" help="36107">
+           <level>1</level>
+-          <default>Default</default>
++          <default>Arial</default>
+           <constraints>
+             <options>skinfonts</options>
+           </constraints>
+-- 
+2.31.1
+

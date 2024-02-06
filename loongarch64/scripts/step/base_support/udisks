@@ -8,21 +8,23 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/udisks/2.10.1/
 rm -rf ${BUILD_DIRECTORY}/udisks-2.10.1
 tar xvf ${DOWNLOADDIR}/udisks-2.10.1.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/udisks-2.10.1
-	
-	for config_i in $(find -name "config.sub")
-	do
-		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
-	done
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
 
-	sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
-	mkdir cross-build
-	pushd cross-build
-	         ../configure ${COMMON_CONFIG} --enable-introspection=yes --with-udevdir=/usr/lib/udev --with-systemdsystemunitdir=/usr/lib/systemd/system --with-tmpfilesdir=/usr/lib/tmpfiles.d
-        	make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
-		     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
-		     VAPIGEN=${CROSS_TARGET}-vapigen
-	        make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
-	popd
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+        sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
+	sed -i -e 's/ntfs_drivers=ntfs3,ntfs/ntfs_drivers=ntfs,ntfs3/' data/builtin_mount_options.conf
+
+        ./configure ${COMMON_CONFIG} --enable-introspection=yes \
+		--enable-available-modules \
+		--disable-man --with-udevdir=/usr/lib/udev --with-systemdsystemunitdir=/usr/lib/systemd/system --with-tmpfilesdir=/usr/lib/tmpfiles.d
+        make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+                   INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+                   VAPIGEN=${CROSS_TARGET}-vapigen
+        make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/udisks-2.10.1

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=at-spi2-core
-export PACKAGE_VERSION=2.50.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/at-spi2-core/2.50.0/
-rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.50.0
-tar xvf ${DOWNLOADDIR}/at-spi2-core-2.50.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/at-spi2-core-2.50.0
+export PACKAGE_VERSION=2.51.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/at-spi2-core/2.51.0/
+rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.51.0
+tar xvf ${DOWNLOADDIR}/at-spi2-core-2.51.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/at-spi2-core-2.51.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/at-spi2-core-2.50.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.50.0
+rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.51.0

@@ -22,6 +22,7 @@ pushd clang
 		 -DLLVM_CMAKE_DIR=${CROSSTOOLS_DIR}/lib${LIB_SUFF}/cmake \
                  -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF}  \
                  -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+                 -DLLVM_INCLUDE_TESTS=OFF \
                  -DDEFAULT_SYSROOT:PATH="${SYSROOT_DIR}"
         ninja
         ninja install

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=inetutils
-export PACKAGE_VERSION=2.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/inetutils/2.4/
-rm -rf ${BUILD_DIRECTORY}/inetutils-2.4
-tar xvf ${DOWNLOADDIR}/inetutils-2.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/inetutils-2.4
+export PACKAGE_VERSION=2.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/inetutils/2.5/
+rm -rf ${BUILD_DIRECTORY}/inetutils-2.5
+tar xvf ${DOWNLOADDIR}/inetutils-2.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/inetutils-2.5
  	sed -i "/PATH_PROCNET_DEV/s@no@/proc/net/dev@g" paths
 	./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 	            --disable-logger --disable-whois --disable-rcp \
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/inetutils-2.4
 	mv -v ${SYSROOT_DIR}/usr/{,s}bin/ifconfig
 	chmod -v +x ${SYSROOT_DIR}/usr/bin/{ping{,6},traceroute}
 popd 
-rm -rf ${BUILD_DIRECTORY}/inetutils-2.4
+rm -rf ${BUILD_DIRECTORY}/inetutils-2.5

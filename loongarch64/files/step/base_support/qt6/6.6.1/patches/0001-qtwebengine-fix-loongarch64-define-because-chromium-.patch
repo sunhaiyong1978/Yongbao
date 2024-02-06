@@ -1,0 +1,26 @@
+From 3a50532ec2c5d41af59cd7466c13926028fc48b9 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 24 Jan 2024 14:49:13 +0000
+Subject: [PATCH] qtwebengine fix loongarch64 define because chromium use
+ loong64 as loongarch64.
+
+---
+ qtwebengine/cmake/Functions.cmake | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/qtwebengine/cmake/Functions.cmake b/qtwebengine/cmake/Functions.cmake
+index 9fb4299c50..3f24b30f1a 100644
+--- a/qtwebengine/cmake/Functions.cmake
++++ b/qtwebengine/cmake/Functions.cmake
+@@ -663,6 +663,8 @@ function(get_gn_arch result arch)
+         set(${result} "mips64el" PARENT_SCOPE)
+     elseif(arch STREQUAL "riscv64")
+         set(${result} "riscv64" PARENT_SCOPE)
++    elseif(arch STREQUAL "loongarch64")
++        set(${result} "loong64" PARENT_SCOPE)
+     else()
+         message(DEBUG "Unsupported architecture: ${arch}")
+     endif()
+-- 
+2.31.1
+

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=trove-classifiers
-export PACKAGE_VERSION=2023.11.29
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/trove-classifiers/2023.11.29/
-rm -rf ${BUILD_DIRECTORY}/trove-classifiers-2023.11.29
-tar xvf ${DOWNLOADDIR}/trove-classifiers-2023.11.29.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/trove-classifiers-2023.11.29
+export PACKAGE_VERSION=2024.1.31
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/trove-classifiers/2024.1.31/
+rm -rf ${BUILD_DIRECTORY}/trove-classifiers-2024.1.31
+tar xvf ${DOWNLOADDIR}/trove-classifiers-2024.1.31.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/trove-classifiers-2024.1.31
 	
 	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user trove-classifiers --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/trove-classifiers-2023.11.29
+rm -rf ${BUILD_DIRECTORY}/trove-classifiers-2024.1.31

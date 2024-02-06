@@ -1,0 +1,38 @@
+From a0ebe31a0cba973f439705867a0c71935564c630 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 19 Apr 2023 02:41:03 +0000
+Subject: [PATCH 4/9] UniVT: Add a old_screen_size variable saves the original
+ size when resize vt.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+    增加old_screen_size变量用来保存VT改变大小时原始尺寸。
+---
+ drivers/tty/vt/vt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index fca23eea0..41936356e 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1154,7 +1154,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ {
+ 	unsigned long old_origin, new_origin, new_scr_end, rlth, rrem, err = 0;
+ 	unsigned long end;
+-	unsigned int old_rows, old_row_size, first_copied_row;
++	unsigned int old_rows, old_row_size, first_copied_row, old_screen_size;
+ 	unsigned int new_cols, new_rows, new_row_size, new_screen_size;
+ 	unsigned int user;
+ 	unsigned short *oldscreen, *newscreen;
+@@ -1215,6 +1215,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ 
+ 	old_rows = vc->vc_rows;
+ 	old_row_size = vc->vc_size_row;
++	old_screen_size = vc->vc_screenbuf_size;
+ 
+ 	err = resize_screen(vc, new_cols, new_rows, user);
+ 	if (err) {
+-- 
+2.31.1
+

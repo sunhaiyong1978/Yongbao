@@ -1,0 +1,28 @@
+From 8d28e687dc807c55e97d00cbeee5d8120838ff59 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 23 Jan 2024 09:06:39 +0000
+Subject: [PATCH] nss 3.97 fix miss SQLITE_INCLUDE_DIR in
+ nss/cmd/dbtool/manifest.mn
+
+---
+ nss/cmd/dbtool/manifest.mn | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/nss/cmd/dbtool/manifest.mn b/nss/cmd/dbtool/manifest.mn
+index fa93eaa..4b65e4b 100644
+--- a/nss/cmd/dbtool/manifest.mn
++++ b/nss/cmd/dbtool/manifest.mn
+@@ -12,6 +12,10 @@ USE_STATIC_LIBS = 1
+ 
+ # DIRS =
+ 
++ifdef SQLITE_INCLUDE_DIR
++INCLUDES += -I$(SQLITE_INCLUDE_DIR)
++endif
++
+ CSRCS	= dbtool.c  sdb.c
+ 
+ # sdb.c is copied for softoken, clean it up on make clean
+-- 
+2.31.1
+

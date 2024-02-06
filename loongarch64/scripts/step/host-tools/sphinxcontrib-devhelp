@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=sphinxcontrib-devhelp
-export PACKAGE_VERSION=1.0.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinxcontrib-devhelp/1.0.5/
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.5
-tar xvf ${DOWNLOADDIR}/sphinxcontrib_devhelp-1.0.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.5
+export PACKAGE_VERSION=1.0.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinxcontrib-devhelp/1.0.6/
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.6
+tar xvf ${DOWNLOADDIR}/sphinxcontrib_devhelp-1.0.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.6
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user sphinxcontrib-devhelp
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.5
+rm -rf ${BUILD_DIRECTORY}/sphinxcontrib_devhelp-1.0.6

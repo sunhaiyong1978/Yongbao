@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=sddm
 export STEP_PACKAGENAME=breeze-icons
-export PACKAGE_VERSION=5.113.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/breeze-icons/5.113.0/
-rm -rf ${BUILD_DIRECTORY}/breeze-icons-5.113.0
-tar xvf ${DOWNLOADDIR}/breeze-icons-5.113.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/breeze-icons-5.113.0
+export PACKAGE_VERSION=5.114.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/breeze-icons/5.114.0/
+rm -rf ${BUILD_DIRECTORY}/breeze-icons-5.114.0
+tar xvf ${DOWNLOADDIR}/breeze-icons-5.114.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/breeze-icons-5.114.0
         
 	sed -i "s@\$<TARGET_FILE:qrcAlias>@ qemu-loongarch64 ${PWD}/cross-build/bin/qrcAlias@g" CMakeLists.txt
         mkdir cross-build
@@ -46,4 +46,4 @@ pushd ${BUILD_DIRECTORY}/breeze-icons-5.113.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/breeze-icons-5.113.0
+rm -rf ${BUILD_DIRECTORY}/breeze-icons-5.114.0

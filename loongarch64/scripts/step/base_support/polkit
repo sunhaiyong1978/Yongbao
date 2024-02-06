@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=polkit
-export PACKAGE_VERSION=123
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/polkit/123/
-rm -rf ${BUILD_DIRECTORY}/polkit-123
-tar xvf ${DOWNLOADDIR}/polkit-123.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/polkit-123
-        
+export PACKAGE_VERSION=124
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/polkit/124/
+rm -rf ${BUILD_DIRECTORY}/polkit-124
+tar xvf ${DOWNLOADDIR}/polkit-124.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/polkit-124
+        patch -Np1 -i ${SYSDIR}/files/base_support/polkit/124/patches/0001-polkit-124-fix-systemd-dir-for-cross-build.patch 
+	 
         mkdir cross-build
         pushd cross-build
                 meson ${MESON_CONFIG} -Dsession_tracking=libsystemd-login -Djs_engine=mozjs \
-		      -Dsystemdsystemunitdir=/usr/lib/systemd/system \
                       ..
                 eval ${NINJA_AND_INSTALL}
         popd
@@ -32,4 +32,4 @@ EOF
 chmod +s ${SYSROOT_DIR}/usr/lib/polkit-1/polkit-agent-helper-1
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/polkit-123
+rm -rf ${BUILD_DIRECTORY}/polkit-124

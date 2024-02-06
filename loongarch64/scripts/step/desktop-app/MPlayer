@@ -1,0 +1,28 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=MPlayer
+export PACKAGE_VERSION=1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/MPlayer/1.5/
+rm -rf ${BUILD_DIRECTORY}/MPlayer-1.5
+tar xvf ${DOWNLOADDIR}/MPlayer-1.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/MPlayer-1.5
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/MPlayer/1.5/patches/0001-MPlayer-1.5-add-loongarch64-support.patch 
+	 
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types -Wno-int-conversion" \
+	./configure --prefix=/usr --confdir=/etc --libdir=/usr/lib64 \
+		    --target=loongarch64-linux --enable-cross-compile --host-cc=${CROSS_TARGET}-gcc \
+		    --cc=${CROSS_TARGET}-gcc --strip=${CROSS_TARGET}-strip --yasm=''
+        make -j${JOBS} HOST_CC=gcc
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/MPlayer-1.5

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=orc
-export PACKAGE_VERSION=0.4.34
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/orc/0.4.34/
-rm -rf ${BUILD_DIRECTORY}/orc-0.4.34
-tar xvf ${DOWNLOADDIR}/orc-0.4.34.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/orc-0.4.34
+export PACKAGE_VERSION=0.4.36
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/orc/0.4.36/
+rm -rf ${BUILD_DIRECTORY}/orc-0.4.36
+tar xvf ${DOWNLOADDIR}/orc-0.4.36.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/orc-0.4.36
         
         mkdir cross-build
         pushd cross-build
@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/orc-0.4.34
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/orc-0.4.34
+rm -rf ${BUILD_DIRECTORY}/orc-0.4.36
 
 echo "#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/orcc \"\$@\"" \

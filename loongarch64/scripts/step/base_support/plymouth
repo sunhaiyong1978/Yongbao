@@ -3,14 +3,20 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=plymouth
-export PACKAGE_VERSION=22.02.122
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/plymouth/22.02.122/
-rm -rf ${BUILD_DIRECTORY}/plymouth-22.02.122
-tar xvf ${DOWNLOADDIR}/plymouth-22.02.122.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/plymouth-22.02.122
-    cp ${CROSSTOOLS_DIR}/share/automake-1.16/config.* build-tools/
-    sed -i "/linux\/fs.h/d" src/libply/ply-utils.c
-    ./configure ${COMMON_CONFIG} --with-systemdunitdir=/usr/lib/systemd/system
-    eval ${MAKE_AND_INSTALL}
+export PACKAGE_VERSION=24.004.60
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/plymouth/24.004.60/
+rm -rf ${BUILD_DIRECTORY}/plymouth-24.004.60
+tar xvf ${DOWNLOADDIR}/plymouth-24.004.60.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/plymouth-24.004.60
+	patch -Np1 -i ${SYSDIR}/files/base_support/plymouth/24.004.60/patches/0001-plymouth-fix-systemd-dir-for-cross-build.patch 
+	 
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} -Ddocs=false \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/plymouth-22.02.122
+rm -rf ${BUILD_DIRECTORY}/plymouth-24.004.60

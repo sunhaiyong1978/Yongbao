@@ -1,0 +1,28 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=docbook-3.1
+export PACKAGE_VERSION=docbk31
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/docbook-3.1/docbk31/
+export PATH=${CROSSTOOLS_DIR}/host-tools/bin:${PATH}
+rm -rf ${BUILD_DIRECTORY}/docbook-3.1
+mkdir -pv ${BUILD_DIRECTORY}/docbook-3.1
+pushd ${BUILD_DIRECTORY}/docbook-3.1
+    unzip ${DOWNLOADDIR}/docbk31.zip
+    sed -i -e '/ISO 8879/d' \
+           -e 's|DTDDECL "-//OASIS//DTD DocBook V3.1//EN"|SGMLDECL|g' \
+           docbook.cat
+    install -v -d -m755 ${CROSSTOOLS_DIR}/share/sgml/docbook/sgml-dtd-3.1
+    install -v docbook.cat ${CROSSTOOLS_DIR}/share/sgml/docbook/sgml-dtd-3.1/catalog
+    cp -v -af *.dtd *.mod *.dcl ${CROSSTOOLS_DIR}/share/sgml/docbook/sgml-dtd-3.1
+
+    install-catalog --add ${CROSSTOOLS_DIR}/etc/sgml/sgml-docbook-dtd-3.1.cat \
+        ${CROSSTOOLS_DIR}/share/sgml/docbook/sgml-dtd-3.1/catalog
+    install-catalog --add ${CROSSTOOLS_DIR}/etc/sgml/sgml-docbook-dtd-3.1.cat \
+        ${CROSSTOOLS_DIR}/etc/sgml/sgml-docbook.cat
+    
+cat >> ${CROSSTOOLS_DIR}/share/sgml/docbook/sgml-dtd-3.1/catalog << "EOF"
+PUBLIC "-//Davenport//DTD DocBook V3.0//EN" "docbook.dtd"
+EOF
+rm -rf ${BUILD_DIRECTORY}/docbook-3.1

@@ -1,0 +1,63 @@
+From 4968101e9a6ae1e4c45acb8cc1efeddfd980b766 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 12 Apr 2023 09:57:32 +0000
+Subject: [PATCH 2/9] Add several function for Univt.
+
+Provide several essential functions for Univt.
+---
+ drivers/tty/vt/vt.c                | 13 +++++++++++++
+ drivers/video/fbdev/core/bitblit.c | 14 ++++++++++++++
+ 2 files changed, 27 insertions(+)
+
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 63c6e6edb..68d26ec9b 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -297,6 +297,19 @@ static inline unsigned short *screenpos(const struct vc_data *vc, int offset,
+ 	return p;
+ }
+ 
++static inline unsigned short *screenpos_utf8(const struct vc_data *vc, int offset, bool viewed)
++{
++	unsigned short *p;
++
++	if (!viewed)
++		p = (unsigned short *)(vc->vc_origin + offset + vc->vc_screenbuf_size);
++	else if (!vc->vc_sw->con_screen_pos)
++		p = (unsigned short *)(vc->vc_visible_origin + offset + vc->vc_screenbuf_size);
++	else
++		p = vc->vc_sw->con_screen_pos(vc, -offset - 1);
++	return p;
++}
++
+ /* Called  from the keyboard irq path.. */
+ static inline void scrolldelta(int lines)
+ {
+diff --git a/drivers/video/fbdev/core/bitblit.c b/drivers/video/fbdev/core/bitblit.c
+index f98e8f298..233365b16 100644
+--- a/drivers/video/fbdev/core/bitblit.c
++++ b/drivers/video/fbdev/core/bitblit.c
+@@ -43,6 +43,20 @@ static void update_attr(u8 *dst, u8 *src, int attribute,
+ 	}
+ }
+ 
++u16 utf8_pos(struct vc_data *vc, const unsigned short *utf8)
++{
++	unsigned long p = (long)utf8;
++	if (vc->vc_font.charcount <= 512) return 0;
++	if (p >= vc->vc_origin && p < vc->vc_scr_end) {
++		return scr_readw((unsigned short *)(p + vc->vc_screenbuf_size));
++	} else {
++		u16 extra_c;
++		int c = *(int*)utf8;
++		extra_c = (c >> 16 ) & 0x0000ffff;
++		return extra_c;
++	}
++}
++
+ static void bit_bmove(struct vc_data *vc, struct fb_info *info, int sy,
+ 		      int sx, int dy, int dx, int height, int width)
+ {
+-- 
+2.31.1
+

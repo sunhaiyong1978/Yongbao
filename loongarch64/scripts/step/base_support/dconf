@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/dconf-0.40.0
 	
 	mkdir cross-build
 	pushd cross-build
-		 meson ${MESON_CONFIG} -Dbash_completion=false -Dsystemduserunitdir=/usr/lib/systemd/user \
+		 meson ${MESON_CONFIG} -Dbash_completion=false -Dman=false -Dsystemduserunitdir=/usr/lib/systemd/user \
                       ..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}

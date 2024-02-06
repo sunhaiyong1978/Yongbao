@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/x264-git-default_git
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- --sysroot=${SYSROOT_DIR} --enable-shared --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- --sysroot=${SYSROOT_DIR} --enable-shared --bashcompletionsdir=/usr/share/bash-completion/completions --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

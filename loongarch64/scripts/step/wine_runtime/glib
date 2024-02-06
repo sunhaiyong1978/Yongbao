@@ -4,17 +4,17 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.78.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/glib/2.78.3/
-rm -rf ${BUILD_DIRECTORY}/glib-2.78.3
-tar xvf ${DOWNLOADDIR}/glib-2.78.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.78.3
+export PACKAGE_VERSION=2.79.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/glib/2.79.1/
+rm -rf ${BUILD_DIRECTORY}/glib-2.79.1
+tar xvf ${DOWNLOADDIR}/glib-2.79.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.79.1
         
         mkdir cross-build
         pushd cross-build
-                meson ${MESON_CONFIG} --default-library=both -Dtests=false -Dman=true -Dselinux=disabled \
+                meson ${MESON_CONFIG} --default-library=both -Dtests=false -Dman=true -Dselinux=disabled -Dintrospection=disabled \
                       ..
                 eval ${NINJA_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.78.3
+rm -rf ${BUILD_DIRECTORY}/glib-2.79.1

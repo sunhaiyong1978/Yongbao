@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=i686-binutils
-export PACKAGE_VERSION=2.41
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/i686-binutils/2.41/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.41
-tar xvf ${DOWNLOADDIR}/binutils-2.41.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.41
+export PACKAGE_VERSION=2.42
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/i686-binutils/2.42/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.42
+tar xvf ${DOWNLOADDIR}/binutils-2.42.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.42
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -p tools-build
 	pushd tools-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.41
 		make install-strip
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.41
+rm -rf ${BUILD_DIRECTORY}/binutils-2.42

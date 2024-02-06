@@ -1,0 +1,40 @@
+From 6c478d33a87cfbeab3892246f5501cefd51aceab Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 12 Jan 2024 06:24:43 +0000
+Subject: [PATCH 1/2] fix xbmc Settings() undefine error.
+
+---
+ xbmc/interfaces/legacy/Settings.cpp | 4 ++++
+ xbmc/interfaces/legacy/Settings.h   | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/xbmc/interfaces/legacy/Settings.cpp b/xbmc/interfaces/legacy/Settings.cpp
+index 0ba77c3..dd1232d 100644
+--- a/xbmc/interfaces/legacy/Settings.cpp
++++ b/xbmc/interfaces/legacy/Settings.cpp
+@@ -96,6 +96,10 @@ Settings::Settings(std::shared_ptr<CSettingsBase> settings) : settings(std::move
+ {
+ }
+ 
++Settings::Settings()
++{
++}
++
+ bool Settings::getBool(const char* id)
+ {
+   bool value = false;
+diff --git a/xbmc/interfaces/legacy/Settings.h b/xbmc/interfaces/legacy/Settings.h
+index a763d4b..0c229fa 100644
+--- a/xbmc/interfaces/legacy/Settings.h
++++ b/xbmc/interfaces/legacy/Settings.h
+@@ -56,6 +56,7 @@ public:
+ #ifndef SWIG
+   std::shared_ptr<CSettingsBase> settings;
+   Settings(std::shared_ptr<CSettingsBase> settings);
++  Settings();
+ #endif
+   virtual ~Settings() = default;
+ #endif
+-- 
+2.31.1
+

@@ -1,0 +1,76 @@
+From c329706d2c2ee3c16733ab7848d32abf8f99a407 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 4 Jan 2024 12:15:09 +0000
+Subject: [PATCH] MPlayer 1.5 add loongarch64 support.
+
+---
+ configure | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index d4882c0..32e5fca 100755
+--- a/configure
++++ b/configure
+@@ -282,6 +282,13 @@ aarch64() {
+   esac
+ }
+ 
++loongarch64() {
++  case "$host_arch" in
++    loongarch64*) return 0;;
++    *) return 1;;
++  esac
++}
++
+ arm() {
+   case "$host_arch" in
+     arm*|aarch64*) return 0;;
+@@ -1838,7 +1845,7 @@ if test -z "$_target" ; then
+   # host's CPU/instruction set
+   set_host_arch() {
+   case "$1" in
+-      x86_64|amd64|x64|i[3-9]86*|i86pc|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686) host_arch=i386 ;;
++      x86_64|amd64|x64|i[3-9]86*|i86pc|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686|loongarch64) host_arch=i386 ;;
+       ia64) host_arch=ia64 ;;
+       macppc|ppc*|Power*) host_arch=ppc ;;
+       alpha) host_arch=alpha ;;
+@@ -1850,6 +1857,7 @@ if test -z "$_target" ; then
+       s390) host_arch=s390 ;;
+       s390x) host_arch=s390x ;;
+       *mips*) host_arch=mips ;;
++      loongarch64) host_arch=loongarch64 ;;
+       nios2) host_arch=nios2 ;;
+       vax) host_arch=vax ;;
+       xtensa*) host_arch=xtensa ;;
+@@ -2777,6 +2785,11 @@ EOF
+     iproc='nios2'
+     ;;
+ 
++  loongarch64)
++    arch='loongarch'
++    iproc='loongarch'
++    ;;
++
+   mips*)
+     arch='mips'
+     iproc='mips'
+@@ -3406,7 +3419,7 @@ if arm ; then
+ fi
+ 
+ intrinsics="none"
+-cpuexts_all='ALTIVEC XOP AVX AVX2 AVX512 FMA3 FMA4 MMX MMX2 MMXEXT AMD3DNOW AMD3DNOWEXT SSE SSE2 SSE3 SSSE3 SSE4 SSE42 FAST_CMOV I686 FAST_CLZ ARMV5TE ARMV6 ARMV6T2 ARMV8 VFP VFPV3 SETEND NEON INTRINSICS_NEON IWMMXT MMI VIS MVI'
++cpuexts_all='ALTIVEC XOP AVX AVX2 AVX512 FMA3 FMA4 MMX MMX2 MMXEXT AMD3DNOW AMD3DNOWEXT SSE SSE2 SSE3 SSSE3 SSE4 SSE42 FAST_CMOV I686 FAST_CLZ ARMV5TE ARMV6 ARMV6T2 ARMV8 VFP VFPV3 SETEND NEON INTRINSICS_NEON IWMMXT MMI VIS MVI LSX LASX'
+ test "$_altivec"   = yes && cpuexts="ALTIVEC $cpuexts"
+ test "$_mmx"       = yes && cpuexts="MMX $cpuexts"
+ test "$_mmxext"    = yes && cpuexts="MMX2 $cpuexts"
+@@ -3432,6 +3445,7 @@ test "$_armv5te"   = yes && cpuexts="ARMV5TE $cpuexts"
+ test "$_armv6"     = yes && cpuexts="ARMV6 $cpuexts"
+ test "$_armv6t2"   = yes && cpuexts="ARMV6T2 $cpuexts"
+ aarch64 && cpuexts="ARMV8 $cpuexts"
++loongarch64 && cpuexts="LSX $cpuexts"
+ test "$_armvfp"    = yes && cpuexts="VFP $cpuexts"
+ test "$vfpv3"      = yes && cpuexts="VFPV3 $cpuexts"
+ test "$setend"     = yes && cpuexts="SETEND $cpuexts"
+-- 
+2.31.1
+

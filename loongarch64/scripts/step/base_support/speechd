@@ -8,17 +8,20 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/speechd/0.11.5/
 rm -rf ${BUILD_DIRECTORY}/speechd-0.11.5
 tar xvf ${DOWNLOADDIR}/speechd-0.11.5.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/speechd-0.11.5
-	
-	for config_i in $(find -name "config.sub")
-	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
-	done
-	if [ ! -f configure ]; then
-		autoreconf -ifv
-	fi
-	 ./configure ${COMMON_CONFIG} --with-systemdsystemunitdir=/usr/lib/systemd/system $(if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then echo PYTHON=python3; else echo --disable-python; fi) ac_cv_prog_HELP2MAN=  --enable-malloc0returnsnull
-	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+        ./configure ${COMMON_CONFIG} --with-systemdsystemunitdir=/usr/lib/systemd/system $(if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then echo PYTHON=python3; else echo --disable-python; fi) ac_cv_prog_HELP2MAN= --enable-malloc0returnsnull
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+
+	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/speech-dispatcherd.service
+
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/speechd-0.11.5

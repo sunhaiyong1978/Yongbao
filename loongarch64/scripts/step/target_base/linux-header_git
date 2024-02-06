@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=linux-header_git
-export PACKAGE_VERSION=6.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/linux-header_git/6.5/
-rm -rf ${BUILD_DIRECTORY}/linux_git-6.5_git
-tar xvf ${DOWNLOADDIR}/linux_git-6.5_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux_git-6.5_git
+export PACKAGE_VERSION=6.x
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/linux-header_git/6.x/
+rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git
+tar xvf ${DOWNLOADDIR}/linux_git-6.x_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 	
 	make ARCH=${ARCH_FAMILY} mrproper
 	make ARCH=${ARCH_FAMILY} INSTALL_HDR_PATH=dest headers_install
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.5_git
 	mkdir -pv ${SYSROOT_DIR}/usr/include
 	cp -rv dest/include/* ${SYSROOT_DIR}/usr/include
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux_git-6.5_git
+rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git

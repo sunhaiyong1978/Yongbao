@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=glslang
-export PACKAGE_VERSION=13.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/glslang/13.1.1/
-rm -rf ${BUILD_DIRECTORY}/glslang-13.1.1
-tar xvf ${DOWNLOADDIR}/glslang-13.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glslang-13.1.1
+export PACKAGE_VERSION=14.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/glslang/14.0.0/
+rm -rf ${BUILD_DIRECTORY}/glslang-14.0.0
+tar xvf ${DOWNLOADDIR}/glslang-14.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glslang-14.0.0
     
     mkdir -p native-build
     pushd native-build
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/glslang-13.1.1
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glslang-13.1.1
+rm -rf ${BUILD_DIRECTORY}/glslang-14.0.0

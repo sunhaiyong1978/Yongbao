@@ -14,7 +14,7 @@ pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -p tools-build
 	pushd tools-build
-    	CC=gcc AR=ar AS=as CFLAGS=$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${CFLAGS} -Wno-error=dangling-pointer" || echo "${CFLAGS}") \
+    	CC=gcc AR=ar AS=as CFLAGS=$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${CFLAGS} -Wno-error=dangling-pointer" || echo "${CFLAGS} -Wno-error=format-truncation") \
 	    ../configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} --host=${CROSS_HOST} \
 	                 --target=${CROSS_TARGET} --with-sysroot=${SYSROOT_DIR} --disable-nls \
 	                 --disable-static --enable-64-bit-bfd

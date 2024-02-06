@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=linux-pam
-export PACKAGE_VERSION=1.5.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/linux-pam/1.5.3/
-rm -rf ${BUILD_DIRECTORY}/Linux-PAM-1.5.3
-tar xvf ${DOWNLOADDIR}/Linux-PAM-1.5.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Linux-PAM-1.5.3
+export PACKAGE_VERSION=1.6.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/linux-pam/1.6.0/
+rm -rf ${BUILD_DIRECTORY}/Linux-PAM-1.6.0
+tar xvf ${DOWNLOADDIR}/Linux-PAM-1.6.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Linux-PAM-1.6.0
     ./configure ${COMMON_CONFIG} --enable-securedir=/usr/lib64/security --disable-doc \
                 ac_cv_func_yp_get_default_domain=no
     eval ${MAKE_AND_INSTALL}
@@ -37,4 +37,4 @@ session         required        pam_unix.so
 password        required        pam_unix.so     nullok
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/Linux-PAM-1.5.3
+rm -rf ${BUILD_DIRECTORY}/Linux-PAM-1.6.0

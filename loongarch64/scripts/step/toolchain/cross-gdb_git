@@ -21,7 +21,7 @@ pushd ${BUILD_DIRECTORY}/gdb_git-14.0.50-default_git
     mv mpfr-* mpfr
     mkdir cross-build
     pushd cross-build
-	LDFLAGS="--static -pthread" \
+	LDFLAGS="--static -pthread" CFLAGS="${CFLAGS} -Wno-error=format-truncation"  \
 	../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} --target=${HOST_TARGET} \
  --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-64-bit-bfd
 	make -j${JOBS} all-gdb LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"

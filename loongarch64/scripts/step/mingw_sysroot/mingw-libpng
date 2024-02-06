@@ -4,12 +4,12 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-libpng
-export PACKAGE_VERSION=1.6.40
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-libpng/1.6.40/
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.40
-tar xvf ${DOWNLOADDIR}/libpng-1.6.40.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libpng-1.6.40
-	patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/mingw-libpng/1.6.40/patches/libpng-1.6.37-apng.patch 
+export PACKAGE_VERSION=1.6.42
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-libpng/1.6.42/
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.42
+tar xvf ${DOWNLOADDIR}/libpng-1.6.42.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libpng-1.6.42
+	patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/mingw-libpng/1.6.42/patches/libpng-1.6.37-apng.patch 
 	 
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libpng-1.6.40
         make DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root install
 	rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.40
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.42

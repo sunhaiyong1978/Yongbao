@@ -17,6 +17,7 @@ function get_overlay_dirname
 	echo "${OVERLAY_DIR}"
 }
 
+
 function fn_overlay_temp_fix_run
 {
 	if [ "x${1}" == "x" ]; then
@@ -29,6 +30,24 @@ function fn_overlay_temp_fix_run
 		tools/run_package_script.sh ${STEP_STAGE}/overlay_temp_fix_run >${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 获取更详细的内容。"
+			exit -3
+		fi
+		set -e
+	fi
+}
+
+function fn_package_temp_fix_run
+{
+	if [ "x${1}" == "x" ]; then
+		return
+	fi
+	declare STEP_STAGE="${1}"
+	if [ -f scripts/step/${STEP_STAGE}.tempfix ]; then
+		echo "执行${STEP_STAGE}的临时修改脚本……"
+		set +e
+		tools/run_package_script.sh ${STEP_STAGE}.tempfix >${NEW_TARGET_SYSDIR}/logs/temp_fix_run_$(echo ${STEP_STAGE} | sed "s@/@_@g")_0000.log 2>&1
+		if [ "x$?" != "x0" ]; then
+			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/temp_fix_run_$(echo ${STEP_STAGE} | sed "s@/@_@g")_0000.log 获取更详细的内容。"
 			exit -3
 		fi
 		set -e
@@ -67,33 +86,41 @@ function overlay_mount
 	mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
 	sync
 
-	if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
-		if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
-			mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
+	if [ "x${OVERLAY_TEMP_FIX}" == "x1" ]; then
+		if [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ] || [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
+				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
+			fi
+			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change ]; then
+				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change{,.$(date +%Y%m%d%H%M%S)}
+			fi
+			mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}
+			mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change
+			sync
+			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+			if [ "x$?" != "x0" ]; then
+				echo "挂载sysroot错误！"
+				echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+				exit -2
+			fi
+			if [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
+				fn_package_temp_fix_run "${1}/${PACKAGE_NAME}"
+			else
+				fn_overlay_temp_fix_run "${1}"
+			fi
+			overlay_umount
+			sync
 		fi
-		if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change ]; then
-			mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change{,.$(date +%Y%m%d%H%M%S)}
-		fi
-		mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}
-		mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change
-		sync
-		sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
-		if [ "x$?" != "x0" ]; then
-			echo "挂载sysroot错误！"
-			echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
-			exit -2
-		fi
-		fn_overlay_temp_fix_run "${1}"
-		overlay_umount
-		sync
 	fi
 
-	if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
-		sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
-		if [ "x$?" != "x0" ]; then
-			echo "挂载sysroot错误！"
-			echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
-			exit -2
+	if [ "x${OVERLAY_TEMP_FIX}" == "x1" ]; then
+		if [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ] || [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+			if [ "x$?" != "x0" ]; then
+				echo "挂载sysroot错误！"
+				echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+				exit -2
+			fi
 		fi
 	else
 		sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
@@ -131,6 +158,7 @@ else
 		echo "没有${PACKAGE_FILE}脚本文件。"
 		exit 2
 	fi
+	PACKAGE_NAME=${STEP_PACKAGE}
 fi
 
 
@@ -148,6 +176,11 @@ if [ -f env/${STEP_STAGE}/overlay.set ]; then
 			STEP_OVERLAY_TEMP_FIX="$(cat env/${STEP_STAGE}/overlay.set | grep "temp_fix=" | tail -n1 | awk -F'=' '{ print $2 }')"
 		else
 			STEP_OVERLAY_TEMP_FIX=0
+		fi
+		if [ "x${STEP_PACKAGE}" != "x" ]; then
+			if [ -f scripts/step/${STEP_STAGE}/${STEP_PACKAGE}.tempfix ]; then
+				STEP_OVERLAY_TEMP_FIX=1
+			fi
 		fi
 		overlay_mount ${STEP_STAGE} env/${STEP_STAGE}/overlay.set "${STEP_OVERLAY_TEMP_FIX}"
 	else

@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/ostree-git-default_git
         
         NOCONFIGURE=1 ./autogen.sh
 	sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
-        ./configure ${COMMON_CONFIG} --enable-introspection=yes \
+        ./configure ${COMMON_CONFIG} --enable-introspection=yes --disable-man \
 		    --with-systemdsystemunitdir=/usr/lib/systemd/system \
 		    --with-systemdsystemgeneratordir=/usr/lib/systemd/system-generators \
 		    BASH_COMPLETIONSDIR=/usr/share/bash-completion/completions

@@ -22,5 +22,6 @@ ${CROSSTOOLS_DIR}/bin/install-catalog --add ${SYSROOT_DIR}/etc/sgml/sgml-ent.cat
 ${CROSSTOOLS_DIR}/bin/install-catalog --add ${SYSROOT_DIR}/etc/sgml/sgml-docbook.cat \
     ${SYSROOT_DIR}/etc/sgml/sgml-ent.cat
 sed -i "s@${SYSROOT_DIR}@@g" ${SYSROOT_DIR}/etc/sgml/*
+
 popd 
 rm -rf ${BUILD_DIRECTORY}/sgml-common-0.6.3

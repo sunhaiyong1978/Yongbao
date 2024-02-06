@@ -1,0 +1,32 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=libmypaint
+export PACKAGE_VERSION=1.6.1-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libmypaint/1.6.1-default/
+rm -rf ${BUILD_DIRECTORY}/libmypaint-1.6.1
+tar xvf ${DOWNLOADDIR}/libmypaint-1.6.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libmypaint-1.6.1
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                ./autogen.sh
+        fi
+
+        sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
+        sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
+        mkdir cross-build
+        pushd cross-build
+                ../configure ${COMMON_CONFIG} --enable-introspection=yes
+                make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+                     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+                     VAPIGEN=${CROSS_TARGET}-vapigen
+                make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libmypaint-1.6.1

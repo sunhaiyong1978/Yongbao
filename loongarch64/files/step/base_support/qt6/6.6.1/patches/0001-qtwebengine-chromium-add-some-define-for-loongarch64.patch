@@ -1,0 +1,153 @@
+From 899b1bab2e740e0be1c5794dd332d12d0b0f6493 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 24 Jan 2024 14:44:50 +0000
+Subject: [PATCH] qtwebengine chromium add some define for loongarch64.
+
+---
+ .../base/allocator/partition_allocator/partition_alloc.gni | 2 +-
+ qtwebengine/src/3rdparty/chromium/build/build_config.h     | 2 +-
+ .../src/3rdparty/chromium/build/detect_host_arch.py        | 2 ++
+ .../build/linux/sysroot_scripts/install-sysroot.py         | 3 ++-
+ qtwebengine/src/3rdparty/chromium/skia/BUILD.gn            | 2 ++
+ .../third_party/boringssl/src/include/openssl/base.h       | 3 +++
+ .../src/3rdparty/chromium/third_party/libgav1/options.gni  | 2 +-
+ .../third_party/swiftshader/third_party/llvm-10.0/BUILD.gn | 7 +++++++
+ qtwebengine/src/3rdparty/chromium/ui/gl/features.gni       | 2 +-
+ 9 files changed, 20 insertions(+), 5 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/base/allocator/partition_allocator/partition_alloc.gni b/qtwebengine/src/3rdparty/chromium/base/allocator/partition_allocator/partition_alloc.gni
+index 5602f40600..004f6f5dc6 100644
+--- a/qtwebengine/src/3rdparty/chromium/base/allocator/partition_allocator/partition_alloc.gni
++++ b/qtwebengine/src/3rdparty/chromium/base/allocator/partition_allocator/partition_alloc.gni
+@@ -14,7 +14,7 @@ if (is_apple) {
+ if (is_nacl) {
+   # NaCl targets don't use 64-bit pointers.
+   has_64_bit_pointers = false
+-} else if (current_cpu == "x64" || current_cpu == "arm64") {
++} else if (current_cpu == "x64" || current_cpu == "arm64" || current_cpu == "loong64") {
+   has_64_bit_pointers = true
+ } else if (current_cpu == "x86" || current_cpu == "arm") {
+   has_64_bit_pointers = false
+diff --git a/qtwebengine/src/3rdparty/chromium/build/build_config.h b/qtwebengine/src/3rdparty/chromium/build/build_config.h
+index 6db5d9bca0..171aee9fd1 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/build_config.h
++++ b/qtwebengine/src/3rdparty/chromium/build/build_config.h
+@@ -340,7 +340,7 @@
+ #define ARCH_CPU_LOONG32 1
+ #define ARCH_CPU_32_BITS 1
+ #define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__loongarch64)
++#elif defined(__loongarch_lp64)
+ #define ARCH_CPU_LOONG_FAMILY 1
+ #define ARCH_CPU_LOONG64 1
+ #define ARCH_CPU_64_BITS 1
+diff --git a/qtwebengine/src/3rdparty/chromium/build/detect_host_arch.py b/qtwebengine/src/3rdparty/chromium/build/detect_host_arch.py
+index c9d47e9139..6d76f27bc3 100755
+--- a/qtwebengine/src/3rdparty/chromium/build/detect_host_arch.py
++++ b/qtwebengine/src/3rdparty/chromium/build/detect_host_arch.py
+@@ -24,6 +24,8 @@ def HostArch():
+     host_arch = 'arm'
+   elif host_arch.startswith('aarch64'):
+     host_arch = 'arm64'
++  elif host_arch.startswith('loongarch64'):
++    host_arch = 'loong64'
+   elif host_arch.startswith('mips64'):
+     host_arch = 'mips64'
+   elif host_arch.startswith('mips'):
+diff --git a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
+index 42842a184d..31cdffc505 100755
+--- a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
++++ b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
+@@ -44,13 +44,14 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ URL_PREFIX = 'https://commondatastorage.googleapis.com'
+ URL_PATH = 'chrome-linux-sysroot/toolchain'
+ 
+-VALID_ARCHS = ('arm', 'arm64', 'i386', 'amd64', 'mips', 'mips64el')
++VALID_ARCHS = ('arm', 'arm64', 'i386', 'amd64', 'mips', 'mips64el', 'loong64')
+ 
+ ARCH_TRANSLATIONS = {
+     'x64': 'amd64',
+     'x86': 'i386',
+     'mipsel': 'mips',
+     'mips64': 'mips64el',
++    'loongarch64': 'loong64',
+ }
+ 
+ DEFAULT_TARGET_PLATFORM = 'bullseye'
+diff --git a/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn b/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
+index 4bdb82800d..9739d84b45 100644
+--- a/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
+@@ -765,6 +765,8 @@ skia_source_set("skia_opts") {
+     # Conditional and empty body needed to avoid assert() below.
+   } else if (current_cpu == "riscv64") {
+     # Conditional and empty body needed to avoid assert() below.
++  } else if (current_cpu == "loong64") {
++    # Conditional and empty body needed to avoid assert() below.
+   } else {
+     assert(false, "Unknown cpu target")
+   }
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/base.h b/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/base.h
+index cf93e85ba8..83a0f14305 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/base.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/base.h
+@@ -96,6 +96,9 @@ extern "C" {
+ #elif defined(__ARMEL__) || defined(_M_ARM)
+ #define OPENSSL_32_BIT
+ #define OPENSSL_ARM
++#elif defined(__loongarch_lp64)
++#define OPENSSL_64_BIT
++#define OPENSSL_LOONGARCH64
+ #elif defined(__MIPSEL__) && !defined(__LP64__)
+ #define OPENSSL_32_BIT
+ #define OPENSSL_MIPS
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni b/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni
+index 0aab011ea8..22b8add635 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni
++++ b/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni
+@@ -9,5 +9,5 @@ declare_args() {
+   use_libgav1_parser =
+       (is_chromeos || is_linux || is_win) &&
+       (target_cpu == "x86" || target_cpu == "x64" || target_cpu == "arm" ||
+-       target_cpu == "arm64" || target_cpu == "ppc64")
++       target_cpu == "arm64" || target_cpu == "ppc64" || target_cpu == "loong64")
+ }
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn b/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn
+index 59e52303c5..a60a42f840 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn
+@@ -154,6 +154,8 @@ swiftshader_llvm_source_set("swiftshader_llvm") {
+     deps += [ ":swiftshader_llvm_mips" ]
+   } else if (current_cpu == "ppc64") {
+     deps += [ ":swiftshader_llvm_ppc" ]
++  } else if (current_cpu == "loong64") {
++    deps += [ ":swiftshader_llvm_loongarch64" ]
+   } else if (current_cpu == "riscv64") {
+     deps += [ ":swiftshader_llvm_riscv64" ]
+   } else if (current_cpu == "x86" || current_cpu == "x64") {
+@@ -1330,6 +1332,11 @@ swiftshader_llvm_source_set("swiftshader_llvm_x86") {
+   ]
+ }
+ 
++swiftshader_llvm_source_set("swiftshader_llvm_loongarch64") {
++  sources = [
++  ]
++}
++
+ swiftshader_llvm_source_set("swiftshader_llvm_riscv64") {
+   sources = [
+     "llvm/lib/Target/RISCV/AsmParser/RISCVAsmParser.cpp",
+diff --git a/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni b/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni
+index fbc49c2ebe..00eb1845c6 100644
+--- a/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni
++++ b/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni
+@@ -37,5 +37,5 @@ declare_args() {
+        is_chromeos_ash || is_fuchsia) &&
+       (target_cpu == "x86" || target_cpu == "x64" || target_cpu == "arm" ||
+        target_cpu == "arm64" || target_cpu == "mipsel" ||
+-       target_cpu == "mips64el" || target_cpu == "riscv64")
++       target_cpu == "mips64el" || target_cpu == "riscv64" || target_cpu == "loongarch64")
+ }
+-- 
+2.31.1
+

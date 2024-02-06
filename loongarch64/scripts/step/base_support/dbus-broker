@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dbus-broker
-export PACKAGE_VERSION=34
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus-broker/34/
-rm -rf ${BUILD_DIRECTORY}/dbus-broker-34
-tar xvf ${DOWNLOADDIR}/dbus-broker-34.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dbus-broker-34
-	patch -Np1 -i ${SYSDIR}/files/base_support/dbus-broker/34/patches/0001-dbus-broker-fix-systemd-dir-for-cross-build.patch 
+export PACKAGE_VERSION=35
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus-broker/35/
+rm -rf ${BUILD_DIRECTORY}/dbus-broker-35
+tar xvf ${DOWNLOADDIR}/dbus-broker-35.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dbus-broker-35
+	patch -Np1 -i ${SYSDIR}/files/base_support/dbus-broker/35/patches/0001-dbus-broker-fix-systemd-dir-for-cross-build.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/dbus-broker-34
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/dbus-broker-34
+rm -rf ${BUILD_DIRECTORY}/dbus-broker-35

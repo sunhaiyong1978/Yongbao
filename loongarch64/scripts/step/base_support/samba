@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=samba
-export PACKAGE_VERSION=4.19.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/samba/4.19.3/
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.3
-tar xvf ${DOWNLOADDIR}/samba-4.19.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/samba-4.19.3
+export PACKAGE_VERSION=4.19.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/samba/4.19.4/
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.4
+tar xvf ${DOWNLOADDIR}/samba-4.19.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.19.4
         
         for config_i in $(find -name "config.sub")
         do
@@ -26,6 +26,7 @@ pushd ${BUILD_DIRECTORY}/samba-4.19.3
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
 	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --with-piddir=/run --with-pammodulesdir=/usr/lib${LIB_SUFF}/security \
 		    --with-sockets-dir=/run/samba --with-modulesdir=/usr/lib${LIB_SUFF}/samba --with-lockdir=/var/lib/samba/lock --with-statedir=/var/lib/samba --with-cachedir=/var/lib/samba \
+		    --without-ad-dc \
 		    --with-systemd --systemd-install-services --with-systemddir=/usr/lib/systemd/system \
 		    --systemd-smb-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" --systemd-nmb-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" \
 		    --systemd-winbind-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" --systemd-samba-extra="Environment=KRB5CCNAME=FILE:/run/samba/krb5cc_samba" \
@@ -40,9 +41,11 @@ pushd ${BUILD_DIRECTORY}/samba-4.19.3
 	install -v -m644 examples/LDAP/samba* ${SYSROOT_DIR}/etc/openldap/schema
 	install -v -m755 examples/LDAP/{get*,ol*} ${SYSROOT_DIR}/etc/openldap/schema
 
+	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/samba.service
+
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.3
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.4
 
 cat > ${SYSROOT_DIR}/etc/samba/smb.conf << EOF
 [global]

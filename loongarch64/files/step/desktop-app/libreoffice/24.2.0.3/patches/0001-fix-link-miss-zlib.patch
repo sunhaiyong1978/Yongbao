@@ -1,0 +1,24 @@
+From 7dea0383b84eb3f4b0fa278806061a4d64dbbb8b Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 14 Jan 2024 13:07:06 +0000
+Subject: [PATCH] fix link miss zlib.
+
+---
+ writerperfect/Library_wpftdraw.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/writerperfect/Library_wpftdraw.mk b/writerperfect/Library_wpftdraw.mk
+index a369a626c..7374e68d8 100644
+--- a/writerperfect/Library_wpftdraw.mk
++++ b/writerperfect/Library_wpftdraw.mk
+@@ -51,6 +51,7 @@ $(eval $(call gb_Library_use_externals,wpftdraw,\
+ 	mspub \
+ 	mwaw \
+ 	odfgen \
++	zlib \
+ 	zmf \
+ 	libpng \
+ 	pagemaker \
+-- 
+2.31.1
+

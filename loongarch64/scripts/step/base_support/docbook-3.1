@@ -5,6 +5,7 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=docbook-3.1
 export PACKAGE_VERSION=docbk31
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/docbook-3.1/docbk31/
+rm -rf ${BUILD_DIRECTORY}/docbook-3.1
 mkdir -pv ${BUILD_DIRECTORY}/docbook-3.1
 pushd ${BUILD_DIRECTORY}/docbook-3.1
     unzip ${DOWNLOADDIR}/docbk31.zip

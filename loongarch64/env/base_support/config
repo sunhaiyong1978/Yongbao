@@ -28,7 +28,7 @@ export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${SYSROOT_DIR} install &
 export MESON_CONFIG="--prefix=/usr --libdir=/usr/lib${LIB_SUFF} --sysconfdir=/etc --localstatedir=/var --libexecdir=/usr/libexec --buildtype=release \
 			--cross-file ${COMMON_DIR}/meson-cross.txt"
 export NINJA_AND_INSTALL="CC=${CROSS_TARGET}-gcc ninja && DESTDIR=${SYSROOT_DIR} ninja install"
-export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types -Wno-implicit-int -Wno-implicit-function-declaration"
+export CFLAGS="-g ${CFLAGS} -Wno-incompatible-pointer-types -Wno-implicit-int -Wno-implicit-function-declaration"
 export ARCH_NAME=loongarch64
 export ARCH_FAMILY=loongarch
 export ARCH_ABI=lp64d

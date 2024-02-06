@@ -1,0 +1,217 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=docbook-5.0.1
+export PACKAGE_VERSION=zip
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/docbook-5.0.1/zip/
+export PATH=${CROSSTOOLS_DIR}/host-tools/bin:${PATH}
+install -v -d -m755 ${CROSSTOOLS_DIR}/etc/xml
+pushd ${BUILD_DIRECTORY}
+rm -rf ${BUILD_DIRECTORY}/docbook-5.0.1
+unzip ${DOWNLOADDIR}/docbook-5.0.1.zip
+pushd ${BUILD_DIRECTORY}/docbook-5.0.1
+    install -vdm755 ${CROSSTOOLS_DIR}/share/xml/docbook/schema/{dtd,rng,sch,xsd}/5.0
+    install -vm644  dtd/* ${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0
+    install -vm644  rng/* ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0
+    install -vm644  sch/* ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.0
+    install -vm644  xsd/* ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0
+
+    if [ ! -e ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0 ]; then
+        xmlcatalog --noout --create ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    fi
+
+    xmlcatalog --noout --add "public" \
+        "-//OASIS//DTD DocBook XML 5.0//EN" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/docbook.dtd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "system" \
+        "http://www.oasis-open.org/docbook/xml/5.0/dtd/docbook.dtd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/docbook.dtd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "system" \
+        "http://docbook.org/xml/5.0/dtd/docbook.dtd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/docbook.dtd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbook.rng" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbook.rng" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbook.rng" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rng/docbookxi.rng" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbookxi.rng" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbookxi.rng" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbookxi.rng" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rnc/docbook.rnc" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbook.rnc" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbook.rnc" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbook.rnc" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rnc/docbookxi.rnc" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbookxi.rnc" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbookxi.rnc" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/docbookxi.rnc" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/docbook.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/docbook.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/docbook.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/docbook.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/docbookxi.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/docbookxi.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/docbookxi.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/docbookxi.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/xi.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/xi.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/xi.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/xi.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/xlink.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/xlink.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/xlink.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/xlink.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/xml.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/xml.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/xml.xsd" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/xml.xsd" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/sch/docbook.sch" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.0/docbook.sch" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/sch/docbook.sch" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.0/docbook.sch" \
+        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.0
+
+    xmlcatalog --noout --create ${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/catalog.xml
+    xmlcatalog --noout --add "public" \
+        "-//OASIS//DTD DocBook XML 5.0//EN" \
+        "docbook.dtd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/catalog.xml
+    xmlcatalog --noout --add "system" \
+        "http://www.oasis-open.org/docbook/xml/5.0/dtd/docbook.dtd" \
+        "docbook.dtd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/catalog.xml
+
+    xmlcatalog --noout --create ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbook.rng" \
+        "docbook.rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" \
+        "docbook.rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbookxi.rng" \
+        "docbookxi.rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rng/docbookxi.rng" \
+        "docbookxi.rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbook.rnc" \
+        "docbook.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rnc" \
+        "docbook.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/rng/docbookxi.rnc" \
+        "docbookxi.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/rng/docbookxi.rnc" \
+        "docbookxi.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml
+
+    xmlcatalog --noout --create ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/sch/docbook.sch" \
+        "docbook.sch" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/sch/docbook.sch" \
+        "docbook.sch" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.0/catalog.xml
+
+    xmlcatalog --noout --create ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/docbook.xsd" \
+        "docbook.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/docbook.xsd" \
+        "docbook.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/docbookxi.xsd" \
+        "docbookxi.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/docbookxi.xsd" \
+        "docbookxi.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/xlink.xsd" \
+        "xlink.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/xlink.xsd" \
+        "xlink.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://docbook.org/xml/5.0/xsd/xml.xsd" \
+        "xml.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+    xmlcatalog --noout --add "uri" \
+        "http://www.oasis-open.org/docbook/xml/5.0/xsd/xml.xsd" \
+        "xml.xsd" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml
+
+    if [ ! -e ${CROSSTOOLS_DIR}/etc/xml/catalog ]; then
+        xmlcatalog --noout --create ${CROSSTOOLS_DIR}/etc/xml/catalog
+    fi
+    xmlcatalog --noout --add "delegatePublic" \
+        "-//OASIS//DTD DocBook XML 5.0//EN" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/catalog.xml" \
+        ${CROSSTOOLS_DIR}/etc/xml/catalog
+    xmlcatalog --noout --add "delegateSystem" \
+        "http://docbook.org/xml/5.0/dtd/" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/catalog.xml" \
+        ${CROSSTOOLS_DIR}/etc/xml/catalog
+    xmlcatalog --noout --add "delegateURI" \
+        "http://docbook.org/xml/5.0/dtd/" \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.0/catalog.xml" \
+        ${CROSSTOOLS_DIR}/etc/xml/catalog
+    xmlcatalog --noout --add "delegateURI" \
+        "http://docbook.org/xml/5.0/rng/"  \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.0/catalog.xml" \
+        ${CROSSTOOLS_DIR}/etc/xml/catalog
+    xmlcatalog --noout --add "delegateURI" \
+        "http://docbook.org/xml/5.0/sch/"  \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.0/catalog.xml" \
+        ${CROSSTOOLS_DIR}/etc/xml/catalog
+    xmlcatalog --noout --add "delegateURI" \
+        "http://docbook.org/xml/5.0/xsd/"  \
+        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.0/catalog.xml" \
+        ${CROSSTOOLS_DIR}/etc/xml/catalog
+popd
+popd
+rm -rf ${BUILD_DIRECTORY}/docbook-5.0.1

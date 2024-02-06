@@ -1,0 +1,72 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=qt6-tools
+export PACKAGE_VERSION=6.6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6-tools/6.6.1/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+        
+        mkdir cross-build
+        pushd cross-build
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+                      -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
+                      -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
+                      -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
+                      -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPERL_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl \
+                      -DRuby_EXECUTABLE=${CROSSTOOLS_DIR}/bin/ruby \
+                      -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
+                      -DDOXYGEN_EXECUTABLE=/bin/doxygen \
+                      -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
+                      -DQtWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/qtwaylandscanner \
+                      -DLIBXML2_XMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/xmllint \
+                      -DFLEX_EXECUTABLE=/bin/flex \
+                      -DBISON_EXECUTABLE=/bin/bison \
+                      -Dgzip_EXECUTABLE=/bin/gzip \
+                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
+                      -DCMAKE_INSTALL_PREFIX=/usr \
+                      -DINSTALL_BINDIR=/usr/lib64/qt6/bin \
+                      -DINSTALL_ARCHDATADIR=/usr/lib64/qt6 \
+                      -DINSTALL_LIBDIR=/usr/lib64 \
+                      -DINSTALL_QMLDIR=/usr/lib64/qml \
+                      -DINSTALL_SYSCONFDIR=/etc/xdg \
+                      -DINSTALL_PLUGINSDIR=/usr/lib64/qt6/plugins \
+                      -DINSTALL_QMLDIR=/usr/lib64/qt6/qml \
+                      -DINSTALL_DATADIR=/usr/share/qt6 \
+                      -DINSTALL_DOCDIR=/usr/share/doc/qt6 \
+                      -DINSTALL_TRANSLATIONSDIR=/usr/share/qt6/translations \
+                      -DINSTALL_INCLUDEDIR=/usr/include/qt6 \
+                      -DINSTALL_IMPORTDIR=/usr/lib64/qt6/imports \
+                      -DINSTALL_MKSPECSDIR=/usr/lib64/qt6/mkspecs \
+                      -DBUILD_SHARED_LIBS=ON \
+		      -DQT_HOST_PATH=${CROSSTOOLS_DIR}/qt6 -DQT_BUILD_SUBMODULES=qtbase\;qttools \
+		      -DPKG_CONFIG_HOST_EXECUTABLE=/usr/bin/pkg-config \
+                      -Wno-dev ..
+		for tool_i in syncqt cmake_automoc_parser moc rcc
+		do
+			make -j${JOBS} -C qtbase/src/tools/${tool_i}
+			make -C qtbase/src/tools/${tool_i} DESTDIR=${SYSROOT_DIR} install
+			mv qtbase/lib64/qt6/libexec/${tool_i}{,.orig}
+			echo "#!/bin/bash -e
+${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${PWD}/qtbase/lib64/qt6/libexec/${tool_i}.orig \"\$@\"" > qtbase/lib64/qt6/libexec/${tool_i}
+			chmod +x qtbase/lib64/qt6/libexec/${tool_i}
+		done
+		make -j${JOBS} -C qtbase/src/tools
+		make -C qtbase/src/tools DESTDIR=${SYSROOT_DIR} install
+
+		for tool_i in lrelease
+		do
+			make -j${JOBS} -C qttools/src/linguist/${tool_i}
+			make -C qttools/src/linguist/${tool_i} DESTDIR=${SYSROOT_DIR} install
+		done
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1

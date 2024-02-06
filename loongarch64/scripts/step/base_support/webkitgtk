@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=webkitgtk
-export PACKAGE_VERSION=2.43.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.43.2/
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.43.2
-tar xvf ${DOWNLOADDIR}/webkitgtk-2.43.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/webkitgtk-2.43.2
+export PACKAGE_VERSION=2.43.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.43.4/
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.43.4
+tar xvf ${DOWNLOADDIR}/webkitgtk-2.43.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webkitgtk-2.43.4
     
     mkdir cross-build
     pushd cross-build
@@ -44,4 +44,4 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.43.2
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.43.2
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.43.4

@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=libreoffice
-export PACKAGE_VERSION=7.6.4.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/
-rm -rf ${BUILD_DIRECTORY}/libreoffice-7.6.4.1
-tar xvf ${DOWNLOADDIR}/libreoffice-7.6.4.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libreoffice-7.6.4.1
+export PACKAGE_VERSION=24.2.0.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/
+rm -rf ${BUILD_DIRECTORY}/libreoffice-24.2.0.3
+tar xvf ${DOWNLOADDIR}/libreoffice-24.2.0.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libreoffice-24.2.0.3
     mkdir -p external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-7.6.4.1.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-help-7.6.4.1.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-translations-7.6.4.1.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-24.2.0.3.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-help-24.2.0.3.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-translations-24.2.0.3.tar.xz external/tarballs/
     tar xvf ${RESOURCEDIR}/files/tarballs.listfile_dir.tar.gz
     mv tarballs.listfile_dir/* external/tarballs/
     rmdir tarballs.listfile_dir
@@ -19,25 +19,28 @@ pushd ${BUILD_DIRECTORY}/libreoffice-7.6.4.1
     mv tarballs_extern.listfile_dir/* external/tarballs/
     rmdir tarballs_extern.listfile_dir
     mkdir -p src
-    ln -sv src/libreoffice-help-7.6.4.1/helpcontent2
-    ln -sv src/libreoffice-dictionaries-7.6.4.1/dictionaries
-    ln -sv src/libreoffice-translations-7.6.4.1/translations
+    ln -sv src/libreoffice-help-24.2.0.3/helpcontent2
+    ln -sv src/libreoffice-dictionaries-24.2.0.3/dictionaries
+    ln -sv src/libreoffice-translations-24.2.0.3/translations
 
     cp -a ${SYSROOT_DIR}/usr/include/{math,stdlib}.h ${SYSROOT_DIR}/usr/local/include/
 
+    sed -i "/gcc_full_version/s@120000@110000@g" configure.ac
+
     cp ${CROSSTOOLS_DIR}/share/automake-*/config.* ./
     aclocal -I m4
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/libreoffice-7.5-for-clfs.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0001-external-curl-configure-add-without-ssl.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0001-fix-build-error-at-use-without-java.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0001-libreoffice-fix-for-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0001-libreoffice-7.6-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0002-libreoffice-7.6-pdfium-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0003-libreoffice-7.6-box2d-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0001-external-liblangtag-add-0001-liblangtag-fix-for-gcc-.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0001-external-libcmis-add-0001-libcmis-fix-build-error-fo.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/0001-external-xmlsec-add-0001-xmlsec-fix-build-error.patc.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/7.6.4.1/patches/libreoffice-7.6-fix-build-error-for-libxml2-2.12.0.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/libreoffice-7.5-for-clfs.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-libreoffice-24.2.0-external-curl-configure-add-witho.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-fix-build-error-at-use-without-java.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-libreoffice-fix-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-libreoffice-7.6-fix-for-gcc14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0002-libreoffice-7.6-pdfium-fix-for-gcc14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0003-libreoffice-7.6-box2d-fix-for-gcc14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-external-liblangtag-add-0001-liblangtag-fix-for-gcc-.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-external-libcmis-add-0001-libcmis-fix-build-error-fo.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-libreoffice-24.2.0-external-xmlsec-add-0001-xmlsec-fix-build-error.patc.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/libreoffice-7.6-fix-build-error-for-libxml2-2.12.0.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.0.3/patches/0001-fix-link-miss-zlib.patch 
 	 
     autoconf -I .
     PKG_CONFIG_FOR_BUILD=/bin/pkg-config \
@@ -63,4 +66,4 @@ pushd ${BUILD_DIRECTORY}/libreoffice-7.6.4.1
 
     rm -f ${SYSROOT_DIR}/usr/local/include/{math,stdlib}.h
 popd 
-rm -rf ${BUILD_DIRECTORY}/libreoffice-7.6.4.1
+rm -rf ${BUILD_DIRECTORY}/libreoffice-24.2.0.3

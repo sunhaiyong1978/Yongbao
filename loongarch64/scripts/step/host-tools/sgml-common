@@ -1,0 +1,32 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=sgml-common
+export PACKAGE_VERSION=0.6.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sgml-common/0.6.3/
+rm -rf ${BUILD_DIRECTORY}/sgml-common-0.6.3
+tar xvf ${DOWNLOADDIR}/sgml-common-0.6.3.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sgml-common-0.6.3
+    patch -Np1 -i ${SYSDIR}/files/host-tools/sgml-common/0.6.3/patches/sgml-common-0.6.3-manpage-1.patch 
+	 
+    autoreconf -ifv
+    ./configure ${COMMON_CONFIG}
+    make -j${JOBS}
+    if [ -f ${CROSSTOOLS_DIR}/bin/install-catalog ]; then
+	mv ${CROSSTOOLS_DIR}/bin/install-catalog{,.bak}
+    fi
+    make install
+popd 
+rm -rf ${BUILD_DIRECTORY}/sgml-common-0.6.3
+mv ${CROSSTOOLS_DIR}/bin/install-catalog ${CROSSTOOLS_DIR}/host-tools/bin/
+
+sed -i "s@ /etc@ ${CROSSTOOLS_DIR}/etc@g" ${CROSSTOOLS_DIR}/host-tools/bin/install-catalog
+${CROSSTOOLS_DIR}/host-tools/bin/install-catalog --add ${CROSSTOOLS_DIR}/etc/sgml/sgml-ent.cat \
+    ${CROSSTOOLS_DIR}/share/sgml/sgml-iso-entities-8879.1986/catalog
+${CROSSTOOLS_DIR}/host-tools/bin/install-catalog --add ${CROSSTOOLS_DIR}/etc/sgml/sgml-docbook.cat \
+    ${CROSSTOOLS_DIR}/etc/sgml/sgml-ent.cat
+
+if [ -f ${CROSSTOOLS_DIR}/bin/install-catalog.bak ]; then
+	mv ${CROSSTOOLS_DIR}/bin/install-catalog{.bak,}
+fi

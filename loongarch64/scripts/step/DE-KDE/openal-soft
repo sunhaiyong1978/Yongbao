@@ -6,7 +6,7 @@ export STEP_PACKAGENAME=openal-soft
 export PACKAGE_VERSION=1.23.1
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/openal-soft/1.23.1/
 rm -rf ${BUILD_DIRECTORY}/openal-soft-1.23.1
-tar xvf ${DOWNLOADDIR}/openal-soft-1.23.1.tar.bz2 -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/openal-soft-1.23.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/openal-soft-1.23.1
         patch -Np1 -i ${SYSDIR}/files/DE-KDE/openal-soft/1.23.1/patches/0001-Fix-find_package-SDL2-to-sdl2.patch 
 	 

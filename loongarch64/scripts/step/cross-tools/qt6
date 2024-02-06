@@ -9,6 +9,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.6.1/
 rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
 tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.6.1/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
+	 
 	mkdir -p native-build
 	pushd native-build
 		cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}/qt6 \
@@ -17,6 +19,18 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
 		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat \
 		      ..
 		eval ${MAKE_AND_INSTALL}
+	popd
+	mkdir -p ${CROSSTOOLS_DIR}/qt6/lib64/qt6/
+	ln -sf ${CROSSTOOLS_DIR}/qt6/libexec ${CROSSTOOLS_DIR}/qt6/lib64/qt6/
+	pushd qtwebengine/src/gn
+		mkdir -p build
+		pushd build
+			cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}/qt6 \
+	                      -DCMAKE_BUILD_TYPE=RELEASE \
+        	              -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};\\\${ORIGIN}/../lib${LIB_SUFF}" \
+        	              ..
+			eval ${MAKE_AND_INSTALL}
+		popd
 	popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1

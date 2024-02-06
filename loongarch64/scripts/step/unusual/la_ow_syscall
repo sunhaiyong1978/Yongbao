@@ -1,0 +1,13 @@
+source env/unusual/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=unusual
+export STEP_PACKAGENAME=la_ow_syscall
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/la_ow_syscall/git-default/
+rm -rf ${BUILD_DIRECTORY}/la_ow_syscall-git-default_git
+tar xvf ${DOWNLOADDIR}/la_ow_syscall-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/la_ow_syscall-git-default_git
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/la_ow_syscall-git-default_git

@@ -29,6 +29,8 @@ pushd ${BUILD_DIRECTORY}/systemd-255
 		eval ${NINJA_AND_INSTALL}
 	popd
 
+	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/systemd-networkd-wait-online.service
+
 cat >> ${SYSROOT_DIR}/etc/pam.d/system-session << "EOF"
 session  required    pam_loginuid.so
 session  optional    pam_systemd.so

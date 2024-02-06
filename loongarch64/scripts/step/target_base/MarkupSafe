@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=MarkupSafe
-export PACKAGE_VERSION=2.1.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/MarkupSafe/2.1.3/
-rm -rf ${BUILD_DIRECTORY}/MarkupSafe-2.1.3
-tar xvf ${DOWNLOADDIR}/MarkupSafe-2.1.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/MarkupSafe-2.1.3
+export PACKAGE_VERSION=2.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/MarkupSafe/2.1.5/
+rm -rf ${BUILD_DIRECTORY}/MarkupSafe-2.1.5
+tar xvf ${DOWNLOADDIR}/MarkupSafe-2.1.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/MarkupSafe-2.1.5
      _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     ${CROSSTOOLS_DIR}/bin/python3 setup.py build
     _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/MarkupSafe-2.1.3
+rm -rf ${BUILD_DIRECTORY}/MarkupSafe-2.1.5

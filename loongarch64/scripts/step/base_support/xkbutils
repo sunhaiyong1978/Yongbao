@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xkbutils
-export PACKAGE_VERSION=1.0.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xkbutils/1.0.5/
-rm -rf ${BUILD_DIRECTORY}/xkbutils-1.0.5
-tar xvf ${DOWNLOADDIR}/xkbutils-1.0.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xkbutils-1.0.5
+export PACKAGE_VERSION=1.0.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xkbutils/1.0.6/
+rm -rf ${BUILD_DIRECTORY}/xkbutils-1.0.6
+tar xvf ${DOWNLOADDIR}/xkbutils-1.0.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xkbutils-1.0.6
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/xkbutils-1.0.5
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xkbutils-1.0.5
+rm -rf ${BUILD_DIRECTORY}/xkbutils-1.0.6

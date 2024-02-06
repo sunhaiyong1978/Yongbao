@@ -3,23 +3,33 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mesa
-export PACKAGE_VERSION=23.3.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/23.3.1/
-rm -rf ${BUILD_DIRECTORY}/mesa-23.3.1
-tar xvf ${DOWNLOADDIR}/mesa-23.3.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mesa-23.3.1
+export PACKAGE_VERSION=24.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/24.0.0/
+rm -rf ${BUILD_DIRECTORY}/mesa-24.0.0
+tar xvf ${DOWNLOADDIR}/mesa-24.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa-24.0.0
+    
+    tar xf ${RESOURCEDIR}/files/mesa-DirectX-Headers_git.tar.gz -C subprojects/
+    mv subprojects/{mesa-DirectX-Headers_git,DirectX-Headers-1.0}
+
     sed -i -e "/dep_wl_scanner/s@, native: true@@g" \
            -e "/prog_wl_scanner/s@find_program\(.*\)\$@'wayland-scanner'@g" meson.build
+
+    sed -i -e "/LIBCLC_INCLUDEDIR/s@dep_clc.get_variable(pkgconfig : 'includedir')@'/usr/include'@g" \
+           -e "/LIBCLC_LIBEXECDIR/s@dep_clc.get_variable(pkgconfig : 'libexecdir')@'/usr/lib${LIB_SUFF}/clc'@g" src/gallium/frontends/clover/meson.build
+
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} \
-              -Dgallium-drivers="nouveau,r300,r600,radeonsi,etnaviv,swrast,virgl,zink" \
+              -Dgallium-drivers="kmsro,radeonsi,r300,r600,nouveau,freedreno,swrast,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,iris,lima,zink,d3d12" \
               -Dplatforms=x11,wayland \
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true -Dosmesa=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dgallium-opencl=icd \
               -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast,virtio" \
+              -Dvideo-codecs="vc1dec,h264dec,h264enc,h265dec,h265enc,av1dec,av1enc,vp9dec" \
+              -Dgallium-nine=true -Dllvm=enabled -Dshared-llvm=enabled -Ddraw-use-llvm=true -Dgallium-d3d12-video=auto -Dshader-cache-max-size=8G -Dglx-direct=true -Dvulkan-layers=overlay \
                ..
-	eval ${NINJA_AND_INSTALL}
+        eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mesa-23.3.1
+rm -rf ${BUILD_DIRECTORY}/mesa-24.0.0

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.74.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.74.1/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.74.1-src
-tar xvf ${DOWNLOADDIR}/rustc-1.74.1-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.74.1-src
+export PACKAGE_VERSION=1.75.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.75.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.75.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.75.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.75.0-src
      
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
@@ -34,4 +34,4 @@ pushd ${BUILD_DIRECTORY}/rustc-1.74.1-src
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          DESTDIR=${SYSROOT_DIR}/ install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.74.1-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.75.0-src

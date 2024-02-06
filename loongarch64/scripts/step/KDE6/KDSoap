@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDSoap
-export PACKAGE_VERSION=2.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDSoap/2.1.1/
-rm -rf ${BUILD_DIRECTORY}/kdsoap-2.1.1
-tar xvf ${DOWNLOADDIR}/kdsoap-2.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kdsoap-2.1.1
+export PACKAGE_VERSION=2.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDSoap/2.2.0/
+rm -rf ${BUILD_DIRECTORY}/kdsoap-2.2.0
+tar xvf ${DOWNLOADDIR}/kdsoap-2.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kdsoap-2.2.0
         
         mkdir cross-build
         pushd cross-build
@@ -38,7 +38,7 @@ pushd ${BUILD_DIRECTORY}/kdsoap-2.1.1
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kdsoap-2.1.1
+rm -rf ${BUILD_DIRECTORY}/kdsoap-2.2.0
 
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/kdwsdl2cpp-qt6 \"\$@\"" \
         > ${CROSSTOOLS_DIR}/bin/kdwsdl2cpp-qt6

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=zlib
-export PACKAGE_VERSION=1.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zlib/1.3/
-rm -rf ${BUILD_DIRECTORY}/zlib-1.3
-tar xvf ${DOWNLOADDIR}/zlib-1.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/zlib-1.3
+export PACKAGE_VERSION=1.3.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zlib/1.3.1/
+rm -rf ${BUILD_DIRECTORY}/zlib-1.3.1
+tar xvf ${DOWNLOADDIR}/zlib-1.3.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zlib-1.3.1
 	
 
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/zlib-1.3
 	INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
 	make DESTDIR=${INSTALL_DIST_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/zlib-1.3
+rm -rf ${BUILD_DIRECTORY}/zlib-1.3.1

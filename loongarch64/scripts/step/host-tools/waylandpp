@@ -1,0 +1,21 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=waylandpp
+export PACKAGE_VERSION=1.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/waylandpp/1.0.0/
+rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.0
+tar xvf ${DOWNLOADDIR}/waylandpp-1.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/waylandpp-1.0.0
+    
+    mkdir -p native-build
+    pushd native-build
+        cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}  \
+              -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SERVER=OFF -DBUILD_LIBRARIES=OFF ..
+        eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.0
+mkdir -p ${CROSSTOOLS_DIR}/host-tools/bin/
+cp -a ${CROSSTOOLS_DIR}/bin/wayland-scanner++ ${CROSSTOOLS_DIR}/host-tools/bin/

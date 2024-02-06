@@ -16,7 +16,9 @@ pushd ${BUILD_DIRECTORY}/obs-studio-30.0.2
 	sed -i "/obs-qsv11/d" plugins/CMakeLists.txt
         mkdir cross-build
         pushd cross-build
-                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations" CXXFLAGS="${CXXFLAGS} -Wno-error=stringop-overflow" \
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+		CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations -Wno-error=calloc-transposed-args -Wno-error=deprecated-declarations" \
+		CXXFLAGS="${CXXFLAGS} -Wno-error=stringop-overflow -Wno-error=calloc-transposed-args -Wno-error=deprecated-declarations" \
                 cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \

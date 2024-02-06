@@ -1,2 +1,2 @@
 overlay_dir=desk_app
-parent_dirs=sysroot
+parent_dirs=sysroot game_emu

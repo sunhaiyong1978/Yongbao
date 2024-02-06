@@ -1,0 +1,21 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=gexiv2
+export PACKAGE_VERSION=0.14.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gexiv2/0.14.2/
+rm -rf ${BUILD_DIRECTORY}/gexiv2-0.14.2
+tar xvf ${DOWNLOADDIR}/gexiv2-0.14.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gexiv2-0.14.2
+	
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG}  \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/gexiv2-0.14.2

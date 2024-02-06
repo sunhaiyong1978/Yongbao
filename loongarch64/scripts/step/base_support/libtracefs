@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libtracefs
-export PACKAGE_VERSION=1.7.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libtracefs/1.7.0/
-rm -rf ${BUILD_DIRECTORY}/libtracefs-1.7.0
-tar xvf ${DOWNLOADDIR}/libtracefs-1.7.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libtracefs-1.7.0
-	
+export PACKAGE_VERSION=1.8.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libtracefs/1.8.0/
+rm -rf ${BUILD_DIRECTORY}/libtracefs-1.8.0
+tar xvf ${DOWNLOADDIR}/libtracefs-1.8.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libtracefs-1.8.0
+	patch -Np1 -i ${SYSDIR}/files/base_support/libtracefs/1.8.0/patches/0001-fix-miss-tracefs-mmap.c-for-meson-build.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		 meson ${MESON_CONFIG}  \
@@ -18,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libtracefs-1.7.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libtracefs-1.7.0
+rm -rf ${BUILD_DIRECTORY}/libtracefs-1.8.0
