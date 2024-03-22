@@ -1,0 +1,27 @@
+From 87f7551d91056449175b5542c39726c58cb24273 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 27 Feb 2024 03:14:38 +0000
+Subject: [PATCH] libreoffice 24.2.1.1 external liblangtag fix for cross build.
+
+---
+ external/liblangtag/ExternalProject_liblangtag.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/external/liblangtag/ExternalProject_liblangtag.mk b/external/liblangtag/ExternalProject_liblangtag.mk
+index 1ce4b6eb7..9716ba4b9 100644
+--- a/external/liblangtag/ExternalProject_liblangtag.mk
++++ b/external/liblangtag/ExternalProject_liblangtag.mk
+@@ -37,8 +37,8 @@ $(call gb_ExternalProject_get_state_target,liblangtag,build):
+ 		LIBXML2_CFLAGS="$(LIBXML_CFLAGS)" \
+ 		LIBXML2_LIBS="$(if $(filter WNT,$(OS)),-L$(call gb_UnpackedTarball_get_dir,libxml2)/win32/bin.msvc -llibxml2,$(LIBXML_LIBS))" \
+ 		$(if $(filter MACOSX,$(OS)),--prefix=/@.__________________________________________________URELIB) \
+-		$(if $(filter-out LINUX FREEBSD,$(OS)),,LDFLAGS="-Wl$(COMMA)-z$(COMMA)origin -Wl$(COMMA)-rpath,\\"\$$\$$ORIGIN) \
+-		$(if $(filter-out SOLARIS,$(OS)),,LDFLAGS="-Wl$(COMMA)-z$(COMMA)origin -Wl$(COMMA)-R$(COMMA)\\"\$$\$$ORIGIN) \
++		$(if $(filter-out LINUX FREEBSD,$(OS)),,LDFLAGS="${LDFLAGS} -Wl$(COMMA)-z$(COMMA)origin -Wl$(COMMA)-rpath,\\"\$$\$$ORIGIN) \
++		$(if $(filter-out SOLARIS,$(OS)),,LDFLAGS="${LDFLAGS} -Wl$(COMMA)-z$(COMMA)origin -Wl$(COMMA)-R$(COMMA)\\"\$$\$$ORIGIN) \
+ 		&& $(if $(filter WNT,$(OS)),\
+ 			REAL_CC="$(shell cygpath -w $(lastword $(filter-out -%,$(CC))))" \
+ 			REAL_CC_FLAGS="$(filter -%,$(CC))") \
+-- 
+2.31.1
+

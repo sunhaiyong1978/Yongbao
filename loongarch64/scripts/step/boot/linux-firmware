@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=linux-firmware
-export PACKAGE_VERSION=20240115
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-firmware/20240115/
-rm -rf ${BUILD_DIRECTORY}/linux-firmware-20240115
-tar xvf ${DOWNLOADDIR}/linux-firmware-20240115.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-firmware-20240115
+export PACKAGE_VERSION=20240312
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-firmware/20240312/
+rm -rf ${BUILD_DIRECTORY}/linux-firmware-20240312
+tar xvf ${DOWNLOADDIR}/linux-firmware-20240312.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-firmware-20240312
 	make DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-firmware-20240115
+rm -rf ${BUILD_DIRECTORY}/linux-firmware-20240312

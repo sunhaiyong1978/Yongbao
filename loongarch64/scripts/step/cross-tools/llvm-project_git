@@ -13,7 +13,8 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
 pushd llvm
     mkdir -p native-build
     pushd native-build
-        LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" \
+	LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
+        PKG_CONFIG_SYSROOT_DIR="" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR} \
                  -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
                  -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
@@ -30,7 +31,9 @@ pushd llvm
                  -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
         ninja
         ninja install
+    popd
 popd
-save_package_version cross-tools_llvm-project "19.0.0"
+LLVM_DIST_VERSION="$(${CROSSTOOLS_DIR}/bin/llvm-config --version)"
+save_package_version cross-tools_llvm-project "${LLVM_DIST_VERSION}"
 popd 
 rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git

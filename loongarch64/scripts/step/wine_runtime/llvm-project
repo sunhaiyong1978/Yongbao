@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=17.0.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/llvm-project/17.0.6/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
-tar xvf ${DOWNLOADDIR}/llvm-project-17.0.6.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
+export PACKAGE_VERSION=18.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/llvm-project/18.1.2/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
+tar xvf ${DOWNLOADDIR}/llvm-project-18.1.2.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
     
     pushd llvm
     mkdir cross-build
@@ -29,7 +29,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
     popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
 
 cat > ${SYSDIR}/cross-toolchains/llvm-project/bin/${X86_HOST}-llvm-config << EOF
 #!/bin/bash -e

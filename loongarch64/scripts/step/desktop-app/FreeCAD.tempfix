@@ -1,0 +1,35 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=FreeCAD
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/FreeCAD//
+touch ${TEMP_DIRECTORY}/strip-foo
+
+if [ -f ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc ]; then
+	sed -i.orig "s@pkgdatadir=\${datarootdir}/wayland@pkgdatadir=${SYSROOT_DIR}/usr/share/wayland@g"  ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc
+fi
+
+for cmake_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo) \
+		  $(find ${SYSROOT_DIR}/usr/share/cmake/yaml-cpp/ -name "*.cmake")
+do
+        if [ -f ${cmake_file} ]; then
+                sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${cmake_file}
+        fi
+done
+
+
+for cmake_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo)
+do
+        if [ -f ${cmake_file} ]; then
+                sed -i.orig "s@_IMPORT_PREFIX \"/usr\"@_IMPORT_PREFIX \"${SYSROOT_DIR}/usr\"@g" ${cmake_file}
+        fi
+done
+
+for cmake_file in $(find ${SYSROOT_DIR}/usr/lib/cmake/opencascade/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${cmake_file} ]; then
+		sed -i.orig "s@\${OCCT_INSTALL_BIN_LETTER}@@g" ${cmake_file}
+	fi
+done

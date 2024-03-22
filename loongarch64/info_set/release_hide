@@ -1,0 +1,6 @@
+KDE6-breeze-grub
+sysroot/linux
+desk_app/llvm-project
+wine_runtime/wine
+# wine_runtime/linux
+# wine64_runtime/linux

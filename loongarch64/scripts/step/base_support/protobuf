@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=protobuf
-export PACKAGE_VERSION=25.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/protobuf/25.2/
-rm -rf ${BUILD_DIRECTORY}/protobuf-25.2
-tar xvf ${DOWNLOADDIR}/protobuf-25.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/protobuf-25.2
+export PACKAGE_VERSION=26.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/protobuf/26.0/
+rm -rf ${BUILD_DIRECTORY}/protobuf-26.0
+tar xvf ${DOWNLOADDIR}/protobuf-26.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/protobuf-26.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/protobuf-25.2
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/protobuf-25.2
+rm -rf ${BUILD_DIRECTORY}/protobuf-26.0

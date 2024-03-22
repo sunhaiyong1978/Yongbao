@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=ocaml
-export PACKAGE_VERSION=5.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/ocaml/5.1.1/
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.1
-tar xvf ${DOWNLOADDIR}/ocaml-5.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ocaml-5.1.1
-        patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.1.1/patches/0001-Add-loongarch-architecture-support.patch 
+export PACKAGE_VERSION=5.1.1+effect-syntax
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/ocaml/5.1.1+effect-syntax/
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.1+effect-syntax
+tar xvf ${DOWNLOADDIR}/ocaml-5.1.1+effect-syntax.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ocaml-5.1.1+effect-syntax
+        patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.1.1+effect-syntax/patches/0001-Add-loongarch-architecture-support.patch 
 	 
 	cp ${CROSSTOOLS_DIR}/share/automake*/config.* build-aux/
 	autoconf
@@ -61,8 +61,8 @@ pushd ${BUILD_DIRECTORY}/ocaml-5.1.1
 	make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 
-       	make DESTDIR=${PWD}/ocaml-$(echo "5.1.1" | sed "s@-default@@g")-${ARCH_NAME} install
-        mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.1.1" | sed "s@-default@@g")/
-       	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.1.1" | sed "s@-default@@g")/ocaml-$(echo "5.1.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz ocaml-$(echo "5.1.1" | sed "s@-default@@g")-${ARCH_NAME}
+       	make DESTDIR=${PWD}/ocaml-$(echo "5.1.1+effect-syntax" | sed "s@-default@@g")-${ARCH_NAME} install
+        mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.1.1+effect-syntax" | sed "s@-default@@g")/
+       	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.1.1+effect-syntax" | sed "s@-default@@g")/ocaml-$(echo "5.1.1+effect-syntax" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz ocaml-$(echo "5.1.1+effect-syntax" | sed "s@-default@@g")-${ARCH_NAME}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.1
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.1.1+effect-syntax

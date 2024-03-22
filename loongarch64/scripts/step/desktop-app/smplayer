@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=smplayer
-export PACKAGE_VERSION=23.12.0.10226
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/smplayer/23.12.0.10226/
-rm -rf ${BUILD_DIRECTORY}/smplayer-23.12.0.10226
-tar xvf ${DOWNLOADDIR}/smplayer-23.12.0.10226.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/smplayer-23.12.0.10226
+export PACKAGE_VERSION=23.12.0.10237
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/smplayer/23.12.0.10237/
+rm -rf ${BUILD_DIRECTORY}/smplayer-23.12.0.10237
+tar xvf ${DOWNLOADDIR}/smplayer-23.12.0.10237.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/smplayer-23.12.0.10237
 	make -j${JOBS} PREFIX=/usr CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ LINK=${CROSS_TARGET}-g++ LRELEASE=${SYSROOT_DIR}/usr/bin/lrelease QMAKE=${SYSROOT_DIR}/usr/bin/qmake
 	make PREFIX=/usr CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ LINK=${CROSS_TARGET}-g++ DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/smplayer-23.12.0.10226
+rm -rf ${BUILD_DIRECTORY}/smplayer-23.12.0.10237

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=firefox
-export PACKAGE_VERSION=122.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/122.0/
-rm -rf ${BUILD_DIRECTORY}/firefox-122.0
-tar xvf ${DOWNLOADDIR}/firefox-122.0.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-122.0
+export PACKAGE_VERSION=124.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/124.0.1/
+rm -rf ${BUILD_DIRECTORY}/firefox-124.0.1
+tar xvf ${DOWNLOADDIR}/firefox-124.0.1.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-124.0.1
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
@@ -20,9 +20,10 @@ pushd ${BUILD_DIRECTORY}/firefox-122.0
     rm -rf third_party/python/six/*
     rm -rf third_party/python/urllib3/*
     rm -rf third_party/python/requests/*
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/122.0/patches/firefox-100-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/122.0/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/122.0/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/124.0.1/patches/firefox-100-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/124.0.1/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/124.0.1/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/124.0.1/patches/0001-firefox-123.0-fix-for-glean_parser-13.0.0.patch 
 	 
 
     sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@12@g" mach
@@ -93,4 +94,4 @@ EOF
 ln -sfv /usr/lib64/firefox/browser/chrome/icons/default/default128.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/firefox.png
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-122.0
+rm -rf ${BUILD_DIRECTORY}/firefox-124.0.1

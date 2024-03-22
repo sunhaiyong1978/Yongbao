@@ -1,0 +1,61 @@
+source env/computer_language/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=computer_language
+export STEP_PACKAGENAME=llvm-project
+export PACKAGE_VERSION=main_git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/llvm-project/main_git-default/
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+tar xvf ${DOWNLOADDIR}/llvm-project_git-main_git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
+    
+    pushd llvm
+    mkdir -p native-build
+    pushd native-build
+        LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" \
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${PWD}/llvm-dist \
+                 -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
+                 -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
+                 -DLLVM_LIBDIR_SUFFIX=64 \
+                 -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+                 -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+                 -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+                 -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
+                 -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
+                 -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/llvm-temp/lib64;\\\${ORIGIN}/../lib64" \
+                 -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
+                 -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+                 -DLLVM_VERSION_SUFFIX='' \
+                 -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
+        ninja
+        ninja install
+    popd
+    export PATH=${PWD}/native-build/llvm-dist/bin:$PATH
+    LLVM_DIST_VERSION="$(echo "main_git-default" | sed "s@-default@@g")"
+    mkdir cross-build
+    pushd cross-build
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/opt/llvm-project-${LLVM_DIST_VERSION} -DCMAKE_BUILD_TYPE=Release \
+              -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+              -DLLVM_LIBDIR_SUFFIX=64 \
+              -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+              -DLLVM_BUILD_RUNTIME:BOOL=ON -DLLVM_ENABLE_RTTI:BOOL=ON \
+              -DLLVM_ENABLE_ZLIB:BOOL=ON -DLLVM_ENABLE_FFI:BOOL=ON \
+              -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+              -DLLVM_TABLEGEN:PATH=${CROSSTOOLS_DIR}/llvm-temp/bin/llvm-tblgen \
+              -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
+              -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
+              -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+	      -DLLVM_ENABLE_PROJECTS='clang;lld' \
+              -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
+	ninja
+	DESTDIR=${PWD}/llvm-dest ninja install
+	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/llvm-project/${LLVM_DIST_VERSION}/
+	pushd llvm-dest
+		tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/llvm-project/${LLVM_DIST_VERSION}/llvm-project-${LLVM_DIST_VERSION}-${ARCH_NAME}.tar.xz *
+	popd
+    	info_pool "生成了可发布的 llvm-project ${LLVM_DIST_VERSION} 压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/llvm-project/${LLVM_DIST_VERSION}/llvm-project-${LLVM_DIST_VERSION}-${ARCH_NAME}.tar.xz"
+    popd
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=packaging
-export PACKAGE_VERSION=23.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/packaging/23.2/
-rm -rf ${BUILD_DIRECTORY}/packaging-23.2
-tar xvf ${DOWNLOADDIR}/packaging-23.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/packaging-23.2
+export PACKAGE_VERSION=24.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/packaging/24.0/
+rm -rf ${BUILD_DIRECTORY}/packaging-24.0
+tar xvf ${DOWNLOADDIR}/packaging-24.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/packaging-24.0
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user packaging
 popd 
-rm -rf ${BUILD_DIRECTORY}/packaging-23.2
+rm -rf ${BUILD_DIRECTORY}/packaging-24.0

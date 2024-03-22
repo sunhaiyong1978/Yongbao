@@ -1,0 +1,71 @@
+From 8a0aea21f955e9c70733ff7f73a4596e7e7697c0 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 27 Feb 2024 03:06:37 +0000
+Subject: [PATCH] libreoffice 24.2.1.1 fix for cross build.
+
+---
+ aclocal.m4   | 2 +-
+ configure.ac | 6 +++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/aclocal.m4 b/aclocal.m4
+index 94390796e..0e4855a4f 100644
+--- a/aclocal.m4
++++ b/aclocal.m4
+@@ -390,7 +390,7 @@ AC_DEFUN([AM_PATH_PYTHON],
+   dnl Find a Python interpreter.  Python versions prior to 2.0 are not
+   dnl supported. (2.0 was released on October 16, 2000).
+   m4_define_default([_AM_PYTHON_INTERPRETER_LIST],
+-[python python2 python3 dnl
++[python3 python python2 dnl
+  python3.9 python3.8 python3.7 python3.6 python3.5 python3.4 python3.3 dnl
+  python3.2 python3.1 python3.0 dnl
+  python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 dnl
+diff --git a/configure.ac b/configure.ac
+index a773f80af..5deb0c847 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -5757,7 +5757,7 @@ if test "$cross_compiling" = "yes"; then
+     unset AR LD NM OBJDUMP PKG_CONFIG RANLIB READELF STRIP
+     unset CPPUNIT_CFLAGS CPPUNIT_LIBS
+     unset LIBXML_CFLAGS LIBXML_LIBS LIBXSLT_CFLAGS LIBXSLT_LIBS XSLTPROC
+-    unset PKG_CONFIG_LIBDIR PKG_CONFIG_PATH
++    unset PKG_CONFIG_LIBDIR PKG_CONFIG_PATH PKG_CONFIG_SYSROOT_DIR
+     if test -n "$CC_FOR_BUILD"; then
+         export CC="$CC_FOR_BUILD"
+         CC_BASE=`first_arg_basename "$CC"`
+@@ -5767,6 +5767,7 @@ if test "$cross_compiling" = "yes"; then
+         CXX_BASE=`first_arg_basename "$CXX"`
+     fi
+     test -n "$PKG_CONFIG_FOR_BUILD" && export PKG_CONFIG="$PKG_CONFIG_FOR_BUILD"
++    test -n "$LDFLAGS_FOR_BUILD" && export LDFLAGS="$LDFLAGS_FOR_BUILD"
+     cd CONF-FOR-BUILD
+ 
+     # Handle host configuration, which affects the cross-toolset too
+@@ -5923,6 +5924,7 @@ if test "$cross_compiling" = "yes"; then
+         CC
+         CPPU_ENV
+         CXX
++        LDFLAGS
+         ILIB
+         JAVA_HOME
+         JAVAIFLAGS
+@@ -6012,6 +6014,7 @@ else
+     CC_FOR_BUILD="$CC"
+     CPPU_ENV_FOR_BUILD="$CPPU_ENV"
+     CXX_FOR_BUILD="$CXX"
++    LDFLAGS_FOR_BUILD="$LDFLAGS"
+     INSTDIR_FOR_BUILD="$INSTDIR"
+     INSTROOT_FOR_BUILD="$INSTROOT"
+     LIBO_BIN_FOLDER_FOR_BUILD="$LIBO_BIN_FOLDER"
+@@ -6032,6 +6035,7 @@ AC_SUBST(SDKDIRNAME_FOR_BUILD)
+ AC_SUBST(WORKDIR_FOR_BUILD)
+ AC_SUBST(CC_FOR_BUILD)
+ AC_SUBST(CXX_FOR_BUILD)
++AC_SUBST(LDFLAGS_FOR_BUILD)
+ AC_SUBST(CPPU_ENV_FOR_BUILD)
+ 
+ dnl ===================================================================
+-- 
+2.31.1
+

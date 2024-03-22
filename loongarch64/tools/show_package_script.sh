@@ -34,10 +34,11 @@ fi
 
 export NEW_TARGET_SYSDIR="${PWD}/workbase"
 export BASE_DIR="${PWD}"
+export SCRIPTS_DIR="${BASE_DIR}/scripts"
 
 source env/function.sh
 
-PACKAGE_FILE=scripts/step/${1}
+PACKAGE_FILE=${SCRIPTS_DIR}/step/${1}
 
 if [ ! -f ${PACKAGE_FILE} ]; then
 	echo "没有${PACKAGE_FILE}脚本文件。"

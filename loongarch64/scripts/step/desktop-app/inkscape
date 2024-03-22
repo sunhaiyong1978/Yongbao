@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/inkscape-git-default_git
 tar xvf ${DOWNLOADDIR}/inkscape-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/inkscape-git-default_git
         patch -Np1 -i ${SYSDIR}/files/desktop-app/inkscape/git-default/patches/0001-inkscap-3rdparty-2geom-fix-for-gcc14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/inkscape/git-default/patches/0001-inkscape-fix-build-error.patch 
 	 
 	mkdir cross-build
 	pushd cross-build

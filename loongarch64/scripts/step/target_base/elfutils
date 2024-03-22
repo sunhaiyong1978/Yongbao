@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=elfutils
-export PACKAGE_VERSION=git-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/elfutils/git-default/
-rm -rf ${BUILD_DIRECTORY}/elfutils-git-default_git
-tar xvf ${DOWNLOADDIR}/elfutils-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elfutils-git-default_git
+export PACKAGE_VERSION=0.191
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/elfutils/0.191/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.191
+tar xvf ${DOWNLOADDIR}/elfutils-0.191.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.191
 	
         for config_i in $(find -name "config.sub")
         do
@@ -28,4 +28,4 @@ echo '#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/eu-readelf "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
 popd 
-rm -rf ${BUILD_DIRECTORY}/elfutils-git-default_git
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.191

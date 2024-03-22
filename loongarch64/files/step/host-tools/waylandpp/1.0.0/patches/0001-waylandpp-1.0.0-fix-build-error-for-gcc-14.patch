@@ -1,0 +1,50 @@
+From 55f615312cafed8ce73fddcfe19ced06fa1c08fc Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 10 Jan 2024 13:50:59 +0000
+Subject: [PATCH] waylandpp-1.0.0 fix build error for gcc 14.
+
+---
+ include/wayland-client.hpp | 1 +
+ include/wayland-server.hpp | 1 +
+ scanner/scanner.cpp        | 1 +
+ 3 files changed, 3 insertions(+)
+
+diff --git a/include/wayland-client.hpp b/include/wayland-client.hpp
+index a3f782b..13c23fc 100644
+--- a/include/wayland-client.hpp
++++ b/include/wayland-client.hpp
+@@ -32,6 +32,7 @@
+ #include <functional>
+ #include <memory>
+ #include <string>
++#include <cstdint>
+ #include <vector>
+ #include <wayland-version.hpp>
+ #include <wayland-client-core.h>
+diff --git a/include/wayland-server.hpp b/include/wayland-server.hpp
+index e2cc80f..f1a1637 100644
+--- a/include/wayland-server.hpp
++++ b/include/wayland-server.hpp
+@@ -31,6 +31,7 @@
+ #include <list>
+ #include <memory>
+ #include <string>
++#include <cstdint>
+ 
+ #include <wayland-server-core.h>
+ #include <wayland-util.hpp>
+diff --git a/scanner/scanner.cpp b/scanner/scanner.cpp
+index bebd71e..210d814 100644
+--- a/scanner/scanner.cpp
++++ b/scanner/scanner.cpp
+@@ -24,6 +24,7 @@
+ #include <cctype>
+ #include <cmath>
+ #include <stdexcept>
++#include <cstdint>
+ 
+ #include "pugixml.hpp"
+ 
+-- 
+2.31.1
+

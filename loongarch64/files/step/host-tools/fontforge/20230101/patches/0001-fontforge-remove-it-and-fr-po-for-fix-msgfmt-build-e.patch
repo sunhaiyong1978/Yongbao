@@ -1,0 +1,26 @@
+From edbb04f0a4f0fd750132e3a4247d78d22dbaff83 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 23 Feb 2024 03:20:50 +0000
+Subject: [PATCH] fontforge remove it and fr po for fix msgfmt build error.
+
+---
+ po/LINGUAS | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/po/LINGUAS b/po/LINGUAS
+index c5b690f..83eab0d 100644
+--- a/po/LINGUAS
++++ b/po/LINGUAS
+@@ -3,9 +3,7 @@ de
+ el
+ en_GB
+ es
+-fr
+ hr
+-it
+ ja
+ ka_GE
+ ko
+-- 
+2.31.1
+

@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/binutils-2.42
         mkdir -pv build
         pushd build
 		export PATH=/usr/bin
-                ../configure --prefix=${CROSSTOOLS_DIR} --enable-shared --disable-werror \
+                ../configure --prefix=${CROSSTOOLS_DIR}/build-tools --enable-shared --disable-werror \
                              --with-system-zlib --enable-64-bit-bfd
                 make -j${JOBS}
                 make install

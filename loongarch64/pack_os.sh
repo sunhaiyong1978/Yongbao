@@ -6,11 +6,15 @@ export BASE_DIR="${PWD}"
 declare FORCE_CREATE=FALSE
 declare ARCHIVE_MODE="squashfs"
 declare OVERLAY_NAME=""
+declare KERNEL_CREATE=FALSE
 
-while getopts 'fm:h' OPT; do
+while getopts 'fkm:h' OPT; do
     case $OPT in
         f)
             FORCE_CREATE=TRUE
+            ;;
+        k)
+            KERNEL_CREATE=TRUE
             ;;
 	m)
             ARCHIVE_MODE=$OPTARG
@@ -28,6 +32,7 @@ while getopts 'fm:h' OPT; do
             echo "选项："
             echo "    -h: 显示当前帮助信息。"
             echo "    -f: 将原有目录进行重命名，并重新进行目标系统的打包工作。"
+            echo "    -k: 对内核进行打包工作,制定该参数后“[目录名]”将视作内核的标记名。"
             echo "    -m <模式名> 设置打包模式，目前可用的打包模式名有tar和squashfs。"
 
             exit 0
@@ -50,37 +55,93 @@ if [ "x${1}" != "x" ]; then
 fi
 
 
+#				DISTRO_NAME=$(grep -r "^DISTRO_NAME=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+#				if [ "x${DISTRO_NAME}" == "x" ]; then
+#					echo "无法获取操作系统名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_NAME的定义。"
+#					exit 3
+#				fi
+#				DISTRO_ARCH=$(grep -r "^DISTRO_ARCH=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+#				if [ "x${DISTRO_ARCH}" == "x" ]; then
+#					echo "缺少架构名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_ARCH的定义。"
+#					exit 3
+#				fi
+#				DISTRO_VERSION=$(grep -r "^DISTRO_VERSION=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+#				if [ "x${DISTRO_VERSION}" == "x" ]; then
+#					echo "缺少系统的版本号，无法继续，请编辑env/distro.info文件，并增加DISTRO_VERSION的定义。"
+#					exit 3
+#				fi
+#				if [ "x${ARCHIVE_MODE}" == "x" ]; then
+#					ARCHIVE_MODE=$(grep -r "^DISTRO_ARCHIVE_MODE=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+#					if [ "x${ARCHIVE_MODE}" == "x" ]; then
+#						ARCHIVE_MODE=$(grep -r "^DEFAULT=" env/archive | tail -n1 | awk -F'=' '{ print $2 }')
+#						if [ "x${ARCHIVE_MODE}" == "x" ]; then
+#							echo "缺少打包系统方式的设置，请编辑env/distro.info文件，并增加DISTRO_ARCHIVE_MODE的定义,当前将默认设置为squashfs。"
+#							ARCHIVE_MODE=squashfs
+#						fi
+#					fi
+#				fi
+
+
+DISTRO_NAME=$(grep -r "^DISTRO_NAME=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+if [ "x${DISTRO_NAME}" == "x" ]; then
+	echo "无法获取操作系统名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_NAME的定义。"
+	exit 3
+fi
+DISTRO_ARCH=$(grep -r "^DISTRO_ARCH=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+if [ "x${DISTRO_ARCH}" == "x" ]; then
+	echo "缺少架构名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_ARCH的定义。"
+	exit 3
+fi
+DISTRO_VERSION=$(grep -r "^DISTRO_VERSION=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+if [ "x${DISTRO_VERSION}" == "x" ]; then
+	echo "缺少系统的版本号，无法继续，请编辑env/distro.info文件，并增加DISTRO_VERSION的定义。"
+	exit 3
+fi
+if [ "x${ARCHIVE_MODE}" == "x" ]; then
+	ARCHIVE_MODE=$(grep -r "^DISTRO_ARCHIVE_MODE=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+	if [ "x${ARCHIVE_MODE}" == "x" ]; then
+		ARCHIVE_MODE=$(grep -r "^DEFAULT=" env/archive | tail -n1 | awk -F'=' '{ print $2 }')
+		if [ "x${ARCHIVE_MODE}" == "x" ]; then
+			echo "缺少打包系统方式的设置，请编辑env/distro.info文件，并增加DISTRO_ARCHIVE_MODE的定义,当前将默认设置为squashfs。"
+			ARCHIVE_MODE=squashfs
+		fi
+	fi
+fi
+
+
 if [ "x${OVERLAY_NAME}" == "x" ]; then
+	if [ "x${KERNEL_CREATE}" == "xTRUE" ]; then
+		KERNEL_VERSION=$(cat ${NEW_TARGET_SYSDIR}/common_files/linux-kernel.version)
+		if [ "x${KERNEL_VERSION}" != "x" ]; then
+        		KERNEL_LIST="$(ls ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION})"
+			if [ "x$?" == "x0" ] && [ "x${KERNEL_LIST}" != "x" ]; then
+				for kernel_dir in $(ls ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION})
+				do
+					echo "打包 ${kernel_dir} 内核..."
+					if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
+						tools/pack_archive_dir.sh -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/img "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					else
+						tools/pack_archive_dir.sh ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/img "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					fi
+				done
+			else
+                		echo "发现编译内核的版本信息，但未找到对应的内核文件，无法继续！请检查 ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION} 目录中是否存放有内核目录。"
+		                exit 6
+        		fi
+		else
+			echo "没有发现构建内核版本的信息，无法打包内核，请确认是否完成内核的编译。"
+			exit 7
+		fi
+	fi
 	if [ -d ${BASE_DIR}/workbase/overlaydir_strip ]; then
 		for i in $(cat ${BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
 		do
-			echo "制作 $i 打包文件..."
-			if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i ]; then
-				DISTRO_NAME=$(grep -r "^DISTRO_NAME=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-				if [ "x${DISTRO_NAME}" == "x" ]; then
-					echo "无法获取操作系统名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_NAME的定义。"
-					exit 3
-				fi
-				DISTRO_ARCH=$(grep -r "^DISTRO_ARCH=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-				if [ "x${DISTRO_ARCH}" == "x" ]; then
-					echo "缺少架构名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_ARCH的定义。"
-					exit 3
-				fi
-				DISTRO_VERSION=$(grep -r "^DISTRO_VERSION=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-				if [ "x${DISTRO_VERSION}" == "x" ]; then
-					echo "缺少系统的版本号，无法继续，请编辑env/distro.info文件，并增加DISTRO_VERSION的定义。"
-					exit 3
-				fi
-				if [ "x${ARCHIVE_MODE}" == "x" ]; then
-					ARCHIVE_MODE=$(grep -r "^DISTRO_ARCHIVE_MODE=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-					if [ "x${ARCHIVE_MODE}" == "x" ]; then
-						ARCHIVE_MODE=$(grep -r "^DEFAULT=" env/archive | tail -n1 | awk -F'=' '{ print $2 }')
-						if [ "x${ARCHIVE_MODE}" == "x" ]; then
-							echo "缺少打包系统方式的设置，请编辑env/distro.info文件，并增加DISTRO_ARCHIVE_MODE的定义,当前将默认设置为squashfs。"
-							ARCHIVE_MODE=squashfs
-						fi
-					fi
-				fi
+			RELEASE_SUFF=""
+			if [ -f ${BASE_DIR}/workbase/overlaydir/${i}.released ]; then
+				RELEASE_SUFF=".update"
+			fi
+			echo "制作 ${i}${RELEASE_SUFF} 打包文件..."
+			if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} ]; then
 
 				STEP_NAME=""
 				if [ -f env/${i}.info ]; then
@@ -91,24 +152,24 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 				fi
 
 				if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-					tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/$i "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 					for j in $(cat ${BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
 					do
-						if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i.$j ]; then
-							tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/$i.$j "${STEP_NAME}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
+							tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 						fi
 					done
 				else
-					tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 					for j in $(cat ${BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
 					do
-						if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i.$j ]; then
-							tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i.$j "${STEP_NAME}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
+							tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 						fi
 					done
 				fi
 			else
-				echo "警告：${BASE_DIR}/workbase/overlaydir_strip/ 目录中没有 $i 目录，跳过！"
+				echo "警告：${BASE_DIR}/workbase/overlaydir_strip/ 目录中没有 $i${RELEASE_SUFF} 目录，跳过！"
 			fi
 		done
 	else
@@ -116,34 +177,34 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 		exit 1
 	fi
 else
-	if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} ]; then
-		echo "制作 ${OVERLAY_NAME} 打包文件..."
-		if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} ]; then
-			DISTRO_NAME=$(grep -r "^DISTRO_NAME=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-			if [ "x${DISTRO_NAME}" == "x" ]; then
-				echo "无法获取操作系统名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_NAME的定义。"
-				exit 3
-			fi
-			DISTRO_ARCH=$(grep -r "^DISTRO_ARCH=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-			if [ "x${DISTRO_ARCH}" == "x" ]; then
-				echo "缺少架构名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_ARCH的定义。"
-				exit 3
-			fi
-			DISTRO_VERSION=$(grep -r "^DISTRO_VERSION=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-			if [ "x${DISTRO_VERSION}" == "x" ]; then
-				echo "缺少系统的版本号，无法继续，请编辑env/distro.info文件，并增加DISTRO_VERSION的定义。"
-				exit 3
-			fi
-			if [ "x${ARCHIVE_MODE}" == "x" ]; then
-				ARCHIVE_MODE=$(grep -r "^DISTRO_ARCHIVE_MODE=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
-				if [ "x${ARCHIVE_MODE}" == "x" ]; then
-					ARCHIVE_MODE=$(grep -r "^DEFAULT=" env/archive | tail -n1 | awk -F'=' '{ print $2 }')
-					if [ "x${ARCHIVE_MODE}" == "x" ]; then
-						echo "缺少打包系统方式的设置，请编辑env/distro.info文件，并增加DISTRO_ARCHIVE_MODE的定义,当前将默认设置为squashfs。"
-						ARCHIVE_MODE=squashfs
-					fi
+	if [ "x${KERNEL_CREATE}" == "xTRUE" ]; then
+		KERNEL_VERSION=$(cat ${NEW_TARGET_SYSDIR}/common_files/linux-kernel.version)
+		if [ "x${KERNEL_VERSION}" != "x" ]; then
+			if [ -d ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} ]; then
+				echo "打包 ${OVERLAY_NAME} 内核..."
+				if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
+					tools/pack_archive_dir.sh -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+				else
+					tools/pack_archive_dir.sh ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 				fi
-			fi
+			else
+				echo "没有发现 ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} 目录，无法继续打包内核。"
+		                exit 6
+        		fi
+		else
+			echo "没有发现构建内核版本的信息，无法打包内核，请确认是否完成内核的编译。"
+			exit 7
+		fi
+		exit 0
+	fi
+
+	if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} ]; then
+		RELEASE_SUFF=""
+		if [ -f ${BASE_DIR}/workbase/overlaydir/${i}.released ]; then
+			RELEASE_SUFF=".update"
+		fi
+		echo "制作 ${OVERLAY_NAME}${RELEASE_SUFF} 打包文件..."
+		if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} ]; then
 
 			STEP_NAME=""
 			if [ -f env/${OVERLAY_NAME}.info ]; then
@@ -154,25 +215,25 @@ else
 			fi
 
 			if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-				tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+				tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 				for j in $(cat ${BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split | awk -F' ' '{ print $1 }' | sort | uniq)
 				do
-					if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}.$j ]; then
-						tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}.$j "${STEP_NAME}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j ]; then
+						tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 					fi
 				done
 			else
-				tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} "${STEP_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+				tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 				for j in $(cat ${BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split | awk -F' ' '{ print $1 }' | sort | uniq)
 				do
-					if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}.$j ]; then
-						tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}.$j "${STEP_NAME}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j ]; then
+						tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 					fi
 				done
 			fi
 		fi
 	else
-		echo "${BASE_DIR}/workbase/overlaydir_strip 中没有发现 ${OVERLAY_NAME} 目录，跳过。"
+		echo "${BASE_DIR}/workbase/overlaydir_strip 中没有发现 ${OVERLAY_NAME}${RELEASE_SUFF} 目录，跳过。"
 	fi
 
 #	if [ "x${OVERLAY_NAME}" != "x" ]; then

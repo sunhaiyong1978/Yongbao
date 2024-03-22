@@ -9,7 +9,11 @@ rm -f ${SYSROOT_DIR}/usr/lib64/libKF6TextAddonsWidgets.*
 rm -f ${SYSROOT_DIR}/usr/lib64/libKF6TextEditTextToSpeech.*
 rm -f ${SYSROOT_DIR}/usr/lib64/libKF6TextEmoticonsCore.*
 
-sed -i.orig "s@pkgdatadir=\${datarootdir}/wayland@pkgdatadir=${SYSROOT_DIR}/usr/share/wayland@g"  ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc
+touch ${TEMP_DIRECTORY}/strip-foo
+
+if [ -f ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc ]; then
+	sed -i.orig "s@pkgdatadir=\${datarootdir}/wayland@pkgdatadir=${SYSROOT_DIR}/usr/share/wayland@g"  ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc
+fi
 
 for phonon_file in PhononTargets-release.cmake PhononExperimentalTargets-release.cmake Phonon4Qt6Config.cmake PhononTargets.cmake Phonon4Qt6ExperimentalConfig.cmake PhononExperimentalTargets.cmake
 do
@@ -37,7 +41,7 @@ done
 
 
 
-for kf6_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake")) \
+for kf6_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo) \
 		${SYSROOT_DIR}/usr/lib64/cmake/Qca-qt6/Qca-qt6Targets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt6-1/PolkitQt6-1Targets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/utf8_range/utf8_range-targets-release.cmake \
@@ -49,7 +53,7 @@ do
 	fi
 done
 
-for kf6_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake"))
+for kf6_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo)
 do
 	if [ -f ${kf6_file} ]; then
 		sed -i.orig "s@_IMPORT_PREFIX \"/usr\"@_IMPORT_PREFIX \"${SYSROOT_DIR}/usr\"@g" ${kf6_file}

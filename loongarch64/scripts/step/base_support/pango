@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pango
-export PACKAGE_VERSION=1.51.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pango/1.51.0/
-rm -rf ${BUILD_DIRECTORY}/pango-1.51.0
-tar xvf ${DOWNLOADDIR}/pango-1.51.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pango-1.51.0
+export PACKAGE_VERSION=1.52.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pango/1.52.1/
+rm -rf ${BUILD_DIRECTORY}/pango-1.52.1
+tar xvf ${DOWNLOADDIR}/pango-1.52.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pango-1.52.1
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/pango-1.51.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pango-1.51.0
+rm -rf ${BUILD_DIRECTORY}/pango-1.52.1

@@ -1,0 +1,22 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=libevent
+export PACKAGE_VERSION=release-2.1.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libevent/release-2.1.12/
+rm -rf ${BUILD_DIRECTORY}/libevent-release-2.1.12-stable
+tar xvf ${DOWNLOADDIR}/libevent-release-2.1.12-stable.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libevent-release-2.1.12-stable
+	
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} 
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/libevent-release-2.1.12-stable

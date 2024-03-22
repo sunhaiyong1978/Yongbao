@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=hatchling
-export PACKAGE_VERSION=1.21.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/hatchling/1.21.1/
-rm -rf ${BUILD_DIRECTORY}/hatchling-1.21.1
-tar xvf ${DOWNLOADDIR}/hatchling-1.21.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/hatchling-1.21.1
-	patch -Np1 -i ${SYSDIR}/files/host-tools/hatchling/1.21.1/patches/0001-fix-pluggy-require-version.patch 
+export PACKAGE_VERSION=1.22.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/hatchling/1.22.3/
+rm -rf ${BUILD_DIRECTORY}/hatchling-1.22.3
+tar xvf ${DOWNLOADDIR}/hatchling-1.22.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/hatchling-1.22.3
+	patch -Np1 -i ${SYSDIR}/files/host-tools/hatchling/1.22.3/patches/0001-fix-pluggy-require-version.patch 
 	 
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user hatchling
 popd 
-rm -rf ${BUILD_DIRECTORY}/hatchling-1.21.1
+rm -rf ${BUILD_DIRECTORY}/hatchling-1.22.3

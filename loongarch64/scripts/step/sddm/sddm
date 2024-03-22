@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=sddm
 export STEP_PACKAGENAME=sddm
-export PACKAGE_VERSION=0.20.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/sddm/0.20.0/
-rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0
-tar xvf ${DOWNLOADDIR}/sddm-0.20.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sddm-0.20.0
+export PACKAGE_VERSION=0.21.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/sddm/0.21.0/
+rm -rf ${BUILD_DIRECTORY}/sddm-0.21.0
+tar xvf ${DOWNLOADDIR}/sddm-0.21.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sddm-0.21.0
     mkdir -p build
     pushd build
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
@@ -36,7 +36,7 @@ pushd ${BUILD_DIRECTORY}/sddm-0.20.0
     chmod a+rw ${SYSROOT_DIR}/var/lib/sddm \
                ${SYSROOT_DIR}/var/run/sddm
 popd 
-rm -rf ${BUILD_DIRECTORY}/sddm-0.20.0
+rm -rf ${BUILD_DIRECTORY}/sddm-0.21.0
 
 cat > ${SYSROOT_DIR}/etc/pam.d/sddm << "EOF"
 #%PAM-1.0

@@ -1,12 +1,10 @@
 
 %step/target_base/linux-header_git|linux_git
-%step/cross-tools/grub|
 %step/target_base/valgrind|
 %step/base_support/perf|g_opt
-%step/boot/linux-kernel_git|linux_git
-%step/boot/grub|
+%step/boot/linux-kernel_git|%config=default;linux_git
+%step/boot/linux-kernel_git|%config=djgjr;linux_git
 %step/java_runtime/jdk|g_opt
-%step/java_runtime/jdk17|g_opt;jdk17
+%step/java_runtime/jdk17|g_opt;jdk17+kodi
 %step/java_runtime/jdk11|g_opt;jdk11
 %step/java_runtime/jdk8|g_opt;jdk8;f_java_runtime_jdk8_bad
-%step/computer_language/golang|g_opt;target-dist+golang

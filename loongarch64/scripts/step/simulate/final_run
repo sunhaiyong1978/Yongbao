@@ -46,7 +46,9 @@ sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
        $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.pl") \
        ${TEMP_DIRECTORY}/strip-foo
 
-find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.la" -exec rm '{}' ';'
-find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.prl" -exec rm '{}' ';'
+if [ -d ${SYSROOT_DIR}/usr/lib64/ ]; then
+	find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.la" -exec rm '{}' ';'
+	find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.prl" -exec rm '{}' ';'
+fi
 
 rm -f ${TEMP_DIRECTORY}/strip-foo

@@ -8,19 +8,18 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gcc/13.2.0/
 rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
 tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc-13.2.0
-	patch -Np1 -i ${SYSDIR}/files/host-tools/gcc/13.2.0/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
-	patch -Np1 -i ${SYSDIR}/files/host-tools/gcc/13.2.0/patches/0001-gcc-13-add-cmodule-medium-for-loongarch-libgcc.patch 
-	 
+	
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv build
 	pushd build
+		CC="/bin/gcc" CXX="/bin/g++" \
 		../configure --prefix=${CROSSTOOLS_DIR} \
 		             --enable-__cxa_atexit --enable-threads=posix \
 		             --with-system-zlib --enable-libstdcxx-time \
 		             --enable-checking=release \
 		             --disable-multilib \
 		             --enable-shared --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array \
-		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
+		             --enable-languages=c,c++
 		make -j${JOBS}
 		make install-strip
 		ln -sfv gcc ${CROSSTOOLS_DIR}/bin/cc

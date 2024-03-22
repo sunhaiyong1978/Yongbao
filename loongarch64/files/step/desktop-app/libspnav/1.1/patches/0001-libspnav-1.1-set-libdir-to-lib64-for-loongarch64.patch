@@ -1,0 +1,27 @@
+From d68e21141e1734af83858aaaf89c728818b978f8 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 7 Mar 2024 06:52:36 +0000
+Subject: [PATCH] libspnav 1.1 set libdir to lib64 for loongarch64.
+
+---
+ configure | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configure b/configure
+index 619d39f..d95a7e5 100755
+--- a/configure
++++ b/configure
+@@ -23,6 +23,10 @@ echo "configuring libspnav - $VER"
+ srcdir="`dirname "$0"`"
+ libdir=lib
+ 
++if [ "`cross-uname -m`" = 'loongarch64' ]; then
++	libdir=lib64
++fi
++
+ #if [ "`uname -m`" = 'x86_64' ]; then
+ #	libdir=lib64
+ #fi
+-- 
+2.31.1
+

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=inputstream.ffmpegdirect
-export PACKAGE_VERSION=21.3.2-Omega
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/inputstream.ffmpegdirect/21.3.2-Omega/
-rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-21.3.2-Omega
-tar xvf ${DOWNLOADDIR}/inputstream.ffmpegdirect-21.3.2-Omega.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-21.3.2-Omega
+export PACKAGE_VERSION=21.3.4-Omega
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/inputstream.ffmpegdirect/21.3.4-Omega/
+rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-21.3.4-Omega
+tar xvf ${DOWNLOADDIR}/inputstream.ffmpegdirect-21.3.4-Omega.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-21.3.4-Omega
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-21.3.2-Omega
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-21.3.2-Omega
+rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-21.3.4-Omega

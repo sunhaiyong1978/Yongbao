@@ -12,6 +12,7 @@ pushd ${BUILD_DIRECTORY}/busybox-1.36.1
     make defconfig
     sed -i "/^# CONFIG_STATIC=/d" .config
     echo "CONFIG_STATIC=y" >> .config
+    sed -i "/CONFIG_TC=y/s@=y@=n@g" .config
     make -j${JOBS} CROSS_COMPILE=${CROSS_TARGET}-
     cp -v busybox ${SYSROOT_DIR}/usr/bin/
 popd 

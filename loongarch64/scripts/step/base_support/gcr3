@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gcr3
-export PACKAGE_VERSION=gcr-3.41.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gcr3/gcr-3.41.1/
-rm -rf ${BUILD_DIRECTORY}/gcr-3.41.1
-tar xvf ${DOWNLOADDIR}/gcr-3.41.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcr-3.41.1
+export PACKAGE_VERSION=3.41.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gcr3/3.41.2/
+rm -rf ${BUILD_DIRECTORY}/gcr-3.41.2
+tar xvf ${DOWNLOADDIR}/gcr-3.41.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcr-3.41.2
     sed -i 's:"/desktop:"/org:' schema/*.xml
     mkdir cross-build
     pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/gcr-3.41.1
         DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcr-3.41.1
+rm -rf ${BUILD_DIRECTORY}/gcr-3.41.2

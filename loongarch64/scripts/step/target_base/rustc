@@ -3,14 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.75.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.75.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.75.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.75.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.75.0-src
+export PACKAGE_VERSION=1.77.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.77.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.77.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.77.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.77.0-src
      
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
+    export LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/lib:/usr/lib64:/usr/lib
     LDFLAGS="" \
     PKG_CONFIG_SYSROOT_DIR="" \
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} \
@@ -34,4 +35,4 @@ pushd ${BUILD_DIRECTORY}/rustc-1.75.0-src
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          DESTDIR=${SYSROOT_DIR}/ install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.75.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.77.0-src

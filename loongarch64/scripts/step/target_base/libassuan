@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libassuan
-export PACKAGE_VERSION=2.5.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libassuan/2.5.6/
-rm -rf ${BUILD_DIRECTORY}/libassuan-2.5.6
-tar xvf ${DOWNLOADDIR}/libassuan-2.5.6.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libassuan-2.5.6
+export PACKAGE_VERSION=2.5.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libassuan/2.5.7/
+rm -rf ${BUILD_DIRECTORY}/libassuan-2.5.7
+tar xvf ${DOWNLOADDIR}/libassuan-2.5.7.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libassuan-2.5.7
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/libassuan-2.5.6
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libassuan-2.5.6
+rm -rf ${BUILD_DIRECTORY}/libassuan-2.5.7

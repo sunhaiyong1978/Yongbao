@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/255/
 rm -rf ${BUILD_DIRECTORY}/systemd-255
 tar xvf ${DOWNLOADDIR}/systemd-255.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/systemd-255
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/systemd/255/patches/ed01b92e1c92871bbd92711f280e2b2d15753f0e.diff 
+	 
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
 	popd

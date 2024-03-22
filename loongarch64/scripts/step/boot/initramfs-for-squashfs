@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/initramfs-for-squashfs/1.0/
 rm -rf ${BUILD_DIRECTORY}/ISO-Build
 mkdir -pv ${BUILD_DIRECTORY}/ISO-Build/Initramfs
 pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
+    CONFIG_STR=$(get_user_set_env config "default")
+    LINUX_KERNEL_VERSION=$(cat ${COMMON_DIR}/linux-kernel.version)
     mkdir -pv rootfs
     pushd rootfs
         mkdir -pv ./{dev,proc,sys}
@@ -36,12 +38,13 @@ pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
         ln -sv busybox usr/bin/uname
         ln -sv busybox usr/bin/cp
         ln -sv busybox usr/bin/mv
+        ln -sv busybox usr/bin/clear
         ln -sv busybox usr/bin/modprobe
         ln -sv ../bin/busybox usr/sbin/switch_root
 
-        cp -a ${SYSROOT_DIR}/usr/lib/modules/$(cat ${COMMON_DIR}/linux-kernel.version)/kernel/fs/fat/* lib/
-	if [ -f ${SYSROOT_DIR}/usr/lib/modules/$(cat ${COMMON_DIR}/linux-kernel.version)/kernel/drivers/usb/storage/usb-storage.ko ]; then
-	        cp -a ${SYSROOT_DIR}/usr/lib/modules/$(cat ${COMMON_DIR}/linux-kernel.version)/kernel/drivers/usb/storage/usb-storage.ko lib/
+        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/fs/fat/* lib/
+	if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/drivers/usb/storage/usb-storage.ko ]; then
+	        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/drivers/usb/storage/usb-storage.ko lib/
 	fi
 
         mkdir -p lib/firmware/amdgpu
@@ -50,7 +53,7 @@ pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
         find . | cpio -H newc --create > ../initramfs.img
     popd
     gzip -9 initramfs.img
-    mkdir -pv ${DIST_DIRECTORY}/os/ 
-    cp initramfs.img.gz ${DIST_DIRECTORY}/os/initramfs-squashfs.img.gz
+    mkdir -pv ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/ 
+    cp initramfs.img.gz ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/initramfs-squashfs.img.gz
 popd
 rm -rf ${BUILD_DIRECTORY}/ISO-Build

@@ -1,0 +1,51 @@
+From 7770bd66ae475ebaf18fe12630670120f916e070 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 6 Mar 2024 07:37:55 +0000
+Subject: [PATCH] OpenCOLLADA 1.6.68 fix error for build.
+
+---
+ COLLADABaseUtils/include/COLLADABUPcreCompiledPattern.h | 2 +-
+ DAEValidator/library/src/DaeValidator.cpp               | 1 +
+ DAEValidator/library/src/XmlDoc.cpp                     | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/COLLADABaseUtils/include/COLLADABUPcreCompiledPattern.h b/COLLADABaseUtils/include/COLLADABUPcreCompiledPattern.h
+index 22f2598..cdb80fc 100644
+--- a/COLLADABaseUtils/include/COLLADABUPcreCompiledPattern.h
++++ b/COLLADABaseUtils/include/COLLADABUPcreCompiledPattern.h
+@@ -14,7 +14,7 @@
+ #include "COLLADABUPrerequisites.h"
+ 
+ struct real_pcre;
+-typedef struct real_pcre pcre;
++typedef struct real_pcre8_or_16 pcre;
+ 
+ 
+ namespace COLLADABU
+diff --git a/DAEValidator/library/src/DaeValidator.cpp b/DAEValidator/library/src/DaeValidator.cpp
+index 715d903..38e220e 100644
+--- a/DAEValidator/library/src/DaeValidator.cpp
++++ b/DAEValidator/library/src/DaeValidator.cpp
+@@ -8,6 +8,7 @@
+ #include "no_warning_iostream"
+ #include <set>
+ #include "no_warning_sstream"
++#include <cstdint>
+ 
+ using namespace std;
+ 
+diff --git a/DAEValidator/library/src/XmlDoc.cpp b/DAEValidator/library/src/XmlDoc.cpp
+index 863166a..a93c7ca 100644
+--- a/DAEValidator/library/src/XmlDoc.cpp
++++ b/DAEValidator/library/src/XmlDoc.cpp
+@@ -11,6 +11,7 @@
+ #include "no_warning_fstream"
+ #include "no_warning_vector"
+ #include <sys/stat.h>
++#include <cstdint>
+ 
+ using namespace std;
+ 
+-- 
+2.31.1
+

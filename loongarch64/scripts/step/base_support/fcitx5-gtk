@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fcitx5-gtk
-export PACKAGE_VERSION=5.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5-gtk/5.1.1/
-rm -rf ${BUILD_DIRECTORY}/fcitx5-gtk-5.1.1
-tar xvf ${DOWNLOADDIR}/fcitx5-gtk-5.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fcitx5-gtk-5.1.1
-        patch -Np1 -i ${SYSDIR}/files/base_support/fcitx5-gtk/5.1.1/patches/0001-fcitx5-gtk-fix-for-gcc14.patch 
+export PACKAGE_VERSION=5.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5-gtk/5.1.2/
+rm -rf ${BUILD_DIRECTORY}/fcitx5-gtk-5.1.2
+tar xvf ${DOWNLOADDIR}/fcitx5-gtk-5.1.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fcitx5-gtk-5.1.2
+        patch -Np1 -i ${SYSDIR}/files/base_support/fcitx5-gtk/5.1.2/patches/0001-fcitx5-gtk-fix-for-gcc14.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -45,4 +45,4 @@ pushd ${BUILD_DIRECTORY}/fcitx5-gtk-5.1.1
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fcitx5-gtk-5.1.1
+rm -rf ${BUILD_DIRECTORY}/fcitx5-gtk-5.1.2

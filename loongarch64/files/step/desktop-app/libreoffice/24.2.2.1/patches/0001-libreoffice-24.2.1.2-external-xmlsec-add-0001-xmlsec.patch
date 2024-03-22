@@ -1,0 +1,70 @@
+From dd402ead79b87319f0dbccc1211a2fcb17e5d5a2 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 1 Mar 2024 06:59:31 +0000
+Subject: [PATCH] libreoffice 24.2.1.2 external/xmlsec add
+ 0001-xmlsec-fix-build-error.patch.1 file.
+
+---
+ .../0001-xmlsec-fix-build-error.patch.1       | 37 +++++++++++++++++++
+ external/xmlsec/UnpackedTarball_xmlsec.mk     |  1 +
+ 2 files changed, 38 insertions(+)
+ create mode 100644 external/xmlsec/0001-xmlsec-fix-build-error.patch.1
+
+diff --git a/external/xmlsec/0001-xmlsec-fix-build-error.patch.1 b/external/xmlsec/0001-xmlsec-fix-build-error.patch.1
+new file mode 100644
+index 0000000..4c691c7
+--- /dev/null
++++ b/external/xmlsec/0001-xmlsec-fix-build-error.patch.1
+@@ -0,0 +1,37 @@
++From 040bff32a92458beb423b79f2271a6e52a57228c Mon Sep 17 00:00:00 2001
++From: Sun Haiyong <sunhaiyong@zdbr.net>
++Date: Tue, 21 Nov 2023 01:24:13 +0000
++Subject: [PATCH] xmlsec fix build error.
++
++---
++ include/xmlsec/nss/app.h | 1 +
++ include/xmlsec/xmlsec.h  | 1 +
++ 2 files changed, 2 insertions(+)
++
++diff --git a/include/xmlsec/nss/app.h b/include/xmlsec/nss/app.h
++index ae94c80..73949b2 100644
++--- a/include/xmlsec/nss/app.h
+++++ b/include/xmlsec/nss/app.h
++@@ -12,6 +12,7 @@
++ 
++ #include <nspr.h>
++ #include <nss.h>
+++#include <nss/seccomon.h>
++ 
++ #include <xmlsec/exports.h>
++ #include <xmlsec/xmlsec.h>
++diff --git a/include/xmlsec/xmlsec.h b/include/xmlsec/xmlsec.h
++index 3084a7e..b757d93 100644
++--- a/include/xmlsec/xmlsec.h
+++++ b/include/xmlsec/xmlsec.h
++@@ -12,6 +12,7 @@
++ #define __XMLSEC_H__
++ 
++ #include <libxml/tree.h>
+++#include <libxml/parser.h>
++ 
++ #include <xmlsec/version.h>
++ #include <xmlsec/exports.h>
++-- 
++2.31.1
++
+diff --git a/external/xmlsec/UnpackedTarball_xmlsec.mk b/external/xmlsec/UnpackedTarball_xmlsec.mk
+index 906aece..26e14ec 100644
+--- a/external/xmlsec/UnpackedTarball_xmlsec.mk
++++ b/external/xmlsec/UnpackedTarball_xmlsec.mk
+@@ -12,6 +12,7 @@ xmlsec_patches :=
+ xmlsec_patches += old-nss.patch.1
+ # Remove this when Windows 7 is no longer supported
+ xmlsec_patches += BCryptKeyDerivation.patch.1
++xmlsec_patches += 0001-xmlsec-fix-build-error.patch.1
+ 
+ $(eval $(call gb_UnpackedTarball_UnpackedTarball,xmlsec))
+ 
+-- 
+2.31.1
+

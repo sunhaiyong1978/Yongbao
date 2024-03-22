@@ -1,0 +1,23 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=tk
+export PACKAGE_VERSION=8.6.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/tk/8.6.14/
+rm -rf ${BUILD_DIRECTORY}/tk8.6.14
+tar xvf ${DOWNLOADDIR}/tk8.6.14-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tk8.6.14
+	pushd unix
+		./configure ${COMMON_CONFIG} --mandir=/usr/share/man --enable-64bit \
+			--with-tcl=${SYSROOT_DIR}/usr/lib64/tclConfig.sh
+		make -j${JOBS}
+		sed -e "s@^\(TK_SRC_DIR='\).*@\1/usr/include'@" \
+		    -e "/TK_B/s@='\(-L\)\?.*unix@='\1/usr/lib64@" \
+		    -i tkConfig.sh
+		make DESTDIR=${SYSROOT_DIR} install install-private-headers
+		ln -v -sf wish8.6 ${SYSROOT_DIR}/usr/bin/wish
+		chmod -v 755 ${SYSROOT_DIR}/usr/lib64/libtk8.6.so
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/tk8.6.14

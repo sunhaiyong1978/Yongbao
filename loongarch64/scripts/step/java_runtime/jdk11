@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/jdk11-11u_git
 tar xvf ${DOWNLOADDIR}/jdk11-11u_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/jdk11-11u_git
     sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
-    LDFLAGS="" CC="${CROSS_TARGET}-gcc" \
+    LDFLAGS="" CC="${CROSS_TARGET}-gcc" BUILD_SYSROOT_LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
     sh ./configure --prefix=/usr --host=${CROSS_TARGET} \
                 --with-zlib=system --with-libpng=system --enable-unlimited-crypto \
                 --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \

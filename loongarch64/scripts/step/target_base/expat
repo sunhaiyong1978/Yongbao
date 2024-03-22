@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=expat
-export PACKAGE_VERSION=2.5.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/expat/2.5.0/
-rm -rf ${BUILD_DIRECTORY}/expat-2.5.0
-tar xvf ${DOWNLOADDIR}/expat-2.5.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/expat-2.5.0
+export PACKAGE_VERSION=2.6.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/expat/2.6.2/
+rm -rf ${BUILD_DIRECTORY}/expat-2.6.2
+tar xvf ${DOWNLOADDIR}/expat-2.6.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/expat-2.6.2
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/expat-2.5.0
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/expat-2.5.0
+rm -rf ${BUILD_DIRECTORY}/expat-2.6.2

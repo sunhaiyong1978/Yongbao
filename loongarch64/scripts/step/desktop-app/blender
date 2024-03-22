@@ -8,8 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/git-default/
 rm -rf ${BUILD_DIRECTORY}/blender-git-default_git
 tar xvf ${DOWNLOADDIR}/blender-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/blender-git-default_git
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/git-default/patches/0001-blender-fix-for-python3.12.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/git-default/patches/0001-blender-4.1-git-fix-for-gcc-14.patch 
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/git-default/patches/0001-blender-4.1-git-fix-for-gcc-14.patch 
 	 
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER \"${CROSSTOOLS_DIR}/bin/wayland-scanner\")@g" build_files/cmake/platform/platform_unix.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc@g" build_files/cmake/macros.cmake
@@ -18,9 +17,13 @@ pushd ${BUILD_DIRECTORY}/blender-git-default_git
 	sed -i "s@COMMAND \"\$<TARGET_FILE:makesrna>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/makesrna@g" source/blender/makesrna/intern/CMakeLists.txt
 	sed -i "s@\"\$<TARGET_FILE:msgfmt>\"@qemu-loongarch64 \"${PWD}/cross-build/bin/msgfmt\"@g" build_files/cmake/macros.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:smaa_areatex>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/smaa_areatex@g" source/blender/compositor/CMakeLists.txt
+	echo "#!/bin/bash -e
+${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/oslc \"\$@\"" > oslc
+	chmod +x oslc
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" LDFLAGS="${LDFLAGS} -lglslang -lSPIRV" \
+		CFLAGS="${CFLAGS} -fpermissive" CXXFLAGS="${CXXFLAGS} -fpermissive" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
                       -DCMAKE_SYSROOT=${SYSROOT_DIR} \
@@ -33,11 +36,16 @@ pushd ${BUILD_DIRECTORY}/blender-git-default_git
                       -DGPERF_EXECUTABLE=/bin/gperf \
                       -DDOXYGEN_EXECUTABLE=/bin/doxygen \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
-                      -DCMAKE_INSTALL_PREFIX=/usr -DWITH_INSTALL_PORTABLE=OFF \
-                      -DWITH_MATERIALX=OFF -DWITH_MOD_OCEANSIM=OFF -DWITH_HYDRA=OFF -DWITH_GTESTS=OFF \
-		      -DWITH_PYTHON=ON -DPYTHON_LIBPATH=${SYSROOT_DIR}/usr/lib64/ -DPYTHON_VERSION=$(cat ${COMMON_DIR}/Python3.version) \
+                      -DCMAKE_INSTALL_PREFIX=/usr -DWITH_INSTALL_PORTABLE=OFF -DWITH_GTESTS=OFF \
+                      -DWITH_MATERIALX=ON -DWITH_MOD_OCEANSIM=ON \
+		      -DWITH_HYDRA=OFF \
+		      -DWITH_CYCLES_EMBREE=OFF \
+		      -DWITH_PYTHON=ON -DPYTHON_VERSION=$(cat ${COMMON_DIR}/Python3.version) \
 		      -DPYTHON_LIBRARY=${SYSROOT_DIR}/usr/lib64/libpython$(cat ${COMMON_DIR}/Python3.version).so -DPYTHON_INCLUDE_DIR=${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version) \
-		      -DWITH_CYCLES_EMBREE=OFF -DWITH_PUGIXML=OFF -DWITH_TBB=OFF -DWITH_PYTHON_NUMPY=OFF \
+		      -DPYTHON_REQUESTS_PATH=${SYSROOT_DIR}/usr/lib/python$(cat ${COMMON_DIR}/Python3.version)/site-packages \
+		      -DOSL_COMPILER=${PWD}/../oslc \
+		      -DWITH_PUGIXML=ON -DWITH_TBB=ON -DWITH_PYTHON_NUMPY=ON \
+		      -DWITH_FRIBIDI=ON -DWITH_HARFBUZZ=ON \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd

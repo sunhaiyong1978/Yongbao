@@ -3,19 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gst-libav
-export PACKAGE_VERSION=1.22.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gst-libav/1.22.9/
-rm -rf ${BUILD_DIRECTORY}/gst-libav-1.22.9
-tar xvf ${DOWNLOADDIR}/gst-libav-1.22.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gst-libav-1.22.9
+export PACKAGE_VERSION=1.24.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gst-libav/1.24.1/
+rm -rf ${BUILD_DIRECTORY}/gst-libav-1.24.1
+tar xvf ${DOWNLOADDIR}/gst-libav-1.24.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gst-libav-1.24.1
 	
 	mkdir cross-build
 	pushd cross-build
-		 meson ${MESON_CONFIG}  \
+		CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations" meson ${MESON_CONFIG}  \
                       ..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gst-libav-1.22.9
+rm -rf ${BUILD_DIRECTORY}/gst-libav-1.24.1

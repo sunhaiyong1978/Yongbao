@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=at-spi2-core
-export PACKAGE_VERSION=2.51.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/at-spi2-core/2.51.0/
-rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.51.0
-tar xvf ${DOWNLOADDIR}/at-spi2-core-2.51.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/at-spi2-core-2.51.0
+export PACKAGE_VERSION=2.52.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/at-spi2-core/2.52.0/
+rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.52.0
+tar xvf ${DOWNLOADDIR}/at-spi2-core-2.52.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/at-spi2-core-2.52.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/at-spi2-core-2.51.0
 	popd
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.51.0
+rm -rf ${BUILD_DIRECTORY}/at-spi2-core-2.52.0

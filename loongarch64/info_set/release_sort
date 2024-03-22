@@ -1,0 +1,11 @@
+boot
+sysroot
+sddm
+KDE6
+desk_app
+bin-pkg
+game_emu
+java_runtime
+simulate
+wine64_runtime
+wine_runtime

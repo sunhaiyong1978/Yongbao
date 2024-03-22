@@ -1,0 +1,41 @@
+From 690ea685ebaad4f8a37a3ad24fc9b1ea524877bf Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 19 Feb 2024 14:16:17 +0000
+Subject: [PATCH] inkscape fix build error.
+
+---
+ src/ui/dialog/document-properties.cpp | 2 +-
+ src/ui/tools/object-picker-tool.cpp   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/ui/dialog/document-properties.cpp b/src/ui/dialog/document-properties.cpp
+index 9520f55..39a6ff4 100644
+--- a/src/ui/dialog/document-properties.cpp
++++ b/src/ui/dialog/document-properties.cpp
+@@ -47,7 +47,7 @@
+ #include <sigc++/adaptors/bind.h>
+ #include <sigc++/functors/mem_fun.h>
+ 
+-#include "angle.h"
++#include "2geom/angle.h"
+ #include "rdf.h"
+ #include "page-manager.h"
+ #include "selection.h"
+diff --git a/src/ui/tools/object-picker-tool.cpp b/src/ui/tools/object-picker-tool.cpp
+index 20ffa14..f80d126 100644
+--- a/src/ui/tools/object-picker-tool.cpp
++++ b/src/ui/tools/object-picker-tool.cpp
+@@ -6,8 +6,8 @@
+ #include "display/control/canvas-item-context.h"
+ #include "display/control/canvas-item-text.h"
+ #include "document.h"
+-#include "point.h"
+-#include "rect.h"
++#include "ui/widget/point.h"
++#include "2geom/rect.h"
+ #include "object/sp-page.h"
+ #include "page-manager.h"
+ #include "ui/tools/tool-base.h"
+-- 
+2.31.1
+

@@ -9,7 +9,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/dbus/1.15.8/
 rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8
 tar xvf ${DOWNLOADDIR}/dbus-1.15.8.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dbus-1.15.8
-	./autogen.sh
+	./autogen.sh ${COMMON_CONFIG}
 	./configure ${COMMON_CONFIG} --runstatedir=/run \
 	            --enable-user-session \
 	            --disable-static --disable-doxygen-docs --disable-xml-docs \

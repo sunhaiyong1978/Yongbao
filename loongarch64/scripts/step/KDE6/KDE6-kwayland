@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kwayland
-export PACKAGE_VERSION=5.93.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kwayland/5.93.0/
-rm -rf ${BUILD_DIRECTORY}/kwayland-5.93.0
-tar xvf ${DOWNLOADDIR}/kwayland-5.93.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kwayland-5.93.0
+export PACKAGE_VERSION=6.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kwayland/6.0.2/
+rm -rf ${BUILD_DIRECTORY}/kwayland-6.0.2
+tar xvf ${DOWNLOADDIR}/kwayland-6.0.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kwayland-6.0.2
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/kwayland-5.93.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kwayland-5.93.0
+rm -rf ${BUILD_DIRECTORY}/kwayland-6.0.2

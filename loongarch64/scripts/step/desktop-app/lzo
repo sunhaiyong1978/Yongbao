@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/lzo-2.10
 		autoreconf -ifv
 	fi
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
-	make -j${JOBS}
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 

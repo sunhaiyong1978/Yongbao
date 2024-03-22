@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=iproute2
-export PACKAGE_VERSION=6.7.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/iproute2/6.7.0/
-rm -rf ${BUILD_DIRECTORY}/iproute2-6.7.0
-tar xvf ${DOWNLOADDIR}/iproute2-6.7.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/iproute2-6.7.0
+export PACKAGE_VERSION=6.8.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/iproute2/6.8.0/
+rm -rf ${BUILD_DIRECTORY}/iproute2-6.8.0
+tar xvf ${DOWNLOADDIR}/iproute2-6.8.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/iproute2-6.8.0
 	sed -i /ARPD/d Makefile
 	rm -fv man/man8/arpd.8
 	PKG_CONFIG=${CROSS_TARGET}-pkg-config \
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/iproute2-6.7.0
 	make CC="${CROSS_TARGET}-gcc" HOSTCC="gcc" KERNEL_INCLUDE=${SYSROOT_DIR}/usr/include \
 		 SBINDIR=/usr/sbin DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/iproute2-6.7.0
+rm -rf ${BUILD_DIRECTORY}/iproute2-6.8.0

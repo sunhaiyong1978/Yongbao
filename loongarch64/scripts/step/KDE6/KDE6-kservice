@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kservice
-export PACKAGE_VERSION=5.249.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kservice/5.249.0/
-rm -rf ${BUILD_DIRECTORY}/kservice-5.249.0
-tar xvf ${DOWNLOADDIR}/kservice-5.249.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kservice-5.249.0
+export PACKAGE_VERSION=6.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kservice/6.0.0/
+rm -rf ${BUILD_DIRECTORY}/kservice-6.0.0
+tar xvf ${DOWNLOADDIR}/kservice-6.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kservice-6.0.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/kservice-5.249.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kservice-5.249.0
+rm -rf ${BUILD_DIRECTORY}/kservice-6.0.0

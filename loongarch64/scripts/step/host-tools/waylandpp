@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/waylandpp/1.0.0/
 rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.0
 tar xvf ${DOWNLOADDIR}/waylandpp-1.0.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/waylandpp-1.0.0
-    
+    patch -Np1 -i ${SYSDIR}/files/host-tools/waylandpp/1.0.0/patches/0001-waylandpp-1.0.0-fix-build-error-for-gcc-14.patch 
+	 
     mkdir -p native-build
     pushd native-build
         cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}  \

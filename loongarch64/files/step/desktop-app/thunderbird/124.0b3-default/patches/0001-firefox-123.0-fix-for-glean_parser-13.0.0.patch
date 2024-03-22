@@ -1,0 +1,24 @@
+From 45c1bb3acaaa5c45364873e3a1906119577cf822 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 29 Feb 2024 15:59:35 +0000
+Subject: [PATCH] firefox 123.0 fix for glean_parser 13.0.0
+
+---
+ toolkit/components/glean/build_scripts/glean_parser_ext/jog.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/toolkit/components/glean/build_scripts/glean_parser_ext/jog.py b/toolkit/components/glean/build_scripts/glean_parser_ext/jog.py
+index 81d92b0..b428279 100644
+--- a/toolkit/components/glean/build_scripts/glean_parser_ext/jog.py
++++ b/toolkit/components/glean/build_scripts/glean_parser_ext/jog.py
+@@ -55,6 +55,7 @@ known_ping_args = [
+     "include_client_id",
+     "send_if_empty",
+     "precise_timestamps",
++    "include_info_sections",
+     "reason_codes",
+ ]
+ 
+-- 
+2.31.1
+

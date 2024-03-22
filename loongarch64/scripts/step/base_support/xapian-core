@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xapian-core
-export PACKAGE_VERSION=1.4.24
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xapian-core/1.4.24/
-rm -rf ${BUILD_DIRECTORY}/xapian-core-1.4.24
-tar xvf ${DOWNLOADDIR}/xapian-core-1.4.24.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xapian-core-1.4.24
+export PACKAGE_VERSION=1.4.25
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xapian-core/1.4.25/
+rm -rf ${BUILD_DIRECTORY}/xapian-core-1.4.25
+tar xvf ${DOWNLOADDIR}/xapian-core-1.4.25.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xapian-core-1.4.25
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/xapian-core-1.4.24
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xapian-core-1.4.24
+rm -rf ${BUILD_DIRECTORY}/xapian-core-1.4.25

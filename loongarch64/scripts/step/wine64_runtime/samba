@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=samba
-export PACKAGE_VERSION=4.19.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/samba/4.19.4/
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.4
-tar xvf ${DOWNLOADDIR}/samba-4.19.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/samba-4.19.4
+export PACKAGE_VERSION=4.19.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/samba/4.19.5/
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.5
+tar xvf ${DOWNLOADDIR}/samba-4.19.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.19.5
         
         for config_i in $(find -name "config.sub")
         do
@@ -27,7 +27,7 @@ pushd ${BUILD_DIRECTORY}/samba-4.19.4
         eval ${MAKE_AND_INSTALL}
         rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/samba-4.19.4
+rm -rf ${BUILD_DIRECTORY}/samba-4.19.5
 
 install -dvm 755 ${X86_64_SYSROOT_DIR}/usr/lib/cups/backend &&
 ln -v -sf /usr/bin/smbspool ${X86_64_SYSROOT_DIR}/usr/lib/cups/backend/smb

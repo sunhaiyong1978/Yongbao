@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=appstream
-export PACKAGE_VERSION=1.0.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/appstream/1.0.1/
-rm -rf ${BUILD_DIRECTORY}/appstream-1.0.1
-tar xvf ${DOWNLOADDIR}/appstream-1.0.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/appstream-1.0.1
-	patch -Np1 -i ${SYSDIR}/files/base_support/appstream/1.0.1/patches/0001-appstream-1.0.0-fix-for-cross-build.patch 
+export PACKAGE_VERSION=1.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/appstream/1.0.2/
+rm -rf ${BUILD_DIRECTORY}/appstream-1.0.2
+tar xvf ${DOWNLOADDIR}/appstream-1.0.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/appstream-1.0.2
+	patch -Np1 -i ${SYSDIR}/files/base_support/appstream/1.0.2/patches/0001-appstream-1.0.0-fix-for-cross-build.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/appstream-1.0.1
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/appstream-1.0.1
+rm -rf ${BUILD_DIRECTORY}/appstream-1.0.2

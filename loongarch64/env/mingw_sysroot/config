@@ -9,8 +9,8 @@ export TOOLCHAIN_DIRECTORY="${SYSDIR}/toolchains"
 export CROSS_HOST="$(echo $MACHTYPE | sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"
 export HOST_ARCH_NAME="$(echo $MACHTYPE | cut -d- -f1)"
 export CROSSTOOLS_DIR="${SYSDIR}/cross-tools"
-export JOBS=$(($(nproc)*2))
-export PATH=${CROSSTOOLS_DIR}/bin:/usr/bin:/bin
+export JOBS=$[ ( $(free -g | grep "^Mem:" | awk -F' ' '{ print $2 }') / 2 ) + 1 ]
+export PATH=${CROSSTOOLS_DIR}/build-tools/bin:${CROSSTOOLS_DIR}/bin:/usr/bin:/bin
 export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
@@ -21,7 +21,6 @@ export PREFIX=/mingw
 export PKG_CONFIG_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/mingw/sys-root"
 export MINGW_SYSROOT_DIR="${SYSROOT_DIR}/usr/lib/mingw/sys-root"
 export PKG_CONFIG_PATH="${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/pkgconfig"
-# export MINGW_HOST=x86_64-w64-mingw32ucrt
 export MINGW_HOST=x86_64-w64-mingw32
 export COMMON_CONFIG="--prefix=/mingw --build=${CROSS_HOST} --host=${MINGW_HOST}"
 export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${SYSROOT_DIR}/usr/lib/mingw/sys-root install && rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/lib/*.la"

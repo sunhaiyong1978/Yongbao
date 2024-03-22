@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
 pushd lld
     mkdir -p native-build
     pushd native-build
-        LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" \
+	PKG_CONFIG_SYSROOT_DIR="" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR} \
                  -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" \
                  -DBUILD_SHARED_LIBS:BOOL=OFF \

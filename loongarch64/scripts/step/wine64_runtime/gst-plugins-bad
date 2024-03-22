@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=gst-plugins-bad
-export PACKAGE_VERSION=1.22.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/gst-plugins-bad/1.22.9/
-rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.22.9
-tar xvf ${DOWNLOADDIR}/gst-plugins-bad-1.22.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gst-plugins-bad-1.22.9
+export PACKAGE_VERSION=1.24.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/gst-plugins-bad/1.24.1/
+rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.24.1
+tar xvf ${DOWNLOADDIR}/gst-plugins-bad-1.24.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gst-plugins-bad-1.24.1
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/gst-plugins-bad-1.22.9
 	popd
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.22.9
+rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.24.1

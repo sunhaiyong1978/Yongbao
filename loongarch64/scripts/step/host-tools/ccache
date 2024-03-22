@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=ccache
-export PACKAGE_VERSION=4.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ccache/4.9/
-rm -rf ${BUILD_DIRECTORY}/ccache-4.9
-tar xvf ${DOWNLOADDIR}/ccache-4.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ccache-4.9
+export PACKAGE_VERSION=4.9.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ccache/4.9.1/
+rm -rf ${BUILD_DIRECTORY}/ccache-4.9.1
+tar xvf ${DOWNLOADDIR}/ccache-4.9.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ccache-4.9.1
     
     mkdir -p native-build
     pushd native-build
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/ccache-4.9
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/ccache-4.9
+rm -rf ${BUILD_DIRECTORY}/ccache-4.9.1

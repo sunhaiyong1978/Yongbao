@@ -8,32 +8,20 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/grub/2.12/
 rm -rf ${BUILD_DIRECTORY}/grub-2.12
 tar xvf ${DOWNLOADDIR}/grub-2.12.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/grub-2.12
+	patch -Np1 -i ${SYSDIR}/files/boot/grub/2.12/patches/0001-grub-starfield-themes-style-fix-for-Yongbao.patch 
+	 
+	cp ${RESOURCEDIR}/files/unifont.pcf.gz ./
 	touch grub-core/extra_deps.lst
 	mkdir cross-build
 	pushd cross-build
 		PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 ../configure ${COMMON_CONFIG} -with-platform=efi \
-		             --with-utils=host --disable-werror
+		             --with-utils=host --disable-werror \
+			     --with-dejavufont=${SYSROOT_DIR}/usr/share/fonts/DejaVu/DejaVuSansMono.ttf \
+			     --with-unifont=${PWD}/../unifont.pcf.gz
 		eval ${MAKE_AND_INSTALL}
 	popd
 
-	mkdir -pv ${SYSROOT_DIR}/boot/efi/EFI/BOOT
-	${CROSS_TARGET}-grub-mkimage \
-        	  --directory "${SYSROOT_DIR}/usr/lib64/grub/${ARCH_NAME}-efi" \
-	          --prefix '(,gpt2)/boot/grub' \
-        	  --output "${SYSROOT_DIR}/boot/efi/EFI/BOOT/BOOTLOONGARCH64.EFI" \
-	          --format "${ARCH_NAME}-efi" \
-        	  --compression 'auto' \
-	          'ext2' 'part_gpt'
-	cp -a ${SYSROOT_DIR}/boot/efi/EFI/BOOT/BOOTLOONGARCH{64,}.EFI
-	mkdir -pv ${SYSROOT_DIR}/boot/grub
-	cp -av ${SYSROOT_DIR}/usr/lib64/grub/${ARCH_NAME}-efi ${SYSROOT_DIR}/boot/grub
 
-cat > ${SYSROOT_DIR}/boot/grub/grub.cfg << "EOF"
-menuentry 'My GNU/Linux System for LoongArch64' {
-echo 'Loading Linux Kernel ...'
-linux /vmlinux.efi root=/dev/sda3 rootdelay=5 rw quiet
-boot
-}
-EOF
+#
 popd 
 rm -rf ${BUILD_DIRECTORY}/grub-2.12

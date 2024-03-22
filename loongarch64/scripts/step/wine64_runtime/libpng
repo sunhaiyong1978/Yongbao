@@ -4,13 +4,12 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=libpng
-export PACKAGE_VERSION=1.6.42
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libpng/1.6.42/
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.42
-tar xvf ${DOWNLOADDIR}/libpng-1.6.42.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libpng-1.6.42
-	patch -Np1 -i ${SYSDIR}/files/wine64_runtime/libpng/1.6.42/patches/libpng-1.6.37-apng.patch 
-	 
+export PACKAGE_VERSION=1.6.43
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libpng/1.6.43/
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.43
+tar xvf ${DOWNLOADDIR}/libpng-1.6.43.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libpng-1.6.43
+	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
@@ -19,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libpng-1.6.42
         make DESTDIR=${X86_64_SYSROOT_DIR} install
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.42
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.43

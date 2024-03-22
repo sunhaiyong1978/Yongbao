@@ -1,0 +1,49 @@
+From 6a5707e9b2c3e404c8668f5cbd5fd4ca192ab1e9 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 26 Feb 2024 14:44:03 +0000
+Subject: [PATCH] qt 6.6.2 fix regexp macro assembler for loongarch64.
+
+---
+ .../v8/src/regexp/loong64/regexp-macro-assembler-loong64.cc  | 5 +++--
+ .../v8/src/regexp/loong64/regexp-macro-assembler-loong64.h   | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.cc b/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.cc
+index 7c1d96e4d..fbcd4ba29 100644
+--- a/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.cc
++++ b/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.cc
+@@ -1203,7 +1203,7 @@ static T* frame_entry_address(Address re_frame, int frame_offset) {
+ }
+ 
+ int64_t RegExpMacroAssemblerLOONG64::CheckStackGuardState(
+-    Address* return_address, Address raw_code, Address re_frame) {
++    Address* return_address, Address raw_code, Address re_frame, uintptr_t extra_space) {
+   InstructionStream re_code = InstructionStream::cast(Object(raw_code));
+   return NativeRegExpMacroAssembler::CheckStackGuardState(
+       frame_entry<Isolate*>(re_frame, kIsolateOffset),
+@@ -1213,7 +1213,8 @@ int64_t RegExpMacroAssemblerLOONG64::CheckStackGuardState(
+       return_address, re_code,
+       frame_entry_address<Address>(re_frame, kInputStringOffset),
+       frame_entry_address<const byte*>(re_frame, kInputStartOffset),
+-      frame_entry_address<const byte*>(re_frame, kInputEndOffset));
++      frame_entry_address<const byte*>(re_frame, kInputEndOffset),
++      extra_space);
+ }
+ 
+ MemOperand RegExpMacroAssemblerLOONG64::register_location(int register_index) {
+diff --git a/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.h b/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.h
+index 5990a8a5a..2824b7f6e 100644
+--- a/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.h
++++ b/qtwebengine/src/3rdparty/chromium/v8/src/regexp/loong64/regexp-macro-assembler-loong64.h
+@@ -87,7 +87,7 @@ class V8_EXPORT_PRIVATE RegExpMacroAssemblerLOONG64
+   // returning.
+   // {raw_code} is an Address because this is called via ExternalReference.
+   static int64_t CheckStackGuardState(Address* return_address, Address raw_code,
+-                                      Address re_frame);
++                                      Address re_frame, uintptr_t extra_space);
+ 
+   void print_regexp_frame_constants();
+ 
+-- 
+2.31.1
+

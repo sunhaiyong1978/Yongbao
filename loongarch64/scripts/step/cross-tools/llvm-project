@@ -4,16 +4,17 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=17.0.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/17.0.6/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
-tar xvf ${DOWNLOADDIR}/llvm-project-17.0.6.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
+export PACKAGE_VERSION=18.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/18.1.2/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
+tar xvf ${DOWNLOADDIR}/llvm-project-18.1.2.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
 
 pushd llvm
     mkdir -p native-build
     pushd native-build
-        LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" \
+	LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
+        PKG_CONFIG_SYSROOT_DIR="" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR} \
                  -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
                  -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
@@ -30,7 +31,8 @@ pushd llvm
         ninja
         ninja install
 
-	save_package_version cross-tools_llvm-project
+	LLVM_DIST_VERSION="$(${CROSSTOOLS_DIR}/bin/llvm-config --version)"
+	save_package_version cross-tools_llvm-project "${LLVM_DIST_VERSION}"
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-17.0.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.2.src

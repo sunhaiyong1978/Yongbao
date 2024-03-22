@@ -11,7 +11,6 @@ tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 	mkdir -p tools-build
 	pushd tools-build
-		AR=ar LDFLAGS="-Wl,-rpath,${CROSSTOOLS_DIR}/lib" \
 		../configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} --host=${CROSS_HOST} \
 		             --target=${CROSS_TARGET} --disable-nls \
 		             --with-mpfr=${CROSSTOOLS_DIR} --with-gmp=${CROSSTOOLS_DIR} \

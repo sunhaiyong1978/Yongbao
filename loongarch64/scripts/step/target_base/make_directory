@@ -54,6 +54,8 @@ echo "glib-compile-resources = '${CROSS_TARGET}-glib-compile-resources'" >> meso
 echo "glib-compile-schemas = '${CROSS_TARGET}-glib-compile-schemas'" >> meson-cross.txt
 echo "rust = 'rustc'" >> meson-cross.txt
 echo "exe_wrapper = 'qemu-${ARCH_NAME}'" >> meson-cross.txt
+echo "[built-in options]" >> meson-cross.txt
+echo "rust_args = '--target ${CROSS_TARGET}'" >> meson-cross.txt
 echo "[properties]" >> meson-cross.txt
 echo "skip_sanity_check = true" >> meson-cross.txt
 echo "needs_exe_wrapper = true" >> meson-cross.txt

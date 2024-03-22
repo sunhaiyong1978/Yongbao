@@ -37,7 +37,8 @@ qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/llvm-config "\$@"
 EOF
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config
 
-save_package_version target_base_llvm-project "18.0.0"
+LLVM_DIST_VERSION="$(${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config --version)"
+save_package_version target_base_llvm-project "${LLVM_DIST_VERSION}"
 
 popd 
 rm -rf ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git

@@ -1,0 +1,25 @@
+From fd5ed317b3171176bb7ea17afe4f30d3c2c9ca2a Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 26 Feb 2024 09:16:29 +0000
+Subject: [PATCH] qt6 webengine configure add loongarch64 support.
+
+---
+ qtwebengine/configure.cmake | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/qtwebengine/configure.cmake b/qtwebengine/configure.cmake
+index a6c76b4..a1eb9e4 100644
+--- a/qtwebengine/configure.cmake
++++ b/qtwebengine/configure.cmake
+@@ -473,7 +473,7 @@ add_check_for_support(
+    MESSAGE "Build can be done only on Linux, Windows, macO, iOS and Android(on non-Windows hosts only)."
+ )
+ if(LINUX AND CMAKE_CROSSCOMPILING)
+-   set(supportedTargets "arm" "arm64" "armv7-a" "x86_64")
++   set(supportedTargets "arm" "arm64" "armv7-a" "x86_64" "loongarch64")
+    add_check_for_support(
+        MODULES QtWebEngine QtPdf
+        CONDITION TEST_architecture_arch IN_LIST supportedTargets
+-- 
+2.31.1
+

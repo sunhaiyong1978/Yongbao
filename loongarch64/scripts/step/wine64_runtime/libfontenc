@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine64_runtime/custom
 export STEP_BUILDNAME=wine64_runtime
 export STEP_PACKAGENAME=libfontenc
-export PACKAGE_VERSION=1.1.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libfontenc/1.1.7/
-rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.7
-tar xvf ${DOWNLOADDIR}/libfontenc-1.1.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libfontenc-1.1.7
+export PACKAGE_VERSION=1.1.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine64_runtime/libfontenc/1.1.8/
+rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.8
+tar xvf ${DOWNLOADDIR}/libfontenc-1.1.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libfontenc-1.1.8
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libfontenc-1.1.7
         make DESTDIR=${X86_64_SYSROOT_DIR} install
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.7
+rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.8

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=pcre2
-export PACKAGE_VERSION=10.43-RC1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pcre2/10.43-RC1/
-rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.43-RC1
-tar xvf ${DOWNLOADDIR}/pcre2-10.43-RC1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.43-RC1
+export PACKAGE_VERSION=10.43
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pcre2/10.43/
+rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.43
+tar xvf ${DOWNLOADDIR}/pcre2-10.43.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.43
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.43-RC1
 	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.43-RC1
+rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.43

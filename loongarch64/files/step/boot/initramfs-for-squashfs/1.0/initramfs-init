@@ -1,5 +1,7 @@
 #!/bin/sh
 
+/bin/clear
+echo "开始初始化..."
 mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sys /sys
@@ -196,6 +198,7 @@ MOUNT_STR=""
 LABEL_FIND=0
 
 LABEL=$(cat /proc/cmdline | awk -F' LABEL=' '{print $2}' | awk -F' ' '{print $1}')
+LIVE_MODE=$(cat /proc/cmdline | awk -F' live_mode=' '{print $2}' | awk -F' ' '{print $1}')
 ROOT_PARTION=$(cat /proc/cmdline | awk -F' root=' '{print $2}' | awk -F' ' '{print $1}')
 ROOT_ATTR_NAME=$(echo ${ROOT_PARTION} | awk -F'=' '{print $1}')
 ROOT_ATTR_VAL=$(echo ${ROOT_PARTION} | awk -F'=' '{print $2}')
@@ -236,18 +239,24 @@ if [ "x${MOUNT_DISK}" == "x" ]; then
     if [ "x${LABEL}" != "x" ]; then
         GET_DISKS=$(get_all_disks)
         GET_PARTION=""
+	echo "查询“${LABEL}”标记指定的存储设备分区......"
         for i in ${GET_DISKS}
         do
-echo "test $i ${LABEL}"
+# echo "test $i ${LABEL}"
+echo -n "查询 $i 设备..."
             GET_PARTION=$(get_partion_form_label_file "$(get_disk_partions ${i})" "${LABEL}")
             if [ "x${GET_PARTION}" != "x" ]; then
-                echo "found ${GET_PARTION}"
+		echo "发现。"
+                echo "在 ${GET_PARTION} 分区中查找到了指定的启动文件,将开始启动系统..."
                 LABEL_FIND=1
                 MOUNT_DISK=${GET_PARTION}
                 break;
+	    else
+		echo "未发现。"
             fi
         done
         if [ "x${GET_PARTION}" == "x" ]; then
+	    echo "所有可识别的分区都已查询，但未发现指定的启动标记文件。"
             /bin/sh
             exit 2
         fi
@@ -257,10 +266,11 @@ fi
 
 function get_images_list()
 {
-    IMAGE_LIST=$(cat /ISOSYSTEM/images/images.list | grep -v "^#" | sort -n | awk -F' ' '{ print $2 }')
+    IMAGE_LIST=$(cat /ISOSYSTEM/images/images.list | grep -v "^#" | grep -v "[[:blank:]]kernel_" | sort -n | awk -F' ' '{ print $2 }')
     echo ${IMAGE_LIST}
     return
 }
+
 
 if [ "x${MOUNT_DISK}" != "x" ]; then
     OVERLAY_DIR=""
@@ -269,33 +279,69 @@ if [ "x${MOUNT_DISK}" != "x" ]; then
             OVERLAY_DIR=$(get_overlay_upper ${MOUNT_DISK})
             ;;
         *)
-            echo "Unknown FSTYPE $(get_partion_fstype ${MOUNT_DISK})"
+#            echo "Unknown FSTYPE $(get_partion_fstype ${MOUNT_DISK})"
+            echo "不能识别 ${MOUNT_DISK} 分区上的 $(get_partion_fstype ${MOUNT_DISK}) 文件系统。"
             /bin/sh
             return
             ;;
     esac
     mount /dev/$MOUNT_DISK /ISOSYSTEM
+
+
+    if [ ! -f /ISOSYSTEM/images/kernel_${UNAME_STR}.$(uname -m).squashfs ]; then
+	echo "没有发现启动内核对应的内核组件文件，不能继续，请检查 /dev/$MOUNT_DISK 分区中的/images目录是否存在，且该目录下是否存在 kernel_${UNAME_STR}.$(uname -m).squashfs 文件。"
+	/bin/sh
+	return
+    else
+	mkdir /images/kernel_${UNAME_STR}
+	mount -t squashfs /ISOSYSTEM/images/kernel_${UNAME_STR}.$(uname -m).squashfs /images/kernel_${UNAME_STR}
+    fi
+    if [ x"${MOUNT_STR}" == x ]; then
+        MOUNT_STR="/images/kernel_${UNAME_STR}"
+    else
+        MOUNT_STR="${MOUNT_STR}:/images/kernel_${UNAME_STR}"
+    fi
+
+
     for i in $(get_images_list)
     do
-        mkdir /images/$i
         if [ -f /ISOSYSTEM/images/$i.squashfs ]; then
-            mount -t squashfs /ISOSYSTEM/images/$i.squashfs /images/$i
-        fi
-        if [ x"${MOUNT_STR}" == x ]; then
-            MOUNT_STR=/images/$i
-        else
-            MOUNT_STR="${MOUNT_STR}:/images/$i"
+#	    echo -n "找到 ${i} 组件，进行加载..."
+	    STEP_MOUNT_STR=""
+            mkdir /images/${i}
+            mount -t squashfs /ISOSYSTEM/images/${i}.squashfs /images/${i}
+            STEP_MOUNT_STR="/images/${i}"
+#	    echo "完成！"
+	    UPDATE_STR="${i%%.*}.update.${i#*.}"
+	    if [ "X${UPDATE_STR}" != "x.update." ]; then
+		    if [ -f /ISOSYSTEM/images/update/${UPDATE_STR}.squashfs ]; then
+			echo -n "发现${i}组件的升级部分，进行加载..."
+	 		mkdir /images/${UPDATE_STR}
+                	mount -t squashfs /ISOSYSTEM/images/update/${UPDATE_STR}.squashfs /images/${UPDATE_STR}
+			STEP_MOUNT_STR="/images/${UPDATE_STR}:${STEP_MOUNT_STR}"
+			echo "完成！"
+		    fi
+	    fi
+            if [ x"${MOUNT_STR}" == x ]; then
+                MOUNT_STR="${STEP_MOUNT_STR}"
+            else
+                MOUNT_STR="${MOUNT_STR}:${STEP_MOUNT_STR}"
+            fi
         fi
     done
 
-    if [ "x${OVERLAY_DIR}" == "xdirectory" ]; then
-        mount --bind /ISOSYSTEM/.userdata /overlayfs
-    else
-        if [ "x${OVERLAY_DIR}" == "xfile" ]; then
-            mount /ISOSYSTEM/.userdata /overlayfs
+    if [ "x${LIVE_MODE}" == "x1 ]; then
+        if [ "x${OVERLAY_DIR}" == "xdirectory" ]; then
+            mount --bind /ISOSYSTEM/.userdata /overlayfs
         else
-            mount -t tmpfs tmpfs /overlayfs
+            if [ "x${OVERLAY_DIR}" == "xfile" ]; then
+                mount /ISOSYSTEM/.userdata /overlayfs
+            else
+                mount -t tmpfs tmpfs /overlayfs
+            fi
         fi
+    else
+        mount -t tmpfs tmpfs /overlayfs
     fi
 
     mkdir -p /overlayfs/userdata

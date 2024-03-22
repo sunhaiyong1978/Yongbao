@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=NetworkManager
-export PACKAGE_VERSION=1.47.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.47.0/
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.47.0
-tar xvf ${DOWNLOADDIR}/NetworkManager-1.47.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/NetworkManager-1.47.0
-    patch -Np1 -i ${SYSDIR}/files/base_support/NetworkManager/1.47.0/patches/0001-NetworkManager-fix-polkit-dir-error-for-cross-build.patch 
+export PACKAGE_VERSION=1.47.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.47.3/
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.47.3
+tar xvf ${DOWNLOADDIR}/NetworkManager-1.47.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/NetworkManager-1.47.3
+    patch -Np1 -i ${SYSDIR}/files/base_support/NetworkManager/1.47.3/patches/0001-NetworkManager-fix-polkit-dir-error-for-cross-build.patch 
 	 
     sed -i -e 's/Qt/&5/' meson.build
     sed -i -e 's/-qt4/-qt5/' -e 's/moc_location/host_bins/' examples/C/qt/meson.build 
@@ -28,7 +28,7 @@ pushd ${BUILD_DIRECTORY}/NetworkManager-1.47.0
         DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.47.0
+rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.47.3
 
 cat > ${SYSROOT_DIR}/usr/share/polkit-1/rules.d/org.freedesktop.NetworkManager.rules << "EOF"
 polkit.addRule(function(action, subject) {

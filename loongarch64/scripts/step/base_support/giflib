@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=giflib
-export PACKAGE_VERSION=5.2.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/giflib/5.2.1/
-rm -rf ${BUILD_DIRECTORY}/giflib-5.2.1
-tar xvf ${DOWNLOADDIR}/giflib-5.2.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/giflib-5.2.1
+export PACKAGE_VERSION=5.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/giflib/5.2.2/
+rm -rf ${BUILD_DIRECTORY}/giflib-5.2.2
+tar xvf ${DOWNLOADDIR}/giflib-5.2.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/giflib-5.2.2
     CC="${CROSS_TARGET}-gcc" make -j${JOBS}
     make PREFIX=/usr LIBDIR=/usr/lib64 DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/giflib-5.2.1
+rm -rf ${BUILD_DIRECTORY}/giflib-5.2.2

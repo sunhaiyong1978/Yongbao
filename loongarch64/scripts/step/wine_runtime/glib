@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.79.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/glib/2.79.1/
-rm -rf ${BUILD_DIRECTORY}/glib-2.79.1
-tar xvf ${DOWNLOADDIR}/glib-2.79.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.79.1
+export PACKAGE_VERSION=2.80.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/glib/2.80.0/
+rm -rf ${BUILD_DIRECTORY}/glib-2.80.0
+tar xvf ${DOWNLOADDIR}/glib-2.80.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.80.0
         
         mkdir cross-build
         pushd cross-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/glib-2.79.1
                 eval ${NINJA_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.79.1
+rm -rf ${BUILD_DIRECTORY}/glib-2.80.0

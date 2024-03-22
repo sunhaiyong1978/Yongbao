@@ -10,12 +10,12 @@ rm -rf ${BUILD_DIRECTORY}/libpciaccess-0.18
 tar xvf ${DOWNLOADDIR}/libpciaccess-0.18.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libpciaccess-0.18
 	
-	if [ ! -f configure ]; then
-		autoreconf -ifv
-	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
-	CC="${X86_64_HOST}-gcc" CXX="${X86_64_HOST}-g++" make -j${JOBS}
-        make DESTDIR=${X86_64_SYSROOT_DIR} install
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} --default-library=both  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
 	rm -f ${X86_64_SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/libpciaccess-0.18

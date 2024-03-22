@@ -4,18 +4,19 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.6.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.6.1/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.6.1/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
+export PACKAGE_VERSION=6.6.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.6.2/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.2
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.2
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.6.2/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
 	 
 	mkdir -p native-build
 	pushd native-build
 		cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}/qt6 \
 		      -DCMAKE_BUILD_TYPE=RELEASE \
-		      -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};\\\${ORIGIN}/../lib${LIB_SUFF}" \
+		      -DICU_ROOT=${CROSSTOOLS_DIR} \
+		      -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};${CROSSTOOLS_DIR}/lib;\\\${ORIGIN}/../lib${LIB_SUFF}" \
 		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat \
 		      ..
 		eval ${MAKE_AND_INSTALL}
@@ -33,4 +34,4 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
 		popd
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.1
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.2

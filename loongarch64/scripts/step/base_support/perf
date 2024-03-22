@@ -8,9 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/perf/6.x/
 rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git
 tar xvf ${DOWNLOADDIR}/linux_git-6.x_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
-	patch -Np1 -i ${SYSDIR}/files/base_support/perf/6.x/patches/0001-Fix-malloc-0-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/perf/6.x/patches/0001-fix-compiler-error-when-using-gcc-14.patch 
-	 
+	
 	pushd tools/perf
 		sed -i "s@\$(QUIET_GENSKEL)\$(BPFTOOL)@\$(QUIET_GENSKEL) LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \$(BPFTOOL)@g" Makefile.perf
 		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}-  NO_LIBTRACEEVENT=1

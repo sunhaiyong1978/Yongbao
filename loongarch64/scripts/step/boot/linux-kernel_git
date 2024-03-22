@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-kernel_git/6.x/
 rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git
 tar xvf ${DOWNLOADDIR}/linux_git-6.x_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
+	CONFIG_STR=$(get_user_set_env config "default")
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-double-tty-VT-screenbuf-for-univt.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0002-Add-several-function-for-Univt.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0003-UniVT-Fix-charcount-size-to-65536.patch 
@@ -18,18 +19,25 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0008-UniVT-Support-displaying-UTF-8-text-for-180-degree-r.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0009-UniVT-Support-displaying-UTF-8-text-for-270-degree-r.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-UniVT-Add-Chinese-fonts-support-in-console.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-drm-loongson-Error-out-if-no-VRAM-detected.patch 
 	 
 	make mrproper
-	cp -af ${RESOURCEDIR}/linux-config-6.x ./.config
+	cp -af ${RESOURCEDIR}/linux-config-6.x_${CONFIG_STR} ./.config
+	sed -i "/^CONFIG_LOCALVERSION/s@=\"\(.*\)\"@=\"_${CONFIG_STR}\"@g" .config
 	make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- olddefconfig
-	PKG_CONFIG_SYSROOT_DIR="" \
+	PKG_CONFIG_SYSROOT_DIR="" HOSTLDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
 		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}-
 	PKG_CONFIG_SYSROOT_DIR="" \
 		make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- INSTALL_MOD_PATH=dest modules_install
-	mkdir -p ${SYSROOT_DIR}/lib/modules/
-	cp -af dest/lib/modules/* ${SYSROOT_DIR}/lib/modules/
-	cp -af arch/${ARCH_FAMILY}/boot/vmlinux.efi ${SYSROOT_DIR}/boot/vmlinux.efi
-	echo "$(ls dest/lib/modules/)" > ${COMMON_DIR}/linux-kernel.version
+	LINUX_KERNEL_VERSION=$(grep "^# \(.*\) Kernel Configuration" .config | awk -F' ' '{ print $3 }')
+	
+	mkdir -p ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/
+	mkdir -p ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/
+	cp -af arch/${ARCH_FAMILY}/boot/vmlinux.efi ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/vmlinux.efi
+	cp -af dest/lib/modules/* ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/
+	cp -af .config ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/vmlinux.config
+
+
+
+	echo "${LINUX_KERNEL_VERSION}" > ${COMMON_DIR}/linux-kernel.version
 popd 
 rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git

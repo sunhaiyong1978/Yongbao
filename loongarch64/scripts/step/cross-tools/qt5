@@ -4,18 +4,17 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt5
-export PACKAGE_VERSION=5.15.12
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt5/5.15.12/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.12
-tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.12.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.12
-    patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.12/patches/qt-everywhere-opensource-src-5.15.12-kf5-1.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.12/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.12/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.12/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.12/patches/0001-qt-5.15.11-fix-for-gcc-14.patch 
+export PACKAGE_VERSION=5.15.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt5/5.15.13/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.13
+tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.13.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.13
+    patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-qt5-fix-for-xkbcommon-1.6.0.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-qt-5.15.11-fix-for-gcc-14.patch 
 	 
-    cp qtbase/src/corelib/thread/qtsan_impl.h qtbase/include/QtCore/
     sed -i "s@defined(__aarch64__)@& || defined(__loongarch__)@g" qtbase/src/3rdparty/forkfd/forkfd_linux.c
     mkdir host-build
     pushd host-build
@@ -30,9 +29,8 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.12
         make -j${JOBS}
         make install
     popd
-    cp -v qtbase/src/corelib/thread/qtsan_impl.h ${CROSSTOOLS_DIR}/qt5/include/QtCore/
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.12
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.13
 
 echo "#!/bin/bash -e
 if [ \"x\${1:0:1}\" == \"xQ\" ]; then

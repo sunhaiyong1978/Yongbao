@@ -3,17 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=node
-export PACKAGE_VERSION=21.6.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/node/21.6.1/
-rm -rf ${BUILD_DIRECTORY}/node-21.6.1
-tar xvf ${DOWNLOADDIR}/node-21.6.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/node-21.6.1
+export PACKAGE_VERSION=21.7.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/node/21.7.1/
+rm -rf ${BUILD_DIRECTORY}/node-21.7.1
+tar xvf ${DOWNLOADDIR}/node-21.7.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/node-21.7.1
     
-    export CFLAGS=""
-    export CXXFLAGS=""
-    export JOBS=$(($(nproc)*1))
-    ./configure --prefix ${CROSSTOOLS_DIR}
+    ./configure --prefix ${CROSSTOOLS_DIR} --shared-openssl
     eval ${MAKE_AND_INSTALL}
     cp -av out/Release/node ${CROSSTOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/node-21.6.1
+rm -rf ${BUILD_DIRECTORY}/node-21.7.1

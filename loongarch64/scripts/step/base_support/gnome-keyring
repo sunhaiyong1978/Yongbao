@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gnome-keyring
-export PACKAGE_VERSION=42.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gnome-keyring/42.1/
-rm -rf ${BUILD_DIRECTORY}/gnome-keyring-42.1
-tar xvf ${DOWNLOADDIR}/gnome-keyring-42.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gnome-keyring-42.1
+export PACKAGE_VERSION=46.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gnome-keyring/46.1/
+rm -rf ${BUILD_DIRECTORY}/gnome-keyring-46.1
+tar xvf ${DOWNLOADDIR}/gnome-keyring-46.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gnome-keyring-46.1
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/gnome-keyring-42.1
     ./configure ${COMMON_CONFIG} --with-pkcs11-modules=/usr/lib${LIB_SUFF}/pkcs11 --with-pkcs11-config=/usr/share/p11-kit/modules --disable-doc systemduserunitdir=/usr/lib/systemd/user
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/gnome-keyring-42.1
+rm -rf ${BUILD_DIRECTORY}/gnome-keyring-46.1

@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=graphviz
-export PACKAGE_VERSION=9.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/graphviz/9.0.0/
-rm -rf ${BUILD_DIRECTORY}/graphviz-9.0.0
-tar xvf ${DOWNLOADDIR}/graphviz-9.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/graphviz-9.0.0
+export PACKAGE_VERSION=10.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/graphviz/10.0.1/
+rm -rf ${BUILD_DIRECTORY}/graphviz-10.0.1
+tar xvf ${DOWNLOADDIR}/graphviz-10.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/graphviz-10.0.1
         
         mkdir cross-build
         pushd cross-build
-                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CXXFLAGS="${CXXFLAGS} -fno-lto" CFLAGS="${CFLAGS} -fno-lto" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/graphviz-9.0.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/graphviz-9.0.0
+rm -rf ${BUILD_DIRECTORY}/graphviz-10.0.1

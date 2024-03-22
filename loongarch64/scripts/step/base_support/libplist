@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libplist
-export PACKAGE_VERSION=2.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libplist/2.3.0/
-rm -rf ${BUILD_DIRECTORY}/libplist-2.3.0
-tar xvf ${DOWNLOADDIR}/libplist-2.3.0.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libplist-2.3.0
+export PACKAGE_VERSION=2.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libplist/2.4.0/
+rm -rf ${BUILD_DIRECTORY}/libplist-2.4.0
+tar xvf ${DOWNLOADDIR}/libplist-2.4.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libplist-2.4.0
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/libplist-2.3.0
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libplist-2.3.0
+rm -rf ${BUILD_DIRECTORY}/libplist-2.4.0

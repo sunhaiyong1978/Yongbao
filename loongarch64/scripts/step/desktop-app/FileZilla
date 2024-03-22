@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=FileZilla
-export PACKAGE_VERSION=3.66.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/FileZilla/3.66.4/
-rm -rf ${BUILD_DIRECTORY}/filezilla-3.66.4
-tar xvf ${DOWNLOADDIR}/FileZilla_3.66.4_src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/filezilla-3.66.4
+export PACKAGE_VERSION=3.66.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/FileZilla/3.66.5/
+rm -rf ${BUILD_DIRECTORY}/filezilla-3.66.5
+tar xvf ${DOWNLOADDIR}/FileZilla_3.66.5_src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/filezilla-3.66.5
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -17,8 +17,8 @@ pushd ${BUILD_DIRECTORY}/filezilla-3.66.4
 		autoreconf -ifv
 	fi
 	 ./configure ${COMMON_CONFIG} --with-wx-prefix=${SYSROOT_DIR}/usr --with-pugixml=builtin ac_cv_path_xdgopen=/usr/bin/xdg-open --enable-malloc0returnsnull
-	make -j${JOBS}
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/filezilla-3.66.4
+rm -rf ${BUILD_DIRECTORY}/filezilla-3.66.5

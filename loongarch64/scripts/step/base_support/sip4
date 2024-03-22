@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=sip4
-export PACKAGE_VERSION=sip-4.19.25
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sip4/sip-4.19.25/
+export PACKAGE_VERSION=4.19.25
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sip4/4.19.25/
 rm -rf ${BUILD_DIRECTORY}/sip-4.19.25
 tar xvf ${DOWNLOADDIR}/sip-4.19.25.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/sip-4.19.25
-    patch -Np1 -i ${SYSDIR}/files/base_support/sip4/sip-4.19.25/patches/sip-add-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/sip4/sip-4.19.25/patches/sip-4.19.25-pyframe_getback.patch 
+    patch -Np1 -i ${SYSDIR}/files/base_support/sip4/4.19.25/patches/sip-add-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/sip4/4.19.25/patches/sip-4.19.25-pyframe_getback.patch 
 	 
     mkdir cross-build
     pushd cross-build

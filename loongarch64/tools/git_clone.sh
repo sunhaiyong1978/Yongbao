@@ -1,8 +1,8 @@
 #!/bin/bash -e
 BASE_DIR="${PWD}"
 
-declare GIT_DIR=${BASE_DIR}/sources/git
-declare DEST_DIR=${BASE_DIR}/sources/downloads/files/
+declare GIT_DIR=${BASE_DIR}/downloads/sources/git
+declare DEST_DIR=${BASE_DIR}/downloads/sources/files/
 
 while getopts 'd:h' OPT; do
     case $OPT in
@@ -57,10 +57,10 @@ fi
 
 
 if [ "x${GIT_DIR}" == "x" ]; then
-	GIT_DIR=${BASE_DIR}/sources/git
-	DEST_DIR=${BASE_DIR}/sources/downloads/files/
+	GIT_DIR=${BASE_DIR}/downloads/sources/git
+	DEST_DIR=${BASE_DIR}/downloads/sources/files/
 else
-	GIT_DIR=${BASE_DIR}/sources/resource_git/${PKG_NAME}/
+	GIT_DIR=${BASE_DIR}/downloads/sources/resource_git/${PKG_NAME}/
 fi
 mkdir -p ${GIT_DIR}
 echo "pushd ${GIT_DIR}"

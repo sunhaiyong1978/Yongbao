@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=referencing
-export PACKAGE_VERSION=0.33.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/referencing/0.33.0/
-rm -rf ${BUILD_DIRECTORY}/referencing-0.33.0
-tar xvf ${DOWNLOADDIR}/referencing-0.33.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/referencing-0.33.0
+export PACKAGE_VERSION=0.34.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/referencing/0.34.0/
+rm -rf ${BUILD_DIRECTORY}/referencing-0.34.0
+tar xvf ${DOWNLOADDIR}/referencing-0.34.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/referencing-0.34.0
 	
 	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user referencing --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/referencing-0.33.0
+rm -rf ${BUILD_DIRECTORY}/referencing-0.34.0

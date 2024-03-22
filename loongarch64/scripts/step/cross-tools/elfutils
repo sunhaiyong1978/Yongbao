@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=elfutils
-export PACKAGE_VERSION=git-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/elfutils/git-default/
-rm -rf ${BUILD_DIRECTORY}/elfutils-git-default_git
-tar xvf ${DOWNLOADDIR}/elfutils-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elfutils-git-default_git
+export PACKAGE_VERSION=0.191
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/elfutils/0.191/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.191
+tar xvf ${DOWNLOADDIR}/elfutils-0.191.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.191
 	
         for config_i in $(find -name "config.sub")
         do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/elfutils-git-default_git
 		--host=${CROSS_HOST} --target=${CROSS_TARGET}  --disable-debuginfod --enable-libdebuginfod=dummy --enable-maintainer-mode
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/elfutils-git-default_git
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.191

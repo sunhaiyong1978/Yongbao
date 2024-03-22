@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libfontenc
-export PACKAGE_VERSION=1.1.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libfontenc/1.1.7/
-rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.7
-tar xvf ${DOWNLOADDIR}/libfontenc-1.1.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libfontenc-1.1.7
+export PACKAGE_VERSION=1.1.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libfontenc/1.1.8/
+rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.8
+tar xvf ${DOWNLOADDIR}/libfontenc-1.1.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libfontenc-1.1.8
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/libfontenc-1.1.7
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.7
+rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.8
