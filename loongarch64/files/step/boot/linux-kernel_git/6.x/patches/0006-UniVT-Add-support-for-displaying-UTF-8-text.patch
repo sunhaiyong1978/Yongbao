@@ -1,18 +1,18 @@
-From b5df64e52e16a2f7701711df9075cda38108ef0d Mon Sep 17 00:00:00 2001
+From dd9a157dce7fbee4cb77c9e0234c8f09cf5657d6 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Wed, 19 Apr 2023 02:43:41 +0000
+Date: Sat, 23 Mar 2024 07:54:43 +0000
 Subject: [PATCH 6/9] UniVT: Add support for displaying UTF-8 text.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-    增加支持显示UTF-8文字。
+增加支持显示UTF-8文字。
 ---
  drivers/video/fbdev/core/bitblit.c | 48 +++++++++++++++++++++++++-----
  1 file changed, 40 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/video/fbdev/core/bitblit.c b/drivers/video/fbdev/core/bitblit.c
-index 233365b16..e8a2ea13b 100644
+index 4ecacec7a..14ad03cbd 100644
 --- a/drivers/video/fbdev/core/bitblit.c
 +++ b/drivers/video/fbdev/core/bitblit.c
 @@ -97,14 +97,25 @@ static inline void bit_putcs_aligned(struct vc_data *vc, struct fb_info *info,
@@ -73,7 +73,7 @@ index 233365b16..e8a2ea13b 100644
  
  		fb_pad_unaligned_buffer(dst, d_pitch, src, idx,
  					image->height, shift_high,
-@@ -253,7 +275,7 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, int mode,
+@@ -253,7 +275,7 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
  	struct fb_cursor cursor;
  	struct fbcon_ops *ops = info->fbcon_par;
  	unsigned short charmask = vc->vc_hi_font_mask ? 0x1ff : 0xff;
@@ -82,8 +82,8 @@ index 233365b16..e8a2ea13b 100644
  	int y = real_y(ops->p, vc->state.y);
  	int attribute, use_sw = vc->vc_cursor_type & CUR_SW;
  	int err = 1;
-@@ -262,8 +284,18 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, int mode,
- 	cursor.set = 0;
+@@ -265,8 +287,18 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
+ 		return;
  
   	c = scr_readw((u16 *) vc->vc_pos);
 + 	c_extra = utf8_pos(vc, (u16 *) vc->vc_pos);

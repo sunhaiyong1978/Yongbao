@@ -4,11 +4,11 @@ source env/function.sh
 source env/wine_runtime/custom
 export STEP_BUILDNAME=wine_runtime
 export STEP_PACKAGENAME=wine
-export PACKAGE_VERSION=9.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/wine/9.4/
-rm -rf ${BUILD_DIRECTORY}/wine-9.4
-tar xvf ${DOWNLOADDIR}/wine-9.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-9.4
+export PACKAGE_VERSION=9.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wine_runtime/wine/9.5/
+rm -rf ${BUILD_DIRECTORY}/wine-9.5
+tar xvf ${DOWNLOADDIR}/wine-9.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-9.5
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
@@ -35,7 +35,7 @@ pushd ${BUILD_DIRECTORY}/wine-9.4
 	cp -a ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86.msi ${SYSROOT_DIR}/opt/wine/share/wine/gecko/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-9.4
+rm -rf ${BUILD_DIRECTORY}/wine-9.5
 
 set_strip_step "/opt/wine/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${X86_HOST}-strip"
 set_strip_step "/opt/wine/lib/wine/i386-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${X86_HOST}-strip"

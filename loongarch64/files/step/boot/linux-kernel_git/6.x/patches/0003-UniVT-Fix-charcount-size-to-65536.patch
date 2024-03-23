@@ -1,22 +1,22 @@
-From 7f0066e0e12b8d6fa2f0f9557ddb50eecca92914 Mon Sep 17 00:00:00 2001
+From 36173dc1314100010d1a7894752ae6bf34c2f95d Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Wed, 19 Apr 2023 02:39:28 +0000
+Date: Sat, 23 Mar 2024 07:03:42 +0000
 Subject: [PATCH 3/9] UniVT: Fix charcount size to 65536.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-  将charcount的大小扩展到65536。
+将charcount的大小扩展到65536。
 ---
  drivers/tty/vt/vt.c              |  4 +---
  drivers/video/fbdev/core/fbcon.c | 15 +++++----------
  2 files changed, 6 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 68d26ec9b..fca23eea0 100644
+index 0ec9604dc..d5226971a 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -4549,7 +4549,7 @@ void reset_palette(struct vc_data *vc)
+@@ -4716,7 +4716,7 @@ void reset_palette(struct vc_data *vc)
  #define max_font_width	64
  #define max_font_height	128
  #define max_font_glyphs	512
@@ -25,7 +25,7 @@ index 68d26ec9b..fca23eea0 100644
  
  static int con_font_get(struct vc_data *vc, struct console_font_op *op)
  {
-@@ -4612,8 +4612,6 @@ static int con_font_set(struct vc_data *vc, struct console_font_op *op)
+@@ -4779,8 +4779,6 @@ static int con_font_set(struct vc_data *vc, const struct console_font_op *op)
  		return -EINVAL;
  	if (!op->data)
  		return -EINVAL;
@@ -35,10 +35,10 @@ index 68d26ec9b..fca23eea0 100644
  	    op->height > max_font_height)
  		return -EINVAL;
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index eb565a10e..bc84898d3 100644
+index 98d0e2dbc..b6395691e 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1050,7 +1050,7 @@ static void fbcon_init(struct vc_data *vc, int init)
+@@ -1050,7 +1050,7 @@ static void fbcon_init(struct vc_data *vc, bool init)
  
  	vc->vc_can_do_color = (fb_get_color_depth(&info->var, &info->fix)!=1);
  	vc->vc_complement_mask = vc->vc_can_do_color ? 0x7700 : 0x0800;
@@ -47,7 +47,7 @@ index eb565a10e..bc84898d3 100644
  		vc->vc_hi_font_mask = 0;
  	} else {
  		vc->vc_hi_font_mask = 0x100;
-@@ -1371,7 +1371,7 @@ static void fbcon_set_disp(struct fb_info *info, struct fb_var_screeninfo *var,
+@@ -1369,7 +1369,7 @@ static void fbcon_set_disp(struct fb_info *info, struct fb_var_screeninfo *var,
  	ops->var = info->var;
  	vc->vc_can_do_color = (fb_get_color_depth(&info->var, &info->fix)!=1);
  	vc->vc_complement_mask = vc->vc_can_do_color ? 0x7700 : 0x0800;
@@ -56,7 +56,7 @@ index eb565a10e..bc84898d3 100644
  		vc->vc_hi_font_mask = 0;
  	} else {
  		vc->vc_hi_font_mask = 0x100;
-@@ -2141,7 +2141,7 @@ static int fbcon_switch(struct vc_data *vc)
+@@ -2138,7 +2138,7 @@ static bool fbcon_switch(struct vc_data *vc)
  	vc->vc_can_do_color = (fb_get_color_depth(&info->var, &info->fix)!=1);
  	vc->vc_complement_mask = vc->vc_can_do_color ? 0x7700 : 0x0800;
  
@@ -65,7 +65,7 @@ index eb565a10e..bc84898d3 100644
  		vc->vc_complement_mask <<= 1;
  
  	updatescrollmode(p, info, vc);
-@@ -2276,7 +2276,7 @@ static int fbcon_get_font(struct vc_data *vc, struct console_font *font, unsigne
+@@ -2272,7 +2272,7 @@ static int fbcon_get_font(struct vc_data *vc, struct console_font *font, unsigne
  	font->height = vc->vc_font.height;
  	if (font->height > vpitch)
  		return -ENOSPC;
@@ -74,7 +74,7 @@ index eb565a10e..bc84898d3 100644
  	if (!font->data)
  		return 0;
  
-@@ -2416,7 +2416,7 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
+@@ -2410,7 +2410,7 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
  	vc->vc_font.width = w;
  	vc->vc_font.height = h;
  	vc->vc_font.charcount = charcount;
@@ -83,7 +83,7 @@ index eb565a10e..bc84898d3 100644
  		set_vc_hi_font(vc, false);
  	else if (!vc->vc_hi_font_mask && charcount == 512)
  		set_vc_hi_font(vc, true);
-@@ -2475,11 +2475,6 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
+@@ -2469,11 +2469,6 @@ static int fbcon_set_font(struct vc_data *vc, const struct console_font *font,
  	u8 *new_data, *data = font->data;
  	int pitch = PITCH(font->width);
  

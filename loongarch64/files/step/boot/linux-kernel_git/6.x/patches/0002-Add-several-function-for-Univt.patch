@@ -1,40 +1,38 @@
-From 4968101e9a6ae1e4c45acb8cc1efeddfd980b766 Mon Sep 17 00:00:00 2001
+From c02570ff0798a9d98935fdc98c450f27155aa4a3 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Wed, 12 Apr 2023 09:57:32 +0000
+Date: Sat, 23 Mar 2024 06:53:16 +0000
 Subject: [PATCH 2/9] Add several function for Univt.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Provide several essential functions for Univt.
+定义一些与Univt操作相关的函数。
 ---
- drivers/tty/vt/vt.c                | 13 +++++++++++++
+ drivers/tty/vt/vt.c                | 7 +++++++
  drivers/video/fbdev/core/bitblit.c | 14 ++++++++++++++
  2 files changed, 27 insertions(+)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 63c6e6edb..68d26ec9b 100644
+index 13e199013..0ec9604dc 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -297,6 +297,19 @@ static inline unsigned short *screenpos(const struct vc_data *vc, int offset,
- 	return p;
+@@ -294,6 +294,13 @@ static inline u16 *screenpos(const struct vc_data *vc, unsigned int offset,
+ 	return (u16 *)(origin + offset);
  }
  
-+static inline unsigned short *screenpos_utf8(const struct vc_data *vc, int offset, bool viewed)
++static inline u16 *screenpos_utf8(const struct vc_data *vc, int offset, bool viewed)
 +{
-+	unsigned short *p;
++	unsigned long origin = viewed ? vc->vc_visible_origin : vc->vc_origin;
 +
-+	if (!viewed)
-+		p = (unsigned short *)(vc->vc_origin + offset + vc->vc_screenbuf_size);
-+	else if (!vc->vc_sw->con_screen_pos)
-+		p = (unsigned short *)(vc->vc_visible_origin + offset + vc->vc_screenbuf_size);
-+	else
-+		p = vc->vc_sw->con_screen_pos(vc, -offset - 1);
-+	return p;
++	return (u16 *)(origin + offset + vc->vc_screenbuf_size);
 +}
 +
- /* Called  from the keyboard irq path.. */
- static inline void scrolldelta(int lines)
+ static void con_putc(struct vc_data *vc, u16 ca, unsigned int y, unsigned int x)
  {
+ 	if (vc->vc_sw->con_putc)
 diff --git a/drivers/video/fbdev/core/bitblit.c b/drivers/video/fbdev/core/bitblit.c
-index f98e8f298..233365b16 100644
+index 3ff1b2a86..4ecacec7a 100644
 --- a/drivers/video/fbdev/core/bitblit.c
 +++ b/drivers/video/fbdev/core/bitblit.c
 @@ -43,6 +43,20 @@ static void update_attr(u8 *dst, u8 *src, int attribute,

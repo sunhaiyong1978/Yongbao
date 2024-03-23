@@ -1226,6 +1226,7 @@
 %step/desktop-app/wxWidgets|g_opt+desk-app
 %step/desktop-app/FileZilla|g_opt+desk-app
 %step/desktop-app/yaml-cpp|g_opt+desk-app
+%step/desktop-app/pybind11-python|g_opt+desk-app
 %step/desktop-app/pybind11|g_opt+desk-app
 %step/desktop-app/robin-map|g_opt+desk-app
 %step/desktop-app/oneTBB|g_opt+desk-app
