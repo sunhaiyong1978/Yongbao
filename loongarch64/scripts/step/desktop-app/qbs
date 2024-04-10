@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=qbs
-export PACKAGE_VERSION=2.2.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qbs/2.2.2/
-rm -rf ${BUILD_DIRECTORY}/qbs-2.2.2
-tar xvf ${DOWNLOADDIR}/qbs-2.2.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qbs-2.2.2
+export PACKAGE_VERSION=2.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qbs/2.3.0/
+rm -rf ${BUILD_DIRECTORY}/qbs-2.3.0
+tar xvf ${DOWNLOADDIR}/qbs-2.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qbs-2.3.0
         
         mkdir cross-build
         pushd cross-build
@@ -47,4 +47,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${PWD}/libexec/qbs/qbs_processlauncher.o
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qbs-2.2.2
+rm -rf ${BUILD_DIRECTORY}/qbs-2.3.0

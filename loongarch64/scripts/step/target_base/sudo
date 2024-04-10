@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/sudo-1.9.15p5
                 --with-secure-path --with-all-insults --with-env-editor \
                 --with-passprompt="[sudo] password for %p: "
     sed -i "/^install_uid/s@= 0@= $(id -u)@g" Makefile
-    sed -i "/^install_gid/s@= 0@= $(id -u)@g" Makefile
+    sed -i "/^install_gid/s@= 0@= $(id -g)@g" Makefile
     eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/sudo-1.9.15p5

@@ -6,7 +6,8 @@ export BASE_DIR="${PWD}"
 declare FORCE_CREATE=FALSE
 declare ARCHIVE_MODE="squashfs"
 declare OVERLAY_NAME=""
-declare KERNEL_CREATE=FALSE
+declare KERNEL_CREATE=TRUE
+declare KERNEL_ONLY=FALSE
 
 while getopts 'fkm:h' OPT; do
     case $OPT in
@@ -14,7 +15,7 @@ while getopts 'fkm:h' OPT; do
             FORCE_CREATE=TRUE
             ;;
         k)
-            KERNEL_CREATE=TRUE
+            KERNEL_ONLY=TRUE
             ;;
 	m)
             ARCHIVE_MODE=$OPTARG
@@ -133,51 +134,60 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 			exit 7
 		fi
 	fi
-	if [ -d ${BASE_DIR}/workbase/overlaydir_strip ]; then
-		for i in $(cat ${BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
-		do
-			RELEASE_SUFF=""
-			if [ -f ${BASE_DIR}/workbase/overlaydir/${i}.released ]; then
-				RELEASE_SUFF=".update"
+	if [ "x${KERNEL_ONLY}" == "xFALSE" ]; then
+		if [ -d ${BASE_DIR}/workbase/overlaydir_strip ]; then
+			OVERLAY_DIR_LIST=$(find ${BASE_DIR}/workbase/overlaydir/ -maxdepth 1 -type f -name "*.dist" | awk -F'/' '{ print $NF }' | sed "s@\.dist\$@@g")
+			if [ "x${OVERLAY_DIR_LIST}" == "x" ]; then
+				echo "没有发现任何需要进行处理的目录。"
+				exit 1
 			fi
-			echo "制作 ${i}${RELEASE_SUFF} 打包文件..."
-			if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} ]; then
 
-				STEP_NAME=""
-				if [ -f env/${i}.info ]; then
-					STEP_NAME=$(grep -r "^$i_NAME=" env/${i}.info | tail -n1 | awk -F'=' '{ print $2 }')
+#			for i in $(cat ${BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
+			for i in ${OVERLAY_DIR_LIST}
+			do
+				RELEASE_SUFF=""
+				if [ -f ${BASE_DIR}/workbase/overlaydir/${i}.released ]; then
+					RELEASE_SUFF=".update"
 				fi
-				if [ "x${STEP_NAME}" == "x" ]; then
-					STEP_NAME=${i}
-				fi
+				echo "制作 ${i}${RELEASE_SUFF} 打包文件..."
+				if [ -d ${BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} ]; then
+	
+					STEP_NAME=""
+					if [ -f env/${i}.info ]; then
+						STEP_NAME=$(grep -r "^$i_NAME=" env/${i}.info | tail -n1 | awk -F'=' '{ print $2 }')
+					fi
+					if [ "x${STEP_NAME}" == "x" ]; then
+						STEP_NAME=${i}
+					fi
 
-				if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-					tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
-					for j in $(cat ${BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
-					do
-						if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
-							tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
-						fi
-					done
+					if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
+						tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						for j in $(cat ${BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
+						do
+							if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
+								tools/pack_archive_dir.sh -f ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							fi
+						done
+					else
+						tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						for j in $(cat ${BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
+						do
+							if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
+								tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							fi
+						done
+					fi
 				else
-					tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
-					for j in $(cat ${BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
-					do
-						if [ -d ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
-							tools/pack_archive_dir.sh ${BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
-						fi
-					done
+					echo "警告：${BASE_DIR}/workbase/overlaydir_strip/ 目录中没有 $i${RELEASE_SUFF} 目录，跳过！"
 				fi
-			else
-				echo "警告：${BASE_DIR}/workbase/overlaydir_strip/ 目录中没有 $i${RELEASE_SUFF} 目录，跳过！"
-			fi
-		done
-	else
-		echo "没有发现可以用来打包的系统目录，请检查${BASE_DIR}/workbase/overlaydir_strip目录是否存在，你可以通过strip_os.sh脚本生成该目录。"
-		exit 1
+			done
+		else
+			echo "没有发现可以用来打包的系统目录，请检查${BASE_DIR}/workbase/overlaydir_strip目录是否存在，你可以通过strip_os.sh脚本生成该目录。"
+			exit 1
+		fi
 	fi
 else
-	if [ "x${KERNEL_CREATE}" == "xTRUE" ]; then
+	if [ "x${KERNEL_ONLY}" == "xTRUE" ]; then
 		KERNEL_VERSION=$(cat ${NEW_TARGET_SYSDIR}/common_files/linux-kernel.version)
 		if [ "x${KERNEL_VERSION}" != "x" ]; then
 			if [ -d ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} ]; then

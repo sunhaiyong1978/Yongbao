@@ -1,0 +1,21 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=v4l-utils
+export PACKAGE_VERSION=1.26.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/v4l-utils/1.26.1/
+rm -rf ${BUILD_DIRECTORY}/v4l-utils-1.26.1
+tar xvf ${DOWNLOADDIR}/v4l-utils-1.26.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/v4l-utils-1.26.1
+	
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} --default-library=both -Dudevdir=/usr/lib/udev -Dsystemdsystemunitdir=/usr/lib/systemd/system \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/v4l-utils-1.26.1

@@ -1,0 +1,10 @@
+source env/target_base/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=target_base
+export STEP_PACKAGENAME=ldd_cache
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/ldd_cache//
+if [ -f ${SYSROOT_DIR}/usr/sbin/ldconfig ]; then
+	qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/sbin/ldconfig -r ${SYSROOT_DIR}/
+fi

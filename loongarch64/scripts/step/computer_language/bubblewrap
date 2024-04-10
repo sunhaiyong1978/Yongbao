@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=bubblewrap
-export PACKAGE_VERSION=0.8.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/bubblewrap/0.8.0/
-rm -rf ${BUILD_DIRECTORY}/bubblewrap-0.8.0
-tar xvf ${DOWNLOADDIR}/bubblewrap-0.8.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/bubblewrap-0.8.0
+export PACKAGE_VERSION=0.9.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/bubblewrap/0.9.0/
+rm -rf ${BUILD_DIRECTORY}/bubblewrap-0.9.0
+tar xvf ${DOWNLOADDIR}/bubblewrap-0.9.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bubblewrap-0.9.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/bubblewrap-0.8.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/bubblewrap-0.8.0
+rm -rf ${BUILD_DIRECTORY}/bubblewrap-0.9.0

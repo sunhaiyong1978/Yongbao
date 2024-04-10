@@ -1,6 +1,7 @@
 source env/cross-toolchains/config
 source env/distro.info
 source env/function.sh
+source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=mingw-pkg-config
 export PACKAGE_VERSION=0.29.2

@@ -1,0 +1,35 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=linux-gcc-glibc
+export PACKAGE_VERSION=13.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc-glibc/13.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-13.2.0
+	mkdir -p tools-build-all
+	pushd tools-build-all
+		case "${ARCH_NAME}" in
+			"i686")
+				ABI_STRING=""
+				;;
+			*)
+				ABI_STRING="--with-abi=${ARCH_ABI}"
+				;;
+		esac
+		../configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \
+			     --target=${LINUX_HOST} --disable-nls \
+                             --with-mpfr=${CROSSTOOLS_DIR} --with-gmp=${CROSSTOOLS_DIR} \
+                             --with-mpc=${CROSSTOOLS_DIR} \
+                             --with-sysroot=${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR} \
+                             --with-system-zlib --disable-multilib ${ABI_STRING} \
+			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
+			     --with-tune=generic \
+		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
+		make -j${JOBS}
+		make install-strip
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0

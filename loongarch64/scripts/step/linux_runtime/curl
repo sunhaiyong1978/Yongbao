@@ -1,0 +1,21 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=curl
+export PACKAGE_VERSION=8.7.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/curl/8.7.1/
+rm -rf ${BUILD_DIRECTORY}/curl-8.7.1
+tar xvf ${DOWNLOADDIR}/curl-8.7.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/curl-8.7.1
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --with-openssl --enable-threaded-resolver --with-ca-path=/etc/ssl/certs --enable-malloc0returnsnull
+	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${LINUX_SYSROOT_DIR} install
+	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/curl-8.7.1

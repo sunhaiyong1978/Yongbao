@@ -1,12 +1,12 @@
-From 91d21bf8bafb8b42b90a7e6a8e09e11f6748cd7b Mon Sep 17 00:00:00 2001
+From cb50d4096638c1a050ad4e623e07820313ed3d20 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Sat, 23 Mar 2024 06:48:44 +0000
+Date: Tue, 26 Mar 2024 12:19:13 +0000
 Subject: [PATCH 1/9] double tty VT screenbuf for univt.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-当创建一个tty时，将screenbuf的空间翻倍，增加的空间用于存储utf8的编 码信息。
+当创建一个tty时，将screenbuf的空间翻倍，增加的空间用于存储utf8的编码信息。
 ---
  drivers/tty/vt/vt.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)

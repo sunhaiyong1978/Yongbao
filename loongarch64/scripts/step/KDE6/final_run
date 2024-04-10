@@ -56,3 +56,5 @@ if [ -d ${SYSROOT_DIR}/usr/lib64/ ]; then
 fi
 
 rm -f ${TEMP_DIRECTORY}/strip-foo
+
+set_step_to_dist

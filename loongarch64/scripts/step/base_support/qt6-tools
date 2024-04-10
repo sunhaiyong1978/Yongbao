@@ -3,24 +3,24 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt6-tools
-export PACKAGE_VERSION=6.6.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6-tools/6.6.2/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.2
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.2
-        patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qt6-qt3d-fix-for-gcc13.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-sandbox-Add-loongarch64-architecture-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-crashpad-add-support-for-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qtwebengine-ffmpeg-first_dts.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-add-compile-option-for-loongarch-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-fix-sysroot-setup-for-Yongbao-OS-or-CLFS.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qtwebengine-chromium-add-some-define-for-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qtwebengine-fix-loongarch64-define-because-chromium-.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qtwebengine-chromium-libyuv-add-loongarch64-lsx-defi.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qt6-webengine-configure-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qt6webengine-add-host-ldflags-for-cross-build.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.2/patches/0001-qt-6.6.2-fix-regexp-macro-assembler-for-loongarch64.patch 
+export PACKAGE_VERSION=6.6.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6-tools/6.6.3/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.3
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.6.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.3
+        patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qt6-qt3d-fix-for-gcc13.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-sandbox-Add-loongarch64-architecture-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-crashpad-add-support-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qtwebengine-ffmpeg-first_dts.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-add-compile-option-for-loongarch-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-fix-sysroot-setup-for-Yongbao-OS-or-CLFS.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qtwebengine-chromium-add-some-define-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qtwebengine-fix-loongarch64-define-because-chromium-.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qtwebengine-chromium-libyuv-add-loongarch64-lsx-defi.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qt6-webengine-configure-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qt6webengine-add-host-ldflags-for-cross-build.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.6.3/patches/0001-qt-6.6.2-fix-regexp-macro-assembler-for-loongarch64.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -82,4 +82,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${PWD}/qtbase/lib64/qt6/libexec/${tool_i
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.2
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.6.3

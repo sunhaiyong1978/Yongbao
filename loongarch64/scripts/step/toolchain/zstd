@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=zstd
-export PACKAGE_VERSION=1.5.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zstd/1.5.5/
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
-tar xvf ${DOWNLOADDIR}/zstd-1.5.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/zstd-1.5.5
+export PACKAGE_VERSION=1.5.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zstd/1.5.6/
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6
+tar xvf ${DOWNLOADDIR}/zstd-1.5.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zstd-1.5.6
 	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
 	LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
 	ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/zstd-1.5.5
 	INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
 	make CC="${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF} DESTDIR=${INSTALL_DIST_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6

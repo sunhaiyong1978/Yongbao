@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libmediainfo
-export PACKAGE_VERSION=24.01
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libmediainfo/24.01/
+export PACKAGE_VERSION=24.03
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libmediainfo/24.03/
 rm -rf ${BUILD_DIRECTORY}/MediaInfoLib
-tar xvf ${DOWNLOADDIR}/libmediainfo_24.01.tar.xz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/libmediainfo_24.03.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/MediaInfoLib
     pushd Project/GNU/Library
 	    autoreconf -ifv

@@ -43,6 +43,7 @@ sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
        -e "s@/bin/${CROSS_TARGET}-@/bin/@g" \
        $(file ${SYSROOT_DIR}/usr/bin/*-config | grep ASCII | awk -F':' '{ print $1 }') \
        $(file ${SYSROOT_DIR}/usr/bin/*-setup | grep ASCII | awk -F':' '{ print $1 }') \
+       $(file ${SYSROOT_DIR}/usr/share/gtk-doc/python/gtkdoc/config_data.py | grep ASCII | awk -F':' '{ print $1 }') \
        ${TEMP_DIRECTORY}/strip-foo
 
 sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
@@ -60,6 +61,12 @@ if [ -d ${SYSROOT_DIR}/usr/lib64/ ]; then
 	find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.la" -exec rm '{}' ';'
 	find ${SYSROOT_DIR}/usr/lib64/ -type f -name "*.prl" -exec rm '{}' ';'
 fi
+
+sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
+       -e "s@/bin/${CROSS_TARGET}-@/bin/@g" \
+       $(file ${SYSROOT_DIR}/usr/share/gtk-doc/python/gtkdoc/config_data.py | grep ASCII | awk -F':' '{ print $1 }') \
+       ${TEMP_DIRECTORY}/strip-foo
+
 
 if [ -f ${SYSROOT_DIR}/usr/sbin/ldconfig ]; then
 	qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/sbin/ldconfig -r ${SYSROOT_DIR}/

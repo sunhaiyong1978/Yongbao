@@ -1,19 +1,19 @@
-From b4f2dc56ae52e7146958c30e7b9e6020fe219a79 Mon Sep 17 00:00:00 2001
+From 22243c98eebbfe4c32d40fdb38573fee9401f55d Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Wed, 19 Apr 2023 02:45:41 +0000
+Date: Tue, 26 Mar 2024 12:29:18 +0000
 Subject: [PATCH 8/9] UniVT: Support displaying UTF-8 text for 180 degree
  rotation.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-    支持显示内容进行180度旋转时显示UTF-8文字。
+支持显示内容进行180度旋转时显示UTF-8文字。
 ---
  drivers/video/fbdev/core/fbcon_ud.c | 60 ++++++++++++++++++++++++++---
  1 file changed, 55 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/video/fbdev/core/fbcon_ud.c b/drivers/video/fbdev/core/fbcon_ud.c
-index 23bc04576..fb4ff245f 100644
+index 594331936..b8988f9e6 100644
 --- a/drivers/video/fbdev/core/fbcon_ud.c
 +++ b/drivers/video/fbdev/core/fbcon_ud.c
 @@ -18,6 +18,8 @@
@@ -89,7 +89,7 @@ index 23bc04576..fb4ff245f 100644
  
  		fb_pad_unaligned_buffer(dst, d_pitch, src, idx,
  					image->height, shift_high,
-@@ -254,6 +288,7 @@ static void ud_cursor(struct vc_data *vc, struct fb_info *info, int mode,
+@@ -254,6 +288,7 @@ static void ud_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
  	struct fb_cursor cursor;
  	struct fbcon_ops *ops = info->fbcon_par;
  	unsigned short charmask = vc->vc_hi_font_mask ? 0x1ff : 0xff;
@@ -97,7 +97,7 @@ index 23bc04576..fb4ff245f 100644
  	int w = (vc->vc_font.width + 7) >> 3, c;
  	int y = real_y(ops->p, vc->state.y);
  	int attribute, use_sw = vc->vc_cursor_type & CUR_SW;
-@@ -268,8 +303,23 @@ static void ud_cursor(struct vc_data *vc, struct fb_info *info, int mode,
+@@ -268,8 +303,23 @@ static void ud_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
  	cursor.set = 0;
  
   	c = scr_readw((u16 *) vc->vc_pos);

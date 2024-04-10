@@ -105,6 +105,38 @@ function replace_arch_parm
 	return
 }
 
+
+function archname_to_anyparm
+{
+	if [ "x${1}" == "x" ]; then
+		if [ "x${3}" == "x" ]; then
+			exit 1
+		else
+			echo "${3}"
+		fi
+	else
+# 		if [ "x${1}" == "x${3}" ]; then
+# 			echo "${3}"
+# 		else
+			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
+				echo "无法识别名称: ${1}"
+                                exit 1
+			fi
+# #			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $2 }' | sed "s@[[:space:]]@@g")"
+			RET_VAL="$(get_arch_parm "${1}" "${2}")"
+			if [ "x${RET_VAL}" == "x" ] || [ "x${RET_VAL}" == "xERROR" ]; then
+				echo "没有找到名称或参数: ${1} ${2}"
+                                exit 1
+			else
+				echo "${RET_VAL}"
+			fi
+# 		fi
+	fi
+	return
+}
+
+
+
 function archname_to_name
 {
 	if [ "x${1}" == "x" ]; then
@@ -114,14 +146,14 @@ function archname_to_name
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
-		else
+# 		if [ "x${1}" == "x${2}" ]; then
+# 			echo "${2}"
+# 		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
 				echo "无法识别名称: ${1}"
                                 exit 1
 			fi
-#			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $2 }' | sed "s@[[:space:]]@@g")"
+# #			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $2 }' | sed "s@[[:space:]]@@g")"
 			RET_VAL="$(get_arch_parm "${1}" "NAME")"
 			if [ "x${RET_VAL}" == "x" ]; then
 				echo "无法识别名称: ${1}"
@@ -129,7 +161,7 @@ function archname_to_name
 			else
 				echo "${RET_VAL}"
 			fi
-		fi
+# 		fi
 	fi
 	return
 }
@@ -145,21 +177,17 @@ function archname_to_linuxname
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
+		if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
+			echo "无法识别名称: ${1}"
+                               exit 1
+		fi
+#		RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $2 }' | sed "s@[[:space:]]@@g")"
+		RET_VAL="$(get_arch_parm "${1}" "LINUX_NAME")"
+		if [ "x${RET_VAL}" == "x" ]; then
+			echo "无法识别名称: ${1}"
+                               exit 1
 		else
-			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
-				echo "无法识别名称: ${1}"
-                                exit 1
-			fi
-#			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $2 }' | sed "s@[[:space:]]@@g")"
-			RET_VAL="$(get_arch_parm "${1}" "LINUX_NAME")"
-			if [ "x${RET_VAL}" == "x" ]; then
-				echo "无法识别名称: ${1}"
-                                exit 1
-			else
-				echo "${RET_VAL}"
-			fi
+			echo "${RET_VAL}"
 		fi
 	fi
 	return
@@ -174,15 +202,15 @@ function archname_to_triple
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
-		else
+#		if [ "x${1}" == "x${2}" ]; then
+#			echo "${2}"
+#		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
 				echo "无法识别名称: ${1}"
                                 exit 1
 			fi
 			# RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}[[:space:]]" | awk -F"^${1}" '{ print $2 }' | sed "s@[[:space:]]@@g")"
-#			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $3 }' | sed "s@[[:space:]]@@g")"
+# #			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $3 }' | sed "s@[[:space:]]@@g")"
 			RET_VAL="$(get_arch_parm "${1}" "TRIPLE")"
 			if [ "x${RET_VAL}" == "x" ]; then
 				echo "无法识别名称: ${1}"
@@ -190,7 +218,7 @@ function archname_to_triple
 			else
 				echo "${RET_VAL}"
 			fi
-		fi
+#		fi
 	fi
 	return
 }
@@ -204,14 +232,14 @@ function archname_to_archbit
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
-		else
+# 		if [ "x${1}" == "x${2}" ]; then
+# 			echo "${2}"
+# 		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
 				echo "无法识别名称: ${1}"
                                 exit 1
 			fi
-#			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $4 }' | sed "s@[[:space:]]@@g")"
+# #			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $4 }' | sed "s@[[:space:]]@@g")"
 			RET_VAL="$(get_arch_parm "${1}" "BIT")"
 			if [ "x${RET_VAL}" == "x" ]; then
 				echo "无法识别名称: ${1}"
@@ -219,7 +247,7 @@ function archname_to_archbit
 			else
 				echo "${RET_VAL}"
 			fi
-		fi
+# 		fi
 	fi
 	return
 }
@@ -233,17 +261,17 @@ function archname_to_lib_suff
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
-		else
+# 		if [ "x${1}" == "x${2}" ]; then
+# 			echo "${2}"
+# 		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
 				echo "无法识别名称: ${1}"
                                 exit 1
 			fi
-#			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $4 }' | sed "s@[[:space:]]@@g")"
+# #			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $4 }' | sed "s@[[:space:]]@@g")"
 			RET_VAL="$(get_arch_parm "${1}" "LIB_SUFF")"
 			echo "${RET_VAL}"
-		fi
+# 		fi
 	fi
 	return
 }
@@ -269,14 +297,14 @@ function archname_to_archabi
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
-		else
+# 		if [ "x${1}" == "x${2}" ]; then
+# 			echo "${2}"
+# 		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
 				echo "无法识别名称: ${1}"
                                 exit 1
 			fi
-			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $5 }' | sed "s@[[:space:]]@@g")"
+# 			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $5 }' | sed "s@[[:space:]]@@g")"
 			RET_VAL="$(get_arch_parm "${1}" "ABI")"
 			if [ "x${RET_VAL}" == "x" ]; then
 				echo "无法识别名称: ${1}"
@@ -284,7 +312,7 @@ function archname_to_archabi
 			else
 				echo "${RET_VAL}"
 			fi
-		fi
+# 		fi
 	fi
 	return
 }
@@ -298,16 +326,16 @@ function archname_to_cflags
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
-		else
+# 		if [ "x${1}" == "x${2}" ]; then
+# 			echo "${2}"
+# 		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
 				echo "无法识别名称: ${1}"
                                 exit 1
 			fi
 			RET_VAL="$(get_arch_parm "${1}" "CFLAGS")"
 			echo "${RET_VAL}"
-		fi
+# 		fi
 	fi
 	return
 }
@@ -321,9 +349,9 @@ function archname_to_cxxflags
 			echo "${2}"
 		fi
 	else
-		if [ "x${1}" == "x${2}" ]; then
-			echo "${2}"
-		else
+# 		if [ "x${1}" == "x${2}" ]; then
+# 			echo "${2}"
+# 		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
 				echo "无法识别名称: ${1}"
                                 exit 1
@@ -331,7 +359,7 @@ function archname_to_cxxflags
 			RET_VAL="$(get_arch_parm "${1}" "CXXFLAGS")"
 			echo "${RET_VAL}"
 		fi
-	fi
+# 	fi
 	return
 }
 
@@ -405,7 +433,11 @@ function set_strip_step
 
 	declare OVERLAY_DIR="sysroot"
 
-        OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+	if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
+	        OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+	else
+		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+	fi
 
 	if [ "x${OVERLAY_DIR}" == "x" ]; then
 		return
@@ -466,7 +498,11 @@ function set_split_conf
 
 	declare OVERLAY_DIR="sysroot"
 
-        OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+	if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
+	        OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+	else
+		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+	fi
 
 	if [ "x${OVERLAY_DIR}" == "x" ]; then
 		return
@@ -499,6 +535,31 @@ function set_split_conf
 	echo "${SPLIT_PART_NAME}	${SPLIT_DIRECTORY}	${SPLIT_MATCH_RULE}" >> ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.split
 
 	return
+}
+
+
+function set_step_to_dist
+{
+	declare OVERLAY_DIR="sysroot"
+
+	if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
+	        OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+	else
+		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+	fi
+
+	if [ "x${OVERLAY_DIR}" == "x" ]; then
+		return
+	fi
+
+	if [ -d ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR} ]; then
+		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.dist ]; then
+			touch ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.dist
+		fi
+	else
+		return
+	fi
+
 }
 
 if [ -f ${NEW_TARGET_SYSDIR}/set_env.conf ]; then

@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=kodi
-export PACKAGE_VERSION=21.0rc2-Omega
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kodi/21.0rc2-Omega/
-rm -rf ${BUILD_DIRECTORY}/xbmc-21.0rc2-Omega
-tar xvf ${DOWNLOADDIR}/xbmc-21.0rc2-Omega.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xbmc-21.0rc2-Omega
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0rc2-Omega/patches/0001-kodi-fix-build-error-for-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0rc2-Omega/patches/0001-fix-xbmc-Settings-undefine-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0rc2-Omega/patches/0002-kodi-internal-spdlog-update-to-1.12.0.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0rc2-Omega/patches/0001-change-font-setting-from-Default-to-Arial.patch 
+export PACKAGE_VERSION=21.0-Omega
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kodi/21.0-Omega/
+rm -rf ${BUILD_DIRECTORY}/xbmc-21.0-Omega
+tar xvf ${DOWNLOADDIR}/xbmc-21.0-Omega.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xbmc-21.0-Omega
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0-Omega/patches/0001-kodi-fix-build-error-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0-Omega/patches/0001-fix-xbmc-Settings-undefine-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0-Omega/patches/0002-kodi-internal-spdlog-update-to-1.12.0.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.0-Omega/patches/0001-change-font-setting-from-Default-to-Arial.patch 
 	 
 	export PATH=${CROSSTOOLS_DIR}/jdk17-bootstrap/bin:${PATH}
 	sed -i "/DSPDLOG_FMT_EXTERNAL/s@=ON@=OFF@g" cmake/modules/FindSpdlog.cmake
@@ -79,7 +79,7 @@ pushd ${BUILD_DIRECTORY}/xbmc-21.0rc2-Omega
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xbmc-21.0rc2-Omega
+rm -rf ${BUILD_DIRECTORY}/xbmc-21.0-Omega
 
 rm ${SYSROOT_DIR}/usr/share/wayland-sessions/kodi-gbm.desktop
 rm ${SYSROOT_DIR}/usr/share/xsessions/kodi.desktop

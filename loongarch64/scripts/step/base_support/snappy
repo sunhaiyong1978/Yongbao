@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=snappy
-export PACKAGE_VERSION=1.1.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/snappy/1.1.10/
-rm -rf ${BUILD_DIRECTORY}/snappy-1.1.10
-tar xvf ${DOWNLOADDIR}/snappy-1.1.10.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/snappy-1.1.10
+export PACKAGE_VERSION=1.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/snappy/1.2.0/
+rm -rf ${BUILD_DIRECTORY}/snappy-1.2.0
+tar xvf ${DOWNLOADDIR}/snappy-1.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/snappy-1.2.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/snappy-1.1.10
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/snappy-1.1.10
+rm -rf ${BUILD_DIRECTORY}/snappy-1.2.0

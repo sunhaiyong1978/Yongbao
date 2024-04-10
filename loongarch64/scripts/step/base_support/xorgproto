@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xorgproto
-export PACKAGE_VERSION=2023.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xorgproto/2023.2/
-rm -rf ${BUILD_DIRECTORY}/xorgproto-2023.2
-tar xvf ${DOWNLOADDIR}/xorgproto-2023.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xorgproto-2023.2
+export PACKAGE_VERSION=2024.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xorgproto/2024.1/
+rm -rf ${BUILD_DIRECTORY}/xorgproto-2024.1
+tar xvf ${DOWNLOADDIR}/xorgproto-2024.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xorgproto-2024.1
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/xorgproto-2023.2
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xorgproto-2023.2
+rm -rf ${BUILD_DIRECTORY}/xorgproto-2024.1

@@ -1,20 +1,20 @@
-From c02570ff0798a9d98935fdc98c450f27155aa4a3 Mon Sep 17 00:00:00 2001
+From 06e9158fb78859db14d1212e02412da2cfcf299e Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Sat, 23 Mar 2024 06:53:16 +0000
+Date: Tue, 26 Mar 2024 12:19:47 +0000
 Subject: [PATCH 2/9] Add several function for Univt.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Provide several essential functions for Univt.
 定义一些与Univt操作相关的函数。
+Provide several essential functions for Univt.
 ---
- drivers/tty/vt/vt.c                | 7 +++++++
+ drivers/tty/vt/vt.c                |  7 +++++++
  drivers/video/fbdev/core/bitblit.c | 14 ++++++++++++++
- 2 files changed, 27 insertions(+)
+ 2 files changed, 21 insertions(+)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 13e199013..0ec9604dc 100644
+index 13e199013..ab0223ca5 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
 @@ -294,6 +294,13 @@ static inline u16 *screenpos(const struct vc_data *vc, unsigned int offset,

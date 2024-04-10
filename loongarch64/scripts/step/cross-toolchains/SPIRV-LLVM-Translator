@@ -1,6 +1,7 @@
 source env/cross-toolchains/config
 source env/distro.info
 source env/function.sh
+source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=SPIRV-LLVM-Translator
 export PACKAGE_VERSION=18.1.0
@@ -13,10 +14,9 @@ pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-18.1.0
 	tar xvf ${RESOURCEDIR}/files/SPIRV-LLVM-Translator-headers_git.tar.gz
         mkdir -p build
         pushd build
-		LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX}/llvm-project \
 		      -DLLVM_DIR:PATH=${SYSDIR}/cross-toolchains/llvm-project/lib64/cmake/llvm \
-		      -DCMAKE_INSTALL_RPATH="${PREFIX}/llvm-project/lib64;\\\${ORIGIN}/../lib64" \
+		      -DCMAKE_INSTALL_RPATH="${PREFIX}/llvm-project/lib64;${CROSSTOOLS_DIR}/build-tools/lib64;\\\${ORIGIN}/../lib64" \
                       -DBUILD_SHARED_LIBS=OFF -DCCACHE_ALLOWED=OFF -DBASE_LLVM_VERSION="$(get_package_version cross_toolchains_llvm-project)" \
 		      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${PWD}/../SPIRV-LLVM-Translator-headers_git \
                       -Wno-dev ..

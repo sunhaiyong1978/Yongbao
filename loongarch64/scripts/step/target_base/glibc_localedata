@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc_localedata/2.39/
 rm -rf ${BUILD_DIRECTORY}/glibc-2.39
 tar xvf ${DOWNLOADDIR}/glibc-2.39.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/glibc-2.39
+	patch -Np1 -i ${SYSDIR}/files/target_base/glibc_localedata/2.39/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
+	 
         mkdir -p build-locale
         pushd build-locale
 		export CFLAGS=""

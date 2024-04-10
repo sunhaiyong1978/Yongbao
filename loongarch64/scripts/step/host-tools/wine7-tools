@@ -1,0 +1,34 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=wine7-tools
+export PACKAGE_VERSION=7.0.2-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wine7-tools/7.0.2-default/
+rm -rf ${BUILD_DIRECTORY}/wine-7.0.2
+tar xvf ${DOWNLOADDIR}/wine-7.0.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-7.0.2
+        
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+
+	sed -i  -e "s@\\\\\"\$(CC)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-gcc\\\\\"@g" \
+		-e "s@\\\\\"\$(CXX)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-g++\\\\\"@g" \
+		-e "s@\\\\\"\$(CPPBIN)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-cpp\\\\\"@g" \
+		-e "s@\\\\\"\$(LD)\\\\\"@\\\\\"x86_64-unknown-linux-gnu-ld\\\\\"@g" \
+		-e "s@\${includedir}@${SYSROOT_DIR}/opt/wine7_64/include@g" \
+		-e "s@\${libdir}@${SYSROOT_DIR}/opt/wine7_64/lib@g" \
+		-e "s@\${bindir}@${SYSROOT_DIR}/opt/wine7_64/bin@g" \
+		tools/winegcc/Makefile.in
+	sed -i  -e "s@\${nlsdir}@${SYSROOT_DIR}/opt/wine7_64/share/wine/nls@g" \
+		-e "s@\${includedir}@${SYSROOT_DIR}/opt/wine7_64/include@g" \
+		-e "s@\${bindir}@${SYSROOT_DIR}/opt/wine7_64/bin@g" \
+		tools/wrc/Makefile.in
+        ./configure ${COMMON_CONFIG} --enable-win64 --disable-win16 --without-x
+	make __tooldeps__
+	make tools/widl/install-dev tools/winebuild/install-dev tools/winedump/install-dev tools/winegcc/install-dev tools/winemaker/install-dev tools/wmc/install-dev tools/wrc/install-dev
+	mkdir -p ${CROSSTOOLS_DIR}/wine7-tools
+	cp -a ${PWD}/* ${CROSSTOOLS_DIR}/wine7-tools/
+popd 
+rm -rf ${BUILD_DIRECTORY}/wine-7.0.2

@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=pkgconf
-export PACKAGE_VERSION=2.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/pkgconf/2.1.1/
-rm -rf ${BUILD_DIRECTORY}/pkgconf-2.1.1
-tar xvf ${DOWNLOADDIR}/pkgconf-2.1.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pkgconf-2.1.1
+export PACKAGE_VERSION=2.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/pkgconf/2.2.0/
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.2.0
+tar xvf ${DOWNLOADDIR}/pkgconf-2.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pkgconf-2.2.0
         
         for config_i in $(find -name "config.sub")
         do
@@ -24,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/pkgconf-2.1.1
         cp -f ${CROSSTOOLS_DIR}/bin/pkgconf ${CROSSTOOLS_DIR}/tmp/bin/${CROSS_TARGET}-pkg-config
 	ln -sf pkgconf ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config
 popd 
-rm -rf ${BUILD_DIRECTORY}/pkgconf-2.1.1
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.2.0

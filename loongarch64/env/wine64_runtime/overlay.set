@@ -1,2 +1,0 @@
-overlay_dir=wine64_runtime
-parent_dirs=sysroot mingw_sysroot

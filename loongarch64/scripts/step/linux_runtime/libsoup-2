@@ -1,0 +1,21 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=libsoup-2
+export PACKAGE_VERSION=2.74.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libsoup-2/2.74.3/
+rm -rf ${BUILD_DIRECTORY}/libsoup-2.74.3
+tar xvf ${DOWNLOADDIR}/libsoup-2.74.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libsoup-2.74.3
+	
+	mkdir cross-build
+	pushd cross-build
+		CFLAGS="${CFLAGS} -Wno-error=implicit-function-declaration" meson ${MESON_CONFIG} --default-library=both -Dvapi=disabled -Dgssapi=disabled -Dsysprof=disabled -Dintrospection=disabled \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libsoup-2.74.3

@@ -1,0 +1,8 @@
+source env/boot/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=boot
+export STEP_PACKAGENAME=dist_sysroot
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/dist_sysroot//
+set_step_to_dist

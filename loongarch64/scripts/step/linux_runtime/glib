@@ -1,0 +1,28 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=glib
+export PACKAGE_VERSION=2.80.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glib/2.80.0/
+rm -rf ${BUILD_DIRECTORY}/glib-2.80.0
+tar xvf ${DOWNLOADDIR}/glib-2.80.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.80.0
+        
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} --default-library=both -Dtests=false -Dman=true -Dselinux=disabled -Dintrospection=disabled \
+                      ..
+                eval ${NINJA_AND_INSTALL}
+        popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/glib-2.80.0
+echo "#!/bin/bash -e
+qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/glib-compile-resources \"\$@\"" > ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-glib-compile-resources
+chmod +x ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-glib-compile-resources
+cp -a ${CROSS_TOOLS_PREFIX}/bin/{${LINUX_HOST}-,}glib-compile-resources
+echo "#!/bin/bash -e
+qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/glib-compile-schemas \"\$@\"" > ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-glib-compile-schemas
+chmod +x ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-glib-compile-schemas
+cp -a ${CROSS_TOOLS_PREFIX}/bin/{${LINUX_HOST}-,}glib-compile-schemas

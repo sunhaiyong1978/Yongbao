@@ -1,0 +1,24 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=glibc_localedata
+export PACKAGE_VERSION=2.39
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glibc_localedata/2.39/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.39
+tar xvf ${DOWNLOADDIR}/glibc-2.39.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.39
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/glibc_localedata/2.39/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
+	 
+        mkdir -p build-locale
+        pushd build-locale
+		export LDFLAGS=""
+		export CFLAGS=""
+                ../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
+                         --enable-stack-protector=strong --enable-add-ons \
+                         --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF}
+                make -j${JOBS}
+                make -j${JOBS} DESTDIR=${LINUX_SYSROOT_DIR} localedata/install-locales
+popd 
+rm -rf ${BUILD_DIRECTORY}/glibc-2.39

@@ -40,3 +40,5 @@ rm -rf ${BUILD_DIRECTORY}/SPIRV-Tools-vulkan-sdk-1.3.280.0
 echo "#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/spirv-opt \"\$@\"" > ${CROSSTOOLS_DIR}/bin/spirv-opt
 chmod +x ${CROSSTOOLS_DIR}/bin/spirv-opt
+
+save_package_version ${STEP_PACKAGENAME} "${PACKAGE_VERSION}"

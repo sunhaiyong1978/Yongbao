@@ -1,0 +1,34 @@
+From aa3883558a9c7595fd7bf653503d23251ece6247 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 8 Apr 2024 13:53:45 +0000
+Subject: [PATCH] box64 fix for loongarch64.
+
+---
+ src/dynarec/la64/dynarec_la64_f30f.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/dynarec/la64/dynarec_la64_f30f.c b/src/dynarec/la64/dynarec_la64_f30f.c
+index 5b35ae9..58647ec 100644
+--- a/src/dynarec/la64/dynarec_la64_f30f.c
++++ b/src/dynarec/la64/dynarec_la64_f30f.c
+@@ -53,7 +53,7 @@ uintptr_t dynarec64_F30F(dynarec_la64_t* dyn, uintptr_t addr, uintptr_t ip, int
+             nextop = F8;
+             FAKEED;
+             break;
+-        case 0x6F:
++/*        case 0x6F:
+             INST_NAME("MOVDQU Gx, Ex");
+             nextop = F8;
+             if (MODREG) {
+@@ -81,7 +81,7 @@ uintptr_t dynarec64_F30F(dynarec_la64_t* dyn, uintptr_t addr, uintptr_t ip, int
+                 FLD_D(v1, ed, fixedaddress);
+             }
+             VEXTRINS_D(v0, v1, 0); // v0[63:0] = v1[63:0]
+-            break;
++            break;*/
+         default:
+             DEFAULT;
+     }
+-- 
+2.31.1
+

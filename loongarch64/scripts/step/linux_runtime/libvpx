@@ -1,0 +1,21 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=libvpx
+export PACKAGE_VERSION=1.14.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libvpx/1.14.0/
+rm -rf ${BUILD_DIRECTORY}/libvpx-1.14.0
+tar xvf ${DOWNLOADDIR}/libvpx-1.14.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libvpx-1.14.0
+    sed -i 's/cp -p/cp/' build/make/Makefile
+    mkdir cross-build
+    pushd cross-build
+        CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
+        ../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} \
+                     --target=generic-gnu --enable-shared
+	eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/libvpx-1.14.0

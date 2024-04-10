@@ -8,12 +8,14 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/shaderc/2024.0/
 rm -rf ${BUILD_DIRECTORY}/shaderc-2024.0
 tar xvf ${DOWNLOADDIR}/shaderc-2024.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/shaderc-2024.0
-	tar xvf ${RESOURCEDIR}/files/SPIRV-Tools-vulkan-sdk-1.3.268.0.tar.gz -C third_party/
-	mv third_party/SPIRV-Tools-vulkan-sdk-1.3.268.0 third_party/spirv-tools
+	tar xvf ${DOWNLOADDIR}/SPIRV-Tools-$(get_package_version "SPIRV-Tools").tar.gz -C third_party/
+	mv third_party/SPIRV-Tools-$(get_package_version "SPIRV-Tools") third_party/spirv-tools
+	
 	tar xvf ${RESOURCEDIR}/files/glslang-13.1.1.tar.gz -C third_party/
 	mv third_party/glslang-13.1.1 third_party/glslang
-	tar xvf ${RESOURCEDIR}/files/SPIRV-Headers-vulkan-sdk-1.3.268.0.tar.gz -C third_party/spirv-tools/external/
-	mv third_party/spirv-tools/external/SPIRV-Headers-vulkan-sdk-1.3.268.0 third_party/spirv-tools/external/spirv-headers
+
+	tar xvf ${DOWNLOADDIR}/SPIRV-Headers-$(get_package_version "SPIRV-Headers").tar.gz -C third_party/spirv-tools/external/
+	mv third_party/spirv-tools/external/SPIRV-Headers-$(get_package_version "SPIRV-Headers") third_party/spirv-tools/external/spirv-headers
 
         
         mkdir cross-build

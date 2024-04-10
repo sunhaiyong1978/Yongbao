@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 	mkdir -pv build
 	pushd build
 		CC="/bin/gcc" CXX="/bin/g++" \
-		../configure --prefix=${CROSSTOOLS_DIR} \
+		../configure --prefix=${CROSSTOOLS_DIR}/build-tools \
 		             --enable-__cxa_atexit --enable-threads=posix \
 		             --with-system-zlib --enable-libstdcxx-time \
 		             --enable-checking=release \

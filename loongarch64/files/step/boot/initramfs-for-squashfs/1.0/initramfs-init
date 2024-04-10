@@ -329,8 +329,9 @@ if [ "x${MOUNT_DISK}" != "x" ]; then
             fi
         fi
     done
-
-    if [ "x${LIVE_MODE}" == "x1 ]; then
+    if [ "x${LIVE_MODE}" == "x1" ]; then
+        mount -t tmpfs tmpfs /overlayfs
+    else
         if [ "x${OVERLAY_DIR}" == "xdirectory" ]; then
             mount --bind /ISOSYSTEM/.userdata /overlayfs
         else
@@ -340,8 +341,6 @@ if [ "x${MOUNT_DISK}" != "x" ]; then
                 mount -t tmpfs tmpfs /overlayfs
             fi
         fi
-    else
-        mount -t tmpfs tmpfs /overlayfs
     fi
 
     mkdir -p /overlayfs/userdata

@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=URI
-export PACKAGE_VERSION=5.27
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/URI/5.27/
-rm -rf ${BUILD_DIRECTORY}/URI-5.27
-tar xvf ${DOWNLOADDIR}/URI-5.27.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/URI-5.27
+export PACKAGE_VERSION=5.28
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/URI/5.28/
+rm -rf ${BUILD_DIRECTORY}/URI-5.28
+tar xvf ${DOWNLOADDIR}/URI-5.28.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/URI-5.28
     ${CROSSTOOLS_DIR}/bin/perl Makefile.PL CC=${CROSS_TARGET}-gcc LD=${CROSS_TARGET}-ld
     sed -i "/^INSTALL/s@${CROSSTOOLS_DIR}@/usr@g" Makefile
     sed -i "/^PERL_INC/s@${CROSSTOOLS_DIR}@${SYSROOT_DIR}/usr@g" Makefile
     sed -i "/^LDDLFLAGS/s@/usr/local/lib@${SYSROOT_DIR}/usr/lib64@g" Makefile
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/URI-5.27
+rm -rf ${BUILD_DIRECTORY}/URI-5.28

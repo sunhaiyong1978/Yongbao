@@ -1,5 +1,0 @@
-[Network]
-DHCP=ipv4
-
-[DHCP]
-UseDomains=true

@@ -1,0 +1,21 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=oss4
+export PACKAGE_VERSION=4.2-build2020
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/oss4/4.2-build2020/
+rm -rf ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl
+tar xvf ${DOWNLOADDIR}/oss4_4.2-build2020.orig.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl
+	sed -i "s@if \./@if qemu-${QEMU_ARCH} \./@g" setup/setupdir.sh
+	sed -i "s@^\./ossvers@qemu-${QEMU_ARCH} \./ossvers@g" setup/setupdir.sh
+	mkdir -p cross-build
+	pushd cross-build
+		CC=${LINUX_HOST}-gcc LDFLAGS="${LDFLAGS} -D_FILE_OFFSET_BITS=64" ../configure --enable-libsalsa=NO --config-vmix=FIXEDPOINT --config-midi=YES
+		make CC=${LINUX_HOST}-gcc LD=${LINUX_HOST}-ld CPLUSPLUS="${LINUX_HOST}-g++ -fno-rtti -fno-exceptions -I." ARCH=${ARCH_NAME}
+		make CC=${LINUX_HOST}-gcc LD=${LINUX_HOST}-ld CXX=${LINUX_HOST}-g++ ARCH=${ARCH_NAME} DESTDIR=${LINUX_SYSROOT_DIR} copy
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/oss-v4.2-build2020-src-gpl

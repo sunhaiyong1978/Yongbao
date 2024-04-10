@@ -122,7 +122,7 @@ function overlay_mount
 	OVERLAY_DIR=$(get_overlay_dirname ${2})
 
 
-	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
+# 	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
 #		SET_OVERLAY_DIR="${OVERLAY_DIR}.update"
 		if [ "x${SET_PARENT_DIR}" == "x" ]; then
 			if [ "x${OPT_SET_PARENT_DIR}" == "x" ]; then
@@ -135,12 +135,14 @@ function overlay_mount
 			AUTO_SET_PARENT_DIR=0
 		fi
 echo "SET_OVERLAY_DIR: ${SET_OVERLAY_DIR}"
+	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
 		if [ "x${SET_OVERLAY_DIR}" == "x" ] || [ "x${SET_OVERLAY_DIR}" == "x${OVERLAY_DIR}.update" ]; then
 			if [ x"$(echo ",${SET_PARENT_DIR}," | grep ",ORIG,")" != "x" ]; then
 				SET_PARENT_DIR="${SET_PARENT_DIR},${OVERLAY_DIR}"
 			fi
 		fi
 	fi
+#	fi
 
 echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 
@@ -308,6 +310,7 @@ echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 		else
 			USE_OVERLAY_DIR="${USE_OVERLAY_DIR:0:-1}"
 			if [ "x${OVERLAY_TEMP_FIX}" != "x2" ]; then  # 除了final_run之外的步骤
+				echo "sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${USE_OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 				sudo mount -t overlay overlay -o lowerdir=${LOWERDIR_LIST},upperdir=${USE_OVERLAY_DIR},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 				if [ "x$?" != "x0" ]; then
 					echo "挂载sysroot错误！"
@@ -488,6 +491,12 @@ if [ "x${STEP_PACKAGE}" != "x" ]; then
 			exit 3
 		fi
 	done
+	source env/${STEP_STAGE}/config
+	source env/distro.info
+	source env/function.sh
+if [ -f env/${STEP_STAGE}/custom ]; then
+	source env/${STEP_STAGE}/custom
+fi
 	export STEP_BUILDNAME=${STEP_STAGE}
 	export STEP_PACKAGENAME=${STEP_PACKAGE}
 	export PACKAGE_VERSION=$(cat ${PACKAGE_FILE} | grep "^export PACKAGE_VERSION=" | head -n1 | awk -F'=' '{ print $2 }')
@@ -495,7 +504,10 @@ if [ "x${STEP_PACKAGE}" != "x" ]; then
 else
 	source env/${STEP_STAGE}/config
 	source env/distro.info
-#	source env/function.sh
+	source env/function.sh
+if [ -f env/${STEP_STAGE}/custom ]; then
+	source env/${STEP_STAGE}/custom
+fi
 	export STEP_BUILDNAME=${STEP_STAGE}
 	export STEP_PACKAGENAME=foo
 	export PACKAGE_VERSION=

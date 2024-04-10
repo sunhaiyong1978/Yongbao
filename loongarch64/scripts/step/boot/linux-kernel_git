@@ -28,7 +28,7 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}-
 	PKG_CONFIG_SYSROOT_DIR="" \
 		make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- INSTALL_MOD_PATH=dest modules_install
-	LINUX_KERNEL_VERSION=$(grep "^# \(.*\) Kernel Configuration" .config | awk -F' ' '{ print $3 }')
+	LINUX_KERNEL_VERSION=$(make kernelversion)
 	
 	mkdir -p ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/
 	mkdir -p ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/

@@ -15,6 +15,11 @@ pushd ${BUILD_DIRECTORY}/gdb-14.2
 
     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
+    tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
+    tar xvf $(ls ${DOWNLOADDIR}/mpfr-*.tar.* | sort -V | tail -n1)
+    mv gmp-* gmp
+    mv mpfr-* mpfr
+
     mkdir cross-build
     pushd cross-build
 	LDFLAGS="--static" \

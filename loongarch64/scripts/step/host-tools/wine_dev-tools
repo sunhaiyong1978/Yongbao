@@ -3,18 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=wine_dev-tools
-export PACKAGE_VERSION=9.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wine_dev-tools/9.5/
-rm -rf ${BUILD_DIRECTORY}/wine-9.5
-tar xvf ${DOWNLOADDIR}/wine-9.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-9.5
+export PACKAGE_VERSION=9.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wine_dev-tools/9.6/
+rm -rf ${BUILD_DIRECTORY}/wine-9.6
+tar xvf ${DOWNLOADDIR}/wine-9.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-9.6
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        ./configure ${COMMON_CONFIG} --enable-win64 --without-x
+        ./configure ${COMMON_CONFIG} --enable-archs=i386,x86_64 --disable-win16 --without-x
 	make __tooldeps__
 	mkdir -p ${CROSSTOOLS_DIR}/wine_dev-tools
 	cp -a ${PWD}/* ${CROSSTOOLS_DIR}/wine_dev-tools/
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-9.5
+rm -rf ${BUILD_DIRECTORY}/wine-9.6

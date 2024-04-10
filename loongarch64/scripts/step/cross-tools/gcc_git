@@ -17,6 +17,8 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 		             --host=${CROSS_HOST} --target=${CROSS_TARGET} \
 		             --with-sysroot=${SYSROOT_DIR} --with-mpfr=${CROSSTOOLS_DIR} \
 		             --with-gmp=${CROSSTOOLS_DIR} --with-mpc=${CROSSTOOLS_DIR} \
+		             --with-mpfr-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
+		             --with-gmp-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --with-mpc-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
 		             --enable-__cxa_atexit --enable-threads=posix --with-system-zlib \
 		             --enable-libstdcxx-time --enable-checking=release \
 			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \

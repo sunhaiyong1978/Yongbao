@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=tracker
-export PACKAGE_VERSION=3.7.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/tracker/3.7.0/
-rm -rf ${BUILD_DIRECTORY}/tracker-3.7.0
-tar xvf ${DOWNLOADDIR}/tracker-3.7.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/tracker-3.7.0
+export PACKAGE_VERSION=3.7.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/tracker/3.7.1/
+rm -rf ${BUILD_DIRECTORY}/tracker-3.7.1
+tar xvf ${DOWNLOADDIR}/tracker-3.7.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tracker-3.7.1
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/tracker-3.7.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/tracker-3.7.0
+rm -rf ${BUILD_DIRECTORY}/tracker-3.7.1

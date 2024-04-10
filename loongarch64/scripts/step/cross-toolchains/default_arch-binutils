@@ -1,6 +1,7 @@
 source env/cross-toolchains/config
 source env/distro.info
 source env/function.sh
+source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=default_arch-binutils
 export PACKAGE_VERSION=2.42

@@ -52,7 +52,13 @@ else
 fi
 
 if [ "x${OVERLAY_NAME}" == "x" ]; then
-	for i in $(cat ${BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
+#	for i in $(cat ${BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
+	OVERLAY_DIR_LIST=$(find ${BASE_DIR}/workbase/overlaydir/ -maxdepth 1 -type f -name "*.dist" | awk -F'/' '{ print $NF }' | sed "s@\.dist\$@@g")
+	if [ "x${OVERLAY_DIR_LIST}" == "x" ]; then
+		echo "没有发现任何需要进行处理的目录。"
+		exit 1
+	fi
+	for i in ${OVERLAY_DIR_LIST}
 	do
 		RELEASE_SUFF=""
 		if [ -f ${BASE_DIR}/workbase/overlaydir/${i}.released ]; then

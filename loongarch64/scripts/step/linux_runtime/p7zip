@@ -1,0 +1,16 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=p7zip
+export PACKAGE_VERSION=17.05
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/p7zip/17.05/
+rm -rf ${BUILD_DIRECTORY}/p7zip-17.05
+tar xvf ${DOWNLOADDIR}/p7zip-17.05.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/p7zip-17.05
+	sed -i "/OPTFLAGS/s@-O2@-O3@g" makefile.machine
+	make -j${JOBS} CC=${LINUX_HOST}-gcc CXX=${LINUX_HOST}-g++ all3
+	make DEST_HOME=/usr DEST_SHARE=/usr/lib${LIB_SUFF}/p7zip DEST_MAN=/usr/share/man DEST_DIR=${LINUX_SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/p7zip-17.05

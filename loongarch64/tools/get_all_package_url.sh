@@ -40,8 +40,9 @@ declare FORCE_DOWN=FALSE
 declare RESOURCES_ONLY=FALSE
 declare PROXY_MODE=0
 declare INDEX_FILE=""
+declare SINGLE_PACKAGE=FALSE
 
-while getopts 'gfuri:ph' OPT; do
+while getopts 'gfuri:psh' OPT; do
     case $OPT in
 	g)  
 	    GIT_ONLY=TRUE
@@ -61,6 +62,9 @@ while getopts 'gfuri:ph' OPT; do
 	i)
 	    INDEX_FILE=$OPTARG
 	    ;;
+	s)
+	    SINGLE_PACKAGE=TRUE
+	    ;;
         h|?)
             echo "下载目标系统所涉及的源码包和资源文件。"
             echo ""
@@ -79,6 +83,7 @@ while getopts 'gfuri:ph' OPT; do
             echo "    -u: 与-g参数配合使用，仅对使用GIT协议的软件包中没有指定分支（branch）或提交（commit）的源码包或资源文件进行下载。"
             echo "    -p: 使用proxy.set文件，通过该文件中的设置在下载过程中使用代理。"
             echo "    -i <文件名>: 指定索引文件，并根据索引文件中的内容下载所需源码包和资源文件。"
+            echo "    -s: 指定独立的软件包，该参数优先级低于-i参数指定索引文件的，当不使用-i指定时该参数才可生效。"
             exit 0
             ;;
     esac
@@ -97,7 +102,11 @@ echo "" > logs/download_fail.log
 if [ "x${1}" == "x" ]; then
         STEP_FILE="$(cat step | grep -v "^#")"
 else
-        STEP_FILE="$(cat step | grep -v "^#" | grep "/${1}")"
+	if [ "x${SINGLE_PACKAGE}" == "xFALSE" ]; then
+	        STEP_FILE="$(cat step | grep -v "^#" | grep "/${1}")"
+	else
+		STEP_FILE="${1}"
+	fi
 fi
 
 declare SAVE_FILENAME=""
@@ -113,6 +122,10 @@ echo -n "" > ${BASE_DIR}/downloads/sources/resources.list.tmp
 
 for i in ${STEP_ARRAY}
 do
+	if [ ! -f scripts/step/${i}.info ] || [ ! -f sources/url/${i} ]; then
+		echo " $i 所需文件不存在，无法进行源码包及资源包的下载。"
+		continue;
+	fi
 	PKG_NAME="$(cat scripts/step/${i}.info | awk -F'|' '{ print $1 }')"
 	PKG_VERSION="$(cat scripts/step/${i}.info | awk -F'|' '{ print $2 }')"
 	DOWNLOAD_TYPE=$(cat sources/url/${i} | awk -F'|' '{ print $1 }')
@@ -355,17 +368,18 @@ ${i} 没有下载路径，请检查。"
 					esac
 				fi
 #				echo "${i}/${PKG_VERSION}/${LIST_FILENAME}" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
+				echo "${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
 			done
 			echo "已完成${i}需要下载的资源文件。"
 		fi
 	fi
 
-	if [ -d ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ ] && [ "x$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f)" != "x" ]; then
-		echo "$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
-	fi
-	if [ -d ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files ] && [ "x$(find ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f)" != "x" ]; then
-		echo "$(find ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/downloads/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
-	fi
+#	if [ -d ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ ] && [ "x$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f)" != "x" ]; then
+#		echo "$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
+#	fi
+#	if [ -d ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files ] && [ "x$(find ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f)" != "x" ]; then
+#		echo "$(find ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/downloads/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
+#	fi
 #	if [ -d ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/patches ] && [ "x$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/patches -maxdepth 1 -type f)" != "x" ]; then
 #		echo "$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/patches -maxdepth 1 -type f | sed "s@${BASE_DIR}/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/patches.list.tmp
 #	fi

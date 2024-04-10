@@ -7,5 +7,5 @@ bin-pkg
 game_emu
 java_runtime
 simulate
-wine64_runtime
-wine_runtime
+x86_64_runtime
+i686_runtime

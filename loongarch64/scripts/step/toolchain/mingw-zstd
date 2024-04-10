@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=mingw-zstd
-export PACKAGE_VERSION=1.5.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/mingw-zstd/1.5.5/
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
-tar xvf ${DOWNLOADDIR}/zstd-1.5.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/zstd-1.5.5
+export PACKAGE_VERSION=1.5.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/mingw-zstd/1.5.6/
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6
+tar xvf ${DOWNLOADDIR}/zstd-1.5.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zstd-1.5.6
 	
 	MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
 	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/bin:${PATH}
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/zstd-1.5.5
 	popd
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6

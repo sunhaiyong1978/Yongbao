@@ -12,13 +12,12 @@ pushd ${BUILD_DIRECTORY}/llvm-project_git-main_git-default_git
 pushd clang
     mkdir -p native-build
     pushd native-build
-	LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
         PKG_CONFIG_SYSROOT_DIR="" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR} \
                  -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
                  -DBUILD_SHARED_LIBS:BOOL=OFF \
                  -DCMAKE_BUILD_TYPE=Release \
-                 -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};\\\${ORIGIN}/../lib${LIB_SUFF}" \
+                 -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};${CROSSTOOLS_DIR}/build-tools/lib${LIB_SUFF};\\\${ORIGIN}/../lib${LIB_SUFF}" \
                  -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
 		 -DLLVM_CMAKE_DIR=${CROSSTOOLS_DIR}/lib${LIB_SUFF}/cmake \
                  -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF}  \

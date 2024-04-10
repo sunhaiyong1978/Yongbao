@@ -47,3 +47,5 @@ sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
        ${TEMP_DIRECTORY}/strip-foo
 
 rm -f ${TEMP_DIRECTORY}/strip-foo
+
+set_step_to_dist

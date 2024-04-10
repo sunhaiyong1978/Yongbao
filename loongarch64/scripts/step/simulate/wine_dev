@@ -1,0 +1,51 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+source scripts/step/simulate/wine_dev.env
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=wine_dev
+export PACKAGE_VERSION=9.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine_dev/9.6/
+rm -rf ${BUILD_DIRECTORY}/wine-9.6
+tar xvf ${DOWNLOADDIR}/wine-9.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-9.6
+        
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+
+
+
+
+	export CROSSCFLAGS="-g -O2"
+        ./configure --prefix=/opt/wine64 --build=${CROSS_HOST} --host=${LINUX_HOST} \
+		--with-wine-tools=${CROSSTOOLS_DIR}/wine_dev-tools \
+		PULSE_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" \
+		NETAPI_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" \
+		OSSLIBDIR=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/oss \
+		--enable-archs=i386,x86_64 \
+		--enable-build-id \
+		--enable-malloc0returnsnull
+        CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+
+
+	mkdir -p ${SYSROOT_DIR}/opt/wine64/share/wine/{mono,gecko}
+	cp -a ${RESOURCEDIR}/files/wine-mono-$(grep "MONO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86.msi ${SYSROOT_DIR}/opt/wine64/share/wine/mono/
+	cp -a ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86_64.msi ${SYSROOT_DIR}/opt/wine64/share/wine/gecko/
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/wine-9.6
+
+set_strip_step "/opt/wine64/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-unix/" "1" "*.so*" "--strip-unneeded" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
+
+set_strip_step "/opt/wine64/lib/wine/i386-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/i386-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/i386-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+
+set_strip_step "/opt/wine64/lib/wine/x86_64-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
+set_strip_step "/opt/wine64/lib/wine/x86_64-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"

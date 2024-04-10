@@ -1,0 +1,19 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=linux-pkgconf
+export PACKAGE_VERSION=2.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-pkgconf/2.2.0/
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.2.0
+tar xvf ${DOWNLOADDIR}/pkgconf-2.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pkgconf-2.2.0
+        
+        ./configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} \
+                --host=${CROSS_HOST} --target=${LINUX_HOST}
+        make -j${JOBS}
+	make install
+        cp -f ${PREFIX}/${LINUX_HOST}/bin/pkgconf ${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-pkg-config
+popd 
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.2.0

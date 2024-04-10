@@ -1,0 +1,25 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=gdk-pixbuf
+export PACKAGE_VERSION=2.42.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/gdk-pixbuf/2.42.10/
+rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10
+tar xvf ${DOWNLOADDIR}/gdk-pixbuf-2.42.10.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10
+    mkdir cross-build
+    pushd cross-build
+        meson ${MESON_CONFIG} --wrap-mode=nofallback -Dman=false ..
+        eval ${NINJA_AND_INSTALL}
+    popd
+
+echo "qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/gdk-pixbuf-csource \"\$@\"" \
+                > ${CROSS_TOOLS_PREFIX}/bin/gdk-pixbuf-csource
+chmod +x ${CROSS_TOOLS_PREFIX}/bin/gdk-pixbuf-csource
+echo "qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/gdk-pixbuf-pixdata \"\$@\"" \
+                > ${CROSS_TOOLS_PREFIX}/bin/gdk-pixbuf-pixdata
+chmod +x ${CROSS_TOOLS_PREFIX}/bin/gdk-pixbuf-pixdata
+popd 
+rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10

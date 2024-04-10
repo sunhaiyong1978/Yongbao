@@ -1,6 +1,7 @@
 source env/cross-toolchains/config
 source env/distro.info
 source env/function.sh
+source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=mingw-gcc-libc
 export PACKAGE_VERSION=13.2.0
@@ -20,7 +21,7 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
                              --with-mpc=${CROSSTOOLS_DIR} \
                              --with-sysroot=${SYSROOT_DIR}/usr/lib/${INSTALL_ARCH_NAME}/sys-root \
                              --with-system-zlib \
-			     --disable-multilib \
+			     --disable-multilib --enable-c99 \
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
 		make -j${JOBS}
 		make install-strip

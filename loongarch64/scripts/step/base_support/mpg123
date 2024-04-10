@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mpg123
-export PACKAGE_VERSION=1.32.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mpg123/1.32.5/
-rm -rf ${BUILD_DIRECTORY}/mpg123-1.32.5
-tar xvf ${DOWNLOADDIR}/mpg123-1.32.5.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mpg123-1.32.5
+export PACKAGE_VERSION=1.32.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mpg123/1.32.6/
+rm -rf ${BUILD_DIRECTORY}/mpg123-1.32.6
+tar xvf ${DOWNLOADDIR}/mpg123-1.32.6.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mpg123-1.32.6
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/mpg123-1.32.5
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mpg123-1.32.5
+rm -rf ${BUILD_DIRECTORY}/mpg123-1.32.6

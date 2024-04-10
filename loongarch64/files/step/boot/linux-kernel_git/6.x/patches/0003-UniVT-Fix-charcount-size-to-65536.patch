@@ -1,6 +1,6 @@
-From 36173dc1314100010d1a7894752ae6bf34c2f95d Mon Sep 17 00:00:00 2001
+From dea3ed78265fb40cda8bcd305729090bfdec07bc Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Sat, 23 Mar 2024 07:03:42 +0000
+Date: Tue, 26 Mar 2024 12:20:27 +0000
 Subject: [PATCH 3/9] UniVT: Fix charcount size to 65536.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -13,10 +13,10 @@ Content-Transfer-Encoding: 8bit
  2 files changed, 6 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 0ec9604dc..d5226971a 100644
+index ab0223ca5..fc0132c98 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -4716,7 +4716,7 @@ void reset_palette(struct vc_data *vc)
+@@ -4710,7 +4710,7 @@ void reset_palette(struct vc_data *vc)
  #define max_font_width	64
  #define max_font_height	128
  #define max_font_glyphs	512
@@ -25,7 +25,7 @@ index 0ec9604dc..d5226971a 100644
  
  static int con_font_get(struct vc_data *vc, struct console_font_op *op)
  {
-@@ -4779,8 +4779,6 @@ static int con_font_set(struct vc_data *vc, const struct console_font_op *op)
+@@ -4773,8 +4773,6 @@ static int con_font_set(struct vc_data *vc, const struct console_font_op *op)
  		return -EINVAL;
  	if (!op->data)
  		return -EINVAL;

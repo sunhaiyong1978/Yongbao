@@ -1,0 +1,27 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=gcc
+export PACKAGE_VERSION=13.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/gcc/13.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-13.2.0
+	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+	mkdir -pv cross-build
+	pushd cross-build
+		../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
+		             --host=${LINUX_HOST} --target=${LINUX_HOST} \
+		             --enable-__cxa_atexit --enable-threads=posix \
+		             --with-system-zlib --enable-libstdcxx-time \
+		             --enable-checking=release \
+		             --disable-multilib \
+		             --enable-default-pie \
+		             --enable-languages=c,c++
+		make -j${JOBS}
+		make DESTDIR=${LINUX_SYSROOT_DIR} install
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0

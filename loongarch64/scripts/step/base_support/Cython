@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=Cython
-export PACKAGE_VERSION=3.0.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Cython/3.0.9/
-rm -rf ${BUILD_DIRECTORY}/Cython-3.0.9
-tar xvf ${DOWNLOADDIR}/Cython-3.0.9.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Cython-3.0.9
+export PACKAGE_VERSION=3.0.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Cython/3.0.10/
+rm -rf ${BUILD_DIRECTORY}/Cython-3.0.10
+tar xvf ${DOWNLOADDIR}/Cython-3.0.10.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Cython-3.0.10
         
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user Cython --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/Cython-3.0.9
+rm -rf ${BUILD_DIRECTORY}/Cython-3.0.10
 
 echo "#!/bin/bash -e
 if [ -f ${SYSROOT_DIR}/usr/bin/cython ]; then

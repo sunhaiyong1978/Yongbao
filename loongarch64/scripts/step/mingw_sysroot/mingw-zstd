@@ -4,11 +4,11 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-zstd
-export PACKAGE_VERSION=1.5.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-zstd/1.5.5/
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
-tar xvf ${DOWNLOADDIR}/zstd-1.5.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/zstd-1.5.5
+export PACKAGE_VERSION=1.5.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-zstd/1.5.6/
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6
+tar xvf ${DOWNLOADDIR}/zstd-1.5.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zstd-1.5.6
 	pushd build/meson
 
         mkdir cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/zstd-1.5.5
 
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.5
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6

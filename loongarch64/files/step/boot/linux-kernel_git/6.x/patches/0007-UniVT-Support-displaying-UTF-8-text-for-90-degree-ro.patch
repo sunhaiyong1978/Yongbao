@@ -1,19 +1,19 @@
-From 660ae0e3eb513dc8a0e2e9c5b40b58281735efcc Mon Sep 17 00:00:00 2001
+From 96bdacf3ffb66e105da90a13658500b459af7a43 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Wed, 19 Apr 2023 02:44:45 +0000
+Date: Tue, 26 Mar 2024 12:28:50 +0000
 Subject: [PATCH 7/9] UniVT: Support displaying UTF-8 text for 90 degree
  rotation.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-    支持显示内容进行90度旋转时显示UTF-8文字。
+支持显示内容进行90度旋转时显示UTF-8文字。
 ---
  drivers/video/fbdev/core/fbcon_cw.c | 40 ++++++++++++++++++++++++++---
  1 file changed, 37 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/video/fbdev/core/fbcon_cw.c b/drivers/video/fbdev/core/fbcon_cw.c
-index 86a254c1b..ade28c56a 100644
+index 903f6fc17..6be607c97 100644
 --- a/drivers/video/fbdev/core/fbcon_cw.c
 +++ b/drivers/video/fbdev/core/fbcon_cw.c
 @@ -18,6 +18,8 @@
@@ -57,7 +57,7 @@ index 86a254c1b..ade28c56a 100644
  
  		if (likely(idx == 1))
  			__fb_pad_aligned_buffer(dst, d_pitch, src, idx,
-@@ -207,6 +225,7 @@ static void cw_cursor(struct vc_data *vc, struct fb_info *info, int mode,
+@@ -207,6 +225,7 @@ static void cw_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
  	struct fb_cursor cursor;
  	struct fbcon_ops *ops = info->fbcon_par;
  	unsigned short charmask = vc->vc_hi_font_mask ? 0x1ff : 0xff;
@@ -65,7 +65,7 @@ index 86a254c1b..ade28c56a 100644
  	int w = (vc->vc_font.height + 7) >> 3, c;
  	int y = real_y(ops->p, vc->state.y);
  	int attribute, use_sw = vc->vc_cursor_type & CUR_SW;
-@@ -220,8 +239,23 @@ static void cw_cursor(struct vc_data *vc, struct fb_info *info, int mode,
+@@ -220,8 +239,23 @@ static void cw_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
  	cursor.set = 0;
  
   	c = scr_readw((u16 *) vc->vc_pos);

@@ -1,0 +1,37 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=clang
+export PACKAGE_VERSION=18.1.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/clang/18.1.3/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.3.src
+tar xvf ${DOWNLOADDIR}/llvm-project-18.1.3.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-18.1.3.src
+    pushd clang
+    mkdir cross-build
+    pushd cross-build
+        CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
+              -DLLVM_CONFIG=${SYSDIR}/cross-toolchains/llvm-project/bin/${LINUX_HOST}-llvm-config \
+              -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+              -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF} \
+              -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+              -DLLVM_ENABLE_RTTI:BOOL=ON \
+              -DLLVM_ENABLE_ZLIB:BOOL=ON \
+              -DCLANG_TABLEGEN:PATH=${SYSDIR}/cross-toolchains/llvm-project/bin/clang-tblgen \
+              -DLLVM_TABLEGEN_EXE:FILEPATH=${SYSDIR}/cross-toolchains/llvm-project/bin/llvm-tblgen \
+              -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+              -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+              -DCMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
+              -DCMAKE_FIND_ROOT_PATH=${LINUX_SYSROOT_DIR}/usr \
+              -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
+              -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF -DLLVM_INCLUDE_TESTS=OFF \
+              -DLLVM_HOST_TRIPLE=${LINUX_HOST}
+        sed -i "s@${PWD}/bin/clang-ast-dump@qemu-${QEMU_ARCH} ${PWD}/bin/clang-ast-dump@g" build.ninja
+	eval ${NINJA_AND_INSTALL}
+    popd
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.3.src

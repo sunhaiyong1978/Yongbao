@@ -19,7 +19,7 @@ pushd ${SYSROOT_DIR} > /dev/null
 	mkdir -p ./usr/{,local/}share/man/man{1..8}
 	mkdir -p ./usr/share/backgrounds
 	mkdir -p ./var/{cache,local,log,mail,opt,spool}
-	mkdir -p ./var/lib/{color,misc,locate}
+	mkdir -p ./var/lib/{color,misc,locate,lastlog}
 	mkdir -p ./usr/{lib{,64},bin,sbin}
 	ln -sf usr/{lib{,64},bin,sbin,include} ./
 	mkdir -p ./lib/firmware

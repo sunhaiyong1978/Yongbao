@@ -20,6 +20,6 @@ pushd ${BUILD_DIRECTORY}/mpfr-4.2.1
 	 ./configure ${COMMON_CONFIG} 
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.1

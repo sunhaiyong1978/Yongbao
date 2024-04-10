@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=wine-tools
-export PACKAGE_VERSION=8.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wine-tools/8.0.2/
-rm -rf ${BUILD_DIRECTORY}/wine-8.0.2
-tar xvf ${DOWNLOADDIR}/wine-8.0.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-8.0.2
+export PACKAGE_VERSION=9.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wine-tools/9.0/
+rm -rf ${BUILD_DIRECTORY}/wine-9.0
+tar xvf ${DOWNLOADDIR}/wine-9.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-9.0
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
@@ -33,4 +33,4 @@ pushd ${BUILD_DIRECTORY}/wine-8.0.2
 	mkdir -p ${CROSSTOOLS_DIR}/wine-tools
 	cp -a ${PWD}/* ${CROSSTOOLS_DIR}/wine-tools/
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-8.0.2
+rm -rf ${BUILD_DIRECTORY}/wine-9.0

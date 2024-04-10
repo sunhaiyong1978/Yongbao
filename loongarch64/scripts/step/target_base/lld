@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=lld
-export PACKAGE_VERSION=18.1.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/lld/18.1.2/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.2.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
+export PACKAGE_VERSION=18.1.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/lld/18.1.3/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.3.src
+tar xvf ${DOWNLOADDIR}/llvm-project-18.1.3.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-18.1.3.src
     
     pushd lld
     mkdir cross-build
@@ -34,4 +34,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
     popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.2.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.3.src

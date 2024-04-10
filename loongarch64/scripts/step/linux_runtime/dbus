@@ -1,0 +1,24 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=dbus
+export PACKAGE_VERSION=1.15.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/dbus/1.15.8/
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8
+tar xvf ${DOWNLOADDIR}/dbus-1.15.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dbus-1.15.8
+	./autogen.sh ${COMMON_CONFIG}
+	./configure ${COMMON_CONFIG} --runstatedir=/run \
+	            --enable-user-session \
+	            --disable-static --disable-doxygen-docs --disable-xml-docs \
+	            --with-console-auth-dir=/run/console \
+                    --with-system-socket=/run/dbus/system_bus_socket \
+                    --with-systemdsystemunitdir=/usr/lib/systemd/system \
+                    --with-systemduserunitdir=/usr/lib/systemd/user
+
+	eval ${MAKE_AND_INSTALL}
+	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/libdbus*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8

@@ -1,0 +1,29 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=linux-qemu
+export PACKAGE_VERSION=8.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-qemu/8.2.2/
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2
+tar xvf ${DOWNLOADDIR}/qemu-8.2.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-8.2.2
+    mkdir -p build
+    pushd build
+        ../configure --prefix=${PREFIX}/${LINUX_HOST} --target-list=${QEMU_ARCH}-linux-user --static
+        ninja
+        cp qemu-${QEMU_ARCH} ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin
+    popd
+
+    echo "#!/bin/bash -e
+${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR}  \"\$@\"" \
+> ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}
+
+echo "#!/bin/bash -e
+${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR} -E LD_TRACE_LOADED_OBJECTS=1 -E LD_LIBRARY_PATH=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF} \"\$@\"" \
+> ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}-ldd
+
+chmod +x ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}{,-ldd}
+popd 
+rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2

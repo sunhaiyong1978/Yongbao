@@ -1,0 +1,20 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=cups
+export PACKAGE_VERSION=2.4.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/cups/2.4.7/
+rm -rf ${BUILD_DIRECTORY}/cups-2.4.7
+tar xvf ${DOWNLOADDIR}/cups-2.4.7-source.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cups-2.4.7
+    sed -i 's#@CUPS_HTMLVIEW@#firefox#' desktop/cups.desktop.in
+    ./configure ${COMMON_CONFIG} --with-rcdir=/tmp/cupsinit   \
+            --with-system-groups=lpadmin --with-systemd=/usr/lib/systemd/system
+    eval ${MAKE_AND_INSTALL}
+    rm -rf ${LINUX_SYSROOT_DIR}/tmp/cupsinit
+    mkdir -p ${LINUX_SYSROOT_DIR}/etc/cups
+    echo "ServerName /run/cups/cups.sock" > ${LINUX_SYSROOT_DIR}/etc/cups/client.conf
+popd 
+rm -rf ${BUILD_DIRECTORY}/cups-2.4.7

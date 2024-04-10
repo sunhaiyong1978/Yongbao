@@ -1,0 +1,13 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=winetricks
+export PACKAGE_VERSION=20240105
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/winetricks/20240105/
+rm -rf ${BUILD_DIRECTORY}/winetricks-20240105
+tar xvf ${DOWNLOADDIR}/winetricks-20240105.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/winetricks-20240105
+	make DESTDIR=${SYSROOT_DIR} PREFIX=/usr install
+popd 
+rm -rf ${BUILD_DIRECTORY}/winetricks-20240105

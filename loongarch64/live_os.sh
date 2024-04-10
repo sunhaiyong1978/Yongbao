@@ -85,6 +85,7 @@ if [ -d ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/ 
 	if [ -f ${BASE_DIR}/info_set/release_sort ]; then
 		for i in $(cat ${BASE_DIR}/info_set/release_sort | grep -v "^#")
 		do
+			echo "发现 ${i}.... ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs "
 			if [ -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs ]; then
 				cp ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs ${LIVE_DIRECTORY}/images/
 			fi

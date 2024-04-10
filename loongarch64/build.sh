@@ -26,6 +26,7 @@ declare SET_OVERLAY_DIR=""
 declare AUTO_SET_PARENT_DIR=0
 declare SET_PARENT_DIR=""
 declare OPT_SET_PARENT_DIR=""
+declare OPT_SET_OVERLAY_DIR=""
 
 while getopts 'fao:rgsde:xi:S:O:h' OPT; do
     case $OPT in
@@ -172,6 +173,9 @@ function get_all_set_env_expr
 			PARENT)
 				continue
 				;;
+			OVERLAY)
+				continue
+				;;
 			*)
 				;;
 		esac
@@ -194,10 +198,92 @@ function get_all_set_env_expr
 		fi
         	((TEMP_COUNT++))
         done
-	echo $(IFS= ; echo "${USE_ENV[*]}")
+	echo $(IFS=' '; echo "${USE_ENV[*]}")
 }
 
 
+function test_filter_str
+{
+	declare FILTER_FILE="${1}"
+	declare TEST_STR="${2}"
+	declare RET_STR="0"
+	TEST_KEY=$(echo ${i:1} | awk -F'=' '{ print $1 }')
+	TEST_VALUE=$(echo "${2}" | awk -F'=' '{ print $2 }' | sed "s@\&@,@g")
+	FILTER_STR="$(cat ${FILTER_FILE} | grep "^${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
+	if [ "x${FILTER_STR}" != "x" ]; then
+		for i in $(echo "${FILTER_STR}")
+		do
+			case "x${i:0:1}" in
+				"x!")
+					if [ "x${i:1}" == "x${TEST_VALUE}" ]; then
+						echo "1"
+						return;
+					fi
+					;;
+				*)
+					if [ "x${i}" == "x${TEST_VALUE}" ]; then
+						RET_STR="0"
+						return;
+					else
+						RET_STR="1"
+					fi
+					;;
+			esac
+		done
+	else
+		echo "0"
+		return
+	fi
+	echo "${RET_STR}"
+}
+
+# 对设置的参数与parmfilter文件中定义的内容进行测试
+# 0 表示通过测试
+# 1 表示未通过测试
+function test_filter_form_opt
+{
+        declare SET_STR="${1}"
+
+        for i in $(echo "${SET_STR}" | tr ";" "\\n")
+        do
+                if [ "x${i:0:1}" == "x%" ]; then
+			case "x$(echo ${i:1} | awk -F'=' '{ print $1 }')" in
+				"xOVERLAY" | "xPARENT")
+					continue;
+					;;
+				*)
+					if [ "x$(test_filter_str "${2}" "${i:1}")" == "x1" ]; then
+						echo "1"
+						return;
+					fi
+					continue;
+					;;
+			esac
+		fi
+        done
+	echo "0"
+}
+
+
+function set_overlay_dir_form_opt
+{
+        declare SET_STR="${1}"
+
+        for i in $(echo "${SET_STR}" | tr ";" "\\n")
+        do
+                if [ "x${i:0:1}" == "x%" ]; then
+			case "x$(echo ${i:1} | awk -F'=' '{ print $1 }')" in
+				"xOVERLAY")
+					echo "$(echo ${i:1} | awk -F'=' '{ print $2 }' | sed "s@\&@,@g")"
+					return;
+					;;
+				*)
+					;;
+			esac
+		fi
+        done
+	echo ""
+}
 
 function set_parent_dir_form_opt
 {
@@ -321,7 +407,11 @@ function get_overlay_dirname
 {
 	declare OVERLAY_DIR=""
 
-	OVERLAY_DIR=$(cat ${1} | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+	if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
+		OVERLAY_DIR=$(cat ${1} | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+	else
+		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+	fi
 	echo "${OVERLAY_DIR}"
 }
 
@@ -381,26 +471,29 @@ function overlay_mount
 	OVERLAY_DIR=$(get_overlay_dirname ${2})
 
 
-	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
+#	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
 		if [ "x${SET_PARENT_DIR}" == "x" ]; then
 			if [ "x${OPT_SET_PARENT_DIR}" == "x" ]; then
-#				SET_PARENT_DIR="ORIG,${OVERLAY_DIR}"
+# #				SET_PARENT_DIR="ORIG,${OVERLAY_DIR}"
 				SET_PARENT_DIR="ORIG"
 			else
-#				SET_PARENT_DIR="$(echo ",${OPT_SET_PARENT_DIR}," | sed "s@,ORIG,@,ORIG,${OVERLAY_DIR},@g")"
+# #				SET_PARENT_DIR="$(echo ",${OPT_SET_PARENT_DIR}," | sed "s@,ORIG,@,ORIG,${OVERLAY_DIR},@g")"
 				SET_PARENT_DIR="${OPT_SET_PARENT_DIR}"
 			fi
 			AUTO_SET_PARENT_DIR=1
 		else
 			AUTO_SET_PARENT_DIR=0
 		fi
-#		SET_PARENT_DIR="$(echo ",${SET_PARENT_DIR}," | sed "s@,ORIG,@,ORIG,${OVERLAY_DIR},@g")"
+# #		SET_PARENT_DIR="$(echo ",${SET_PARENT_DIR}," | sed "s@,ORIG,@,ORIG,${OVERLAY_DIR},@g")"
+	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
 		if [ "x${SET_OVERLAY_DIR}" == "x" ] || [ "x${SET_OVERLAY_DIR}" == "x${OVERLAY_DIR}.update" ]; then
 			if [ x"$(echo ",${SET_PARENT_DIR}," | grep ",ORIG,")" != "x" ]; then
 				SET_PARENT_DIR="${SET_PARENT_DIR},${OVERLAY_DIR}"
 			fi
 		fi
-	fi
+ 	fi
+# 	fi
+
 # echo "Parent Dir: ${SET_PARENT_DIR}"
 
 	OVERLAY_PARENT_LIST=$(cat ${2} | grep "parent_dirs=" | head -n1 | gawk -F'=' '{ print $2 }')
@@ -461,6 +554,7 @@ function overlay_mount
 					LOWERDIR_SET_LIST="${NEW_TARGET_SYSDIR}/overlaydir/${i}.update:${LOWERDIR_SET_LIST}"
 				fi
 			fi
+#			echo "设置${i} : ${LOWERDIR_SET_LIST}"
 		done
 		LOWERDIR_LIST="${LOWERDIR_SET_LIST}"
 	fi
@@ -1159,6 +1253,7 @@ function step_to_index
 	declare REQUIRES_STEPS=""
 	declare GREP_STR=""
 	declare STOP_STEP_PKGNAME=""
+	declare STOP_STEP_OPT=""
 	declare STOP_STEP_GROUP=""
 	declare STOP_STEP_STR=""
 
@@ -1186,40 +1281,49 @@ function step_to_index
 		if [ "x${STEPNAME}" != "xNULL" ] && [ "x${STEP_PKGNAME}" != "xNULL" ]; then
 			STEP_PKG_OPT=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/${STEP_PKGNAME}|" | sort | uniq | tail -n1 | awk -F'|' '{ print $2 }')
 			STOP_STEP_PKGNAME=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/${STEP_PKGNAME}|" | sort | uniq | tail -n1 | awk -F'|' '{ print $1 }')
+			STOP_STEP_OPT=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/${STEP_PKGNAME}|" | sort | uniq | tail -n1 | awk -F'|' '{ print $2 }')
 			STOP_STEP_GROUP="${STOP_STEP_PKGNAME}"
 			STOP_STEP_STR="${STOP_STEP_PKGNAME}"
 		fi
 		if [ "x${STEPNAME}" != "xNULL" ] && [ "x${STEP_PKGNAME}" == "xNULL" ]; then
 			STEP_PKG_OPT=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/" | head -n1 | awk -F'|' '{ print $2 }')
 			STOP_STEP_PKGNAME=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/" | tail -n1 | awk -F'|' '{ print $1 }')
+			STOP_STEP_OPT=$(cat "${SOURCE_STEP_FILE}" | grep "^%step/${STEPNAME}/" | tail -n1 | awk -F'|' '{ print $2 }')
 			STOP_STEP_GROUP="%step/${STEPNAME}/"
 			STOP_STEP_STR="${STOP_STEP_PKGNAME}"
 		fi
 
-		echo "因指定了编译步骤，需测试编译的相关组，相关组如下："
-		echo "${STEPNAME}"
+#		echo "因指定了编译步骤，需测试编译的相关组，相关组如下："
+#		echo "${STEPNAME}"
 		get_requires "${STEPNAME}" ""
 		echo "$(get_requires "${STEPNAME}" "")"
 		REQUIRES_STEPS="${STEPNAME} $(get_requires "${STEPNAME}" "")"
 		GREP_STR=$(echo ${REQUIRES_STEPS} | sed "s@\([^ ]*\)@ -e \"step/&/\"@g")
+#		echo "筛选字串： ${GREP_STR}"
 
 	fi
 	USE_OPT=($(set_to_default_opt "$(echo ${USE_OPT[@]})" "${STEP_PKG_OPT}"))
 
+#	echo "停止步骤名：${STOP_STEP_PKGNAME}"
+
 	echo "当前指定的编译标记如下："
 	echo "${USE_OPT[@]}"
 
+	echo "初始化各组计数器..."
 	for i in $(cat "${SOURCE_STEP_FILE}" | grep "^%step" | awk -F'/' '{ print $2 }' | sort | uniq)
 	do
 		declare ${i/-/_}_COUNT=1
 	done
 
+	echo "开始筛选符合条件的步骤..."
 	for i in $(cat "${SOURCE_STEP_FILE}" | grep "^%step")
 	do
 		STEP_NAME=$(echo ${i} | awk -F'|' '{ print $1 }')
 		STEP_OPT=$(echo ${i} | awk -F'|' '{ print $2 }')
 
 		if [ "x${STEP_NAME##*/}" == "xNULL" ]; then
+			TMP_NAME=$(echo ${STEP_NAME} | awk -F'/' '{ print $2 }')
+			((${TMP_NAME/-/_}_COUNT=1))
 			continue;
 		fi
 
@@ -1228,9 +1332,10 @@ function step_to_index
 		printf -v SHOW_COUNT "%05d" ${!COUNT_NAME}
 
 
-		# echo "test_opt_can_run" "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
+		# echo "test_opt_can_run \"$(echo ${USE_OPT[@]})\" \"${STEP_OPT}\""
 		# test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}"
 		if [ "x$(test_opt_can_run "$(echo ${USE_OPT[@]})" "${STEP_OPT}")" == "x1" ]; then
+#			echo "${i} 符合条件... ${USE_OPT[@]}"
 			if [ "x${GREP_STR}" == "x" ]; then
 				echo -n "${SHOW_COUNT}  "
 				echo -n $(echo ${STEP_NAME} | sed "s@^%@@g")
@@ -1259,7 +1364,7 @@ function step_to_index
 							echo "|${STEP_OPT}"
 						fi
 					fi
-					if [ "x${STOP_STEP_PKGNAME}" == "x${STEP_NAME}" ]; then
+					if [ "x${STOP_STEP_PKGNAME}" == "x${STEP_NAME}" ] && [ "x${STOP_STEP_OPT}" == "x${STEP_OPT}" ]; then
 						break;
 					fi
 				fi
@@ -1285,6 +1390,53 @@ function step_to_index
 			fi
 		fi
 	done
+}
+
+
+function cp_file_and_sources
+{
+	if [ -f ${BASE_DIR}/downloads/sources/files.list ]; then
+		mkdir -p ${NEW_TARGET_SYSDIR}/downloads/files/
+		if [ "x${1}" == "x" ]; then
+			echo -n "复制所需的源码包文件..."
+		fi
+		for cp_file in $(cat ${BASE_DIR}/downloads/sources/files.list | sort | uniq)
+		do
+			cp ${BASE_DIR}/downloads/sources/files/${cp_file} ${NEW_TARGET_SYSDIR}/downloads/files/
+		done
+		if [ "x${1}" == "x" ]; then
+			echo "完成。"
+		fi
+	fi
+	if [ -f ${BASE_DIR}/downloads/sources/resources.list ]; then
+		mkdir -p ${NEW_TARGET_SYSDIR}/files/
+		if [ "x${1}" == "x" ]; then
+			echo -n "复制所需的资源文件..."
+		fi
+		cp -a ${BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
+		pushd ${BASE_DIR}/downloads/files/step > /dev/null
+			for cp_file in $(cat ${BASE_DIR}/downloads/sources/resources.list | sort | uniq)
+			do
+				cp --parents ${cp_file} ${NEW_TARGET_SYSDIR}/files/
+			done
+		popd > /dev/null
+		if [ "x${1}" == "x" ]; then
+			echo "完成。"
+		fi
+	fi
+
+}
+
+function start_download_source
+{
+	echo -n -e "\r下载 ${1} 所需的源码包及资源文件..."
+	tools/get_all_package_url.sh -p -s ${1} > /dev/null
+	if [ "x$?" == "x0" ]; then
+		echo "完成！"
+	else
+		echo -e "\e[32m失败！\e[0m"
+	fi
+	cp_file_and_sources 0
 }
 
 
@@ -1355,81 +1507,138 @@ mkdir -p ${NEW_TARGET_SYSDIR}/common_files
 mkdir -p ${NEW_TARGET_SYSDIR}/scripts/os_{first,start}_run
 mkdir -p ${NEW_TARGET_SYSDIR}/scripts/update/os_{first,start}_run
 
+
+mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/{.lowerdir,.workerdir}
+mkdir -p ${NEW_TARGET_SYSDIR}/sysroot
+
+mkdir -p ${NEW_TARGET_SYSDIR}/files
+mkdir -p ${NEW_TARGET_SYSDIR}/build
+
+
+# if [ -f ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} ]; then
+# 	if [ "x$(cat ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE})" != "x0" ]; then
+# 		md5sum -c ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} 2>/dev/null > /dev/null
+# 		if [ "$?" != "0" ] || [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
+# 			if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
+# 				echo "强制指定进行软件包下载检查，开始进行必要的下载..."
+# 			else
+# 				echo "本次创建的索引文件与上次的内容不同，可能会存在需要下载的软件包，开始进行必要的下载..."
+# 			fi
+# 			if [ -f proxy.set ]; then
+# #				tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+# 				tools/get_all_package_url.sh -p -g -i ${INDEX_STEP_FILE}
+# 			else
+# #				tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+# 				tools/get_all_package_url.sh -g -i ${INDEX_STEP_FILE}
+# 			fi
+# 			echo "下载完成。"
+# 		fi
+# 	fi
+# else
+# 	echo "开始下载必要的软件包..."
+# 	if [ -f proxy.set ]; then
+# #		tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
+# 		tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
+# 	else
+# #		tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
+# 		tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
+# 	fi
+# 	echo "下载完成。"
+# fi
+# # md5sum ${NEW_TARGET_SYSDIR}/step.index > ${NEW_TARGET_SYSDIR}/status/step.md5sum
+# md5sum ${INDEX_STEP_FILE} > ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE}
+
 if [ -f ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} ]; then
 	if [ "x$(cat ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE})" != "x0" ]; then
 		md5sum -c ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} 2>/dev/null > /dev/null
 		if [ "$?" != "0" ] || [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
 			if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
 				echo "强制指定进行软件包下载检查，开始进行必要的下载..."
+				if [ -f proxy.set ]; then
+					tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
+				else
+					tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
+				fi
 			else
 				echo "本次创建的索引文件与上次的内容不同，可能会存在需要下载的软件包，开始进行必要的下载..."
-			fi
-			if [ -f proxy.set ]; then
-#				tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
-				tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
-			else
-#				tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
-				tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
+				if [ -f proxy.set ]; then
+					tools/get_all_package_url.sh -p -g -i ${INDEX_STEP_FILE}
+				else
+					tools/get_all_package_url.sh -g -i ${INDEX_STEP_FILE}
+				fi
 			fi
 			echo "下载完成。"
+			cp_file_and_sources
 		fi
 	fi
 else
-	echo "开始下载必要的软件包..."
-	if [ -f proxy.set ]; then
-#		tools/get_all_package_url.sh -p -i ${NEW_TARGET_SYSDIR}/step.index
-		tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
+	if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
+		echo "强制指定进行软件包下载检查，开始进行必要的下载..."
+		if [ -f proxy.set ]; then
+			tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
+		else
+			tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
+		fi
+		echo "下载完成。"
 	else
-#		tools/get_all_package_url.sh -i ${NEW_TARGET_SYSDIR}/step.index
-		tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
+		echo "开始下载必要的软件包..."
+		if [ -f proxy.set ]; then
+			tools/get_all_package_url.sh -p -g -i ${INDEX_STEP_FILE}
+		else
+			tools/get_all_package_url.sh -g -i ${INDEX_STEP_FILE}
+		fi
+		echo "下载完成。"
 	fi
-	echo "下载完成。"
+	cp_file_and_sources
 fi
-# md5sum ${NEW_TARGET_SYSDIR}/step.index > ${NEW_TARGET_SYSDIR}/status/step.md5sum
 md5sum ${INDEX_STEP_FILE} > ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE}
 
 
-mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/{.lowerdir,.workerdir}
-mkdir -p ${NEW_TARGET_SYSDIR}/sysroot
+# mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/{.lowerdir,.workerdir}
+# mkdir -p ${NEW_TARGET_SYSDIR}/sysroot
 
 
-mkdir -p ${NEW_TARGET_SYSDIR}/files
-mkdir -p ${NEW_TARGET_SYSDIR}/build
-# cp -a ${BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
-# cp -a ${BASE_DIR}/sources/downloads ${NEW_TARGET_SYSDIR}/
-if [ -f ${BASE_DIR}/downloads/sources/files.list ]; then
-	mkdir -p ${NEW_TARGET_SYSDIR}/downloads/files/
-	echo -n "复制所需的源码包文件..."
-	for cp_file in $(cat ${BASE_DIR}/downloads/sources/files.list | sort | uniq)
-	do
-		cp ${BASE_DIR}/downloads/sources/files/${cp_file} ${NEW_TARGET_SYSDIR}/downloads/files/
-	done
-	echo "完成。"
-fi
-if [ -f ${BASE_DIR}/downloads/sources/resources.list ]; then
-	mkdir -p ${NEW_TARGET_SYSDIR}/files/
-	echo -n "复制所需的资源文件..."
-	cp -a ${BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
-	pushd ${BASE_DIR}/downloads/files/step > /dev/null
-		for cp_file in $(cat ${BASE_DIR}/downloads/sources/resources.list | sort | uniq)
-		do
-			cp --parents ${cp_file} ${NEW_TARGET_SYSDIR}/files/
-		done
-	popd > /dev/null
-	echo "完成。"
-fi
+# mkdir -p ${NEW_TARGET_SYSDIR}/files
+# mkdir -p ${NEW_TARGET_SYSDIR}/build
+# # cp -a ${BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
+# # cp -a ${BASE_DIR}/sources/downloads ${NEW_TARGET_SYSDIR}/
 
-# if [ -f ${BASE_DIR}/downloads/sources/patches.list ]; then
-#	mkdir -p ${NEW_TARGET_SYSDIR}/files/
-#	echo -n "复制补丁文件..."
-#	pushd ${BASE_DIR}/files/step > /dev/null
-#		for cp_file in $(cat ${BASE_DIR}/downloads/sources/patches.list | sort | uniq)
-#		do
-#			cp --parents ${cp_file} ${NEW_TARGET_SYSDIR}/files/
-#		done
-#	popd > /dev/null
-#	echo "完成。"
-#fi
+# if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
+# 	if [ -f ${BASE_DIR}/downloads/sources/files.list ]; then
+# 		mkdir -p ${NEW_TARGET_SYSDIR}/downloads/files/
+# 		echo -n "复制所需的源码包文件..."
+# 		for cp_file in $(cat ${BASE_DIR}/downloads/sources/files.list | sort | uniq)
+# 		do
+# 			cp ${BASE_DIR}/downloads/sources/files/${cp_file} ${NEW_TARGET_SYSDIR}/downloads/files/
+# 		done
+# 		echo "完成。"
+# 	fi
+# 	if [ -f ${BASE_DIR}/downloads/sources/resources.list ]; then
+# 		mkdir -p ${NEW_TARGET_SYSDIR}/files/
+# 		echo -n "复制所需的资源文件..."
+# 		cp -a ${BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
+# 		pushd ${BASE_DIR}/downloads/files/step > /dev/null
+# 			for cp_file in $(cat ${BASE_DIR}/downloads/sources/resources.list | sort | uniq)
+# 			do
+# 				cp --parents ${cp_file} ${NEW_TARGET_SYSDIR}/files/
+# 			done
+# 		popd > /dev/null
+# 		echo "完成。"
+# 	fi
+# 
+# # 	if [ -f ${BASE_DIR}/downloads/sources/patches.list ]; then
+# #		mkdir -p ${NEW_TARGET_SYSDIR}/files/
+# #		echo -n "复制补丁文件..."
+# #		pushd ${BASE_DIR}/files/step > /dev/null
+# #			for cp_file in $(cat ${BASE_DIR}/downloads/sources/patches.list | sort | uniq)
+# #			do
+# #				cp --parents ${cp_file} ${NEW_TARGET_SYSDIR}/files/
+# #			done
+# #		popd > /dev/null
+# #		echo "完成。"
+# #	fi
+# 
+# fi
 
 
 while mount | grep "overlay on ${NEW_TARGET_SYSDIR}/sysroot type " > /dev/null
@@ -1463,6 +1672,7 @@ do
 		SET_OVERLAY_DIR=""
 		AUTO_SET_OVERLAY_DIR=0
 	fi
+	export OPT_SET_OVERLAY_DIR=""
 
 	line=$(echo "${line_all}" | awk -F'|' '{ print $1 }')
 	PACKAGE_ALL_OPT="$(echo "${line_all}" | awk -F'|' '{ print $2 }')"
@@ -1471,6 +1681,18 @@ do
 	STEP_STAGE=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $2 }')
 	PACKAGE_NAME=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $3 }')
 	PACKAGE_GIT_COMMIT=""
+
+	if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter ]; then
+		if [ "x$(test_filter_form_opt "${PACKAGE_ALL_OPT}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter" )" != "x0" ]; then
+			echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 在 "$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" 的时候不符合制作条件。\e[0m"
+			continue;
+		fi
+	fi
+
+#	echo "OPT_SET_OVERLAY_DIR: ${OPT_SET_OVERLAY_DIR}"
+#	echo "PACKAGE_ALL_OPT: ${PACKAGE_ALL_OPT}"
+	export OPT_SET_OVERLAY_DIR="$(set_overlay_dir_form_opt "${PACKAGE_ALL_OPT}")"
+#	echo "OPT_SET_OVERLAY_DIR: ${OPT_SET_OVERLAY_DIR}"
 
 	if [ -f sources/url/${STEP_STAGE}/${PACKAGE_NAME} ]; then
 		PKG_FILENAME=$(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME} | awk -F'|' '{ print $3 }' | sed "s@\.tar\.gz\$@@g")
@@ -1511,7 +1733,6 @@ do
 	fi
 	SCRIPT_FILE=$(echo "${line}" | awk -F' ' '{ print $2 }' | sed "s@ *step\/@@g")
 
-
 	if [ "x${PACKAGE_NAME}" == "xbegin_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_before_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_after_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_temp_fix_run" ]; then
 		echo "${STEP_STAGE}" >> ${NEW_TARGET_SYSDIR}/logs/step_${PACKAGE_NAME}_save
 		continue;
@@ -1520,9 +1741,14 @@ do
 			mkdir -p ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}
 		fi
 		if ([ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} ] || [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ]) && [ "x${SINGLE_PACKAGE}" == "x0" ] ; then
+			SHOW_PACKAGE_OPT="$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")"
 			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
 			if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
-				echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
+				if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
+					echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
+				else
+					echo -n -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 ${SHOW_PACKAGE_OPT} 已完成制作。\033[0K"
+				fi
 				create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}" "${PACKAGE_INDEX}"
 				continue;
 			else
@@ -1533,7 +1759,11 @@ do
 #					echo "检查update目录中的${STATUS_FILE}状态文件。"
 					echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
 					if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
-						echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
+						if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
+							echo -n -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包已完成制作。\033[0K"
+						else
+							echo -n -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 ${SHOW_PACKAGE_OPT} 已完成制作。\033[0K"
+						fi
 						create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}" "${PACKAGE_INDEX}"
 						continue;
 					else
@@ -1547,10 +1777,14 @@ do
 	fi
 
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
-		if [ "x$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" == "x" ]; then
+		if [ "x${FORCE_ALL_DOWNLOAD}" == "x0" ]; then
+			start_download_source "${STEP_STAGE}/${PACKAGE_NAME}"
+		fi
+		SHOW_PACKAGE_OPT="$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")"
+		if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
 			echo -e "\r开始执行 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包的制作步骤...\033[0K"
 		else
-			echo -e "\r开始执行 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 $(get_all_set_env_expr "${PACKAGE_ALL_OPT}") 的制作步骤...\033[0K"
+			echo -e "\r开始执行 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 ${SHOW_PACKAGE_OPT} 的制作步骤...\033[0K"
 		fi
 
 		if [ "x${OPT_SET_PARENT_DIR}" != "x" ]; then
@@ -1685,7 +1919,11 @@ do
 						PACKAGE_INFO_VERSION="$(echo ${PACKAGE_INFO} | awk -F'|' '{ print $2 }' | sed "s@-default\$@@g")"
 						PACKAGE_INFO_NAME="$(echo ${PACKAGE_INFO} | awk -F'|' '{ print $3 }')"
 						if [ "x${PACKAGE_INFO_NAME}" != "x" ] && [ "x${PACKAGE_INFO_NAME}" != "xNULL" ]; then
-							echo "${PACKAGE_INFO_VERSION}" > ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}/var/Yongbao/status/${PACKAGE_INFO_NAME}
+							if [ "x${PACKAGE_GIT_COMMIT}" == "x" ]; then
+								echo "${PACKAGE_INFO_VERSION}" > ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}/var/Yongbao/status/${PACKAGE_INFO_NAME}
+							else
+								echo "git${PACKAGE_GIT_COMMIT}" > ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}/var/Yongbao/status/${PACKAGE_INFO_NAME}
+							fi
 						fi
 					fi
 				fi
