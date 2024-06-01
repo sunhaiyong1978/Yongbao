@@ -17,7 +17,8 @@ EDK2_DIRNAME=qemu-edk2-edk2_git
 EDK2_PLATFORMS_DIRNAME=qemu-edk2-edk2-platforms_git
 
 pushd ${EDK2_DIRNAME}
-	make -j${JOBS} -C BaseTools
+	make -j${JOBS} -C BaseTools \
+	EXTRA_LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64"
 	cp -av BaseTools/Conf/build_rule.template Conf/build_rule.txt
 	cp -av BaseTools/Conf/tools_def.template Conf/tools_def.txt
 	cp -av BaseTools/Conf/target.template Conf/target.txt

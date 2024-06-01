@@ -1,0 +1,82 @@
+From 8fe222f77d63b29b00e7236d18b27a1805cd59f3 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Apr 2024 17:00:41 +0000
+Subject: [PATCH 15/19] qtwebengine 6.7.0 chromium libyuv add loongarch_lsx
+ config.
+
+---
+ .../chromium/third_party/libyuv/BUILD.gn      | 24 +++++++++++++++++++
+ .../chromium/third_party/libyuv/libyuv.gni    |  3 +++
+ 2 files changed, 27 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/libyuv/BUILD.gn b/qtwebengine/src/3rdparty/chromium/third_party/libyuv/BUILD.gn
+index d3f8dcf72..82d602038 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/libyuv/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/third_party/libyuv/BUILD.gn
+@@ -36,6 +36,9 @@ config("libyuv_config") {
+   if (libyuv_disable_rvv) {
+     defines += [ "LIBYUV_DISABLE_RVV" ]
+   }
++  if (libyuv_disable_lsx) {
++    defines += [ "LIBYUV_DISABLE_LSX" ]
++  }
+ }
+ 
+ # This target is built when no specific target is specified on the command line.
+@@ -74,6 +77,10 @@ group("libyuv") {
+     deps += [ ":libyuv_msa" ]
+   }
+ 
++  if (libyuv_use_lsx) {
++    deps += [ ":libyuv_lsx" ]
++  }
++
+   if (!is_ios && !libyuv_disable_jpeg) {
+     # Make sure that clients of libyuv link with libjpeg. This can't go in
+     # libyuv_internal because in Windows x64 builds that will generate a clang
+@@ -242,6 +249,23 @@ if (libyuv_use_msa) {
+   }
+ }
+ 
++if (libyuv_use_lsx) {
++  static_library("libyuv_lsx") {
++    sources = [
++      # MSA Source Files
++      "source/rotate_lsx.cc",
++      "source/row_lsx.cc",
++      "source/scale_lsx.cc",
++    ]
++
++    deps = [ ":libyuv_internal" ]
++
++    public_configs = [ ":libyuv_config" ]
++  }
++}
++
++
++
+ if (libyuv_include_tests) {
+   config("libyuv_unittest_warnings_config") {
+     if (!is_win) {
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/libyuv/libyuv.gni b/qtwebengine/src/3rdparty/chromium/third_party/libyuv/libyuv.gni
+index 0a6c44533..58323691f 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/libyuv/libyuv.gni
++++ b/qtwebengine/src/3rdparty/chromium/third_party/libyuv/libyuv.gni
+@@ -14,6 +14,7 @@ declare_args() {
+   libyuv_include_tests = !build_with_chromium
+   libyuv_disable_jpeg = false
+   libyuv_disable_rvv = false
++  libyuv_disable_lsx = false
+   libyuv_use_neon =
+       current_cpu == "arm64" ||
+       (current_cpu == "arm" && (arm_use_neon || arm_optionally_use_neon))
+@@ -21,4 +22,6 @@ declare_args() {
+       (current_cpu == "mips64el" || current_cpu == "mipsel") && mips_use_msa
+   libyuv_use_mmi =
+       (current_cpu == "mips64el" || current_cpu == "mipsel") && mips_use_mmi
++  libyuv_use_lsx =
++      (current_cpu == "loong64")
+ }
+-- 
+2.31.1
+

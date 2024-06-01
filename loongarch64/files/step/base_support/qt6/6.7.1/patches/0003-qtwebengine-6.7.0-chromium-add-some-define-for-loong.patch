@@ -1,0 +1,84 @@
+From 2b3c2e254becff0fbea6df02673b72935733d1ce Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Apr 2024 03:26:50 +0000
+Subject: [PATCH 03/19] qtwebengine 6.7.0 chromium add some define for
+ loongarch64.
+
+---
+ .../chromium/build/linux/sysroot_scripts/install-sysroot.py | 2 +-
+ .../chromium/build/linux/sysroot_scripts/sysroots.json      | 6 ++++++
+ qtwebengine/src/3rdparty/chromium/skia/BUILD.gn             | 2 ++
+ .../src/3rdparty/chromium/third_party/libgav1/options.gni   | 2 +-
+ .../third_party/swiftshader/third_party/llvm-10.0/BUILD.gn  | 2 ++
+ 5 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
+index a2ac8305d..56d32adf3 100755
+--- a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
++++ b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
+@@ -35,7 +35,7 @@ from urllib.request import urlopen
+ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ SRC_DIR = os.path.dirname(os.path.dirname(os.path.dirname(SCRIPT_DIR)))
+ 
+-VALID_ARCHS = ('amd64', 'i386', 'armhf', 'arm64', 'armel', 'mipsel', 'mips64el')
++VALID_ARCHS = ('amd64', 'i386', 'armhf', 'arm64', 'armel', 'mipsel', 'mips64el', 'loong64')
+ 
+ ARCH_TRANSLATIONS = {
+     'x64': 'amd64',
+diff --git a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json
+index 156d4c630..60a2594eb 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json
++++ b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json
+@@ -34,6 +34,12 @@
+         "Tarball": "debian_bullseye_i386_sysroot.tar.xz",
+         "URL": "https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain"
+     },
++    "bullseye_loong64": {
++        "Key": "20221105T211506Z-0",
++        "Sha1Sum": "6f27b4f65d8e190864e7c18fa281ffb418cf2e43",
++        "SysrootDir": "debian_bullseye_loong64-sysroot",
++        "Tarball": "debian_bullseye_loong64_sysroot.tar.xz"
++    },
+     "bullseye_mips64el": {
+         "Key": "20230611T210420Z-2",
+         "Sha1Sum": "3ce49d1c6b5fef17ad512f2d663a175829ae0b72",
+diff --git a/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn b/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
+index bedc83f29..6bea390c1 100644
+--- a/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
+@@ -783,6 +783,8 @@ skia_source_set("skia_opts") {
+     # Conditional and empty body needed to avoid assert() below.
+   } else if (current_cpu == "riscv64") {
+     # Conditional and empty body needed to avoid assert() below.
++  } else if (current_cpu == "loong64") {
++    # Conditional and empty body needed to avoid assert() below.
+   } else {
+     assert(false, "Unknown cpu target")
+   }
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni b/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni
+index 0aab011ea..22b8add63 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni
++++ b/qtwebengine/src/3rdparty/chromium/third_party/libgav1/options.gni
+@@ -9,5 +9,5 @@ declare_args() {
+   use_libgav1_parser =
+       (is_chromeos || is_linux || is_win) &&
+       (target_cpu == "x86" || target_cpu == "x64" || target_cpu == "arm" ||
+-       target_cpu == "arm64" || target_cpu == "ppc64")
++       target_cpu == "arm64" || target_cpu == "ppc64" || target_cpu == "loong64")
+ }
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn b/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn
+index 59e52303c..16235a668 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/third_party/swiftshader/third_party/llvm-10.0/BUILD.gn
+@@ -158,6 +158,8 @@ swiftshader_llvm_source_set("swiftshader_llvm") {
+     deps += [ ":swiftshader_llvm_riscv64" ]
+   } else if (current_cpu == "x86" || current_cpu == "x64") {
+     deps += [ ":swiftshader_llvm_x86" ]
++  } else if (current_cpu == "loong64") {
++    # TODO: Add support
+   } else {
+     assert(false, "Unsupported current_cpu")
+   }
+-- 
+2.31.1
+

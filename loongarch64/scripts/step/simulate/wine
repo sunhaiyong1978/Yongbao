@@ -17,6 +17,10 @@ pushd ${BUILD_DIRECTORY}/wine-9.0
 
 
 
+	WINE_STAGING_VERSION=v$(cat ${COMMON_DIR}/wine-staging.version)
+	tar xvf ${DOWNLOADDIR}/wine-staging-${WINE_STAGING_VERSION}.tar.gz
+	wine-staging-${WINE_STAGING_VERSION}/staging/patchinstall.py DESTDIR=${PWD} --all
+
 	export CROSSCFLAGS="-g -O2"
         ./configure --prefix=/opt/wine --build=${CROSS_HOST} --host=${LINUX_HOST} \
 		--with-wine-tools=${CROSSTOOLS_DIR}/wine-tools \

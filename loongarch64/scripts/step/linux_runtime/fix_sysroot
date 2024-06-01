@@ -1,0 +1,13 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=fix_sysroot
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/fix_sysroot//
+pushd ${LINUX_SYSROOT_DIR}
+	if [ -f usr/lib${LIB_SUFF}/libcurl.so.4 ] && [ ! -f usr/lib${LIB_SUFF}/libcurl-gnutls.so.4 ]; then
+		ln -sfv libcurl.so.4 usr/lib${LIB_SUFF}/libcurl-gnutls.so.4
+	fi
+popd

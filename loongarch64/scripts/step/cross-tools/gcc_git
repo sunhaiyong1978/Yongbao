@@ -24,7 +24,7 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
 		             --disable-multilib \
 			     --with-simd=lsx \
-		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
+		             --enable-languages=c,c++,fortran,objc,obj-c++,lto,ada
 		make -j${JOBS}
 		make install-strip
 		ln -sf ${CROSS_TARGET}-gcc ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-cc

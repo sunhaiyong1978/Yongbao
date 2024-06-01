@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fcitx5-lua
-export PACKAGE_VERSION=5.0.12
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5-lua/5.0.12/
-rm -rf ${BUILD_DIRECTORY}/fcitx5-lua-5.0.12
-tar xvf ${DOWNLOADDIR}/fcitx5-lua-5.0.12.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fcitx5-lua-5.0.12
+export PACKAGE_VERSION=5.0.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5-lua/5.0.13/
+rm -rf ${BUILD_DIRECTORY}/fcitx5-lua-5.0.13
+tar xvf ${DOWNLOADDIR}/fcitx5-lua-5.0.13.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fcitx5-lua-5.0.13
         
         sed -i "s@\${FCITX_INSTALL_CMAKECONFIG_DIR}@${SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake@g" CMakeLists.txt
         mkdir cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/fcitx5-lua-5.0.12
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fcitx5-lua-5.0.12
+rm -rf ${BUILD_DIRECTORY}/fcitx5-lua-5.0.13

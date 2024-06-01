@@ -14,3 +14,5 @@ pushd ${SYSROOT_DIR}/opt
 		fi
 	done
 popd
+
+default_set_comment "jdk" "JAVA 虚拟机" "/usr/bin/java"

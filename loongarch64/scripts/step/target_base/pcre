@@ -19,6 +19,7 @@ pushd ${BUILD_DIRECTORY}/pcre-8.45
 	fi
 	 ./configure ${COMMON_CONFIG} --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

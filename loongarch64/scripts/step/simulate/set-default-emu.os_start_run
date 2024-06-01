@@ -1,0 +1,7 @@
+if [ -d /usr/lib/x86_64/sys-root/run/media ]; then
+	mount --bind /run/media /usr/lib/x86_64/sys-root/run/media/
+fi
+
+if [ -d /usr/lib/i686/sys-root/run/media ]; then
+	mount --bind /run/media /usr/lib/i686/sys-root/run/media/
+fi

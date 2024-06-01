@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mozjs-115
-export PACKAGE_VERSION=115.9.1esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mozjs-115/115.9.1esr/
-rm -rf ${BUILD_DIRECTORY}/firefox-115.9.1
-tar xvf ${DOWNLOADDIR}/firefox-115.9.1esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-115.9.1
+export PACKAGE_VERSION=115.11.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mozjs-115/115.11.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-115.11.0
+tar xvf ${DOWNLOADDIR}/firefox-115.11.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-115.11.0
     
     cp -a ${CROSSTOOLS_DIR}/lib/python$(get_package_version Python3)/site-packages/six{.py,-*} third_party/python/six/
     mkdir cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/firefox-115.9.1
         sed -i '/@NSPR_CFLAGS@/d' ${SYSROOT_DIR}/usr/bin/js115-config
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-115.9.1
+rm -rf ${BUILD_DIRECTORY}/firefox-115.11.0

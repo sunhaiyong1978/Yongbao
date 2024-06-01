@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kontactinterface
-export PACKAGE_VERSION=24.02.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kontactinterface/24.02.1/
-rm -rf ${BUILD_DIRECTORY}/kontactinterface-24.02.1
-tar xvf ${DOWNLOADDIR}/kontactinterface-24.02.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kontactinterface-24.02.1
+export PACKAGE_VERSION=24.05.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kontactinterface/24.05.0/
+rm -rf ${BUILD_DIRECTORY}/kontactinterface-24.05.0
+tar xvf ${DOWNLOADDIR}/kontactinterface-24.05.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kontactinterface-24.05.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/kontactinterface-24.02.1
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kontactinterface-24.02.1
+rm -rf ${BUILD_DIRECTORY}/kontactinterface-24.05.0

@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=libxml2
-export PACKAGE_VERSION=2.12.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxml2/2.12.6/
+export PACKAGE_VERSION=2.12.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxml2/2.12.7/
 
-rm -rf ${BUILD_DIRECTORY}/libxml2-2.12.6
-tar xvf ${DOWNLOADDIR}/libxml2-2.12.6.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxml2-2.12.6
+rm -rf ${BUILD_DIRECTORY}/libxml2-2.12.7
+tar xvf ${DOWNLOADDIR}/libxml2-2.12.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxml2-2.12.7
         
         for config_i in $(find -name "config.sub")
         do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/libxml2-2.12.6
 	mkdir -p ${CROSSTOOLS_DIR}/host-tools/bin/
 	mv ${CROSSTOOLS_DIR}/bin/xml2-config ${CROSSTOOLS_DIR}/host-tools/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxml2-2.12.6
+rm -rf ${BUILD_DIRECTORY}/libxml2-2.12.7

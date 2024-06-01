@@ -6,7 +6,7 @@ export STEP_PACKAGENAME=eigen3
 export PACKAGE_VERSION=3.4.0
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/eigen3/3.4.0/
 rm -rf ${BUILD_DIRECTORY}/eigen-3.4.0
-tar xvf ${DOWNLOADDIR}/eigen-3.4.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/eigen3-3.4.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/eigen-3.4.0
         
 	mkdir cross-build

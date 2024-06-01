@@ -1,0 +1,26 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=openldap
+export PACKAGE_VERSION=2.6.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/openldap/2.6.8/
+rm -rf ${BUILD_DIRECTORY}/openldap-2.6.8
+tar xvf ${DOWNLOADDIR}/openldap-2.6.8.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openldap-2.6.8
+        
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+        CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
+	STRIP="${LINUX_HOST}-strip" \
+	./configure ${COMMON_CONFIG} --disable-static --enable-dynamic  \
+            --enable-versioning=yes --disable-debug --disable-slapd \
+            --with-yielding_select=yes ac_cv_func_memcmp_working=yes --enable-malloc0returnsnull
+        make -j${JOBS} LD="${LINUX_HOST}-ld" depend
+	make -j${JOBS} LD="${LINUX_HOST}-ld"
+        make STRIP="${LINUX_HOST}-strip" DESTDIR=${LINUX_SYSROOT_DIR} install
+        rm -f ${LINUX_SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/openldap-2.6.8

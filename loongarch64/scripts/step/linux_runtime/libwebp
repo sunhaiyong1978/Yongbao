@@ -4,18 +4,19 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libwebp
-export PACKAGE_VERSION=1.3.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libwebp/1.3.2/
-rm -rf ${BUILD_DIRECTORY}/libwebp-1.3.2
-tar xvf ${DOWNLOADDIR}/libwebp-1.3.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libwebp-1.3.2
-	
-	if [ ! -f configure ]; then
-		autoreconf -ifv
-	fi
-	 ./configure ${COMMON_CONFIG} --enable-libwebpmux --enable-libwebpdemux --enable-libwebpdecoder --enable-libwebpextras --enable-swap-16bit-csp --enable-malloc0returnsnull
-	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+export PACKAGE_VERSION=1.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libwebp/1.4.0/
+rm -rf ${BUILD_DIRECTORY}/libwebp-1.4.0
+tar xvf ${DOWNLOADDIR}/libwebp-1.4.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libwebp-1.4.0
+        
+        ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull --enable-libwebpmux --enable-libwebpdemux --enable-libwebpdecoder --enable-libwebpextras --enable-swap-16bit-csp LIBSDL_CONFIG=${CROSS_TOOLS_PREFIX}/bin/${ARCH_NAME}-sdl2-config LIBPNG_CONFIG=${CROSS_TOOLS_PREFIX}/bin/${ARCH_NAME}-libpng-config
+	pushd sharpyuv
+        	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+        	make DESTDIR=${LINUX_SYSROOT_DIR} install
+	popd
+        CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
         make DESTDIR=${LINUX_SYSROOT_DIR} install
-	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+        rm -f ${LINUX_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libwebp-1.3.2
+rm -rf ${BUILD_DIRECTORY}/libwebp-1.4.0

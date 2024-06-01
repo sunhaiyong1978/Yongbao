@@ -1,0 +1,35 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=bash
+export PACKAGE_VERSION=5.2.21
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/bash/5.2.21/
+rm -rf ${BUILD_DIRECTORY}/bash-5.2.21
+tar xvf ${DOWNLOADDIR}/bash-5.2.21.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bash-5.2.21
+cat > config.cache << "EOF"
+	ac_cv_func_mmap_fixed_mapped=yes
+	ac_cv_func_strcoll_works=yes
+	ac_cv_func_working_mktime=yes
+	bash_cv_func_sigsetjmp=present
+	bash_cv_getcwd_malloc=yes
+	bash_cv_job_control_missing=present
+	bash_cv_printf_a_format=yes
+	bash_cv_sys_named_pipes=present
+	bash_cv_ulimit_maxfds=yes
+	bash_cv_under_sys_siglist=yes
+	bash_cv_unusable_rtsigs=no
+	gt_cv_int_divbyzero_sigfpe=yes
+	ac_cv_func_arc4random=no
+EOF
+	
+	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
+	            --host=${LINUX_HOST} --without-bash-malloc \
+	            --with-installed-readline=${LINUX_SYSROOT_DIR}/usr --cache-file=config.cache
+	make -j${JOBS} RL_INCLUDEDIR=""
+	make DESTDIR=${LINUX_SYSROOT_DIR} install
+	ln -sfv bash ${LINUX_SYSROOT_DIR}/bin/sh
+popd 
+rm -rf ${BUILD_DIRECTORY}/bash-5.2.21

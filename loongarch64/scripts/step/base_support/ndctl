@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ndctl
-export PACKAGE_VERSION=78
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ndctl/78/
-rm -rf ${BUILD_DIRECTORY}/ndctl-78
-tar xvf ${DOWNLOADDIR}/ndctl-78.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ndctl-78
-	patch -Np1 -i ${SYSDIR}/files/base_support/ndctl/78/patches/0001-ndctl-fix-systemd-and-udev-dir-for-cross-build.patch 
+export PACKAGE_VERSION=79
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ndctl/79/
+rm -rf ${BUILD_DIRECTORY}/ndctl-79
+tar xvf ${DOWNLOADDIR}/ndctl-79.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ndctl-79
+	patch -Np1 -i ${SYSDIR}/files/base_support/ndctl/79/patches/0001-ndctl-fix-systemd-and-udev-dir-for-cross-build.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/ndctl-78
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/ndctl-78
+rm -rf ${BUILD_DIRECTORY}/ndctl-79

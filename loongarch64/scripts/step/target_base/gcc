@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gcc
-export PACKAGE_VERSION=13.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gcc/13.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
-tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.2.0
-	patch -Np1 -i ${SYSDIR}/files/target_base/gcc/13.2.0/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
-	patch -Np1 -i ${SYSDIR}/files/target_base/gcc/13.2.0/patches/0001-gcc-13-add-cmodule-medium-for-loongarch-libgcc.patch 
+export PACKAGE_VERSION=14.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gcc/14.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0
+tar xvf ${DOWNLOADDIR}/gcc-14.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-14.1.0
+	patch -Np1 -i ${SYSDIR}/files/target_base/gcc/14.1.0/patches/0001-gcc-13-add-cmodule-medium-for-loongarch-libgcc.patch 
 	 
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv cross-build
@@ -23,11 +22,11 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		             --with-build-sysroot=${SYSROOT_DIR} \
 			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
 		             --enable-default-pie \
-		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
+		             --enable-languages=c,c++,fortran,objc,obj-c++,lto,ada
 		make -j${JOBS}
 		make DESTDIR=${SYSROOT_DIR} install
 		ln -sfv /usr/bin/cpp ${SYSROOT_DIR}/lib
 		ln -sfv gcc ${SYSROOT_DIR}/usr/bin/cc
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0

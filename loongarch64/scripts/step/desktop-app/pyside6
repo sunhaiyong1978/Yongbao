@@ -33,7 +33,7 @@ pushd ${BUILD_DIRECTORY}/pyside6-git-default_git
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		      -DSHIBOKEN_BUILD_TOOLS=ON -DBUILD_TESTS=OFF -DQFP_SHIBOKEN_HOST_PATH=${CROSSTOOLS_DIR} -DQFP_PYTHON_HOST_PATH=${CROSSTOOLS_DIR}/bin/python3 -DCMAKE_C_FLAGS="${CFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version)" -DCMAKE_CXX_FLAGS="${CXXFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version)" -DQT6_HOST_INFO_BINDIR=lib64/qt6/bin -DQT6_HOST_INFO_LIBEXECDIR=lib64/qt6/libexec -Wno-dev ..
+		      -DSHIBOKEN_BUILD_TOOLS=ON -DBUILD_TESTS=OFF -DQFP_SHIBOKEN_HOST_PATH=${CROSSTOOLS_DIR} -DQFP_PYTHON_HOST_PATH=${CROSSTOOLS_DIR}/bin/python3 -DCMAKE_C_FLAGS="${CFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version)" -DCMAKE_CXX_FLAGS="${CXXFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version) -fpermissive" -DQT6_HOST_INFO_BINDIR=lib64/qt6/bin -DQT6_HOST_INFO_LIBEXECDIR=lib64/qt6/libexec -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

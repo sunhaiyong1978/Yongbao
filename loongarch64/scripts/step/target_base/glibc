@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.39/
 rm -rf ${BUILD_DIRECTORY}/glibc-2.39
 tar xvf ${DOWNLOADDIR}/glibc-2.39.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/glibc-2.39
-    
+    patch -Np1 -i ${SYSDIR}/files/target_base/glibc/2.39/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
+	 
     cp ${CROSSTOOLS_DIR}/share/automake*/config.* ./
     sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
     mkdir -p build-64
@@ -21,16 +22,10 @@ pushd ${BUILD_DIRECTORY}/glibc-2.39
 	                 --with-binutils=${CROSSTOOLS_DIR}/bin \
 	                 --with-headers=${SYSROOT_DIR}/usr/include \
 	                 --enable-stack-protector=strong --enable-add-ons \
-	                 --disable-werror libc_cv_slibdir=/usr/lib64 \
+	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib64 \
 	                 --enable-kernel=4.15
 		make -j${JOBS}
 		make DESTDIR=${SYSROOT_DIR} install
-		cp -v ../nscd/nscd.conf ${SYSROOT_DIR}/etc/nscd.conf
-		mkdir -pv ${SYSDIR}/sysroot/var/cache/nscd
-		install -v -Dm644 ../nscd/nscd.tmpfiles \
-		                  ${SYSROOT_DIR}/usr/lib/tmpfiles.d/nscd.conf
-		install -v -Dm644 ../nscd/nscd.service \
-		                  ${SYSROOT_DIR}/usr/lib/systemd/system/nscd.service
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/glibc-2.39

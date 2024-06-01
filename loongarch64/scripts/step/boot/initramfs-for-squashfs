@@ -42,13 +42,18 @@ pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
         ln -sv busybox usr/bin/modprobe
         ln -sv ../bin/busybox usr/sbin/switch_root
 
-        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/fs/fat/* lib/
-	if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/drivers/usb/storage/usb-storage.ko ]; then
-	        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/drivers/usb/storage/usb-storage.ko lib/
+	for i in fs/fat/fat fs/fat/msdos fs/fat/vfat drivers/usb/storage/usb-storage drivers/usb/storage/uas
+	do
+	if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko ]; then
+	        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko lib/
 	fi
+	done
+
 
         mkdir -p lib/firmware/amdgpu
         cp -a ${SYSROOT_DIR}/usr/lib/firmware/amdgpu/{si58_mc.bin,oland_*.bin} lib/firmware/amdgpu/
+
+	echo "${LINUX_KERNEL_VERSION}_${CONFIG_STR}" > ./uname_str.save
 
         find . | cpio -H newc --create > ../initramfs.img
     popd

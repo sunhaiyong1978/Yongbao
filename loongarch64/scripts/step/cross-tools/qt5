@@ -4,16 +4,16 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt5
-export PACKAGE_VERSION=5.15.13
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt5/5.15.13/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.13
-tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.13.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.13
-    patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-qt5-fix-for-xkbcommon-1.6.0.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.13/patches/0001-qt-5.15.11-fix-for-gcc-14.patch 
+export PACKAGE_VERSION=5.15.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt5/5.15.14/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.14
+tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.14.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.14
+    patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.14/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.14/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.14/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.14/patches/0001-qt5-fix-for-xkbcommon-1.6.0.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.14/patches/0001-qt-5.15.11-fix-for-gcc-14.patch 
 	 
     sed -i "s@defined(__aarch64__)@& || defined(__loongarch__)@g" qtbase/src/3rdparty/forkfd/forkfd_linux.c
     mkdir host-build
@@ -30,7 +30,7 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.13
         make install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.13
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.14
 
 echo "#!/bin/bash -e
 if [ \"x\${1:0:1}\" == \"xQ\" ]; then

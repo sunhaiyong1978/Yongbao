@@ -36,8 +36,13 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 	cp -af dest/lib/modules/* ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/
 	cp -af .config ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/vmlinux.config
 
+	if [ -f ${RESOURCEDIR}/linux-parm_${CONFIG_STR} ]; then
+		cat ${RESOURCEDIR}/linux-parm_${CONFIG_STR} | grep -v "^#" | head -n1  > ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/boot.parm
+	fi
+
 
 
 	echo "${LINUX_KERNEL_VERSION}" > ${COMMON_DIR}/linux-kernel.version
+	echo "${LINUX_KERNEL_VERSION}" > ${COMMON_DIR}/linux.version
 popd 
 rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git

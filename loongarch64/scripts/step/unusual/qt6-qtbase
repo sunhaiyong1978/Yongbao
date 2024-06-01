@@ -3,14 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=unusual
 export STEP_PACKAGENAME=qt6-qtbase
-export PACKAGE_VERSION=6.7.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/qt6-qtbase/6.7.0/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.0
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.7.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.0
-        patch -Np1 -i ${SYSDIR}/files/unusual/qt6-qtbase/6.7.0/patches/0001-qt6-qt3d-fix-for-gcc13.patch 
-	patch -Np1 -i ${SYSDIR}/files/unusual/qt6-qtbase/6.7.0/patches/0001-qt6-fix-for-xkbcommon-1.6.0.patch 
-	 
+export PACKAGE_VERSION=6.7.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/qt6-qtbase/6.7.1/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.1
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.7.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.1
+        
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
@@ -54,4 +52,4 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.0
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.1

@@ -1,0 +1,31 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=compiler-rt
+export PACKAGE_VERSION=18.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/compiler-rt/18.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-18.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-18.1.6.src
+    pushd compiler-rt
+        mkdir -p host-build
+        pushd host-build
+            cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR}/host-llvm-project \
+		  -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
+		  -DCMAKE_BUILD_TYPE=Release \
+                  -DLLVM_CONFIG=${CROSSTOOLS_DIR}/host-llvm-project/bin/llvm-config \
+                  -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+                  -DLLVM_CMAKE_DIR=${CROSSTOOLS_DIR}/host-llvm-project/lib${LIB_SUFF}/cmake \
+                  -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF}  \
+                  -DLLVM_ENABLE_RTTI:BOOL=ON \
+                  -DLLVM_ENABLE_ZLIB:BOOL=ON \
+                  -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+                  -DLLVM_USE_SANITIZER:BOOL=ON \
+                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON
+	    ninja
+	    ninja install
+        popd
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.6.src

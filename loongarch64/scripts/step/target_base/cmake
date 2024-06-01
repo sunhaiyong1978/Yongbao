@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=cmake
-export PACKAGE_VERSION=3.29.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/cmake/3.29.1/
-rm -rf ${BUILD_DIRECTORY}/cmake-3.29.1
-tar xvf ${DOWNLOADDIR}/cmake-3.29.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cmake-3.29.1
-    patch -Np1 -i ${SYSDIR}/files/target_base/cmake/3.29.1/patches/cmake-3.22.3-add-loongarch64-to-checktypesize.patch 
+export PACKAGE_VERSION=3.29.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/cmake/3.29.3/
+rm -rf ${BUILD_DIRECTORY}/cmake-3.29.3
+tar xvf ${DOWNLOADDIR}/cmake-3.29.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cmake-3.29.3
+    patch -Np1 -i ${SYSDIR}/files/target_base/cmake/3.29.3/patches/cmake-3.22.3-add-loongarch64-to-checktypesize.patch 
 	 
     mkdir build
     pushd build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/cmake-3.29.1
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/cmake-3.29.1
+rm -rf ${BUILD_DIRECTORY}/cmake-3.29.3

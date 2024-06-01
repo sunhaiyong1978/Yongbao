@@ -11,6 +11,7 @@ pushd ${BUILD_DIRECTORY}/hiredis-1.2.0
     
     mkdir -p native-build
     pushd native-build
+	CC="gcc" CXX="g++" \
         cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}  \
               -DCMAKE_BUILD_TYPE=RELEASE ..
 	eval ${MAKE_AND_INSTALL}

@@ -1,6 +1,7 @@
 boot
 sysroot
 sddm
+lightdm
 KDE6
 desk_app
 bin-pkg
@@ -9,3 +10,5 @@ java_runtime
 simulate
 x86_64_runtime
 i686_runtime
+wine-collection
+benchmark

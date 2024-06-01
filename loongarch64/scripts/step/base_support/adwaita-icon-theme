@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=adwaita-icon-theme
-export PACKAGE_VERSION=46.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/adwaita-icon-theme/46.0/
-rm -rf ${BUILD_DIRECTORY}/adwaita-icon-theme-46.0
-tar xvf ${DOWNLOADDIR}/adwaita-icon-theme-46.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/adwaita-icon-theme-46.0
+export PACKAGE_VERSION=46.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/adwaita-icon-theme/46.2/
+rm -rf ${BUILD_DIRECTORY}/adwaita-icon-theme-46.2
+tar xvf ${DOWNLOADDIR}/adwaita-icon-theme-46.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/adwaita-icon-theme-46.2
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/adwaita-icon-theme-46.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/adwaita-icon-theme-46.0
+rm -rf ${BUILD_DIRECTORY}/adwaita-icon-theme-46.2

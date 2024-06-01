@@ -12,6 +12,7 @@ pushd ${BUILD_DIRECTORY}/pyside6-git-default_git
     pushd sources/shiboken6
 	mkdir -p native-build
 	pushd native-build
+		CC="gcc" CXX="g++" \
 		LLVM_INSTALL_DIR=${CROSSTOOLS_DIR} \
 	        cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR} -DBUILD_TESTS=OFF -DSHIBOKEN_BUILD_TOOLS=ON \
         	      -DCMAKE_BUILD_TYPE=RELEASE ..

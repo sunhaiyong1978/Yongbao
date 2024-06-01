@@ -3,22 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mobile-broadband-provider-info
-export PACKAGE_VERSION=20230416
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mobile-broadband-provider-info/20230416/
-rm -rf ${BUILD_DIRECTORY}/mobile-broadband-provider-info-20230416
-tar xvf ${DOWNLOADDIR}/mobile-broadband-provider-info-20230416.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mobile-broadband-provider-info-20230416
+export PACKAGE_VERSION=20240407
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mobile-broadband-provider-info/20240407/
+rm -rf ${BUILD_DIRECTORY}/mobile-broadband-provider-info-20240407
+tar xvf ${DOWNLOADDIR}/mobile-broadband-provider-info-20240407.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mobile-broadband-provider-info-20240407
 	
-	for config_i in $(find -name "config.sub")
-	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
-	done
-	if [ ! -f configure ]; then
-		autoreconf -ifv
-	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
-	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG}  \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mobile-broadband-provider-info-20230416
+rm -rf ${BUILD_DIRECTORY}/mobile-broadband-provider-info-20240407

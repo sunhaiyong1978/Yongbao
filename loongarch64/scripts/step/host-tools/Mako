@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=Mako
-export PACKAGE_VERSION=1.3.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Mako/1.3.2/
-rm -rf ${BUILD_DIRECTORY}/Mako-1.3.2
-tar xvf ${DOWNLOADDIR}/Mako-1.3.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Mako-1.3.2
+export PACKAGE_VERSION=1.3.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Mako/1.3.5/
+rm -rf ${BUILD_DIRECTORY}/Mako-1.3.5
+tar xvf ${DOWNLOADDIR}/Mako-1.3.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Mako-1.3.5
 	
 	${CROSSTOOLS_DIR}/bin/python3 setup.py build
         ${CROSSTOOLS_DIR}/bin/python3 setup.py install
  #       ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
 popd 
-rm -rf ${BUILD_DIRECTORY}/Mako-1.3.2
+rm -rf ${BUILD_DIRECTORY}/Mako-1.3.5

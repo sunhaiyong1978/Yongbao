@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=clang
-export PACKAGE_VERSION=18.1.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/clang/18.1.3/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.3.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.3.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.3.src
+export PACKAGE_VERSION=18.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/clang/18.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-18.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-18.1.6.src
 pushd clang
     mkdir -p native-build
     pushd native-build
@@ -22,11 +22,11 @@ pushd clang
 		 -DLLVM_CMAKE_DIR=${CROSSTOOLS_DIR}/lib${LIB_SUFF}/cmake \
                  -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF}  \
                  -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
-                 -DLLVM_INCLUDE_TESTS=OFF \
+                 -DLLVM_INCLUDE_TESTS=OFF -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
                  -DDEFAULT_SYSROOT:PATH="${SYSROOT_DIR}"
         ninja
         ninja install
         cp -av bin/clang-tblgen ${CROSSTOOLS_DIR}/bin/
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.3.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.6.src

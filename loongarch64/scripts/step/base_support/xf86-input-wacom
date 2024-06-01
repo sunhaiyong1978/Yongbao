@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xf86-input-wacom
-export PACKAGE_VERSION=1.2.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xf86-input-wacom/1.2.1/
-rm -rf ${BUILD_DIRECTORY}/xf86-input-wacom-1.2.1
-tar xvf ${DOWNLOADDIR}/xf86-input-wacom-1.2.1.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xf86-input-wacom-1.2.1
+export PACKAGE_VERSION=1.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xf86-input-wacom/1.2.2/
+rm -rf ${BUILD_DIRECTORY}/xf86-input-wacom-1.2.2
+tar xvf ${DOWNLOADDIR}/xf86-input-wacom-1.2.2.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xf86-input-wacom-1.2.2
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -18,7 +18,8 @@ pushd ${BUILD_DIRECTORY}/xf86-input-wacom-1.2.1
 	fi
 	 ./configure ${COMMON_CONFIG} --with-sdkdir=/usr/include/xorg --with-xorg-conf-dir=/usr/share/X11/xorg.conf.d --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xf86-input-wacom-1.2.1
+rm -rf ${BUILD_DIRECTORY}/xf86-input-wacom-1.2.2

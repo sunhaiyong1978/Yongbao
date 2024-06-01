@@ -9,7 +9,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd/255/
 rm -rf ${BUILD_DIRECTORY}/systemd-255
 tar xvf ${DOWNLOADDIR}/systemd-255.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/systemd-255
-	
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/systemd/255/patches/systemd-255-add-PID_FS_MAGIC-for-linux-6.9.patch 
+	 
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
 	popd

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=strace
-export PACKAGE_VERSION=6.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/strace/6.8/
-rm -rf ${BUILD_DIRECTORY}/strace-6.8
-tar xvf ${DOWNLOADDIR}/strace-6.8.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/strace-6.8
+export PACKAGE_VERSION=6.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/strace/6.9/
+rm -rf ${BUILD_DIRECTORY}/strace-6.9
+tar xvf ${DOWNLOADDIR}/strace-6.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/strace-6.9
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -18,7 +18,8 @@ pushd ${BUILD_DIRECTORY}/strace-6.8
 	fi
 	 ./configure ${COMMON_CONFIG} CFLAGS="${CFLAGS} -Wno-error=calloc-transposed-args" --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/strace-6.8
+rm -rf ${BUILD_DIRECTORY}/strace-6.9

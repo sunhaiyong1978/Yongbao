@@ -4,16 +4,19 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-gcc
-export PACKAGE_VERSION=13.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc/13.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
-tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.2.0
+export PACKAGE_VERSION=14.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc/14.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0
+tar xvf ${DOWNLOADDIR}/gcc-14.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-14.1.0
 	mkdir -p tools-build
 	pushd tools-build
 		case "${ARCH_NAME}" in
 			"i686")
 				ABI_STRING=""
+				;;
+			"x86_64")
+				ABI_STRING="--with-abi=${ARCH_ABI} --with-tune=generic"
 				;;
 			*)
 				ABI_STRING="--with-abi=${ARCH_ABI}"
@@ -31,10 +34,9 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		             --disable-libsanitizer --disable-libquadmath --disable-threads \
 		             --disable-target-zlib --with-system-zlib --enable-checking=release \
 			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
-			     --with-tune=generic \
 		             --enable-languages=c
 		make -j${JOBS} all-gcc all-target-libgcc
 		make install-strip-gcc install-strip-target-libgcc
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0

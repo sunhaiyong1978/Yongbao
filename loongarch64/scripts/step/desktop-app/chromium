@@ -1,0 +1,16 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=chromium
+export PACKAGE_VERSION=125.0.6422.141
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/chromium/125.0.6422.141/
+rm -rf ${BUILD_DIRECTORY}/chromium-125.0.6422.141
+tar xvf ${DOWNLOADDIR}/chromium-125.0.6422.141-clean.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/chromium-125.0.6422.141
+	
+	unset PKG_CONFIG_SYSROOT_DIR PKG_CONFIG_PATH PKG_CONFIG_LIBDIR LDFLAGS
+	PKG_CONFIG_PATH="" PKG_CONFIG_SYSROOT_DIR="" LDFLAGS="" ${CROSSTOOLS_DIR}/qt6/bin/gn gen out/Release --args='import("release.gn")'
+	ninja -C out/Release chrome
+popd 
+rm -rf ${BUILD_DIRECTORY}/chromium-125.0.6422.141

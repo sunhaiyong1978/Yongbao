@@ -24,6 +24,7 @@ mkdir -pv ${LINUX_SYSROOT_DIR}/etc/skel
 cp -a ${RESOURCEDIR}/etc-ld.so.conf ${LINUX_SYSROOT_DIR}/etc/ld.so.conf
 mkdir -pv ${LINUX_SYSROOT_DIR}/etc/ld.so.conf.d
 cp -a ${RESOURCEDIR}/etc-nsswitch.conf ${LINUX_SYSROOT_DIR}/etc/nsswitch.conf
+mkdir -pv ${LINUX_SYSROOT_DIR}/etc/systemd/network/
 cp -a ${RESOURCEDIR}/etc-systemd_network_10-eth-dhcp.network ${LINUX_SYSROOT_DIR}/etc/systemd/network/10-eth-dhcp.network
 ln -sfv /run/systemd/resolve/resolv.conf ${LINUX_SYSROOT_DIR}/etc/resolv.conf
 cp -a ${RESOURCEDIR}/etc-hostname ${LINUX_SYSROOT_DIR}/etc/hostname

@@ -1,6 +1,0 @@
-URL=https://gitlab.winehq.org/wine/wine-staging.git
-FILENAME=wine-staging
-MODE=GIT
-GIT_BRANCH=master
-GIT_COMMIT=e9f69afcab7a6143abb54854945bdbf7f091c60c
-GIT_SUBMODULE=0

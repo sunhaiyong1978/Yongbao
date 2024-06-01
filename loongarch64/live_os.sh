@@ -85,8 +85,8 @@ if [ -d ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/ 
 	if [ -f ${BASE_DIR}/info_set/release_sort ]; then
 		for i in $(cat ${BASE_DIR}/info_set/release_sort | grep -v "^#")
 		do
-			echo "发现 ${i}.... ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs "
 			if [ -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs ]; then
+				echo "发现 ${i}.... ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs "
 				cp ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs ${LIVE_DIRECTORY}/images/
 			fi
 		done
@@ -212,11 +212,15 @@ EOF
 			cp ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/boot/vmlinux.efi ${LIVE_DIRECTORY}/boot/vmlinux_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.efi
 			cp ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/initramfs-squashfs.img.gz ${LIVE_DIRECTORY}/boot/initramfs_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.img.gz
 			cp ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/boot/vmlinux.config ${LIVE_DIRECTORY}/boot/vmlinux_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.config
+			EXTRA_KERNEL_PARM=""
+			if [ -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/boot/boot.parm ]; then
+				EXTRA_KERNEL_PARM=$(cat ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/boot/boot.parm | grep -v "^#" | head -n1)
+			fi
 			cat >> ${LIVE_DIRECTORY}/boot/grub/grub.cfg << EOF
 menuentry '${DISTRO_NAME_CN} ${DISTRO_VERSION} ${DISTRO_ARCH_NAME_CN} (Linux ${KERNEL_VERSION}_${kernel_dir})' {
   set gfxpayload=keep
   echo '加载Linux内核……'
-  linux /boot/vmlinux_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.efi LABEL=${NEW_LABEL} quiet amdgpu.dpm=0
+  linux /boot/vmlinux_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.efi LABEL=${NEW_LABEL} quiet ${EXTRA_KERNEL_PARM}
   initrd /boot/initramfs_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.img.gz
   echo '加载完成，开始启动${DISTRO_NAME_CN}系统……'
 }
@@ -262,14 +266,28 @@ fi
 cp -a ${BASE_DIR}/docs ${LIVE_DIRECTORY}/ 
 
 # 安装发布信息文件
-echo "本次发布的${DISTRO_NAME_CN} ${DISTRO_VERSION} 版本概要如下：" > ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
-cat ${NEW_TARGET_SYSDIR}/logs/release_summary.txt >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
-echo "" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
-echo "" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
-echo "" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
-echo "更加详细的软件列表及版本信息如下：" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
-cat ${NEW_TARGET_SYSDIR}/logs/release_info.txt >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+if [ -f ${NEW_TARGET_SYSDIR}/logs/release_summary.txt ]; then
+	echo "本次发布的${DISTRO_NAME_CN} ${DISTRO_VERSION} 版本概要如下：" > ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+	cat ${NEW_TARGET_SYSDIR}/logs/release_summary.txt >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+	echo "" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+	echo "" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+	echo "" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+	echo "更加详细的软件列表及版本信息如下：" >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+	cat ${NEW_TARGET_SYSDIR}/logs/release_info.txt >> ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
 
-iconv -t GBK -o ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.GBK.txt ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+	iconv -t GBK -o ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.GBK.txt ${LIVE_DIRECTORY}/${DISTRO_NAME}_${DISTRO_VERSION}-release-info.txt
+fi
+
+if [ -f ${NEW_TARGET_SYSDIR}/logs/update_release_summary.txt ]; then
+	echo "本次发布的${DISTRO_NAME_CN} ${DISTRO_VERSION} 更新包新增或更新内容概要如下：" > ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+	cat ${NEW_TARGET_SYSDIR}/logs/update_release_summary.txt >> ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+	echo "" >> ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+	echo "" >> ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+	echo "" >> ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+	echo "更加详细的软件列表及版本信息如下：" >> ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+	cat ${NEW_TARGET_SYSDIR}/logs/update_release_info.txt >> ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+
+	iconv -t GBK -o ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.GBK.txt ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
+fi
 
 echo "Live USB系统导出完成，存放在 ${LIVE_DIRECTORY} , 准备一个第一分区为VFAT格式空分区的U盘，将 ${LIVE_DIRECTORY} 目录中所有内容复制到U盘的第一分区中，该U盘即可在支持UEFI的机器上作为LiveUSB启动。"

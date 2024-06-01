@@ -4,13 +4,19 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=SDL2
-export PACKAGE_VERSION=2.30.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/SDL2/2.30.2/
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.2
-tar xvf ${DOWNLOADDIR}/SDL2-2.30.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SDL2-2.30.2
+export PACKAGE_VERSION=2.30.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/SDL2/2.30.3/
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.3
+tar xvf ${DOWNLOADDIR}/SDL2-2.30.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SDL2-2.30.3
     ./configure ${COMMON_CONFIG}
     make -j${JOBS} WAYLAND_SCANNER=wayland-scanner
     make DESTDIR=${LINUX_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.2
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.3
+
+cp ${LINUX_SYSROOT_DIR}/usr/bin/sdl2-config ${CROSS_TOOLS_PREFIX}/bin/${ARCH_NAME}-sdl2-config
+sed -i \
+	-e "s@=/usr/lib${LIB_SUFF}@=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}@g" \
+	-e "s@L/usr/lib${LIB_SUFF}@L${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}@g" \
+	${CROSS_TOOLS_PREFIX}/bin/${ARCH_NAME}-sdl2-config

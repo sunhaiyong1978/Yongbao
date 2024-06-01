@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/xf86-video-fbdev-0.5.0
 	fi
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 

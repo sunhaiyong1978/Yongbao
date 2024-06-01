@@ -1,0 +1,25 @@
+From 5cd71a95920ff0da09d0f7a879a666faaf0bba2c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 17 Apr 2024 13:32:14 +0000
+Subject: [PATCH] syntax-highlighting src/indexer add CMAKE_CXX_COMPILER for
+ Yongbao cross build.
+
+---
+ src/indexer/CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/indexer/CMakeLists.txt b/src/indexer/CMakeLists.txt
+index cf6940b..0ed544d 100644
+--- a/src/indexer/CMakeLists.txt
++++ b/src/indexer/CMakeLists.txt
+@@ -12,6 +12,7 @@ elseif(CMAKE_CROSSCOMPILING)
+     ExternalProject_Add(native_katehighlightingindexer
+                         SOURCE_DIR ${CMAKE_SOURCE_DIR}
+                         CMAKE_ARGS -DKSYNTAXHIGHLIGHTING_USE_GUI=OFF
++                            -DCMAKE_CXX_COMPILER=g++
+                             -DECM_DIR=${ECM_DIR} -DCMAKE_PREFIX_PATH=${NATIVE_PREFIX}
+                             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}
+                             -DQT_MAJOR_VERSION=6
+-- 
+2.31.1
+

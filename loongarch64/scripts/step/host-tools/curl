@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=curl
-export PACKAGE_VERSION=8.7.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/curl/8.7.1/
-rm -rf ${BUILD_DIRECTORY}/curl-8.7.1
-tar xvf ${DOWNLOADDIR}/curl-8.7.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/curl-8.7.1
+export PACKAGE_VERSION=8.8.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/curl/8.8.0/
+rm -rf ${BUILD_DIRECTORY}/curl-8.8.0
+tar xvf ${DOWNLOADDIR}/curl-8.8.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/curl-8.8.0
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/curl-8.7.1
 	 ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --with-openssl
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/curl-8.7.1
+rm -rf ${BUILD_DIRECTORY}/curl-8.8.0

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=setuptools
-export PACKAGE_VERSION=69.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/setuptools/69.2.0/
-rm -rf ${BUILD_DIRECTORY}/setuptools-69.2.0
-tar xvf ${DOWNLOADDIR}/setuptools-69.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/setuptools-69.2.0
+export PACKAGE_VERSION=70.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/setuptools/70.0.0/
+rm -rf ${BUILD_DIRECTORY}/setuptools-70.0.0
+tar xvf ${DOWNLOADDIR}/setuptools-70.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/setuptools-70.0.0
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user setuptools
 popd 
-rm -rf ${BUILD_DIRECTORY}/setuptools-69.2.0
+rm -rf ${BUILD_DIRECTORY}/setuptools-70.0.0

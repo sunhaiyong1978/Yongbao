@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=Jinja2
-export PACKAGE_VERSION=3.1.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Jinja2/3.1.3/
-rm -rf ${BUILD_DIRECTORY}/Jinja2-3.1.3
-tar xvf ${DOWNLOADDIR}/Jinja2-3.1.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Jinja2-3.1.3
-    ${CROSSTOOLS_DIR}/bin/python3 setup.py build
-    ${CROSSTOOLS_DIR}/bin/python3 setup.py install \
-             --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+export PACKAGE_VERSION=3.1.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Jinja2/3.1.4/
+rm -rf ${BUILD_DIRECTORY}/jinja2-3.1.4
+tar xvf ${DOWNLOADDIR}/jinja2-3.1.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jinja2-3.1.4
+	
+	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user Jinja2 --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/Jinja2-3.1.3
+rm -rf ${BUILD_DIRECTORY}/jinja2-3.1.4

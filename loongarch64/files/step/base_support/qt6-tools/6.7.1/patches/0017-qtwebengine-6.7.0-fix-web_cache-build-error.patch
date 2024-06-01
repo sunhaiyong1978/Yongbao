@@ -1,0 +1,27 @@
+From cb2efe4c32512b190563c7b7e859c96d6164ee00 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Apr 2024 17:03:55 +0000
+Subject: [PATCH 17/19] qtwebengine 6.7.0 fix web_cache build error.
+
+---
+ qtwebengine/src/3rdparty/chromium/extensions/browser/BUILD.gn | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/extensions/browser/BUILD.gn b/qtwebengine/src/3rdparty/chromium/extensions/browser/BUILD.gn
+index e93f0f7ad..39f3e3778 100644
+--- a/qtwebengine/src/3rdparty/chromium/extensions/browser/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/extensions/browser/BUILD.gn
+@@ -738,8 +738,8 @@ jumbo_source_set("browser_sources") {
+       "//components/update_client",
+       "//components/variations",
+       "//components/version_info",
+-      "//components/web_cache/browser",
+-      "//components/web_cache/browser:browser",
++#      "//components/web_cache/browser",
++#      "//components/web_cache/browser:browser",
+     ]
+   }
+ }
+-- 
+2.31.1
+

@@ -79,7 +79,7 @@ function get_partion_form_label_file()
 {
     for i in ${1}
     do
-        mount /dev/$i /mnt/usb 2>/dev/null
+        mount -o ro /dev/$i /mnt/usb 2>/dev/null
         if test $? = 0 ; then
             if [ -f /mnt/usb/LABEL ]; then
                 if grep -q "${2}" /mnt/usb/LABEL ; then
@@ -104,7 +104,7 @@ function get_partion_fstype()
 
 function get_partion_overlay_file()
 {
-    mount /dev/${1} /mnt/usb 2>/dev/null
+    mount -o ro /dev/${1} /mnt/usb 2>/dev/null
     if test $? = 0 ; then
         if [ -f /mnt/usb/.userdata ]; then
             FSTYPE=$(blkid /mnt/usb/.userdata | awk -F' TYPE=' '{print $2}' | awk -F' ' '{ print $1 }' | tr -d \")
@@ -126,7 +126,7 @@ function get_partion_overlay_file()
 
 function get_partion_overlay_directory()
 {
-    mount /dev/${1} /mnt/usb 2>/dev/null
+    mount -o ro /dev/${1} /mnt/usb 2>/dev/null
     if test $? = 0 ; then
         if [ -d /mnt/usb/.userdata ]; then
             echo ".userdata"
@@ -187,21 +187,35 @@ function get_overlay_upper()
 
 
 UNAME_STR=$(uname -a | awk -F' ' '{print $3}')
-mkdir -p /lib/modules/${UNAME_STR}
-mv /lib/*.ko /lib/modules/${UNAME_STR}
-modprobe vfat
-modprobe usb-storage
+if [ "x$(cat /uname_str.save)" == "x${UNAME_STR}" ]; then
+	mkdir -p /lib/modules/${UNAME_STR}
+	mv /lib/*.ko /lib/modules/${UNAME_STR}
+	modprobe fat
+	modprobe vfat
+	modprobe usb-storage
+	modprobe uas
+fi
 
 
 MOUNT_DISK=""
 MOUNT_STR=""
 LABEL_FIND=0
+RD_BREAK=""
+
+USERDATA_READONLY=0
 
 LABEL=$(cat /proc/cmdline | awk -F' LABEL=' '{print $2}' | awk -F' ' '{print $1}')
 LIVE_MODE=$(cat /proc/cmdline | awk -F' live_mode=' '{print $2}' | awk -F' ' '{print $1}')
+USERDATA_READONLY=$(cat /proc/cmdline | awk -F' userdata_ro=' '{print $2}' | awk -F' ' '{print $1}')
 ROOT_PARTION=$(cat /proc/cmdline | awk -F' root=' '{print $2}' | awk -F' ' '{print $1}')
 ROOT_ATTR_NAME=$(echo ${ROOT_PARTION} | awk -F'=' '{print $1}')
 ROOT_ATTR_VAL=$(echo ${ROOT_PARTION} | awk -F'=' '{print $2}')
+RD_BREAK=$(cat /proc/cmdline | awk -F' rd.break=' '{print $2}' | awk -F' ' '{print $1}')
+
+if [ "x${RD_BREAK}" == "xpre-mount" ]; then
+    /bin/sh
+    exit 1
+fi
 
 if [ "x${LABEL}" == "x" ] && [ "x${ROOT_PARTION}" == "x" ]; then
     /bin/sh
@@ -286,12 +300,16 @@ if [ "x${MOUNT_DISK}" != "x" ]; then
             ;;
     esac
     mount /dev/$MOUNT_DISK /ISOSYSTEM
-
+    if test $? != 0 ; then
+	USERDATA_READONLY=1
+	mount -o ro /dev/$MOUNT_DISK /ISOSYSTEM
+    fi
 
     if [ ! -f /ISOSYSTEM/images/kernel_${UNAME_STR}.$(uname -m).squashfs ]; then
 	echo "没有发现启动内核对应的内核组件文件，不能继续，请检查 /dev/$MOUNT_DISK 分区中的/images目录是否存在，且该目录下是否存在 kernel_${UNAME_STR}.$(uname -m).squashfs 文件。"
-	/bin/sh
-	return
+	mkdir /images/kernel_${UNAME_STR}
+#	/bin/sh
+#	return
     else
 	mkdir /images/kernel_${UNAME_STR}
 	mount -t squashfs /ISOSYSTEM/images/kernel_${UNAME_STR}.$(uname -m).squashfs /images/kernel_${UNAME_STR}
@@ -329,8 +347,34 @@ if [ "x${MOUNT_DISK}" != "x" ]; then
             fi
         fi
     done
-    if [ "x${LIVE_MODE}" == "x1" ]; then
+
+    if [ "x${USERDATA_READONLY}" == "x1" ]; then
+        if [ "x${OVERLAY_DIR}" == "xdirectory" ]; then
+            if [ x"${MOUNT_STR}" == x ]; then
+                MOUNT_STR="/ISOSYSTEM/.userdata/userdata"
+            else
+                MOUNT_STR="/ISOSYSTEM/.userdata/userdata:${MOUNT_STR}"
+            fi
+	else
+            if [ "x${OVERLAY_DIR}" == "xfile" ]; then
+		mkdir /images/.userdata
+                mount /ISOSYSTEM/.userdata /.userdata
+            	if [ x"${MOUNT_STR}" == x ]; then
+                	MOUNT_STR="/.userdata/userdata"
+		else
+		        MOUNT_STR="/.userdata/userdata:${MOUNT_STR}"
+		fi
+	    fi
+	fi
+    fi
+
+    if [ "x${LIVE_MODE}" == "x1" ] || [ "x${USERDATA_READONLY}" == "x1" ]; then
         mount -t tmpfs tmpfs /overlayfs
+	if [ "x${LIVE_MODE}" == "x1" ]; then
+		echo -e "当前处于 \e[31m初始体验\e[0m 模式，系统将使用最初始化的状态进行启动。"
+	else
+		echo -e "当前处于 \e[31m系统保护\e[0m 模式，本次对系统本身的修改都将在重启后恢复。"
+	fi
     else
         if [ "x${OVERLAY_DIR}" == "xdirectory" ]; then
             mount --bind /ISOSYSTEM/.userdata /overlayfs
@@ -339,6 +383,7 @@ if [ "x${MOUNT_DISK}" != "x" ]; then
                 mount /ISOSYSTEM/.userdata /overlayfs
             else
                 mount -t tmpfs tmpfs /overlayfs
+		echo -e "当前处于 \e[32m体验\e[0m 模式，对系统本身的修改都将在重启后恢复。"
             fi
         fi
     fi
@@ -346,8 +391,19 @@ if [ "x${MOUNT_DISK}" != "x" ]; then
     mkdir -p /overlayfs/userdata
     mkdir -p /overlayfs/.worker
 
+    if [ "x${LIVE_MODE}" == "x1" ] || [ "x${USERDATA_READONLY}" == "x1" ]; then
+	if [ "x${LIVE_MODE}" == "x1" ]; then
+		mkdir /overlayfs/userdata/etc/
+		echo "1" > /overlayfs/userdata/etc/.live_mode
+	fi
+	if [ "x${USERDATA_READONLY}" == "x1" ]; then
+		mkdir /overlayfs/userdata/etc/
+		echo "1" > /overlayfs/userdata/etc/.userdata_ro
+	fi
+    fi
+
     if [ x"$MOUNT_STR" != x ]; then
-        mount -t overlay overlay -o lowerdir=${MOUNT_STR},upperdir=/overlayfs/userdata,workdir=/overlayfs/.worker /rootfs
+	mount -t overlay overlay -o lowerdir=${MOUNT_STR},upperdir=/overlayfs/userdata,workdir=/overlayfs/.worker /rootfs
         exec switch_root /rootfs /sbin/init
     else
         /bin/sh

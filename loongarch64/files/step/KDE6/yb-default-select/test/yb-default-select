@@ -1,0 +1,94 @@
+#!/bin/bash -e
+
+TEST_MODE=FALSE
+
+# DIALOG=${DIALOG=kdialog --separator "/" --screen-center --timeout 0 --stdout }
+DIALOG=${DIALOG=kdialog }
+
+INSTALL_DIRECTORY="Yongbao"
+
+while getopts 'th' OPT; do
+    case $OPT in
+        t)
+            TEST_MODE=TRUE
+            ;;
+        h|?)
+            echo "用法: `basename $0` [选项]"
+            exit 0
+            ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+WORKBASE_DIR=/etc
+
+SELECT_PROGRAM_NAME="${1}"
+
+if [ "x${SELECT_PROGRAM_NAME}" == "x" ]; then
+	# 欢迎提示
+	${DIALOG} --ok-label "继续" --msgbox "欢迎使用勇豹系统默认程序选择工具。" 10 100
+
+	# 选择程序名称
+	SELECT_STR=""
+
+	for program_name in $(find ${WORKBASE_DIR}/default-set/ -maxdepth 1 -name "*.comment" -type f | sed -e "s@${WORKBASE_DIR}/default-set/@@g" -e "s@\.comment\$@@g")
+	do
+		SELECT_PROGRAM_COMMENT=$(cat ${WORKBASE_DIR}/default-set/${program_name}.comment | grep -v "^#" | awk -F'|' '{ print $1 }')
+		SELECT_STR="${SELECT_STR} \"${program_name}\" \"${SELECT_PROGRAM_COMMENT}\" "
+	done
+	PROGRAM_NAME=""
+	if [ "x${SELECT_STR}" != "x" ]; then
+		STR="${DIALOG} --ok-label "选择" --title \"程序名称选择\" --menu \"选择你要设置默认命令的程序名称：\"  ${SELECT_STR}"
+		PROGRAM_NAME=$(eval "${STR}")
+	fi
+	# ${DIALOG} --msgbox "你选择了 ${PROGRAM_NAME} 。" 10 100
+
+	PROGRAM_COMMAND_LINE=$(cat ${WORKBASE_DIR}/default-set/${PROGRAM_NAME}.comment | grep -v "^#" | awk -F'|' '{ print $2 }')
+else
+	if [ -f ${WORKBASE_DIR}/default-set/${SELECT_PROGRAM_NAME}.comment ]; then
+		PROGRAM_NAME="${SELECT_PROGRAM_NAME}"
+		PROGRAM_COMMAND_LINE=$(cat ${WORKBASE_DIR}/default-set/${SELECT_PROGRAM_NAME}.comment | grep -v "^#" | awk -F'|' '{ print $2 }')
+	else
+		${DIALOG} --error "没有发现可以设置的 ${SELECT_PROGRAM_NAME} 选择！" --title "没找到指定程序"
+		exit 1
+	fi
+fi
+
+# 选择程序名称使用的默认命令
+INSTALL_VERSION=""
+SELECT_STR=""
+for commands in $(find ${WORKBASE_DIR}/default-set/${PROGRAM_NAME}/ -maxdepth 1 -type f | sed -e "s@${WORKBASE_DIR}/default-set/${PROGRAM_NAME}/@@g")
+do
+	SELECT_COMMAND_COMMENT=$(cat ${WORKBASE_DIR}/default-set/${PROGRAM_NAME}/${commands} | grep "^SET=" | awk -F'SET=' '{ print $2 }' | awk -F'|' '{ print $1 }')
+	SELECT_COMMAND_LINE=$(cat ${WORKBASE_DIR}/default-set/${PROGRAM_NAME}/${commands} | grep "^SET=" | awk -F'SET=' '{ print $2 }' | awk -F'|' '{ print $3 }')
+	if [ "x$(realpath ${PROGRAM_COMMAND_LINE})" == "x${SELECT_COMMAND_LINE}" ]; then
+		SELECT_STR="${SELECT_STR} \"${SELECT_COMMAND_LINE}\" \"${SELECT_COMMAND_COMMENT}\" on "
+	else
+		SELECT_STR="${SELECT_STR} \"${SELECT_COMMAND_LINE}\" \"${SELECT_COMMAND_COMMENT}\" off "
+	fi
+done
+SELECT_COMMAND=""
+if [ "x${SELECT_STR}" != "x" ]; then
+	STR="${DIALOG} --ok-label "选择" --title \"选择程序使用的命令\" --radiolist \"选择 ${PROGRAM_NAME} 默认使用的命令：\" ${SELECT_STR}"
+	SELECT_COMMAND=$(eval "${STR}")
+fi
+# ${DIALOG} --msgbox "你选择了 ${SELECT_COMMAND} 作为 ${PROGRAM_NAME} 的默认命令 。" 10 100
+
+if [ ! -f ${SELECT_COMMAND} ]; then
+	${DIALOG} --error "你选择设置的命令名 ${SELECT_COMMAND} 在当前系统中没有找到，无法继续完成设置！" --title "没找到文件"
+	exit 3
+fi
+
+if [ "x${TEST_MODE}" == "xTRUE" ]; then
+	echo "ln -sfv ${SELECT_COMMAND} ${PROGRAM_COMMAND_LINE}"
+else
+	sudo ln -sfv ${SELECT_COMMAND} ${PROGRAM_COMMAND_LINE}
+	if [ "x$?" == "x0" ]; then
+		${DIALOG} --msgbox "已按照你的要求将 ${PROGRAM_COMMAND_LINE} 设置为 ${SELECT_COMMAND} 。" --title "设置成功"
+	else
+		${DIALOG} --error "sudo ln -sfv ${SELECT_COMMAND} ${PROGRAM_COMMAND_LINE} 执行错误！ 没有完成设置！" --title "失败"
+		exit 2
+	fi
+fi
+
+exit 0

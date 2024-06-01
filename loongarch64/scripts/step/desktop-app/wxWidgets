@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=wxWidgets
-export PACKAGE_VERSION=3.2.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxWidgets/3.2.4/
-rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.4
-tar xvf ${DOWNLOADDIR}/wxWidgets-3.2.4.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.4
+export PACKAGE_VERSION=3.2.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxWidgets/3.2.5/
+rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.5
+tar xvf ${DOWNLOADDIR}/wxWidgets-3.2.5.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.5
         
         for config_i in $(find -name "config.sub")
         do
@@ -28,4 +28,4 @@ pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.4
         	> ${CROSSTOOLS_DIR}/bin/wxrc
 	chmod +x ${CROSSTOOLS_DIR}/bin/wxrc
 popd 
-rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.4
+rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.5

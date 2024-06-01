@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/kmod-32
 	./configure --prefix=/usr --libdir=/usr/lib64 --bindir=/bin \
 	            --sysconfdir=/etc --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 	            --with-xz --with-zstd --with-zlib \
-		    --with-bashcompletiondir=/usr/share/bash-completion/completions
+		    --with-bashcompletiondir=/usr/share/bash-completion/completions as_ln_s="ln -sf"
 	eval ${MAKE_AND_INSTALL}
 	
 	for target in depmod insmod lsmod modinfo modprobe rmmod; do

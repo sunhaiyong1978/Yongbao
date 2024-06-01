@@ -16,6 +16,6 @@ pushd ${BUILD_DIRECTORY}/pango-1.52.2
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd
-	rm -f ${SYSROOT_DIR}/usr/lib/mingw/sys-root/mingw/lib/*.la
+	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/pango-1.52.2

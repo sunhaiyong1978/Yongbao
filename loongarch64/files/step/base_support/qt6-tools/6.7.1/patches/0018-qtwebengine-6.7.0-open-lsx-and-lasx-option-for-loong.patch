@@ -1,0 +1,27 @@
+From 0b3d112e3c2bb61b63a02b4f2ccf9edd0b1288e4 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Apr 2024 17:05:01 +0000
+Subject: [PATCH 18/19] qtwebengine 6.7.0 open lsx and lasx option for
+ loongarch64.
+
+---
+ .../src/3rdparty/chromium/build/config/loongarch64.gni        | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/build/config/loongarch64.gni b/qtwebengine/src/3rdparty/chromium/build/config/loongarch64.gni
+index 9a95ec915..e9e0dedcb 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/config/loongarch64.gni
++++ b/qtwebengine/src/3rdparty/chromium/build/config/loongarch64.gni
+@@ -7,7 +7,7 @@ import("//build/config/v8_target_cpu.gni")
+ if (current_cpu == "loong64") {
+   declare_args() {
+     # LOONGARCH64 SIMD Arch compilation flag.
+-    loongarch64_use_lsx = false
+-    loongarch64_use_lasx = false
++    loongarch64_use_lsx = true
++    loongarch64_use_lasx = true
+   }
+ }
+-- 
+2.31.1
+

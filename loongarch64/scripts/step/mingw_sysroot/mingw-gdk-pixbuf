@@ -4,15 +4,15 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-gdk-pixbuf
-export PACKAGE_VERSION=2.42.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gdk-pixbuf/2.42.10/
-rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10
-tar xvf ${DOWNLOADDIR}/gdk-pixbuf-2.42.10.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10
+export PACKAGE_VERSION=2.42.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gdk-pixbuf/2.42.12/
+rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.12
+tar xvf ${DOWNLOADDIR}/gdk-pixbuf-2.42.12.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.12
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} --default-library=static --wrap-mode=nofallback -Dintrospection=disabled -Dman=false -Djpeg=disabled ..
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.10
+rm -rf ${BUILD_DIRECTORY}/gdk-pixbuf-2.42.12

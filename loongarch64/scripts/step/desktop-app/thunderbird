@@ -3,23 +3,25 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=thunderbird
-export PACKAGE_VERSION=124.0b3-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/124.0b3-default/
-rm -rf ${BUILD_DIRECTORY}/thunderbird-124.0
-tar xvf ${DOWNLOADDIR}/thunderbird-124.0b3.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/thunderbird-124.0
+export PACKAGE_VERSION=125.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/125.0/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-125.0
+tar xvf ${DOWNLOADDIR}/thunderbird-125.0.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-125.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
         mv comm-l10n-*/* ./
     popd
+
     rm -rf third_party/python/pathspec/*
     rm -rf third_party/python/setuptools/*
     rm -rf third_party/python/pip/*
     rm -rf third_party/python/Jinja2/*
 
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/124.0b3-default/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/124.0b3-default/patches/0001-firefox-123.0-fix-for-glean_parser-13.0.0.patch 
+    sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@12@g" mach
+
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/125.0/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
 	 
     find third_party/rust/ -name .cargo-checksum.json \
          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
@@ -35,8 +37,6 @@ ac_add_options --enable-linker=bfd
 ac_add_options --disable-necko-wifi
 ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
-ac_add_options --with-system-nspr
-ac_add_options --with-system-nss
 ac_add_options --prefix=/usr
 ac_add_options --libdir=/usr/lib64
 ac_add_options --target=${CROSS_TARGET}
@@ -106,4 +106,4 @@ ln -sfv /usr/lib64/thunderbird/chrome/icons/default/default256.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/thunderbird-124.0
+rm -rf ${BUILD_DIRECTORY}/thunderbird-125.0

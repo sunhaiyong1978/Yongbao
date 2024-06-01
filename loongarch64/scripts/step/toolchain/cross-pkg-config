@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/pkg-config-0.29.2
 
 	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
-	LDFLAGS="-static" CFLAGS="-Wno-error=format" \
+	LDFLAGS="-static" CFLAGS="-Wno-error=format -Wno-incompatible-pointer-types -Wno-int-conversion" \
         ./configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} \
                 --host=${HOST_HOST} --target=${HOST_TARGET} \
                 --with-pc_path=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target/usr/lib${LIB_SUFF}/pkgconfig:${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target/usr/share/pkgconfig --program-prefix=${HOST_TARGET}- --with-internal-glib --disable-host-tool glib_cv_stack_grows=yes glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes

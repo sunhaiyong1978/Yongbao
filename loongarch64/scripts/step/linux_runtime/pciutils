@@ -1,0 +1,18 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=pciutils
+export PACKAGE_VERSION=3.12.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/pciutils/3.12.0/
+rm -rf ${BUILD_DIRECTORY}/pciutils-3.12.0
+tar xvf ${DOWNLOADDIR}/pciutils-3.12.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pciutils-3.12.0
+	make -j${JOBS} CROSS_COMPILE="${LINUX_HOST}-" HOST="${LINUX_HOST}" \
+	     PREFIX=/usr SHARED=yes LIBDIR=/usr/lib64
+	make CROSS_COMPILE="${LINUX_HOST}-" HOST="${LINUX_HOST}" \
+	     PREFIX=/usr SHARED=yes LIBDIR=/usr/lib64 STRIP="" \
+	     DESTDIR=${LINUX_SYSROOT_DIR} install install-lib
+popd 
+rm -rf ${BUILD_DIRECTORY}/pciutils-3.12.0

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=sphinx
-export PACKAGE_VERSION=7.2.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinx/7.2.6/
-rm -rf ${BUILD_DIRECTORY}/sphinx-7.2.6
-tar xvf ${DOWNLOADDIR}/sphinx-7.2.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinx-7.2.6
+export PACKAGE_VERSION=7.3.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/sphinx/7.3.7/
+rm -rf ${BUILD_DIRECTORY}/sphinx-7.3.7
+tar xvf ${DOWNLOADDIR}/sphinx-7.3.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinx-7.3.7
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user sphinx
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinx-7.2.6
+rm -rf ${BUILD_DIRECTORY}/sphinx-7.3.7

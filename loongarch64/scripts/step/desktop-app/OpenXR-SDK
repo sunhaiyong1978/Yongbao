@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=OpenXR-SDK
-export PACKAGE_VERSION=release-1.0.34
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenXR-SDK/release-1.0.34/
-rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.0.34
-tar xvf ${DOWNLOADDIR}/OpenXR-SDK-release-1.0.34.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.0.34
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/OpenXR-SDK/release-1.0.34/patches/0001-OpenXR-SDK-1.0.34-add-loongarch64-support.patch 
+export PACKAGE_VERSION=release-1.1.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenXR-SDK/release-1.1.37/
+rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.37
+tar xvf ${DOWNLOADDIR}/OpenXR-SDK-release-1.1.37.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.37
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/OpenXR-SDK/release-1.1.37/patches/0001-OpenXR-SDK-1.0.34-add-loongarch64-support.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.0.34
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.0.34
+rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.37

@@ -7,7 +7,10 @@ source env/function.sh
 function set_proxy
 {
         declare DOMAIN=$(echo ${1} | grep -o ".\{0,\}//[^/]\{0,\}" | awk -F'/' '{print $NF}')
-        declare PROXY_SERVER=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }')
+        declare PROXY_SERVER=""
+	if [ -f proxy.set ]; then 
+		PROXY_SERVER=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }')
+	fi
         if [ "x${PROXY_SERVER}" == "x" ]; then
                         unset https_proxy
                         unset http_proxy
@@ -41,8 +44,9 @@ declare RESOURCES_ONLY=FALSE
 declare PROXY_MODE=0
 declare INDEX_FILE=""
 declare SINGLE_PACKAGE=FALSE
+declare VERSION_INDEX=""
 
-while getopts 'gfuri:psh' OPT; do
+while getopts 'gfuri:psv:h' OPT; do
     case $OPT in
 	g)  
 	    GIT_ONLY=TRUE
@@ -64,6 +68,9 @@ while getopts 'gfuri:psh' OPT; do
 	    ;;
 	s)
 	    SINGLE_PACKAGE=TRUE
+	    ;;
+	v)
+	    VERSION_INDEX=$OPTARG
 	    ;;
         h|?)
             echo "下载目标系统所涉及的源码包和资源文件。"
@@ -122,15 +129,28 @@ echo -n "" > ${BASE_DIR}/downloads/sources/resources.list.tmp
 
 for i in ${STEP_ARRAY}
 do
-	if [ ! -f scripts/step/${i}.info ] || [ ! -f sources/url/${i} ]; then
-		echo " $i 所需文件不存在，无法进行源码包及资源包的下载。"
-		continue;
+	if [ "x${VERSION_INDEX}" == "x" ]; then
+		if [ ! -f scripts/step/${i}.info ] || [ ! -f sources/url/${i} ]; then
+			echo " $i 所需文件不存在，无法进行源码包及资源包的下载。"
+			continue;
+		fi
+		PKG_NAME="$(cat scripts/step/${i}.info | awk -F'|' '{ print $1 }')"
+		PKG_VERSION="$(cat scripts/step/${i}.info | awk -F'|' '{ print $2 }')"
+		DOWNLOAD_TYPE=$(cat sources/url/${i} | awk -F'|' '{ print $1 }')
+		URL="$(replace_arch_parm "$(cat sources/url/${i} | awk -F'|' '{ print $2 }')" )"
+		SAVE_FILENAME="$(replace_arch_parm "$(cat sources/url/${i} | awk -F'|' '{ print $3 }')" )"
+	else
+		if [ ! -f scripts/step/${i}.${VERSION_INDEX}.info ] || [ ! -f sources/url/${i}.${VERSION_INDEX} ]; then
+			echo " $i 所需文件不存在，无法进行源码包及资源包的下载。"
+			continue;
+		fi
+		PKG_NAME="$(cat scripts/step/${i}.${VERSION_INDEX}.info | awk -F'|' '{ print $1 }')"
+		PKG_VERSION="$(cat scripts/step/${i}.${VERSION_INDEX}.info | awk -F'|' '{ print $2 }')"
+		DOWNLOAD_TYPE=$(cat sources/url/${i}.${VERSION_INDEX} | awk -F'|' '{ print $1 }')
+		URL="$(replace_arch_parm "$(cat sources/url/${i}.${VERSION_INDEX} | awk -F'|' '{ print $2 }')" )"
+		SAVE_FILENAME="$(replace_arch_parm "$(cat sources/url/${i}.${VERSION_INDEX} | awk -F'|' '{ print $3 }')" )"
 	fi
-	PKG_NAME="$(cat scripts/step/${i}.info | awk -F'|' '{ print $1 }')"
-	PKG_VERSION="$(cat scripts/step/${i}.info | awk -F'|' '{ print $2 }')"
-	DOWNLOAD_TYPE=$(cat sources/url/${i} | awk -F'|' '{ print $1 }')
-	URL="$(replace_arch_parm "$(cat sources/url/${i} | awk -F'|' '{ print $2 }')" )"
-	SAVE_FILENAME="$(replace_arch_parm "$(cat sources/url/${i} | awk -F'|' '{ print $3 }')" )"
+
 	if [ "x${SAVE_FILENAME}" == "x" ]; then
 		SAVE_FILENAME="${URL##*/}"
 	fi
@@ -165,14 +185,26 @@ do
 			fi
 			;;
 		GIT)
-			if [ -f sources/url/${i}.gitinfo ]; then
-				PKG_GIT_BRANCH="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $1 }')"
-				PKG_GIT_COMMIT="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $2 }')"
-				PKG_GIT_SUBMODULE="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $3 }')"
+			if [ "x${VERSION_INDEX}" == "x" ]; then
+				if [ -f sources/url/${i}.gitinfo ]; then
+					PKG_GIT_BRANCH="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $1 }')"
+					PKG_GIT_COMMIT="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $2 }')"
+					PKG_GIT_SUBMODULE="$(cat sources/url/${i}.gitinfo | awk -F'|' '{ print $3 }')"
+				else
+					PKG_GIT_BRANCH=""
+					PKG_GIT_COMMIT=""
+					PKG_GIT_SUBMODULE="0"
+				fi
 			else
-				PKG_GIT_BRANCH=""
-				PKG_GIT_COMMIT=""
-				PKG_GIT_SUBMODULE="0"
+				if [ -f sources/url/${i}.${VERSION_INDEX}.gitinfo ]; then
+					PKG_GIT_BRANCH="$(cat sources/url/${i}.${VERSION_INDEX}.gitinfo | awk -F'|' '{ print $1 }')"
+					PKG_GIT_COMMIT="$(cat sources/url/${i}.${VERSION_INDEX}.gitinfo | awk -F'|' '{ print $2 }')"
+					PKG_GIT_SUBMODULE="$(cat sources/url/${i}.${VERSION_INDEX}.gitinfo | awk -F'|' '{ print $3 }')"
+				else
+					PKG_GIT_BRANCH=""
+					PKG_GIT_COMMIT=""
+					PKG_GIT_SUBMODULE="0"
+				fi
 			fi
 			if ( [ "x${FORCE_DOWN}" == "xFALSE" ] || [ "x$(eval echo \${FORCE_$(echo ${PKG_NAME}_${PKG_VERSION} | sed -e "s@-@_@g" -e "s@\.@_@g" )_git})" == "x1" ] ) && [ -f ${BASE_DIR}/downloads/sources/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ] && [ -f ${BASE_DIR}/downloads/sources/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash ]; then
 				echo "$i 所需源码包已下载。"
@@ -243,8 +275,8 @@ ${i} 没有下载路径，请检查。"
 		echo "发现${i}存在需要下载的资源文件……"
 		for url_i in $(ls ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/*.url)
 		do
-			RESOURCES_URL="$(cat ${url_i} | grep ^URL= | awk -F'=' '{ print $2 }' | sed "s@<<<PACKAGE_VERSION>>>@${PKG_VERSION}@g")"
-			RESOURCES_FILENAME="$(cat ${url_i} | grep ^FILENAME= | awk -F'=' '{ print $2 }' | sed "s@<<<PACKAGE_VERSION>>>@${PKG_VERSION}@g")"
+			RESOURCES_URL="$(cat ${url_i} | grep ^URL= | awk -F'=' '{ print $2 }' | sed "s@<<<PACKAGE_VERSION>>>@$(echo ${PKG_VERSION} | sed "s@-default\$@@g")@g")"
+			RESOURCES_FILENAME="$(cat ${url_i} | grep ^FILENAME= | awk -F'=' '{ print $2 }' | sed "s@<<<PACKAGE_VERSION>>>@$(echo ${PKG_VERSION} | sed "s@-default\$@@g")@g")"
 			RESOURCES_MODE="$(cat ${url_i} | grep ^MODE= | awk -F'=' '{ print $2 }')"
 			PKG_GIT_BRANCH=""
 			PKG_GIT_COMMIT=""

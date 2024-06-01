@@ -10,6 +10,14 @@ rm -rf ${BUILD_DIRECTORY}/glibc-2.39
 tar xvf ${DOWNLOADDIR}/glibc-2.39.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/glibc-2.39
     
+    ARCH_PARM_STR=""
+    case "${ARCH_NAME}" in
+	i686)
+		ARCH_PARM_STR="--disable-cet"
+		;;
+	*)
+		;;
+    esac
     mkdir -p build-${ARCH_NAME}
     pushd build-${ARCH_NAME}
         BUILD_CC="gcc" CC="${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-gcc ${CFLAGS}" \
@@ -18,7 +26,7 @@ pushd ${BUILD_DIRECTORY}/glibc-2.39
         ../configure --prefix=/usr --host=${LINUX_HOST} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
 	                 --with-headers=${LINUX_SYSROOT_DIR}/usr/include \
-	                 --enable-add-ons \
+	                 --enable-add-ons ${ARCH_PARM_STR} \
 	                 --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF}
 		make -j${JOBS}
 		make DESTDIR=${LINUX_SYSROOT_DIR} install

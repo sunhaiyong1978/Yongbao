@@ -18,11 +18,12 @@ pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
     rm -rf gdb* libdecnumber readline sim
     mkdir cross-build
     pushd cross-build
-        LDFLAGS="--static" CFLAGS="${CFLAGS} -Wno-error=format-truncation" \
+        LDFLAGS="--static" \
+	CFLAGS="${CFLAGS} -Wno-error=format-truncation" \
         ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} --target=${HOST_TARGET} \
                      --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-nls \
                      --enable-64-bit-bfd --disable-shared
-        make -j${JOBS} configure-host LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"                                                                                                            
+        make -j${JOBS} configure-host LIBS="${LIBS} -lzstd -lpthread"
         make -j${JOBS}
 	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils ]; then
 		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/binutils{,.$(date +%Y%m%d%H%M%S)}

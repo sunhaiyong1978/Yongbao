@@ -19,6 +19,7 @@ pushd ${BUILD_DIRECTORY}/gc-8.2.4
 	fi
 	 ./configure ${COMMON_CONFIG} --enable-cplusplus --with-libatomic-ops=none
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

@@ -27,8 +27,9 @@ declare AUTO_SET_PARENT_DIR=0
 declare SET_PARENT_DIR=""
 declare OPT_SET_PARENT_DIR=""
 declare OPT_SET_OVERLAY_DIR=""
+declare BUILD_PACKAGE_CHECK=0
 
-while getopts 'fao:rgsde:xi:S:O:h' OPT; do
+while getopts 'fao:rgsde:xi:S:O:th' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -67,6 +68,9 @@ while getopts 'fao:rgsde:xi:S:O:h' OPT; do
 	O)
 	    SET_PARENT_DIR=$OPTARG
 	    ;;
+	t)
+	    BUILD_PACKAGE_CHECK=1
+	    ;;
         h|?)
             echo "目标系统构建命令。"
             echo ""
@@ -91,10 +95,14 @@ while getopts 'fao:rgsde:xi:S:O:h' OPT; do
             echo "    -i: 设置指定的步骤文件（.step）或步骤索引文件(.index)。"
             echo "    -S <目录名>: 构建过程中默认安装到sysroot目录中的文件将安装到指定目录中。"
             echo "    -O <目录名>: 构建过程中设置用于OverlayFS的目录，当需要指定多个目录时使用“,”符号进行分隔，特殊名称ORIG代表编译的软件包所在组设置的目录，目录优先级从后往前。"
+            echo "    -t: 对构建过程中编译的软件判断当构建目标架构与当前架构相同时进行编译测试过程。"
             exit 127
     esac
 done
 shift $(($OPTIND - 1))
+
+
+export BUILD_PACKAGE_CHECK=${BUILD_PACKAGE_CHECK}
 
 
 if [ "x${SET_STEP_FILE}" != "x" ]; then
@@ -158,7 +166,7 @@ function get_all_set_env_expr
         do
                 if [ "x${i:0:1}" == "x%" ]; then
 	                SET_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $1 }')
-	                DEFAULT_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $2 }' | sed "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+	                DEFAULT_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $2 }' | sed "s@[^?\|^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
         	        ((SET_COUNT++))
 		fi
         done
@@ -170,10 +178,8 @@ function get_all_set_env_expr
         for i in ${SET_ENV[*]}
         do
 		case "${i}" in
-			PARENT)
-				continue
-				;;
-			OVERLAY)
+			PARENT | OVERLAY | VERSION )
+				((TEMP_COUNT++))
 				continue
 				;;
 			*)
@@ -188,7 +194,9 @@ function get_all_set_env_expr
 			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
 				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
 					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
-						USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]}"
+						USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}"
+#					else
+#						USE_ENV[${USE_ENV_COUNT}]="${i}=${GET_ENV_VALUE}"
 					fi
 				else
 					USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]}"
@@ -207,15 +215,28 @@ function test_filter_str
 	declare FILTER_FILE="${1}"
 	declare TEST_STR="${2}"
 	declare RET_STR="0"
-	TEST_KEY=$(echo ${i:1} | awk -F'=' '{ print $1 }')
-	TEST_VALUE=$(echo "${2}" | awk -F'=' '{ print $2 }' | sed "s@\&@,@g")
+	declare GET_ENV_VALUE=""
+	TEST_KEY=$(echo ${TEST_STR} | awk -F'=' '{ print $1 }')
+	TEST_VALUE=$(echo "${TEST_STR}" | awk -F'=' '{ print $2 }' | sed "s@\&@,@g" | sed "s@^\?@@g")
 	FILTER_STR="$(cat ${FILTER_FILE} | grep "^${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
+
+	GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
+
+#	if [ "x${TEST_VALUE}" == "x" ] && [ "x${GET_ENV_VALUE}" == "x" ]; then
+#		echo "0"
+#		return
+#	fi
 	if [ "x${FILTER_STR}" != "x" ]; then
 		for i in $(echo "${FILTER_STR}")
 		do
+#			echo "GET_ENV_VALUE=${GET_ENV_VALUE}  TEST_VALUE=${TEST_VALUE} i=${i:1}"
 			case "x${i:0:1}" in
 				"x!")
 					if [ "x${i:1}" == "x${TEST_VALUE}" ]; then
+						echo "1"
+						return;
+					fi
+					if [ "x${i:1}" == "x${GET_ENV_VALUE}" ]; then
 						echo "1"
 						return;
 					fi
@@ -223,9 +244,14 @@ function test_filter_str
 				*)
 					if [ "x${i}" == "x${TEST_VALUE}" ]; then
 						RET_STR="0"
-						return;
+						break;
 					else
-						RET_STR="1"
+						if [ "x${i}" == "x${GET_ENV_VALUE}" ]; then
+							RET_STR="0"
+							break;
+						else
+							RET_STR="1"
+						fi
 					fi
 					;;
 			esac
@@ -248,10 +274,12 @@ function test_filter_form_opt
         do
                 if [ "x${i:0:1}" == "x%" ]; then
 			case "x$(echo ${i:1} | awk -F'=' '{ print $1 }')" in
-				"xOVERLAY" | "xPARENT")
+				"xOVERLAY" | "xPARENT" | "xVERSION")
 					continue;
 					;;
 				*)
+#					echo "test_filter_str ${2} ${i:1}"
+#					test_filter_str "${2}" "${i:1}"
 					if [ "x$(test_filter_str "${2}" "${i:1}")" == "x1" ]; then
 						echo "1"
 						return;
@@ -305,6 +333,26 @@ function set_parent_dir_form_opt
 	echo ""
 }
 
+function set_version_index_form_opt
+{
+        declare SET_STR="${1}"
+
+        for i in $(echo "${SET_STR}" | tr ";" "\\n")
+        do
+                if [ "x${i:0:1}" == "x%" ]; then
+			case "x$(echo ${i:1} | awk -F'=' '{ print $1 }')" in
+				"xVERSION")
+					echo "$(echo ${i:1} | awk -F'=' '{ print $2 }' | sed "s@\&@,@g" | sed "s@[^?\|\.\|^[:alnum:]\|^[:space:]\|^_\|^-]@@g")"
+					return;
+					;;
+				*)
+					;;
+			esac
+		fi
+        done
+	echo ""
+}
+
 
 function get_all_can_set_env_str
 {
@@ -330,7 +378,7 @@ function get_all_can_set_env_str
 
 # 	                SET_ENV[${SET_COUNT}]=${i:1}
 	                SET_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $1 }')
-	                DEFAULT_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $2 }' | sed "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+	                DEFAULT_ENV[${SET_COUNT}]=$(echo ${i:1} | awk -F'=' '{ print $2 }' | sed "s@\.@_@g" | sed "s@[^?\|^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
         	        ((SET_COUNT++))
 		fi
         done
@@ -349,8 +397,8 @@ function get_all_can_set_env_str
 			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
 				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
 					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
-						USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
-						echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+						USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
+						echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
 					fi
 				else
 					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
@@ -1205,7 +1253,8 @@ function create_os_run
 	if [ -f env/${STEP_STAGE}/overlay.set ]; then
 		declare OS_RUN_OVERLAY_DIR=$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)
 		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OS_RUN_OVERLAY_DIR}.released ]; then
-			if [ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${PACKAGE_NAME}_${STEP_STAGE}_${PACKAGE_INDEX} ]; then
+#			if [ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${PACKAGE_NAME}_${STEP_STAGE}_${PACKAGE_INDEX} ]; then
+			if [ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} ]; then
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_first_run ]; then
 					echo ""
 					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
@@ -1218,7 +1267,9 @@ function create_os_run
 				fi
 			fi
 		else
-			if [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${PACKAGE_NAME}_${STEP_STAGE}_${PACKAGE_INDEX} ]; then
+#			echo "${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ...."
+#			if [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${PACKAGE_NAME}_${STEP_STAGE}_${PACKAGE_INDEX} ]; then
+			if [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ]; then
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_first_run ]; then
 					echo ""
 					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
@@ -1430,12 +1481,38 @@ function cp_file_and_sources
 function start_download_source
 {
 	echo -n -e "\r下载 ${1} 所需的源码包及资源文件..."
-	tools/get_all_package_url.sh -p -s ${1} > /dev/null
-	if [ "x$?" == "x0" ]; then
-		echo "完成！"
-	else
-		echo -e "\e[32m失败！\e[0m"
-	fi
+	for down_retry in 1 2 3
+	do
+		tools/get_all_package_url.sh -p -s ${1} > /dev/null
+		if [ "x$?" == "x0" ]; then
+			echo "完成！"
+			break;
+		else
+			echo -e "\e[32m失败！\e[0m"
+		fi
+		echo -n "尝试再次下载 ${1} 所需的源码包及资源文件..."
+	done
+	cp_file_and_sources 0
+}
+
+function start_download_source_for_version_index
+{
+	echo -n -e "\r下载 ${1} 所需的源码包及资源文件..."
+	for down_retry in 1 2 3
+	do
+		if [ "x${2}" != "x" ]; then
+			tools/get_all_package_url.sh -v "${2}" -p -s ${1} > /dev/null
+		else
+			tools/get_all_package_url.sh -p -s ${1} > /dev/null
+		fi
+		if [ "x$?" == "x0" ]; then
+			echo "完成！"
+			break;
+		else
+			echo -e "\e[32m失败！\e[0m"
+		fi
+		echo -n "尝试再次下载 ${1} 所需的源码包及资源文件..."
+	done
 	cp_file_and_sources 0
 }
 
@@ -1683,8 +1760,13 @@ do
 	PACKAGE_GIT_COMMIT=""
 
 	if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter ]; then
+#		test_filter_form_opt "${PACKAGE_ALL_OPT}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter"
 		if [ "x$(test_filter_form_opt "${PACKAGE_ALL_OPT}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter" )" != "x0" ]; then
-			echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 在 "$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" 的时候不符合制作条件。\e[0m"
+			if [ "x$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" == "x" ]; then
+				echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包当前设置不符合制作条件。\e[0m"
+			else
+				echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包因 "$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" 设置而不符合制作条件。\e[0m"
+			fi
 			continue;
 		fi
 	fi
@@ -1707,6 +1789,8 @@ do
 	PACKAGE_SET_ENV=$(get_all_can_set_env_str "${PACKAGE_ALL_OPT}")
 	PACKAGE_SET_STATUS_FILE=$(get_can_set_status_file "${PACKAGE_ALL_OPT}")
 
+	OPT_SET_VERSION_INDEX="$(set_version_index_form_opt "${PACKAGE_ALL_OPT}")"
+
 # 	if [ "x${OPT_SET_PARENT_DIR}" != "x" ]; then
 # 		echo -n "${PACKAGE_NAME} 设置了临时上级目录: ${OPT_SET_PARENT_DIR} 。"
 # 	fi
@@ -1727,11 +1811,28 @@ do
 	fi
 
 
+#	echo ""
+#	echo "OVERLAY_DIR: ${OVERLAY_DIR}"
+#	echo "SET_OVERLAY_DIR: ${SET_OVERLAY_DIR}"
+#	echo "AUTO_SET_OVERLAY_DIR: ${AUTO_SET_OVERLAY_DIR}"
+
 	STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${PACKAGE_INDEX}"
 	if [ "x${SET_OVERLAY_DIR}" != "x" ] && [ "x{AUTO_SET_OVERLAY_DIR}" == "x0" ]; then
 		STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}_${PACKAGE_INDEX}"
+	else
+#		if [ "x${SET_OVERLAY_DIR}" != "x" ]; then
+#			STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}_${PACKAGE_INDEX}"
+#		fi
+		if [ "x${SET_OVERLAY_DIR}" != "x" ] && [ "x${AUTO_SET_OVERLAY_DIR}" != "x1" ]; then
+			STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}_${PACKAGE_INDEX}"
+		fi
 	fi
-	SCRIPT_FILE=$(echo "${line}" | awk -F' ' '{ print $2 }' | sed "s@ *step\/@@g")
+
+	if [ "x${OPT_SET_VERSION_INDEX}" == "x" ]; then
+		SCRIPT_FILE=$(echo "${line}" | awk -F' ' '{ print $2 }' | sed "s@ *step\/@@g")
+	else
+		SCRIPT_FILE=$(echo "${line}" | awk -F' ' '{ print $2 }' | sed "s@ *step\/@@g").${OPT_SET_VERSION_INDEX}
+	fi
 
 	if [ "x${PACKAGE_NAME}" == "xbegin_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_before_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_after_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_temp_fix_run" ]; then
 		echo "${STEP_STAGE}" >> ${NEW_TARGET_SYSDIR}/logs/step_${PACKAGE_NAME}_save
@@ -1742,6 +1843,7 @@ do
 		fi
 		if ([ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} ] || [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ]) && [ "x${SINGLE_PACKAGE}" == "x0" ] ; then
 			SHOW_PACKAGE_OPT="$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")"
+#			echo "test ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE}"
 			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
 			if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
 				if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
@@ -1778,13 +1880,20 @@ do
 
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
 		if [ "x${FORCE_ALL_DOWNLOAD}" == "x0" ]; then
-			start_download_source "${STEP_STAGE}/${PACKAGE_NAME}"
+			if [ "x${OPT_SET_VERSION_INDEX}" == "x" ]; then
+				start_download_source "${STEP_STAGE}/${PACKAGE_NAME}"
+			else
+				start_download_source_for_version_index "${STEP_STAGE}/${PACKAGE_NAME}" "${OPT_SET_VERSION_INDEX}"
+			fi
 		fi
 		SHOW_PACKAGE_OPT="$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")"
 		if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
 			echo -e "\r开始执行 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包的制作步骤...\033[0K"
 		else
 			echo -e "\r开始执行 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 ${SHOW_PACKAGE_OPT} 的制作步骤...\033[0K"
+		fi
+		if [ "x${OPT_SET_VERSION_INDEX}" != "x" ]; then
+			echo "本次步骤构建额外版本 ${OPT_SET_VERSION_INDEX} ..."
 		fi
 
 		if [ "x${OPT_SET_PARENT_DIR}" != "x" ]; then
@@ -1918,11 +2027,18 @@ do
 					if [ "x${PACKAGE_INFO}" != "x" ]; then
 						PACKAGE_INFO_VERSION="$(echo ${PACKAGE_INFO} | awk -F'|' '{ print $2 }' | sed "s@-default\$@@g")"
 						PACKAGE_INFO_NAME="$(echo ${PACKAGE_INFO} | awk -F'|' '{ print $3 }')"
+						if [ "x${OPT_SET_VERSION_INDEX}" != "x" ]; then
+							PACKAGE_INFO_NAME="${PACKAGE_INFO_NAME}.${OPT_SET_VERSION_INDEX}"
+						fi
 						if [ "x${PACKAGE_INFO_NAME}" != "x" ] && [ "x${PACKAGE_INFO_NAME}" != "xNULL" ]; then
 							if [ "x${PACKAGE_GIT_COMMIT}" == "x" ]; then
 								echo "${PACKAGE_INFO_VERSION}" > ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}/var/Yongbao/status/${PACKAGE_INFO_NAME}
 							else
-								echo "git${PACKAGE_GIT_COMMIT}" > ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}/var/Yongbao/status/${PACKAGE_INFO_NAME}
+								if [ -f ${NEW_TARGET_SYSDIR}/common_files/${PACKAGE_INFO_NAME}.version ]; then
+									cat ${NEW_TARGET_SYSDIR}/common_files/${PACKAGE_INFO_NAME}.version > ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}/var/Yongbao/status/${PACKAGE_INFO_NAME}
+								else
+									echo "git_$(echo ${PACKAGE_GIT_COMMIT} | awk -F'=' '{ print $2 }' | cut -c 1-12)" > ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}/var/Yongbao/status/${PACKAGE_INFO_NAME}
+								fi
 							fi
 						fi
 					fi

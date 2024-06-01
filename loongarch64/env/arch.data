@@ -1,8 +1,8 @@
-loongarch64/loongarch64-unknown-linux-gnu=loongarch64.conf
+loongarch64/loongarch64-unknown-linux-gnu/loongarch64-cross-linux-gnu=loongarch64.conf
 x86_64/x86_64-unknown-linux-gnu/x86_64-pc-linux-gnu/x86_64-cross-linux-gnu=x86_64.conf
 i686/i686-unknown-linux-gnu=i686.conf
-mips64el/mips64el-unknown-linux-gnuabi64/mips64el-unknown-linux-gnu=mips64el.conf
-riscv64/riscv64-unknown-linux-gnu=riscv64.conf
+mips64el/mips64el-unknown-linux-gnuabi64/mips64el-unknown-linux-gnu/mips64el-cross-linux-gnu/mips64el-cross-linux-gnuabi64=mips64el.conf
+riscv64/riscv64-unknown-linux-gnu/riscv64-cross-linux-gnu=riscv64.conf
 mingw64/x86_64-w64-mingw32=mingw64.conf
 mingw32/i686-w64-mingw32=mingw32.conf
 mingw64ucrt/x86_64-w64-mingw32ucrt=mingw64ucrt.conf

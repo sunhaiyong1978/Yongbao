@@ -1,0 +1,21 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=libunwind
+export PACKAGE_VERSION=1.6.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libunwind/1.6.2/
+rm -rf ${BUILD_DIRECTORY}/libunwind-1.6.2
+tar xvf ${DOWNLOADDIR}/libunwind-1.6.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libunwind-1.6.2
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-tests --enable-malloc0returnsnull
+	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+        make DESTDIR=${LINUX_SYSROOT_DIR} install
+	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libunwind-1.6.2

@@ -1,0 +1,44 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=llvm-project
+export PACKAGE_VERSION=18.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/llvm-project/18.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-18.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-18.1.6.src
+
+pushd llvm
+    mkdir -p host-build
+    pushd host-build
+	export PATH=${CROSSTOOLS_DIR}/build-tools/bin:${CROSSTOOLS_DIR}/bin:/usr/bin:/usr/sbin
+	export LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/build-tools/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/build-tools/lib64"
+        export PKG_CONFIG_SYSROOT_DIR=""
+	export PKG_CONFIG_PATH=""
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR}/host-llvm-project \
+                 -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
+                 -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
+                 -DLLVM_LIBDIR_SUFFIX=64 \
+                 -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+		 -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+                 -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
+                 -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
+                 -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
+		 -DLLVM_ENABLE_PROJECTS='llvm;clang;lld' \
+		 -DLLVM_INCLUDE_RUNTIMES:BOOL=ON \
+		 -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;libcxx;compiler-rt" \
+		 -DLLVM_RUNTIME_TARGETS="x86_64-unknown-linux-gnu;loongarch64-unknown-linux-gnu" \
+		 -DLLVM_BUILTIN_TARGETS="x86_64-unknown-linux-gnu;loongarch64-unknown-linux-gnu" \
+		 -DBUILTINS_loongarch64-unknown-linux-gnu_CMAKE_SYSROOT=/opt/mylaos/Sunhaiyong/distro/Yongbao/loongarch64/workbase/overlaydir/chromium-sysroot \
+		 -DRUNTIMES_loongarch64-unknown-linux-gnu_CMAKE_SYSROOT=/opt/mylaos/Sunhaiyong/distro/Yongbao/loongarch64/workbase/overlaydir/chromium-sysroot \
+		 -DBUILTINS_x86_64-unknown-linux-gnu_CMAKE_SYSROOT=/opt/mylaos/Sunhaiyong/distro/Yongbao/loongarch64/workbase/overlaydir/x86_64_runtime/usr/lib/x86_64/sys-root \
+		 -DRUNTIMES_x86_64-unknown-linux-gnu_CMAKE_SYSROOT=/opt/mylaos/Sunhaiyong/distro/Yongbao/loongarch64/workbase/overlaydir/x86_64_runtime/usr/lib/x86_64/sys-root \
+		 -DLLVM_DEFAULT_TARGET_TRIPLE=${MACHTYPE} \
+		 -DLLVM_HOST_TRIPLE=${MACHTYPE} \
+                 -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF
+        ninja
+        ninja install
+popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.6.src

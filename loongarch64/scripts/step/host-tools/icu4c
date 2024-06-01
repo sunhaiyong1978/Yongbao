@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=icu4c
-export PACKAGE_VERSION=74_2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/74_2/
+export PACKAGE_VERSION=75_1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/75_1/
 rm -rf ${BUILD_DIRECTORY}/icu
-tar xvf ${DOWNLOADDIR}/icu4c-74_2-src.tgz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/icu4c-75_1-src.tgz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/icu
     for config_i in $(find -name "config.sub")
     do

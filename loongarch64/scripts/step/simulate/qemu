@@ -3,17 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=qemu
-export PACKAGE_VERSION=8.2.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/8.2.2/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2
-tar xvf ${DOWNLOADDIR}/qemu-8.2.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.2.2
-	
+export PACKAGE_VERSION=9.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/9.0.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-9.0.0
+tar xvf ${DOWNLOADDIR}/qemu-9.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-9.0.0
+	patch -Np1 -i ${SYSDIR}/files/simulate/qemu/9.0.0/patches/0001-Revert-tcg-loongarch64-Set-vector-registers-call-clo.patch 
+	 
 	mkdir -p cross-build
 	pushd cross-build
 		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
 			     --audio-drv-list=alsa,pa \
-		             --target-list=aarch64-softmmu,alpha-softmmu,arm-softmmu,avr-softmmu,cris-softmmu,hppa-softmmu,i386-softmmu,loongarch64-softmmu,m68k-softmmu,microblaze-softmmu,microblazeel-softmmu,mips-softmmu,mips64-softmmu,mips64el-softmmu,mipsel-softmmu,nios2-softmmu,or1k-softmmu,ppc-softmmu,ppc64-softmmu,riscv32-softmmu,riscv64-softmmu,rx-softmmu,s390x-softmmu,sh4-softmmu,sh4eb-softmmu,sparc-softmmu,sparc64-softmmu,tricore-softmmu,x86_64-softmmu,xtensa-softmmu,xtensaeb-softmmu,aarch64-linux-user,aarch64_be-linux-user,alpha-linux-user,arm-linux-user,armeb-linux-user,cris-linux-user,hppa-linux-user,i386-linux-user,loongarch64-linux-user,m68k-linux-user,microblaze-linux-user,microblazeel-linux-user,mips-linux-user,mips64-linux-user,mips64el-linux-user,mipsel-linux-user,mipsn32-linux-user,mipsn32el-linux-user,nios2-linux-user,or1k-linux-user,ppc-linux-user,ppc64-linux-user,ppc64le-linux-user,riscv32-linux-user,riscv64-linux-user,s390x-linux-user,sh4-linux-user,sh4eb-linux-user,sparc-linux-user,sparc32plus-linux-user,sparc64-linux-user,x86_64-linux-user,xtensa-linux-user,xtensaeb-linux-user
+		             --target-list=aarch64-softmmu,alpha-softmmu,arm-softmmu,avr-softmmu,cris-softmmu,hppa-softmmu,i386-softmmu,loongarch64-softmmu,m68k-softmmu,microblaze-softmmu,microblazeel-softmmu,mips-softmmu,mips64-softmmu,mips64el-softmmu,mipsel-softmmu,nios2-softmmu,or1k-softmmu,ppc-softmmu,ppc64-softmmu,riscv32-softmmu,riscv64-softmmu,rx-softmmu,s390x-softmmu,sh4-softmmu,sh4eb-softmmu,sparc-softmmu,sparc64-softmmu,tricore-softmmu,x86_64-softmmu,xtensa-softmmu,xtensaeb-softmmu,aarch64-linux-user,aarch64_be-linux-user,alpha-linux-user,arm-linux-user,armeb-linux-user,cris-linux-user,hppa-linux-user,i386-linux-user,loongarch64-linux-user,m68k-linux-user,microblaze-linux-user,microblazeel-linux-user,mips-linux-user,mips64-linux-user,mips64el-linux-user,mipsel-linux-user,mipsn32-linux-user,mipsn32el-linux-user,nios2-linux-user,or1k-linux-user,ppc-linux-user,ppc64-linux-user,ppc64le-linux-user,riscv32-linux-user,riscv64-linux-user,s390x-linux-user,sh4-linux-user,sh4eb-linux-user,sparc-linux-user,sparc32plus-linux-user,sparc64-linux-user,x86_64-linux-user,xtensa-linux-user,xtensaeb-linux-user --enable-kvm
 		eval ${NINJA_AND_INSTALL}
 	popd
 
@@ -28,9 +29,12 @@ pushd ${BUILD_DIRECTORY}/qemu-8.2.2
 	install -vdm 755 ${SYSROOT_DIR}/etc/qemu
 	echo "allow br0" > ${SYSROOT_DIR}/etc/qemu/bridge.conf
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2
+rm -rf ${BUILD_DIRECTORY}/qemu-9.0.0
 
 mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
 cat > ${SYSROOT_DIR}/etc/sysctl.d/60-net-forward.conf << EOF
 net.ipv4.ip_forward=1
 EOF
+
+default_set_conf "x86_64-emu" "qemu-${PACKAGE_VERSION}" "QEMU ${PACKAGE_VERSION} x86_64" "/usr/bin/x86_64-emu" "/usr/bin/qemu-x86_64"
+default_set_conf "x86-emu" "qemu-${PACKAGE_VERSION}" "QEMU ${PACKAGE_VERSION} x86" "/usr/bin/x86-emu" "/usr/bin/qemu-i386"

@@ -10,6 +10,7 @@ rm -rf ${BUILD_DIRECTORY}/ffmpeg-git-default_git
 tar xvf ${DOWNLOADDIR}/ffmpeg-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ffmpeg-git-default_git
 	
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" \
 	LDFLAGS="${LDFLAGS} -Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio" \
 	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} \
                 --cross-prefix=${LINUX_HOST}- --sysroot=${LINUX_SYSROOT_DIR} \

@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/x264-git-default_git
 	fi
 	 ./configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- --sysroot=${SYSROOT_DIR} --enable-shared --bashcompletionsdir=/usr/share/bash-completion/completions --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 

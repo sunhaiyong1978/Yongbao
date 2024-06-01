@@ -1,0 +1,8 @@
+source env/benchmark/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=benchmark
+export STEP_PACKAGENAME=dist_sysroot
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/benchmark/dist_sysroot//
+set_step_to_dist

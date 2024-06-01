@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-qemu
-export PACKAGE_VERSION=8.2.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-qemu/8.2.2/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2
-tar xvf ${DOWNLOADDIR}/qemu-8.2.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.2.2
+export PACKAGE_VERSION=9.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-qemu/9.0.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-9.0.0
+tar xvf ${DOWNLOADDIR}/qemu-9.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-9.0.0
     mkdir -p build
     pushd build
         ../configure --prefix=${PREFIX}/${LINUX_HOST} --target-list=${QEMU_ARCH}-linux-user --static
@@ -26,4 +26,4 @@ ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR} -E LD_
 
 chmod +x ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}{,-ldd}
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2
+rm -rf ${BUILD_DIRECTORY}/qemu-9.0.0

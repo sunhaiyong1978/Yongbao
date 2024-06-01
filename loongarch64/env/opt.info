@@ -1,2 +1,8 @@
 opt=+g_opt
 opt=+f_opt
+# opt=+binutils_git
+# opt=+gcc_git
+#  opt=+gdb_git
+# opt=+llvm_git
+# opt=+mesa_git
+opt=+linux_git

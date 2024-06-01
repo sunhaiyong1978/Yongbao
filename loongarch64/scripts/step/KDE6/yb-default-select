@@ -1,0 +1,29 @@
+source env/KDE6/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=KDE6
+export STEP_PACKAGENAME=yb-default-select
+export PACKAGE_VERSION=test
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/yb-default-select/test/
+rm -rf ${BUILD_DIRECTORY}/step-yb-default-select-build
+mkdir -pv ${BUILD_DIRECTORY}/step-yb-default-select-build 
+pushd ${BUILD_DIRECTORY}/step-yb-default-select-build
+	cp -av ${RESOURCEDIR}/yb-default-select ${SYSROOT_DIR}/usr/bin/
+	cp -av ${RESOURCEDIR}/yb-default-select.desktop ${SYSROOT_DIR}/usr/share/applications/
+
+cat > ${SYSROOT_DIR}/usr/share/applications/x86_64-emu-select.desktop << "EOF"
+[Desktop Entry]
+Name=x86_64-emu-select
+GenericName=x86_64 二进制翻译默认程序设置器
+Comment=x86_64 二进制翻译默认程序设置器
+MimeType=
+Exec=yb-default-select x86_64-emu
+Icon=
+Type=Application
+Terminal=false
+Categories=Settings;
+StartupNotify=true
+EOF
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/step-yb-default-select-build

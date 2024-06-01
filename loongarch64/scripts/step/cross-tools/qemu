@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qemu
-export PACKAGE_VERSION=8.2.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu/8.2.2/
-rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2
-tar xvf ${DOWNLOADDIR}/qemu-8.2.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-8.2.2
+export PACKAGE_VERSION=9.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu/9.0.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-9.0.0
+tar xvf ${DOWNLOADDIR}/qemu-9.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-9.0.0
     mkdir -p build
     pushd build
         CFLAGS="-Wno-error=unused-function" \
@@ -38,4 +38,4 @@ LD_TRACE_LOADED_OBJECTS=1 LD_LIBRARY_PATH=${SYSROOT_DIR}/usr/lib${LIB_SUFF} \"\$
 
 chmod +x ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}{,-ldd}
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-8.2.2
+rm -rf ${BUILD_DIRECTORY}/qemu-9.0.0

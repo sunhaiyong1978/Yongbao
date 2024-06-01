@@ -34,9 +34,13 @@ cp -v ${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config{,.tools}
 cp -v ${SYSROOT_DIR}/usr/bin/python$(get_package_version Python3)-config ${CROSSTOOLS_DIR}/bin/
 sed -i "/^prefix_real/s@=.*@=${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/python$(get_package_version Python3)-config
 
+QEMU_COMMAND=""
+if [ "x$(uname -m)" != "x${YONGBAO_TARGET_ARCH}" ]; then
+	QEMU_COMMAND="qemu-${ARCH_NAME}"
+fi
 echo "#!/bin/bash -e
 if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then
-    qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/python3 \"\$@\"
+    ${QEMU_COMMAND} ${SYSROOT_DIR}/usr/bin/python3 \"\$@\"
 else
     _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 \"\$@\"
 fi" > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3

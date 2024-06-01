@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/vlc-3.0.20.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/vlc-3.0.20
     patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.20/patches/0001-VLC-fix-for-gcc13.patch 
 	 
-    CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-chromecast
+    CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-chromecast --disable-taglib
     make -j${JOBS} -C compat
     make -j${JOBS} -C src
     make -C src DESTDIR=${SYSROOT_DIR} install

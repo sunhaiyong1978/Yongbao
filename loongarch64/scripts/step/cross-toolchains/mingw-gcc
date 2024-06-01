@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=mingw-gcc
-export PACKAGE_VERSION=13.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-gcc/13.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
-tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.2.0
+export PACKAGE_VERSION=14.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-gcc/14.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0
+tar xvf ${DOWNLOADDIR}/gcc-14.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-14.1.0
 	MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
 	INSTALL_ARCH_NAME="mingw64ucrt"
 	INSTALL_ARCH_NAME=$(archname_to_name "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
@@ -30,4 +30,4 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		make install-strip-gcc
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0

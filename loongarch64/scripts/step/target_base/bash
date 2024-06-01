@@ -25,8 +25,9 @@ EOF
 	
 	./configure --prefix=/usr --libdir=/usr/lib64 --build=${CROSS_HOST} \
 	            --host=${CROSS_TARGET} --without-bash-malloc \
-	            --with-installed-readline --cache-file=config.cache
-	eval ${MAKE_AND_INSTALL}
+	            --with-installed-readline=${SYSROOT_DIR}/usr --cache-file=config.cache
+	make -j${JOBS} RL_INCLUDEDIR=""
+	make DESTDIR=${SYSROOT_DIR} install
 	ln -sfv bash ${SYSROOT_DIR}/bin/sh
 popd 
 rm -rf ${BUILD_DIRECTORY}/bash-5.2.21

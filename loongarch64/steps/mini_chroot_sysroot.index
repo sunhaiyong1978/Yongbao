@@ -1,0 +1,15 @@
+00001  step/cross-toolchains/linux-binutils|g_opt;wine64;%target=?x86_64
+00002  step/cross-toolchains/linux-gcc|g_opt;wine64;%target=?x86_64
+00003  step/cross-toolchains/linux-pkgconf|g_opt;wine64;%target=?x86_64
+00004  step/cross-toolchains/linux-qemu|g_opt;wine64;%target=?x86_64
+00001  step/linux_runtime/make_directory|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00002  step/linux_runtime/linux-header|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00003  step/linux_runtime/glibc|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00004  step/linux_runtime/libxcrypt|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00001  step/cross-toolchains/linux-gcc-glibc|f_opt;wine64,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
+00008  step/linux_runtime/ncurses|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00009  step/linux_runtime/readline|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00119  step/linux_runtime/glibc_localedata|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00181  step/linux_runtime/coreutils|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00182  step/linux_runtime/bash|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+00183  step/linux_runtime/create_base_files|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=多版本程序默认选择设置工具
+GenericName=多版本程序默认选择设置工具
+Comment=多版本程序默认选择设置工具
+MimeType=
+Exec=yb-default-select
+Icon=
+Type=Application
+Terminal=false
+Categories=Settings;
+StartupNotify=true

@@ -33,3 +33,6 @@ mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
 cat > ${SYSROOT_DIR}/etc/sysctl.d/60-net-forward.conf << EOF
 net.ipv4.ip_forward=1
 EOF
+
+default_set_conf "x86_64-emu" "qemu-${PACKAGE_VERSION}" "QEMU x86_64" "/usr/bin/x86_64-emu" "/usr/bin/qemu-x86_64"
+default_set_conf "x86-emu" "qemu-${PACKAGE_VERSION}" "QEMU x86" "/usr/bin/x86-emu" "/usr/bin/qemu-i386"

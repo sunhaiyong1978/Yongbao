@@ -1,0 +1,25 @@
+From 7b48e4d3e92ddc0d49ea4dcb038fd26362fc9962 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 18 Apr 2024 01:59:15 +0000
+Subject: [PATCH] sphinx_rtd_theme 2.0.0 fix docutils require version.
+
+---
+ setup.cfg | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/setup.cfg b/setup.cfg
+index 0f29948..a60a47a 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -46,7 +46,7 @@ packages = sphinx_rtd_theme
+ python_requires = >=3.6
+ install_requires = 
+ 	sphinx >=5,<8
+-	docutils <0.21
++	docutils
+ 	sphinxcontrib-jquery >=4,<5
+ tests_require = 
+ 	pytest
+-- 
+2.31.1
+

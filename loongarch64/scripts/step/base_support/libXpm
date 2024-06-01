@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/libXpm-3.5.17
 	fi
 	 ./configure ${COMMON_CONFIG}  ac_cv_path_XPM_PATH_COMPRESS=no ac_cv_path_XPM_PATH_UNCOMPRESS=no --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 

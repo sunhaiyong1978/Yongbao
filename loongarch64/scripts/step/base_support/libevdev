@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libevdev
-export PACKAGE_VERSION=1.13.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libevdev/1.13.1/
-rm -rf ${BUILD_DIRECTORY}/libevdev-1.13.1
-tar xvf ${DOWNLOADDIR}/libevdev-1.13.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libevdev-1.13.1
+export PACKAGE_VERSION=1.13.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libevdev/1.13.2/
+rm -rf ${BUILD_DIRECTORY}/libevdev-1.13.2
+tar xvf ${DOWNLOADDIR}/libevdev-1.13.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libevdev-1.13.2
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -18,7 +18,8 @@ pushd ${BUILD_DIRECTORY}/libevdev-1.13.1
 	fi
 	PYTHON=python3  ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libevdev-1.13.1
+rm -rf ${BUILD_DIRECTORY}/libevdev-1.13.2

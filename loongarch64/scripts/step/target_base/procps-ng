@@ -25,3 +25,5 @@ pushd ${BUILD_DIRECTORY}/procps-ng-4.0.4
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/procps-ng-4.0.4
+
+sed -i "/Libs:/s@-lproc2\$@& -lsystemd@g" ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig/libproc2.pc

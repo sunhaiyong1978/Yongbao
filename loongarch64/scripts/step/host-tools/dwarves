@@ -1,0 +1,20 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=dwarves
+export PACKAGE_VERSION=1.26
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/dwarves/1.26/
+rm -rf ${BUILD_DIRECTORY}/dwarves-1.26
+tar xvf ${DOWNLOADDIR}/dwarves-1.26.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dwarves-1.26
+    
+    mkdir -p native-build
+    pushd native-build
+	CC="gcc" CXX="g++" \
+        cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR} -D__LIB=lib64 \
+              -DCMAKE_BUILD_TYPE=RELEASE ..
+	eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/dwarves-1.26

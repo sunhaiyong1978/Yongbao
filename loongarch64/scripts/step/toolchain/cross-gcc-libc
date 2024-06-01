@@ -3,16 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-gcc-libc
-export PACKAGE_VERSION=13.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc-libc/13.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
-tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.2.0
+export PACKAGE_VERSION=14.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc-libc/14.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0
+tar xvf ${DOWNLOADDIR}/gcc-14.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-14.1.0
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
-    patch -Np1 -i ${SYSDIR}/files/toolchain/cross-gcc-libc/13.2.0/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
-	 
+    
 
     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
@@ -39,10 +38,9 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
                      --enable-checking=release \
                      --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
                      --with-build-sysroot=${PREFIX}/cross-tools/target \
-                     --enable-default-pie --disable-multilib --enable-linker-build-id \
+		     --disable-multilib --enable-linker-build-id \
                      --with-abi=${ARCH_ABI} \
-                     --enable-languages=c,c++,fortran,objc,obj-c++,lto
-        make -j${JOBS} all-gcc
+                     --enable-languages=c,c++,fortran,objc,obj-c++,lto,ada
         make -j${JOBS}
 	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc ]; then
 		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc{,.$(date +%Y%m%d%H%M%S)}
@@ -50,4 +48,4 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
         make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0

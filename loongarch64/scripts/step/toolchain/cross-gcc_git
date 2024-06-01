@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc_git/git-defaul
 rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
 tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
+    CROSS_BUILD=$(archname_to_triple "${CROSS_HOST}" "${CROSS_HOST}")
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
@@ -24,7 +25,7 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     mkdir cross-build
     pushd cross-build
 	LDFLAGS="-static" CFLAGS="-Wno-implicit-function-declaration" \
-        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} \
+        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_BUILD} --host=${HOST_HOST} \
                      --target=${HOST_TARGET} \
                      --with-newlib --disable-shared --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
                      --disable-decimal-float --disable-libgomp --disable-libitm \

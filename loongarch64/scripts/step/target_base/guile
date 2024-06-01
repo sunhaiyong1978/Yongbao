@@ -19,6 +19,7 @@ pushd ${BUILD_DIRECTORY}/guile-3.0.9
 	fi
 	 ./configure ${COMMON_CONFIG} --with-libgmp-prefix=${SYSROOT_DIR}/usr/lib${LIB_SUFF} --with-libunistring-prefix=${SYSROOT_DIR}/usr/lib${LIB_SUFF}
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

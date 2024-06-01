@@ -3,16 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=gcc
-export PACKAGE_VERSION=13.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc/13.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
-tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.2.0
-    CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
-    ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
-    patch -Np1 -i ${SYSDIR}/files/toolchain/gcc/13.2.0/patches/0001-fix-the-missing-include-file-when-using-gcc-plugins-.patch 
-	 
-    mkdir -pv ${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target/usr/lib{,64}
+export PACKAGE_VERSION=14.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc/14.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0
+tar xvf ${DOWNLOADDIR}/gcc-14.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-14.1.0
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+        ARCH_ABI=$(archname_to_archabi "$(get_user_set_env host ${CROSS_TARGET})" "${ARCH_ABI}")
+    else
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+        ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
+    fi
+    
 
     tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
     tar xvf $(ls ${DOWNLOADDIR}/mpfr-*.tar.* | sort -V | tail -n1)
@@ -22,19 +25,28 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
     mv mpc-* mpc
     mkdir cross-build
     pushd cross-build
-        AR=ar \
         ../configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
                      --target=${CROSS_TARGET} \
                      --with-newlib --disable-shared --with-sysroot=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target \
                      --disable-decimal-float --disable-libgomp --disable-libitm \
                      --disable-libsanitizer --disable-libquadmath --disable-threads \
                      --disable-target-zlib --with-system-zlib --enable-checking=release \
-                     --enable-default-pie --disable-multilib \
+                     --enable-default-pie \
+		     --enable-default-ssp \
+		     --disable-multilib --disable-libssp \
                      --with-abi=${ARCH_ABI} \
                      --enable-languages=c,c++
-        make -j${JOBS} all-gcc all-target-libgcc LIBS="$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${LIBS}" || echo "${LIBS} -lzstd -lpthread")"
-        make install-strip-gcc install-strip-target-libgcc
+	case "${CROSS_TARGET}" in
+		*-mingw*)
+        		make -j${JOBS} all-gcc
+        		make install-strip-gcc
+			;;
+		*)
+			make -j${JOBS} all-gcc all-target-libgcc
+        		make install-strip-gcc install-strip-target-libgcc
+			;;
+	esac
 	ln -sf ${CROSS_TARGET}-gcc ${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-cc
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0

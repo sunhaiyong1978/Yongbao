@@ -6,7 +6,7 @@
 00011  step/target_base/mpfr|
 00012  step/target_base/mpc|
 00013  step/target_base/zlib|
-00017  step/target_base/gcc_git|gcc_git
+00017  step/target_base/gcc|gcc
 00018  step/target_base/bzip2|
 00019  step/target_base/xz|
 00020  step/target_base/zstd|
@@ -26,6 +26,7 @@
 00052  step/target_base/openssl|
 00054  step/target_base/check|
 00067  step/target_base/curl|
+00073  step/target_base/sqlite|
 00075  step/target_base/util-linux|
 00076  step/target_base/systemd|
 00077  step/target_base/dbus|
@@ -42,13 +43,13 @@
 00109  step/target_base/libevent|
 00123  step/target_base/pcre|
 00124  step/target_base/pcre2|
+00125  step/target_base/gobject-introspection|
 00125  step/target_base/glib|
 00134  step/target_base/libpng|
 00135  step/target_base/libjpeg-turbo|
 00136  step/target_base/tiff|
 00137  step/target_base/lcms|
 00142  step/target_base/freetype|
-00143  step/target_base/gobject-introspection|
 00144  step/target_base/harfbuzz-pre|
 00145  step/target_base/graphite|
 00146  step/target_base/harfbuzz|
@@ -63,6 +64,7 @@
 00157  step/target_base/gnutls|
 00161  step/target_base/json-glib|
 00163  step/target_base/libgudev|
+00165  step/target_base/libpsl|
 00181  step/target_base/final_run|
 00001  step/base_support/util-macros|g_opt
 00002  step/base_support/xorgproto|g_opt
@@ -150,13 +152,11 @@
 00203  step/base_support/snappy|g_opt
 00208  step/base_support/libwebp|g_opt
 00002  step/unusual/ffmpeg_for_chromium|g_opt
-00210  step/base_support/gtk4|g_opt
 00219  step/base_support/libzip|g_opt
 00234  step/base_support/krb5|g_opt
 00237  step/base_support/lz4|g_opt
 00003  step/unusual/qt5-qtbase|g_opt
 00268  step/base_support/libidn2|g_opt
-00269  step/base_support/libpsl|g_opt
 00284  step/base_support/pipewire|g_opt
 00292  step/base_support/json-c|g_opt
 00304  step/base_support/systemd|g_opt
@@ -167,9 +167,10 @@
 00358  step/base_support/gsettings-desktop-schemas|g_opt
 00360  step/base_support/glib-networking_pre|g_opt
 00361  step/base_support/libsoup-2|g_opt
+00365  step/unusual/gtk4|g_opt
 00447  step/base_support/openldap|g_opt
 00469  step/base_support/libutempter|g_opt
-00004  step/unusual/qt6-qtbase|g_opt
+# 00004  step/unusual/qt6-qtbase|g_opt
 00543  step/base_support/pulseaudio|g_opt
 00551  step/base_support/dotconf|g_opt
 00552  step/base_support/speechd|g_opt

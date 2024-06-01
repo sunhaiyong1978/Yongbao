@@ -1,0 +1,27 @@
+From b48960ce156a1d9694887512ec7041eb13d4d684 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Apr 2024 03:56:43 +0000
+Subject: [PATCH 08/19] qtwebengine 6.7.0 fix x11 has not been declared.
+
+---
+ qtwebengine/src/3rdparty/chromium/ui/gl/gl_display.cc | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/ui/gl/gl_display.cc b/qtwebengine/src/3rdparty/chromium/ui/gl/gl_display.cc
+index dcd6d60f7..5968cf858 100644
+--- a/qtwebengine/src/3rdparty/chromium/ui/gl/gl_display.cc
++++ b/qtwebengine/src/3rdparty/chromium/ui/gl/gl_display.cc
+@@ -28,6 +28,10 @@
+ #include "ui/gl/gl_implementation.h"
+ #include "ui/gl/gl_surface.h"
+ 
++#if defined(USE_GLX)
++#include "ui/gfx/x/connection.h"
++#endif
++
+ #if BUILDFLAG(IS_OZONE)
+ #include "ui/ozone/buildflags.h"
+ #endif  // BUILDFLAG(IS_OZONE)
+-- 
+2.31.1
+

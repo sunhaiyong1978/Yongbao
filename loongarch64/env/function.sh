@@ -110,6 +110,7 @@ function archname_to_anyparm
 {
 	if [ "x${1}" == "x" ]; then
 		if [ "x${3}" == "x" ]; then
+			echo ""
 			exit 1
 		else
 			echo "${3}"
@@ -119,14 +120,16 @@ function archname_to_anyparm
 # 			echo "${3}"
 # 		else
 			if [ ! -f ${NEW_TARGET_SYSDIR}/../env/arch.data ]; then
-				echo "无法识别名称: ${1}"
+#				echo "无法识别名称: ${1}"
+				echo ""
                                 exit 1
 			fi
 # #			RET_VAL="$(cat ${NEW_TARGET_SYSDIR}/../env/arch.data | grep "^${1}=" | awk -F"=" '{ print $2 }' | sed "s@[[:space:]]@@g")"
 			RET_VAL="$(get_arch_parm "${1}" "${2}")"
 			if [ "x${RET_VAL}" == "x" ] || [ "x${RET_VAL}" == "xERROR" ]; then
-				echo "没有找到名称或参数: ${1} ${2}"
-                                exit 1
+#				echo "没有找到名称或参数: ${1} ${2}"
+#				exit 1
+				echo "${3}"
 			else
 				echo "${RET_VAL}"
 			fi
@@ -560,6 +563,110 @@ function set_step_to_dist
 		return
 	fi
 
+}
+
+
+function run_step_package_check
+{
+	if [ "x${BUILD_PACKAGE_CHECK}" == "x0" ]; then
+		return 0
+	fi
+	if [ "x${RUN_TARGET_ARCH}" == "x$(uname -m)" ]; then
+		if [ ! -f ${NEW_TARGET_SYSDIR}/../scripts/step/${STEP_BUILDNAME}/${STEP_PACKAGENAME}.check ]; then
+			case "x${1}" in
+				"xcheck")
+					make check
+					;;
+				"xtests")
+					make tests
+					;;
+				"xninja")
+					ninja check
+					;;
+				*)
+					return 0
+					;;
+			esac
+		else
+			source ${NEW_TARGET_SYSDIR}/../scripts/step/${STEP_BUILDNAME}/${STEP_PACKAGENAME}.check
+		fi
+	else
+		return 0
+	fi
+}
+
+
+function default_set_comment
+{
+#	default_set_comment "x86_64-emu" "X86 64位二进制翻译" "/usr/bin/x86_64-emu"
+
+        declare OVERLAY_DIR="sysroot"
+
+        if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
+                OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+        else
+                OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+        fi
+
+        if [ "x${OVERLAY_DIR}" == "x" ]; then
+                return
+        fi
+
+	if [ "x${1}" == "x" ]; then
+		return
+	fi
+	declare DEFAULT_SET_NAME="${1}"
+
+	declare DEFAULT_SET_COMMENT=""
+	if [ "x${2}" != "x" ]; then
+		DEFAULT_SET_COMMENT="${2}"
+	fi
+
+	if [ "x${3}" == "x" ]; then
+		return
+	fi
+	declare DEFAULT_SET_COMMAND="${3}"
+
+        if [ -d ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR} ]; then
+                mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}/etc/default-set
+                echo "${DEFAULT_SET_COMMENT}|${DEFAULT_SET_COMMAND}" > ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}/etc/default-set/${DEFAULT_SET_NAME}.comment
+        else
+                return
+        fi
+
+	return 
+}
+
+function default_set_conf
+{
+        declare OVERLAY_DIR="sysroot"
+
+        if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
+                OVERLAY_DIR=$(cat ${NEW_TARGET_SYSDIR}/../env/${STEP_BUILDNAME}/overlay.set | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+        else
+                OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+        fi
+
+        if [ "x${OVERLAY_DIR}" == "x" ]; then
+                return
+        fi
+
+	if [ "x${1}" == "x" ]; then
+		return
+	fi
+	declare DEFAULT_SET_NAME="${1}"
+	if [ "x${2}" == "x" ]; then
+		return
+	fi
+	declare DEFAULT_SET_VERSION="${2}"
+
+        if [ -d ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR} ]; then
+		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}/etc/default-set/${DEFAULT_SET_NAME}/
+		touch ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}/etc/default-set/${DEFAULT_SET_NAME}/${DEFAULT_SET_VERSION}
+		echo "SET=${3}|${4}|${5}|" > ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}/etc/default-set/${DEFAULT_SET_NAME}/${DEFAULT_SET_VERSION}
+        else
+                return
+        fi
 }
 
 if [ -f ${NEW_TARGET_SYSDIR}/set_env.conf ]; then

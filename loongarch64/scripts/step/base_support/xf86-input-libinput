@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/xf86-input-libinput-1.4.0
 	fi
 	 ./configure ${COMMON_CONFIG} --with-sdkdir=/usr/include/xorg --with-xorg-conf-dir=/usr/share/X11/xorg.conf.d --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 

@@ -3,12 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=gcc
-export PACKAGE_VERSION=13.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gcc/13.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
-tar xvf ${DOWNLOADDIR}/gcc-13.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-13.2.0
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gcc/git-default/
+rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
+tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 	
+
+	export PATH=/usr/bin:/usr/sbin
+
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv build
 	pushd build
@@ -19,10 +22,11 @@ pushd ${BUILD_DIRECTORY}/gcc-13.2.0
 		             --enable-checking=release \
 		             --disable-multilib \
 		             --enable-shared --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array \
-		             --enable-languages=c,c++
+		             --enable-languages=c,c++,ada
 		make -j${JOBS}
 		make install-strip
-		ln -sfv gcc ${CROSSTOOLS_DIR}/bin/cc
+		ln -sfv gcc ${CROSSTOOLS_DIR}/build-tools/bin/cc
 	popd
+	rm -fv ${CROSSTOOLS_DIR}/build-tools/bin/$(${CROSSTOOLS_DIR}/build-tools/bin/gcc -dumpmachine)-*
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-13.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git

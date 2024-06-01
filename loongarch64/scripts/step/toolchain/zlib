@@ -8,17 +8,30 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zlib/1.3.1/
 rm -rf ${BUILD_DIRECTORY}/zlib-1.3.1
 tar xvf ${DOWNLOADDIR}/zlib-1.3.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/zlib-1.3.1
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+        CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env host ${CROSS_TARGET})" "${ARCH_BIT}")
+	ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env host ${CROSS_TARGET})" "MABI" "")
+    else
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+        CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_BIT}")
+	ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env target ${CROSS_TARGET})" "MABI" "")
+    fi
+    LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
+    INSTALL_PREFIX_DIR=$(archname_to_anyparm "${CROSS_TARGET}" "PREFIX_DIR" "/usr")
 	
-
-        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
-        CROSS_ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target)" "${ARCH_BIT}")
-        LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
-        ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
 
         PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
 
-	CROSS_PREFIX=${CROSS_TARGET}- ./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF}
-	make -j${JOBS} CC="${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}"
+	case "${CROSS_TARGET}" in
+		*-mingw*)
+			CROSS_PREFIX=${CROSS_TARGET}- ./configure --prefix=${INSTALL_PREFIX_DIR} --static
+			;;
+		*)
+			CROSS_PREFIX=${CROSS_TARGET}- ./configure --prefix=${INSTALL_PREFIX_DIR} --libdir=${INSTALL_PREFIX_DIR}/lib${LIB_SUFF}
+			;;
+	esac
+	make -j${JOBS} CC="${CROSS_TARGET}-gcc ${ARCH_MABI} -fPIC"
 	INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
 	make DESTDIR=${INSTALL_DIST_DIR} install
 popd 

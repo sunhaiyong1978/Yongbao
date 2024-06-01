@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc_git-libc/git-d
 rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
 tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
+    CROSS_BUILD=$(archname_to_triple "${CROSS_HOST}" "${CROSS_HOST}")
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
@@ -31,16 +32,16 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     mkdir cross-build
     pushd cross-build
         LDFLAGS="-static" \
-        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${HOST_HOST} \
+        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_BUILD} --host=${HOST_HOST} \
                      --target=${HOST_TARGET} \
                      --enable-__cxa_atexit --enable-threads=posix \
                      --enable-libstdcxx-time \
                      --enable-checking=release \
                      --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
 		     --with-build-sysroot=${PREFIX}/cross-tools/target \
-                     --enable-default-pie --disable-multilib --enable-linker-build-id \
+                     --disable-multilib --enable-linker-build-id \
                      --with-abi=${ARCH_ABI} \
-                     --enable-languages=c,c++,fortran,objc,obj-c++,lto
+                     --enable-languages=c,c++,fortran,objc,obj-c++,lto,ada
         make -j${JOBS} all-gcc
         make -j${JOBS}
 	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc ]; then

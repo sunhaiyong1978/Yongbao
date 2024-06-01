@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mariadb
-export PACKAGE_VERSION=11.5.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mariadb/11.5.0/
-rm -rf ${BUILD_DIRECTORY}/mariadb-11.5.0
-tar xvf ${DOWNLOADDIR}/mariadb-11.5.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mariadb-11.5.0
-        patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/11.5.0/patches/0001-mariadb-fix-for-gcc13.patch 
+export PACKAGE_VERSION=11.5.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mariadb/11.5.1/
+rm -rf ${BUILD_DIRECTORY}/mariadb-11.5.1
+tar xvf ${DOWNLOADDIR}/mariadb-11.5.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mariadb-11.5.1
+        patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/11.5.1/patches/0001-mariadb-fix-for-gcc13.patch 
 	 
 	sed -i "s@COMMAND factorial@COMMAND qemu-loongarch64 factorial@g" dbug/CMakeLists.txt
 	sed -i "s@COMMAND comp_err@COMMAND qemu-loongarch64 comp_err@g" extra/CMakeLists.txt
@@ -61,4 +61,4 @@ pushd ${BUILD_DIRECTORY}/mariadb-11.5.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mariadb-11.5.0
+rm -rf ${BUILD_DIRECTORY}/mariadb-11.5.1

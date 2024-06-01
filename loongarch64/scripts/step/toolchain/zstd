@@ -8,15 +8,34 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zstd/1.5.6/
 rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6
 tar xvf ${DOWNLOADDIR}/zstd-1.5.6.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/zstd-1.5.6
-	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
-	LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
-	ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+	ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env host ${CROSS_TARGET})" "MABI" "")
+    else
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+	ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env target ${CROSS_TARGET})" "MABI" "")
+    fi
+    LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
+    INSTALL_PREFIX_DIR=$(archname_to_anyparm "${CROSS_TARGET}" "PREFIX_DIR" "/usr")
+	
 
 	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
 
-	make -j${JOBS} CC="${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF}
+	case "${CROSS_TARGET}" in
+		*-mingw*)
+		        pushd lib
+				make -j${JOBS} CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=${INSTALL_PREFIX_DIR}
 
-	INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
-	make CC="${CROSS_TARGET}-gcc -mabi=${ARCH_ABI}" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF} DESTDIR=${INSTALL_DIST_DIR} install
+				INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
+				make CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=${INSTALL_PREFIX_DIR} DESTDIR=${INSTALL_DIST_DIR} install
+        		popd
+			;;
+		*)
+			make -j${JOBS} CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=${INSTALL_PREFIX_DIR} LIBDIR=${INSTALL_PREFIX_DIR}/lib${LIB_SUFF}
+
+			INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
+			make CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF} DESTDIR=${INSTALL_DIST_DIR} install
+			;;
+	esac
 popd 
 rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6

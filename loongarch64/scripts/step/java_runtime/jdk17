@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/jdk17-17u_git
 tar xvf ${DOWNLOADDIR}/jdk17-17u_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/jdk17-17u_git
     sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
-    LDFLAGS="" CC="${CROSS_TARGET}-gcc" BUILD_SYSROOT_LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
+    LDFLAGS="" CC="${CROSS_TARGET}-gcc" BUILD_SYSROOT_LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64" \
     sh ./configure --prefix=/usr --host=${CROSS_TARGET} \
                 --with-zlib=system --with-libpng=system --enable-unlimited-crypto \
                 --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \
@@ -30,3 +30,5 @@ pushd ${BUILD_DIRECTORY}/jdk17-17u_git
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/jdk17-17u_git
+
+default_set_conf "jdk" "jdk17" "JDK 17" "/usr/bin/java" "/opt/jdk-17/bin/java"

@@ -30,3 +30,5 @@ pushd ${BUILD_DIRECTORY}/jdk-latest_git
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/jdk-latest_git
+
+default_set_conf "jdk" "latest" "JDK 最新版" "/usr/bin/java" "/opt/jdk-latest/bin/java"

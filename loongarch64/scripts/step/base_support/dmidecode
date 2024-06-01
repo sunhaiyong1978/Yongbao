@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dmidecode
-export PACKAGE_VERSION=3.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dmidecode/3.5/
-rm -rf ${BUILD_DIRECTORY}/dmidecode-3.5
-tar xvf ${DOWNLOADDIR}/dmidecode-3.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dmidecode-3.5
+export PACKAGE_VERSION=3.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dmidecode/3.6/
+rm -rf ${BUILD_DIRECTORY}/dmidecode-3.6
+tar xvf ${DOWNLOADDIR}/dmidecode-3.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dmidecode-3.6
     
     make -j${JOBS} CC=${CROSS_TARGET}-gcc prefix=/usr
     make DESTDIR=${SYSROOT_DIR} CC=${CROSS_TARGET}-gcc prefix=/usr install
 popd 
-rm -rf ${BUILD_DIRECTORY}/dmidecode-3.5
+rm -rf ${BUILD_DIRECTORY}/dmidecode-3.6

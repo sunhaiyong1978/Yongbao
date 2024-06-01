@@ -19,6 +19,7 @@ pushd ${BUILD_DIRECTORY}/man-db-2.12.1
 	fi
 	 ./configure ${COMMON_CONFIG}  --sysconfdir=/etc --disable-setuid  --enable-cache-owner=bin 	--with-browser=/usr/bin/lynax  --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap --with-systemdtmpfilesdir=/usr/lib/tmpfiles.d --with-systemdsystemunitdir=/usr/lib/systemd/system
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

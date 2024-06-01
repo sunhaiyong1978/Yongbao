@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=lxml
-export PACKAGE_VERSION=5.2.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/lxml/5.2.1/
-rm -rf ${BUILD_DIRECTORY}/lxml-lxml-5.2.1
-tar xvf ${DOWNLOADDIR}/lxml-5.2.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/lxml-lxml-5.2.1
+export PACKAGE_VERSION=5.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/lxml/5.2.2/
+rm -rf ${BUILD_DIRECTORY}/lxml-lxml-5.2.2
+tar xvf ${DOWNLOADDIR}/lxml-5.2.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lxml-lxml-5.2.2
 	
 	${CROSSTOOLS_DIR}/bin/python3 setup.py build
         ${CROSSTOOLS_DIR}/bin/python3 setup.py install
  #       ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
 popd 
-rm -rf ${BUILD_DIRECTORY}/lxml-lxml-5.2.1
+rm -rf ${BUILD_DIRECTORY}/lxml-lxml-5.2.2

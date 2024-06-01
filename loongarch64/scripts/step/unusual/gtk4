@@ -1,0 +1,21 @@
+source env/unusual/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=unusual
+export STEP_PACKAGENAME=gtk4
+export PACKAGE_VERSION=4.15.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/gtk4/4.15.1/
+rm -rf ${BUILD_DIRECTORY}/gtk-4.15.1
+tar xvf ${DOWNLOADDIR}/gtk-4.15.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gtk-4.15.1
+	
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG}  -Dbroadway-backend=true -Dmedia-gstreamer=disabled -Dintrospection=enabled -Dbuild-tests=false -Dvulkan=disabled \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/gtk-4.15.1

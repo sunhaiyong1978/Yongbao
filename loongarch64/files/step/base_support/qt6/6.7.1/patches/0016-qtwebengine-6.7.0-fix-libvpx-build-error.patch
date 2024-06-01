@@ -1,0 +1,53 @@
+From b8a7db678ded27586b32ee86251d4d2730f77980 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Apr 2024 17:03:20 +0000
+Subject: [PATCH 16/19] qtwebengine 6.7.0 fix libvpx build error.
+
+---
+ .../third_party/libvpx/source/config/linux/loongarch/vp8_rtcd.h | 2 ++
+ .../libvpx/source/config/linux/loongarch/vpx_dsp_rtcd.h         | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vp8_rtcd.h b/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vp8_rtcd.h
+index a9ee12391..ce64606cd 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vp8_rtcd.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vp8_rtcd.h
+@@ -443,6 +443,7 @@ static void setup_rtcd_internal(void) {
+   int flags = loongarch_cpu_caps();
+ 
+   (void)flags;
++#if 0
+   vp8_block_error = vp8_block_error_c;
+   if (flags & HAS_LSX)
+     vp8_block_error = vp8_block_error_lsx;
+@@ -491,6 +492,7 @@ static void setup_rtcd_internal(void) {
+   vp8_sixtap_predict8x8 = vp8_sixtap_predict8x8_c;
+   if (flags & HAS_LSX)
+     vp8_sixtap_predict8x8 = vp8_sixtap_predict8x8_lsx;
++#endif
+ }
+ #endif
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vpx_dsp_rtcd.h b/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vpx_dsp_rtcd.h
+index cd8e6a7a1..00624f2d4 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vpx_dsp_rtcd.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/libvpx/source/config/linux/loongarch/vpx_dsp_rtcd.h
+@@ -2271,6 +2271,7 @@ static void setup_rtcd_internal(void) {
+   int flags = loongarch_cpu_caps();
+ 
+   (void)flags;
++#if 0
+   vpx_comp_avg_pred = vpx_comp_avg_pred_c;
+   if (flags & HAS_LSX)
+     vpx_comp_avg_pred = vpx_comp_avg_pred_lsx;
+@@ -2442,6 +2443,7 @@ static void setup_rtcd_internal(void) {
+   vpx_variance8x8 = vpx_variance8x8_c;
+   if (flags & HAS_LSX)
+     vpx_variance8x8 = vpx_variance8x8_lsx;
++#endif
+ }
+ #endif
+ 
+-- 
+2.31.1
+
