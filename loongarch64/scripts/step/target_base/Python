@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=Python
-export PACKAGE_VERSION=3.12.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Python/3.12.3/
-rm -rf ${BUILD_DIRECTORY}/Python-3.12.3
-tar xvf ${DOWNLOADDIR}/Python-3.12.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.12.3
+export PACKAGE_VERSION=3.12.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Python/3.12.4/
+rm -rf ${BUILD_DIRECTORY}/Python-3.12.4
+tar xvf ${DOWNLOADDIR}/Python-3.12.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.12.4
 cat > config.cache << "EOF"
     ac_cv_aligned_required=no
     ac_cv_broken_sem_getvalue=no
@@ -66,4 +66,4 @@ sed -i -e "s@${SYSROOT_DIR}@@g" \
 
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.12.3
+rm -rf ${BUILD_DIRECTORY}/Python-3.12.4

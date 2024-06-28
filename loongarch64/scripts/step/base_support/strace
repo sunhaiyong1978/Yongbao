@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/strace-6.9
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} CFLAGS="${CFLAGS} -Wno-error=calloc-transposed-args" --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} CFLAGS="${CFLAGS} -Wno-error=calloc-transposed-args -Wno-error=sign-compare" --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

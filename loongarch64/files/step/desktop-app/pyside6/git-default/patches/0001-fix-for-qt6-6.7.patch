@@ -1,0 +1,39 @@
+From 185b20d81c169f59aa4d5cab3692fd6d3e10633e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 4 Jun 2024 02:14:23 +0000
+Subject: [PATCH] fix for qt6-6.7
+
+---
+ .../QtMultimedia/PySide6/QtMultimedia/qaudiosink_wrapper.cpp    | 2 +-
+ .../QtMultimedia/PySide6/QtMultimedia/qaudiosource_wrapper.cpp  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosink_wrapper.cpp b/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosink_wrapper.cpp
+index df3d443..cc25ca5 100644
+--- a/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosink_wrapper.cpp
++++ b/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosink_wrapper.cpp
+@@ -789,7 +789,7 @@ static PyObject *Sbk_QAudioSinkFunc_error(PyObject *self)
+         if (Shiboken::Errors::occurred() == nullptr) {
+             // error()const
+             QtAudio::Error cppResult = const_cast<const ::QAudioSink *>(cppSelf)->error();
+-            pyResult = Shiboken::Conversions::copyToPython(PepType_SETP(reinterpret_cast<SbkEnumType *>(Shiboken::Module::get(SbkPySide6_QtMultimediaTypeStructs[SBK_QtAudio_Error_IDX])))->converter, &cppResult);
++            pyResult = Shiboken::Conversions::copyToPython(PepType_SETP(reinterpret_cast<SbkEnumType *>(Shiboken::Module::get(SbkPySide6_QtMultimediaTypeStructs[SBK_QAudioDecoder_Error_IDX])))->converter, &cppResult);
+         }
+     }
+ 
+diff --git a/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosource_wrapper.cpp b/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosource_wrapper.cpp
+index 09c7423..998e847 100644
+--- a/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosource_wrapper.cpp
++++ b/cross-build/sources/pyside6/PySide6/QtMultimedia/PySide6/QtMultimedia/qaudiosource_wrapper.cpp
+@@ -789,7 +789,7 @@ static PyObject *Sbk_QAudioSourceFunc_error(PyObject *self)
+         if (Shiboken::Errors::occurred() == nullptr) {
+             // error()const
+             QtAudio::Error cppResult = const_cast<const ::QAudioSource *>(cppSelf)->error();
+-            pyResult = Shiboken::Conversions::copyToPython(PepType_SETP(reinterpret_cast<SbkEnumType *>(Shiboken::Module::get(SbkPySide6_QtMultimediaTypeStructs[SBK_QtAudio_Error_IDX])))->converter, &cppResult);
++            pyResult = Shiboken::Conversions::copyToPython(PepType_SETP(reinterpret_cast<SbkEnumType *>(Shiboken::Module::get(SbkPySide6_QtMultimediaTypeStructs[SBK_QAudioDecoder_Error_IDX])))->converter, &cppResult);
+         }
+     }
+ 
+-- 
+2.31.1
+

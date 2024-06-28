@@ -4,14 +4,14 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=po4a
-export PACKAGE_VERSION=0.72
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/po4a/0.72/
-rm -rf ${BUILD_DIRECTORY}/po4a-0.72
-tar xvf ${DOWNLOADDIR}/po4a-0.72.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/po4a-0.72
+export PACKAGE_VERSION=0.73
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/po4a/0.73/
+rm -rf ${BUILD_DIRECTORY}/po4a-0.73
+tar xvf ${DOWNLOADDIR}/po4a-0.73.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/po4a-0.73
 	
         ${CROSSTOOLS_DIR}/bin/perl Build.PL
 	./Build
 	./Build install
 popd 
-rm -rf ${BUILD_DIRECTORY}/po4a-0.72
+rm -rf ${BUILD_DIRECTORY}/po4a-0.73

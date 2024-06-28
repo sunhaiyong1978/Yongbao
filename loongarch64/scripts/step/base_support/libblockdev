@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/libblockdev-3.1.1
 	sed -i "s@\$PKG_CONFIG_SYSROOT_DIR@@g" configure
         mkdir cross-prebuild
         pushd cross-prebuild
-                ../configure ${COMMON_CONFIG} --enable-introspection=no
+                CFLAGS="-Wno-error=unused-parameter" ../configure ${COMMON_CONFIG} --enable-introspection=no
                 make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
                      INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
                      VAPIGEN=${CROSS_TARGET}-vapigen
@@ -26,7 +26,7 @@ pushd ${BUILD_DIRECTORY}/libblockdev-3.1.1
 
         mkdir cross-build
         pushd cross-build
-                ../configure ${COMMON_CONFIG} --enable-introspection=yes
+                CFLAGS="${CFLAGS} -Wno-error=unused-parameter" ../configure ${COMMON_CONFIG} --enable-introspection=yes
                 make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
                      INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
                      VAPIGEN=${CROSS_TARGET}-vapigen

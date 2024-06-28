@@ -1,0 +1,26 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=rustc
+export PACKAGE_VERSION=1.79.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/rustc/1.79.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.79.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.79.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.79.0-src
+	
+	sed -i "s@ifdef LLVM_RUSTLLVM@if 0@g" compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp
+	find vendor -name .cargo-checksum.json \
+          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
+	./configure --target=${CROSS_TARGET},$(echo ${CROSS_HOST} | sed 's@cross@unknown@g') \
+	            --prefix=${CROSSTOOLS_DIR}/host-rust --sysconfdir=${CROSSTOOLS_DIR}/host-rust/etc \
+	            --local-rust-root=${CROSSTOOLS_DIR}/rust/usr/local \
+	            --enable-extended --enable-vendor --release-channel=dev \
+	            --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler \
+		    --set=target.${CROSS_TARGET}.linker="${CROSS_TARGET}-gcc"
+        export CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_GNU_LINKER="${CROSS_TARGET}-gcc"
+        export CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS="-Ccode-model=large"
+        make -j${JOBS} HOST_CC="gcc"
+        make -j${JOBS} HOST_CC="gcc" install
+popd 
+rm -rf ${BUILD_DIRECTORY}/rustc-1.79.0-src

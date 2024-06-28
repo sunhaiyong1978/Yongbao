@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=dwarves
-export PACKAGE_VERSION=1.26
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/dwarves/1.26/
-rm -rf ${BUILD_DIRECTORY}/dwarves-1.26
-tar xvf ${DOWNLOADDIR}/dwarves-1.26.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dwarves-1.26
+export PACKAGE_VERSION=1.27
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/dwarves/1.27/
+rm -rf ${BUILD_DIRECTORY}/dwarves-1.27
+tar xvf ${DOWNLOADDIR}/dwarves-1.27.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dwarves-1.27
     
     mkdir -p native-build
     pushd native-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/dwarves-1.26
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/dwarves-1.26
+rm -rf ${BUILD_DIRECTORY}/dwarves-1.27

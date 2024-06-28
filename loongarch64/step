@@ -62,11 +62,11 @@
 %step/host-tools/ruby|
 %step/host-tools/wayland|
 %step/host-tools/cmake|
-%step/host-tools/libgcrypt|
+%step/host-tools/libgcrypt|f_step_libgcrypt_bad
 %step/host-tools/libxslt|
 %step/host-tools/Cython|
 %step/host-tools/glslang|
-%step/host-tools/pycairo|
+%step/host-tools/pycairo|f_step_pycairo_bad
 %step/host-tools/lxml|
 %step/host-tools/sip4|
 %step/host-tools/wheel|
@@ -197,8 +197,7 @@
 %step/cross-tools/pycparser|
 %step/cross-tools/NULL|
 %step/host-tools/llvm-project|chromium
-%step/host-tools/compiler-rt|chromium
-%step/host-tools/llvm_runtimes|chromium
+%step/host-tools/rustc|chromium
 %step/host-tools/NULL|
 %step/target_base/man-pages|
 %step/target_base/iana-etc|
@@ -595,6 +594,7 @@
 %step/base_support/volk|g_opt
 %step/base_support/Vulkan-Loader|g_opt
 %step/base_support/Vulkan-Tools|g_opt
+%step/base_support/aom|g_opt
 %step/base_support/ffmpeg|g_opt
 %step/base_support/libcloudproviders|g_opt
 %step/base_support/gsettings-desktop-schemas|g_opt
@@ -804,7 +804,7 @@
 %step/base_support/v4l-utils|g_opt
 %step/base_support/node|g_opt
 %step/base_support/hiredis|g_opt
-%step/base_support/ccache|g_opt
+%step/base_support/ccache|g_opt;nobuild
 %step/base_support/dwarves|g_opt
 %step/base_support/lttng-ust|g_opt
 %step/base_support/alabaster|g_opt
@@ -896,7 +896,7 @@
 %step/base_support/open-iscsi|g_opt
 %step/base_support/udisks|g_opt
 %step/base_support/perf|g_opt
-%step/base_support/strace|g_opt
+%step/base_support/strace|g_opt;f_base_support_strace_bad
 %step/base_support/ostree|g_opt
 %step/base_support/flatpak|g_opt
 %step/base_support/xdg-desktop-portal|g_opt
@@ -963,6 +963,7 @@
 %step/base_support/libseccomp|g_opt
 %step/base_support/pycparser|g_opt
 %step/base_support/jq|g_opt
+%step/base_support/cpp-httplib|g_opt
 %step/base_support/create_files|g_opt
 %step/base_support/final_run|g_opt
 %step/target_base/blfs-systemd-units|
@@ -1117,7 +1118,6 @@
 %step/KDE6/KDE6-analitza|g_opt+KDE6
 %step/KDE6/KDE6-dolphin-plugins|g_opt+KDE6
 %step/KDE6/KDE6-dragon|g_opt+KDE6;nouse
-%step/KDE6/KDE6-elisa|g_opt+KDE6
 %step/KDE6/KDE6-ffmpegthumbs|g_opt+KDE6
 %step/KDE6/KDE6-kstatusnotifieritem|g_opt+KDE6
 %step/KDE6/KDE6-juk|g_opt+KDE6
@@ -1157,6 +1157,7 @@
 %step/KDE6/KDE6-akonadi-notes|g_opt+KDE6
 %step/KDE6/KDE6-calendarsupport|g_opt+KDE6
 %step/KDE6/kdiagram|g_opt+KDE6
+%step/KDE6/KDE6-elisa|g_opt+KDE6
 %step/KDE6/KDE6-eventviews|g_opt+KDE6
 %step/KDE6/KDE6-incidenceeditor|g_opt+KDE6
 %step/KDE6/KDE6-korganizer|g_opt+KDE6
@@ -1219,7 +1220,7 @@
 %step/KDE6/KDE6-oxygen-sounds|g_opt+KDE6
 %step/KDE6/KDE6-kdeplasma-addons|g_opt+KDE6
 %step/KDE6/KDE6-xdg-desktop-portal-kde|g_opt+KDE6
-%step/KDE6/KDE6-krfb|g_opt+KDE6
+%step/KDE6/KDE6-krfb|g_opt+KDE6;f_KDE6_KDE6-krfb_bad
 %step/KDE6/KDE6-kdialog|g_opt+KDE6
 %step/KDE6/KDE6-kdenetwork-filesharing|g_opt+KDE6
 %step/KDE6/OpenTimelineIO|g_opt+KDE6
@@ -1309,8 +1310,6 @@
 %step/desktop-app/kodi|g_opt+desk-app;kodi
 %step/desktop-app/inputstream.ffmpegdirect|g_opt+desk-app;kodi
 %step/desktop-app/pvr.iptvsimple|g_opt+desk-app;kodi
-%step/desktop-app/game.libretro|g_opt+desk-app;kodi
-%step/desktop-app/game.libretro.mame2003_plus|g_opt+desk-app;kodi;%PARENT=ORIG&game_emu
 %step/desktop-app/eigen3|g_opt+desk-app
 %step/desktop-app/Celestia|g_opt+desk-app
 %step/desktop-app/CelestiaContent|g_opt+desk-app
@@ -1578,6 +1577,8 @@
 %step/linux_runtime/libvpx|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libwebp|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/x265|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/libdvbpsi|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/faad2|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/ffmpeg|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/iso-codes|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/shaderc|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
@@ -1599,6 +1600,9 @@
 %step/linux_runtime/MangoHud|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/pciutils|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/pipewire|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/fmt|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/json|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/Catch2|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/fix_sysroot|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime;none_status
 %step/linux_runtime/create_base_files|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/dist_sysroot|x86_64_runtime,wine64;%target=?x86_64;%OVERLAY=x86_64_runtime
@@ -1772,6 +1776,8 @@
 %step/linux_runtime/libvpx|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libwebp|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/x265|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/libdvbpsi|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/faad2|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/ffmpeg|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/iso-codes|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/shaderc|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
@@ -1793,6 +1799,9 @@
 %step/linux_runtime/MangoHud|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/pciutils|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/pipewire|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/fmt|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/json|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/Catch2|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/fix_sysroot|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime;none_status
 %step/linux_runtime/create_base_files|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/dist_sysroot|i686_runtime,wine;%target=i686;%OVERLAY=i686_runtime
@@ -1816,9 +1825,7 @@
 %step/simulate/box64|emu
 %step/simulate/box64-la|emu
 %step/simulate/NULL|emu
-%step/simulate/wine32|emu;wine;%target=i686;%PARENT=ORIG,i686_runtime,mingw_sysroot
-%step/simulate/wine|emu;wine+wine64;!wine_dev;%target=x86_64;%PARENT=ORIG,x86_64_runtime,mingw_sysroot
-%step/simulate/wine_dev|emu;wine+wine64;wine_dev;%target=x86_64;%PARENT=ORIG,x86_64_runtime
+%step/simulate/wine|emu;wine+wine64;!wine_dev;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime,mingw_sysroot
 %step/simulate/NULL|emu
 %step/simulate/dxvk|emu;wine64;%target=x86_64;%PARENT=ORIG,x86_64_runtime,mingw_sysroot
 %step/simulate/dxvk|emu;wine;%target=i686;%PARENT=ORIG,i686_runtime,mingw_sysroot
@@ -1828,6 +1835,7 @@
 %step/simulate/NULL|emu;%OVERLAY=wine-collection
 %step/simulate/wine7|emu;%OVERLAY=wine-collection;wine7;%VERSION=;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime
 %step/simulate/wine7|emu;%OVERLAY=wine-collection;wine7;%VERSION=v7.21;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime;f_simulate_wine7_bad
+%step/simulate/wine7|emu;%OVERLAY=wine-collection;wine7;%VERSION=v9.10;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime
 %step/simulate/wine8|emu;%OVERLAY=wine-collection;wine8;%target=x86_64;%PARENT=ORIG,x86_64_runtime,mingw_sysroot
 %step/simulate/dist_sysroot|emu;%OVERLAY=wine-collection
 %step/toolchain/NULL|g_opt+host-dist

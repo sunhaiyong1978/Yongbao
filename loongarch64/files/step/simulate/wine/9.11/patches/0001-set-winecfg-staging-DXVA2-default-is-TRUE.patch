@@ -1,0 +1,25 @@
+From 88f120bfe9ccf9e34ad1be9e92711a77b3694824 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 7 Jun 2024 07:31:49 +0000
+Subject: [PATCH] set winecfg staging "DXVA2" default is TRUE.
+
+---
+ programs/winecfg/staging.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/programs/winecfg/staging.c b/programs/winecfg/staging.c
+index 975735c..817ad84 100644
+--- a/programs/winecfg/staging.c
++++ b/programs/winecfg/staging.c
+@@ -49,7 +49,7 @@ static BOOL vaapi_get(void)
+ {
+     BOOL ret;
+     WCHAR *value = get_reg_key(config_key, keypath(L"DXVA2"), L"backend", NULL);
+-    ret = (value && !wcscmp(value, L"va"));
++    ret = value ? (value && !wcscmp(value, L"va")) : TRUE;
+     free(value);
+     return ret;
+ }
+-- 
+2.31.1
+

@@ -4,12 +4,12 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=systemd_pre
-export PACKAGE_VERSION=255
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd_pre/255/
-rm -rf ${BUILD_DIRECTORY}/systemd-255
-tar xvf ${DOWNLOADDIR}/systemd-255.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-255
-	patch -Np1 -i ${SYSDIR}/files/linux_runtime/systemd_pre/255/patches/systemd-255-add-PID_FS_MAGIC-for-linux-6.9.patch 
+export PACKAGE_VERSION=256.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd_pre/256.1/
+rm -rf ${BUILD_DIRECTORY}/systemd-256.1
+tar xvf ${DOWNLOADDIR}/systemd-256.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-256.1
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/systemd_pre/256.1/patches/systemd-255-add-PID_FS_MAGIC-for-linux-6.9.patch 
 	 
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
@@ -30,4 +30,4 @@ pushd ${BUILD_DIRECTORY}/systemd-255
 		eval ${NINJA_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-255
+rm -rf ${BUILD_DIRECTORY}/systemd-256.1

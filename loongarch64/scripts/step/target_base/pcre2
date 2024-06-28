@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=pcre2
-export PACKAGE_VERSION=10.43
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/pcre2/10.43/
-rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.43
-tar xvf ${DOWNLOADDIR}/pcre2-10.43.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.43
-	patch -Np1 -i ${SYSDIR}/files/target_base/pcre2/10.43/patches/0001-pcre2-10.43-fix-build-error-for-loongarch64.patch 
+export PACKAGE_VERSION=10.44
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/pcre2/10.44/
+rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.44
+tar xvf ${DOWNLOADDIR}/pcre2-10.44.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.44
+	patch -Np1 -i ${SYSDIR}/files/target_base/pcre2/10.44/patches/0001-pcre2-10.43-fix-build-error-for-loongarch64.patch 
 	 
 	for config_i in $(find -name "config.sub")
 	do
@@ -24,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.43
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.43
+rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.44

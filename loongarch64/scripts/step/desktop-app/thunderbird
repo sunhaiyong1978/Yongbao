@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=thunderbird
-export PACKAGE_VERSION=125.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/125.0/
-rm -rf ${BUILD_DIRECTORY}/thunderbird-125.0
-tar xvf ${DOWNLOADDIR}/thunderbird-125.0.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/thunderbird-125.0
+export PACKAGE_VERSION=127.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/127.0/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-127.0
+tar xvf ${DOWNLOADDIR}/thunderbird-127.0.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-127.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
@@ -21,7 +21,7 @@ pushd ${BUILD_DIRECTORY}/thunderbird-125.0
 
     sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@12@g" mach
 
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/125.0/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/127.0/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
 	 
     find third_party/rust/ -name .cargo-checksum.json \
          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
@@ -106,4 +106,4 @@ ln -sfv /usr/lib64/thunderbird/chrome/icons/default/default256.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/thunderbird-125.0
+rm -rf ${BUILD_DIRECTORY}/thunderbird-127.0

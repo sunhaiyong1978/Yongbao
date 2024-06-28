@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-plasma-workspace
-export PACKAGE_VERSION=6.0.5.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-plasma-workspace/6.0.5.1/
-rm -rf ${BUILD_DIRECTORY}/plasma-workspace-6.0.5.1
-tar xvf ${DOWNLOADDIR}/plasma-workspace-6.0.5.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/plasma-workspace-6.0.5.1
+export PACKAGE_VERSION=6.1.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-plasma-workspace/6.1.1/
+rm -rf ${BUILD_DIRECTORY}/plasma-workspace-6.1.1
+tar xvf ${DOWNLOADDIR}/plasma-workspace-6.1.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/plasma-workspace-6.1.1
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/plasma-workspace-6.0.5.1
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/plasma-workspace-6.0.5.1
+rm -rf ${BUILD_DIRECTORY}/plasma-workspace-6.1.1

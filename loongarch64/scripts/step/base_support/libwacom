@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libwacom
-export PACKAGE_VERSION=2.11.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libwacom/2.11.0/
-rm -rf ${BUILD_DIRECTORY}/libwacom-2.11.0
-tar xvf ${DOWNLOADDIR}/libwacom-2.11.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libwacom-2.11.0
+export PACKAGE_VERSION=2.12.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libwacom/2.12.2/
+rm -rf ${BUILD_DIRECTORY}/libwacom-2.12.2
+tar xvf ${DOWNLOADDIR}/libwacom-2.12.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libwacom-2.12.2
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libwacom-2.11.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libwacom-2.11.0
+rm -rf ${BUILD_DIRECTORY}/libwacom-2.12.2

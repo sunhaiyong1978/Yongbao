@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=nss
-export PACKAGE_VERSION=3.100
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nss/3.100/
-rm -rf ${BUILD_DIRECTORY}/nss-3.100
-tar xvf ${DOWNLOADDIR}/nss-3.100.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nss-3.100
+export PACKAGE_VERSION=3.101
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nss/3.101/
+rm -rf ${BUILD_DIRECTORY}/nss-3.101
+tar xvf ${DOWNLOADDIR}/nss-3.101.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nss-3.101
 pushd nss
     sed -i "s@ uname -m@ cross-uname -m@g" coreconf/arch.mk
     make -j${JOBS} CC="gcc" -C coreconf/nsinstall BUILD_OPT=1 USE_64=1 \
@@ -44,4 +44,4 @@ pushd dist
     install -v -m755 Linux*/bin/{certutil,pk12util} ${SYSROOT_DIR}/usr/bin
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/nss-3.100
+rm -rf ${BUILD_DIRECTORY}/nss-3.101

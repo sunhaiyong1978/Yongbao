@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=numpy
-export PACKAGE_VERSION=1.26.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/numpy/1.26.4/
-rm -rf ${BUILD_DIRECTORY}/numpy-1.26.4
-tar xvf ${DOWNLOADDIR}/numpy-1.26.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/numpy-1.26.4
+export PACKAGE_VERSION=2.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/numpy/2.0.0/
+rm -rf ${BUILD_DIRECTORY}/numpy-2.0.0
+tar xvf ${DOWNLOADDIR}/numpy-2.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/numpy-2.0.0
         
         _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
 	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --install-data --optimize=1 --no-compile --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/numpy-1.26.4
+rm -rf ${BUILD_DIRECTORY}/numpy-2.0.0
