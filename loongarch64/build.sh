@@ -1,8 +1,12 @@
 #!/bin/bash
 
-NEW_TARGET_SYSDIR="${PWD}/workbase"
+declare FULL_COMMAND="$0 $@"
 BASE_DIR="${PWD}"
-SCRIPTS_DIR="${BASE_DIR}/scripts"
+
+declare RELEASE_BUILD_MODE=0
+declare NEW_BASE_DIR="${PWD}"
+declare NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+
 
 
 declare FORCE_BUILD=0
@@ -16,7 +20,7 @@ declare SINGLE_PACKAGE=0
 declare FORCE_ALL_DOWNLOAD=0
 declare EXPORT_STEP=0
 declare DATA_SUFF=""
-declare SOURCE_STEP_FILE="step"
+declare SOURCE_STEP_FILE="${NEW_BASE_DIR}/step"
 declare INDEX_STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
 declare SET_INDEX_STEP_FILE=""
 declare SET_STEP_FILE=""
@@ -28,8 +32,11 @@ declare SET_PARENT_DIR=""
 declare OPT_SET_PARENT_DIR=""
 declare OPT_SET_OVERLAY_DIR=""
 declare BUILD_PACKAGE_CHECK=0
+declare USE_PROXY_DOWNLOAD=""
+declare WORLD_PARM=""
+declare USE_PREV_INDEX_FILE=0
 
-while getopts 'fao:rgsde:xi:S:O:th' OPT; do
+while getopts 'fao:rgsde:xi:S:O:tpwch' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -71,6 +78,23 @@ while getopts 'fao:rgsde:xi:S:O:th' OPT; do
 	t)
 	    BUILD_PACKAGE_CHECK=1
 	    ;;
+	p)
+	    USE_PROXY_DOWNLOAD="-p"
+	    ;;
+	w)
+	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+	    NEW_BASE_DIR="${BASE_DIR}"
+	    SCRIPTS_DIR="${BASE_DIR}/scripts"
+	    SOURCES_DIR="${BASE_DIR}/sources"
+	    RELEASE_BUILD_MODE=0
+	    WORLD_PARM="-w"
+	    echo "强制指定使用主线环境中进行构建。"
+	    SOURCE_STEP_FILE="${BASE_DIR}/step"
+	    INDEX_STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
+	    ;;
+	c)
+	    USE_PREV_INDEX_FILE=1
+	    ;;
         h|?)
             echo "目标系统构建命令。"
             echo ""
@@ -95,20 +119,58 @@ while getopts 'fao:rgsde:xi:S:O:th' OPT; do
             echo "    -i: 设置指定的步骤文件（.step）或步骤索引文件(.index)。"
             echo "    -S <目录名>: 构建过程中默认安装到sysroot目录中的文件将安装到指定目录中。"
             echo "    -O <目录名>: 构建过程中设置用于OverlayFS的目录，当需要指定多个目录时使用“,”符号进行分隔，特殊名称ORIG代表编译的软件包所在组设置的目录，目录优先级从后往前。"
-            echo "    -t: 对构建过程中编译的软件判断当构建目标架构与当前架构相同时进行编译测试过程。"
+            echo "    -t: 对构建过程中编译的软件判断当构建目标架构与当前架构相同时进行编译测试过程（需要软件包脚本目录中存在 check 后缀名的测试定义文件）。"
+	    echo "    -p: 在构建过程中对需要下载软件包时使用proxy.set文件中的设置。"
+	    echo "    -w: 强制使用主线环境中的构建，不指定该参数将使用 current_branch 中指定的分支环境中进行构建，若不存在 current_branch 文件则默认使用主线环境构建。"
+	    echo "    -c: 单独使用该参数等同于使用 -i ${NEW_TARGET_SYSDIR}/step.index ，注意该参数不与 -o -r -g -i 参数共用。"
             exit 127
     esac
 done
 shift $(($OPTIND - 1))
 
+if [ "x${WORLD_PARM}" == "x" ]; then
+	if [ -f ${BASE_DIR}/current_branch ]; then
+		RELEASE_VERSION="$(cat ${BASE_DIR}/current_branch | grep -v "^#" | grep -v "^$" | head -n1 | sed "s@[^?\|^[:alnum:]\|^\.\|^[:space:]\|^_\|^-]@@g")"
+		if [ -d ${BASE_DIR}/Branch_${RELEASE_VERSION} ]; then
+			NEW_TARGET_SYSDIR="${BASE_DIR}/Branch_${RELEASE_VERSION}/workbase"
+			SCRIPTS_DIR="${BASE_DIR}/Branch_${RELEASE_VERSION}/scripts"
+			SOURCES_DIR="${BASE_DIR}/Branch_${RELEASE_VERSION}/sources"
+			NEW_BASE_DIR="${BASE_DIR}/Branch_${RELEASE_VERSION}"
+			RELEASE_BUILD_MODE=1
+			echo "发现 current_branch 指定的 Branch_${RELEASE_VERSION} 目录，将在指定目录中进行构建。"
+		else
+			echo "没有发现 Branch_${RELEASE_VERSION} 目录。"
+			NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+			NEW_BASE_DIR="${BASE_DIR}"
+			SCRIPTS_DIR="${BASE_DIR}/scripts"
+			SOURCES_DIR="${BASE_DIR}/sources"
+			RELEASE_BUILD_MODE=0
+		fi
+	else
+		NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+		NEW_BASE_DIR="${BASE_DIR}"
+		SCRIPTS_DIR="${BASE_DIR}/scripts"
+		SOURCES_DIR="${BASE_DIR}/sources"
+		RELEASE_BUILD_MODE=0
+	fi
+fi
+
 
 export BUILD_PACKAGE_CHECK=${BUILD_PACKAGE_CHECK}
 
+if [ "x${USE_PREV_INDEX_FILE}" == "x1" ]; then
+	if [ -f ${NEW_TARGET_SYSDIR}/step.index ]; then
+		SET_STEP_FILE=${NEW_TARGET_SYSDIR}/step.index
+	else
+		echo "没有发现上次执行时保留下来的分析文件 ${NEW_TARGET_SYSDIR}/step.index，无法按照上次的步骤进行构建，请进行一次常规的构建分析后再使用 -c 参数。"
+		exit 126
+	fi
+fi
 
 if [ "x${SET_STEP_FILE}" != "x" ]; then
-	case "x${SET_STEP_FILE#*.}" in
+	case "x${SET_STEP_FILE##*.}" in
 		"xindex")
-			SOURCE_STEP_FILE="step"
+			SOURCE_STEP_FILE="${NEW_BASE_DIR}/step"
 			SET_INDEX_STEP_FILE="${SET_STEP_FILE}"
 			;;
 		"xstep")
@@ -354,6 +416,23 @@ function set_version_index_form_opt
 }
 
 
+function get_unset_env_for_package
+{
+	echo "" > ${NEW_TARGET_SYSDIR}/package_unset.conf
+
+	for i in $(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_" | awk -F' YONGBAO_SET_ENV_' '{ print $2 }')
+	do
+		if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter ]; then
+#			echo "test_filter_form_opt %${i} ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter"
+#			echo "$(test_filter_form_opt "%${i}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter" )"
+			if [ "x$(test_filter_form_opt "%${i}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter" )" == "x1" ]; then
+				echo "unset YONGBAO_SET_ENV_$(echo ${i} | awk -F'=' '{ print $1 }')" >> ${NEW_TARGET_SYSDIR}/package_unset.conf
+			fi
+		fi
+	done
+}
+
+
 function get_all_can_set_env_str
 {
         declare -a SET_ENV
@@ -369,7 +448,8 @@ function get_all_can_set_env_str
         do
                 if [ "x${i:0:1}" == "x%" ]; then
 			case "x$(echo ${i:1} | awk -F'=' '{ print $1 }')" in
-				"xPARENT")
+#				"xPARENT")
+				"xOVERLAY" | "xPARENT" | "xVERSION")
 					continue
 					;;
 				*)
@@ -390,24 +470,41 @@ function get_all_can_set_env_str
         do
 		GET_ENV_VALUE=""
 		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
-		if [ "x${GET_ENV_VALUE}" != "x" ] || [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
-			if [ "x${GET_ENV_VALUE}" != "x" ]; then
-		                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
-			fi
-			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
-				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
-					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
-						USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
-						echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
-					fi
+		if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
+			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
+				if [ "x${GET_ENV_VALUE}" != "x" ]; then
+			                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
+					echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
 				else
-					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
-					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
+					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
 				fi
+			else
+				USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
+				echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
 			fi
-        		((USE_ENV_COUNT++))
 		fi
+        	((USE_ENV_COUNT++))
         	((TEMP_COUNT++))
+
+#		if [ "x${GET_ENV_VALUE}" != "x" ] || [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
+#			if [ "x${GET_ENV_VALUE}" != "x" ]; then
+#		                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
+#			fi
+#			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
+#				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
+#					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
+#						USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
+#						echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+#					fi
+#				else
+#					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
+#					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+#				fi
+#			fi
+#        		((USE_ENV_COUNT++))
+#		fi
+#        	((TEMP_COUNT++))
         done
 	echo $(IFS=_; echo "${USE_ENV[*]}")
 }
@@ -472,7 +569,7 @@ function fn_run_tempfix_file
 	declare STEP_STAGE="${1}"
 	if [ -f ${SCRIPTS_DIR}/step/${1} ]; then
 		echo -n "执行${STEP_STAGE}的临时修改脚本……"
-		tools/run_package_script.sh ${1} >${NEW_TARGET_SYSDIR}/logs/overlay_tempfix_file_$(basename ${STEP_STAGE})_0000.log 2>&1
+		tools/run_package_script.sh ${WORLD_PARM} ${1} >${NEW_TARGET_SYSDIR}/logs/overlay_tempfix_file_$(basename ${STEP_STAGE})_0000.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/overlay_tempfix_file_$(basename ${STEP_STAGE})_0000.log 获取更详细的内容。"
 			exit -3
@@ -489,7 +586,7 @@ function fn_overlay_temp_fix_run
 	declare STEP_STAGE="${1}"
 	if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
 		echo -n "执行${STEP_STAGE}的临时修改脚本……"
-		tools/run_package_script.sh ${STEP_STAGE}/overlay_temp_fix_run >${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 2>&1
+		tools/run_package_script.sh ${WORLD_PARM} ${STEP_STAGE}/overlay_temp_fix_run >${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 获取更详细的内容。"
 			exit -3
@@ -614,17 +711,32 @@ function overlay_mount
 	
 # echo "LOWERDIR_LIST: ${LOWERDIR_LIST}"
 
+# echo "SET_OVERLAY_DIR: ${SET_OVERLAY_DIR}"
+# echo "OVERLAY_DIR: ${OVERLAY_DIR}"
+
 	if [ "x${SET_OVERLAY_DIR}" != "x" ]; then
-		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}
-		USE_OVERLAY_DIR="${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}:"
+#		if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${i}.released ]; then
+#			mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}.update
+#			USE_OVERLAY_DIR="${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}.update:"
+#			LOWERDIR_SET_LIST="${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}:${LOWERDIR_SET_LIST}"
+#		else
+			mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}
+			USE_OVERLAY_DIR="${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}:"
+#		fi
 	else
 		if [ "x${OVERLAY_DIR}" == "x" ]; then
 			mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${1}
 			OVERLAY_DIR=${1}
 		fi
 
-		mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
-		USE_OVERLAY_DIR="${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:"
+		if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
+			mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.update
+			USE_OVERLAY_DIR="${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.update:"
+			LOWERDIR_SET_LIST="${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:${LOWERDIR_SET_LIST}"
+		else
+			mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}
+			USE_OVERLAY_DIR="${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}:"
+		fi
 	fi
 	sync
 
@@ -782,7 +894,7 @@ function format_step_str
 	fi
 	if [ "x${STEPNAME}" != "xNULL" ] && [ "x${STEP_PKGNAME}" == "xNULL" ]; then
 		# 设置了指定编译组
-		FIND_STEP=$(find scripts/step -maxdepth 1 -type d -name "${STEPNAME}"  | sed "s@scripts/step/@@g" )
+		FIND_STEP=$(find ${SCRIPTS_DIR}/step -maxdepth 1 -type d -name "${STEPNAME}"  | sed "s@${SCRIPTS_DIR}/step/@@g" )
 		if [ "x${FIND_STEP}" != "x" ]; then
                         # 已找到指定步骤组：${FIND_STEP}
 			echo "${FIND_STEP}/"
@@ -794,7 +906,7 @@ function format_step_str
 	fi
 	if [ "x${STEPNAME}" == "xNULL" ] && [ "x${STEP_PKGNAME}" != "xNULL" ]; then
 		# 设置了指定编译包，但没有明确指定是哪个组里的包
-		FIND_FILE=$(find scripts/step -type f -name ${STEP_PKGNAME} | sed "s@scripts/step/@@g")
+		FIND_FILE=$(find ${SCRIPTS_DIR}/step -type f -name ${STEP_PKGNAME} | sed "s@${SCRIPTS_DIR}/step/@@g")
 		if [ "x$(echo "${FIND_FILE}" | head -n1 )" != "x$(echo "${FIND_FILE}" | tail -n1 )" ]; then
 			# 发现存在多个指定名字的软件包，请明确其指定具体所属步骤组，以下为找出的列表供参考
 			echo "${FIND_FILE}"
@@ -804,14 +916,14 @@ function format_step_str
 				echo $(format_step_str "${STEP_PKGNAME}/")
 			else
 				# 已找到指定名字软件包及其所属步骤组
-				echo "$(find scripts/step -name "${STEP_PKGNAME}" | sed "s@scripts/step/@@g")"
+				echo "$(find ${SCRIPTS_DIR}/step -name "${STEP_PKGNAME}" | sed "s@${SCRIPTS_DIR}/step/@@g")"
 			fi
 		fi
 		return;
 	fi
 	if [ "x${STEPNAME}" != "xNULL" ] && [ "x${STEP_PKGNAME}" != "xNULL" ]; then
 		# 指定了具体编译组中具体的包
-		if [ -f scripts/step/${STEPNAME}/${STEP_PKGNAME} ]; then
+		if [ -f ${SCRIPTS_DIR}/step/${STEPNAME}/${STEP_PKGNAME} ]; then
 			# 已找到指定步骤组和软件包
 			echo "${STEPNAME}/${STEP_PKGNAME}"
 		else
@@ -829,16 +941,16 @@ function get_require
 	declare STEPNAME=""
 	STEPNAME=${1}
 	declare STEP_LISTS="${2}"
-	if [ ! -f env/${STEPNAME}/overlay.set ]; then
+	if [ ! -f ${NEW_BASE_DIR}/env/${STEPNAME}/overlay.set ]; then
 		echo ""
 		return;
 	fi
-	declare STEP_OVERLAY_NAME="$(cat env/${STEPNAME}/overlay.set | grep "overlay_dir=" | tail -n1 | awk -F'=' '{ print $2 }')"
-	declare STEP_PARENT_NAME="$(cat env/${STEPNAME}/overlay.set | grep "parent_dirs=" | tail -n1 | awk -F'=' '{ print $2 }')"
-	declare STEP_REQUIRES_NAME="$(cat env/${STEPNAME}/overlay.set | grep "requires=" | tail -n1 | awk -F'=' '{ print $2 }')"
+	declare STEP_OVERLAY_NAME="$(cat ${NEW_BASE_DIR}/env/${STEPNAME}/overlay.set | grep "overlay_dir=" | tail -n1 | awk -F'=' '{ print $2 }')"
+	declare STEP_PARENT_NAME="$(cat ${NEW_BASE_DIR}/env/${STEPNAME}/overlay.set | grep "parent_dirs=" | tail -n1 | awk -F'=' '{ print $2 }')"
+	declare STEP_REQUIRES_NAME="$(cat ${NEW_BASE_DIR}/env/${STEPNAME}/overlay.set | grep "requires=" | tail -n1 | awk -F'=' '{ print $2 }')"
 
 	if [ "x${STEP_OVERLAY_NAME}" != "x" ]; then
-		for step_dir in $(grep -r "overlay_dir=${STEP_OVERLAY_NAME}" env/* | awk -F'/' '{ print $2 }')
+		for step_dir in $(grep -r "overlay_dir=${STEP_OVERLAY_NAME}" ${NEW_BASE_DIR}/env/* | awk -F'/' '{ print $2 }')
 		do
 			if [[ "${STEP_LISTS}" != *" ${step_dir} "* ]]; then
 				STEP_LISTS="${STEP_LISTS} ${step_dir} "
@@ -849,7 +961,7 @@ function get_require
 	if [ "x${STEP_PARENT_NAME}" != "x" ]; then
 		for parent_name in $(echo ${STEP_PARENT_NAME} | tr ',' '\n')
 		do
-			for step_dir in $(grep -r "overlay_dir=${parent_name}" env/* | awk -F'/' '{ print $2 }')
+			for step_dir in $(grep -r "overlay_dir=${parent_name}" ${NEW_BASE_DIR}/env/* | awk -F'/' '{ print $2 }')
 			do
 				if [[ "${STEP_LISTS}" != *" ${step_dir} "* ]]; then
 					STEP_LISTS="${STEP_LISTS} ${step_dir} "
@@ -861,7 +973,7 @@ function get_require
 	if [ "x${STEP_REQUIRES_NAME}" != "x" ]; then
 		for require_name in $(echo ${STEP_REQUIRES_NAME} | tr ',' '\n')
 		do
-			if [ -f env/${require_name}/config ]; then
+			if [ -f ${NEW_BASE_DIR}/env/${require_name}/config ]; then
 				STEP_LISTS="${STEP_LISTS} ${require_name} "
 			fi
 		done
@@ -882,7 +994,7 @@ function get_requires
 		return
 	fi
 
-	if [ ! -f env/${STEPNAME}/overlay.set ]; then
+	if [ ! -f ${NEW_BASE_DIR}/env/${STEPNAME}/overlay.set ]; then
 		echo ""
 		return;
 	fi
@@ -910,7 +1022,7 @@ function get_default_opt
 	declare -a NOUSE_OPT
 	declare USE_COUNT=0
 	declare NOUSE_COUNT=0
-	for i in $(cat env/opt.info | grep "^opt=")
+	for i in $(cat ${NEW_BASE_DIR}/env/opt.info | grep "^opt=")
 	do
 		OPT=$(echo ${i} | awk -F'=' '{ print $2 }')
 		if [ "x${OPT:0:1}" == "x+" ]; then
@@ -1212,23 +1324,23 @@ function os_run_clean
 	fi
 	declare STEP_STAGE="${1}"
 	declare PACKAGE_NAME="${2}"
-	if [ -f env/${STEP_STAGE}/overlay.set ]; then
-		declare OS_RUN_OVERLAY_DIR=$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)
+	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+		declare OS_RUN_OVERLAY_DIR=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OS_RUN_OVERLAY_DIR}.released ]; then
-			if [ -f ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run ]; then
-#				echo "清理 ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
-				rm ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
+#				echo "清理 ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+				rm ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 			fi
-			if [ -f ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run ]; then
-				rm ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
+				rm ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 			fi
 		else
-			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run ]; then
-#				echo "清理 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
-				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
+#				echo "清理 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 			fi
-			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run ]; then
-				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
+				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 			fi
 		fi
 	fi
@@ -1250,20 +1362,20 @@ function create_os_run
 	declare STEP_STAGE="${2}"
 	declare PACKAGE_NAME="${3}"
 	declare PACKAGE_INDEX="${4}"
-	if [ -f env/${STEP_STAGE}/overlay.set ]; then
-		declare OS_RUN_OVERLAY_DIR=$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)
+	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+		declare OS_RUN_OVERLAY_DIR=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OS_RUN_OVERLAY_DIR}.released ]; then
 #			if [ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${PACKAGE_NAME}_${STEP_STAGE}_${PACKAGE_INDEX} ]; then
 			if [ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} ]; then
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_first_run ]; then
 					echo ""
-					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
-					tools/show_package_script.sh -e -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 				fi
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_start_run ]; then
 					echo ""
-					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
-					tools/show_package_script.sh -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 				fi
 			fi
 		else
@@ -1272,13 +1384,13 @@ function create_os_run
 			if [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ]; then
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_first_run ]; then
 					echo ""
-					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
-					tools/show_package_script.sh -e -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 				fi
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_start_run ]; then
 					echo ""
-					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run "
-					tools/show_package_script.sh -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${PACKAGE_NAME}.run
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 				fi
 			fi
 		fi
@@ -1308,7 +1420,7 @@ function step_to_index
 	declare STOP_STEP_GROUP=""
 	declare STOP_STEP_STR=""
 
-	if [ ! -f env/opt.info ]; then
+	if [ ! -f ${NEW_BASE_DIR}/env/opt.info ]; then
 		echo "警告：没有发现env/opt.info文件，本次制作选取的软件包将采用默认的设置。默认设置为：-fopt、-gopt"
 	fi
 	USE_OPT=($(get_default_opt))
@@ -1446,27 +1558,27 @@ function step_to_index
 
 function cp_file_and_sources
 {
-	if [ -f ${BASE_DIR}/downloads/sources/files.list ]; then
+	if [ -f ${NEW_BASE_DIR}/downloads/sources/files.list ]; then
 		mkdir -p ${NEW_TARGET_SYSDIR}/downloads/files/
 		if [ "x${1}" == "x" ]; then
 			echo -n "复制所需的源码包文件..."
 		fi
-		for cp_file in $(cat ${BASE_DIR}/downloads/sources/files.list | sort | uniq)
+		for cp_file in $(cat ${NEW_BASE_DIR}/downloads/sources/files.list | sort | uniq)
 		do
-			cp ${BASE_DIR}/downloads/sources/files/${cp_file} ${NEW_TARGET_SYSDIR}/downloads/files/
+			cp ${NEW_BASE_DIR}/downloads/sources/files/${cp_file} ${NEW_TARGET_SYSDIR}/downloads/files/
 		done
 		if [ "x${1}" == "x" ]; then
 			echo "完成。"
 		fi
 	fi
-	if [ -f ${BASE_DIR}/downloads/sources/resources.list ]; then
+	if [ -f ${NEW_BASE_DIR}/downloads/sources/resources.list ]; then
 		mkdir -p ${NEW_TARGET_SYSDIR}/files/
 		if [ "x${1}" == "x" ]; then
 			echo -n "复制所需的资源文件..."
 		fi
-		cp -a ${BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
-		pushd ${BASE_DIR}/downloads/files/step > /dev/null
-			for cp_file in $(cat ${BASE_DIR}/downloads/sources/resources.list | sort | uniq)
+		cp -a ${NEW_BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
+		pushd ${NEW_BASE_DIR}/downloads/files/step > /dev/null
+			for cp_file in $(cat ${NEW_BASE_DIR}/downloads/sources/resources.list | sort | uniq)
 			do
 				cp --parents ${cp_file} ${NEW_TARGET_SYSDIR}/files/
 			done
@@ -1483,7 +1595,8 @@ function start_download_source
 	echo -n -e "\r下载 ${1} 所需的源码包及资源文件..."
 	for down_retry in 1 2 3
 	do
-		tools/get_all_package_url.sh -p -s ${1} > /dev/null
+ #  > /dev/null
+		tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -s ${1}
 		if [ "x$?" == "x0" ]; then
 			echo "完成！"
 			break;
@@ -1501,9 +1614,9 @@ function start_download_source_for_version_index
 	for down_retry in 1 2 3
 	do
 		if [ "x${2}" != "x" ]; then
-			tools/get_all_package_url.sh -v "${2}" -p -s ${1} > /dev/null
+			tools/get_all_package_url.sh ${WORLD_PARM} -a -v "${2}" ${USE_PROXY_DOWNLOAD} -s ${1} > /dev/null
 		else
-			tools/get_all_package_url.sh -p -s ${1} > /dev/null
+			tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -s ${1} > /dev/null
 		fi
 		if [ "x$?" == "x0" ]; then
 			echo "完成！"
@@ -1536,6 +1649,9 @@ echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
 
 
 create_date_suff
+
+# 保存完整的执行命令，以备后续查看。
+echo "${FULL_COMMAND}" >> ${NEW_TARGET_SYSDIR}/command_save.txt
 
 if [ "x${SET_INDEX_STEP_FILE}" == "x" ] || [ "x${EXPORT_STEP}" == "x1" ]; then
 	if [ "x${SET_INDEX_STEP_FILE}" == "x" ]; then
@@ -1631,18 +1747,18 @@ if [ -f ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} ]; then
 		if [ "$?" != "0" ] || [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
 			if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
 				echo "强制指定进行软件包下载检查，开始进行必要的下载..."
-				if [ -f proxy.set ]; then
-					tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
-				else
-					tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
-				fi
+#				if [ -f proxy.set ]; then
+					tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -i ${INDEX_STEP_FILE}
+#				else
+#					tools/get_all_package_url.sh ${WORLD_PARM} -a -i ${INDEX_STEP_FILE}
+#				fi
 			else
 				echo "本次创建的索引文件与上次的内容不同，可能会存在需要下载的软件包，开始进行必要的下载..."
-				if [ -f proxy.set ]; then
-					tools/get_all_package_url.sh -p -g -i ${INDEX_STEP_FILE}
-				else
-					tools/get_all_package_url.sh -g -i ${INDEX_STEP_FILE}
-				fi
+#				if [ -f proxy.set ]; then
+					tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -g -i ${INDEX_STEP_FILE}
+#				else
+#					tools/get_all_package_url.sh -a -g -i ${INDEX_STEP_FILE}
+#				fi
 			fi
 			echo "下载完成。"
 			cp_file_and_sources
@@ -1651,19 +1767,19 @@ if [ -f ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} ]; then
 else
 	if [ "x${FORCE_ALL_DOWNLOAD}" == "x1" ]; then
 		echo "强制指定进行软件包下载检查，开始进行必要的下载..."
-		if [ -f proxy.set ]; then
-			tools/get_all_package_url.sh -p -i ${INDEX_STEP_FILE}
-		else
-			tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
-		fi
+#		if [ -f proxy.set ]; then
+			tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -i ${INDEX_STEP_FILE}
+#		else
+#			tools/get_all_package_url.sh -i ${INDEX_STEP_FILE}
+#		fi
 		echo "下载完成。"
 	else
 		echo "开始下载必要的软件包..."
-		if [ -f proxy.set ]; then
-			tools/get_all_package_url.sh -p -g -i ${INDEX_STEP_FILE}
-		else
-			tools/get_all_package_url.sh -g -i ${INDEX_STEP_FILE}
-		fi
+#		if [ -f proxy.set ]; then
+			tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -g -i ${INDEX_STEP_FILE}
+#		else
+#			tools/get_all_package_url.sh -g -i ${INDEX_STEP_FILE}
+#		fi
 		echo "下载完成。"
 	fi
 	cp_file_and_sources
@@ -1776,10 +1892,10 @@ do
 	export OPT_SET_OVERLAY_DIR="$(set_overlay_dir_form_opt "${PACKAGE_ALL_OPT}")"
 #	echo "OPT_SET_OVERLAY_DIR: ${OPT_SET_OVERLAY_DIR}"
 
-	if [ -f sources/url/${STEP_STAGE}/${PACKAGE_NAME} ]; then
-		PKG_FILENAME=$(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME} | awk -F'|' '{ print $3 }' | sed "s@\.tar\.gz\$@@g")
-		if [ -f downloads/sources/files/${PKG_FILENAME}.commit ]; then
-			PACKAGE_GIT_COMMIT="$(cat downloads/sources/files/${PKG_FILENAME}.commit)"
+	if [ -f ${SOURCES_DIR}/url/${STEP_STAGE}/${PACKAGE_NAME} ]; then
+		PKG_FILENAME=$(cat ${SOURCES_DIR}/url/${STEP_STAGE}/${PACKAGE_NAME} | awk -F'|' '{ print $3 }' | sed "s@\.tar\.gz\$@@g")
+		if [ -f ${NEW_BASE_DIR}/downloads/sources/files/${PKG_FILENAME}.commit ]; then
+			PACKAGE_GIT_COMMIT="$(cat ${NEW_BASE_DIR}/downloads/sources/files/${PKG_FILENAME}.commit)"
 		else
 			PACKAGE_GIT_COMMIT=""
 		fi
@@ -1788,6 +1904,7 @@ do
 	OPT_SET_PARENT_DIR="$(set_parent_dir_form_opt "${PACKAGE_ALL_OPT}")"
 	PACKAGE_SET_ENV=$(get_all_can_set_env_str "${PACKAGE_ALL_OPT}")
 	PACKAGE_SET_STATUS_FILE=$(get_can_set_status_file "${PACKAGE_ALL_OPT}")
+#	get_unset_env_for_package
 
 	OPT_SET_VERSION_INDEX="$(set_version_index_form_opt "${PACKAGE_ALL_OPT}")"
 
@@ -1796,8 +1913,8 @@ do
 # 	fi
 
 	ORIG_OVERLAY_DIR=""
-	if [ -f env/${STEP_STAGE}/overlay.set ]; then
-		ORIG_OVERLAY_DIR=$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)
+	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+		ORIG_OVERLAY_DIR=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${ORIG_OVERLAY_DIR}.released ]; then
 			if [ "x${SET_OVERLAY_DIR}" == "x" ]; then
 				SET_OVERLAY_DIR="${ORIG_OVERLAY_DIR}.update"
@@ -1844,7 +1961,8 @@ do
 		if ([ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} ] || [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ]) && [ "x${SINGLE_PACKAGE}" == "x0" ] ; then
 			SHOW_PACKAGE_OPT="$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")"
 #			echo "test ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE}"
-			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
+#			echo "${PACKAGE_GIT_COMMIT}tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE}"
+			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
 			if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
 				if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
 					echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
@@ -1859,7 +1977,7 @@ do
 				fi
 				if [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ] && [ "x${SINGLE_PACKAGE}" == "x0" ] ; then
 #					echo "检查update目录中的${STATUS_FILE}状态文件。"
-					echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
+					echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
 					if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
 						if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
 							echo -n -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包已完成制作。\033[0K"
@@ -1872,7 +1990,7 @@ do
 						echo -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包制作步骤文件内容发生变化，需要重新执行。\033[0K"
 					fi
 				else
-					echo -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包制作步骤文件内容发生变化，需要重新执行。\033[0K"
+					echo -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包制作步骤文件内容发生变化，需要重新执行。\033[0K"
 				fi
 			fi
 		fi
@@ -1902,7 +2020,7 @@ do
 	else
 		echo -e "\r准备执行 ${STEP_STAGE} 组中的完成脚本...\033[0K"
 	fi
-	tools/show_package_script.sh ${SCRIPT_FILE} >/dev/null
+	tools/show_package_script.sh ${WORLD_PARM} ${SCRIPT_FILE} >/dev/null
 	RET_VAL=$?
 	if [ "${RET_VAL}" != "0" ]; then
 		echo "${SCRIPT_FILE}脚本运行错误！"
@@ -1913,10 +2031,10 @@ do
 	grep "^${STEP_STAGE}$" ${NEW_TARGET_SYSDIR}/logs/step_begin_run_save > /dev/null
 	if [ "x$?" == "x0" ]; then
 		echo -n "运行 ${STEP_STAGE} 初始化脚本..."
-		tools/run_package_script.sh ${STEP_STAGE}/begin_run >${NEW_TARGET_SYSDIR}/logs/begin_run_${STEP_STAGE}.log 2>&1
+		tools/run_package_script.sh ${WORLD_PARM} ${STEP_STAGE}/begin_run >${NEW_TARGET_SYSDIR}/logs/begin_run_${STEP_STAGE}.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "错误！"
-			tools/show_package_script.sh ${STEP_STAGE}/begin_run
+			tools/show_package_script.sh ${WORLD_PARM} ${STEP_STAGE}/begin_run
 			echo "${STEP_STAGE} 初始化脚本运行错误!"
 			echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/begin_run_${STEP_STAGE}.log 文件。"
 			exit 1
@@ -1926,16 +2044,16 @@ do
 	fi
 
 	declare STEP_OVERLAY_TEMP_FIX=0
-	if [ -f env/${STEP_STAGE}/overlay.set ]; then
+	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ] || [ "x${OPT_SET_PARENT_DIR}" != "x" ]; then
 		if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
-			if [ -f env/${STEP_STAGE}/overlay.set ]; then
-				STEP_OVERLAY_TEMP_FIX="$(cat env/${STEP_STAGE}/overlay.set | grep "temp_fix=" | tail -n1 | awk -F'=' '{ print $2 }')"
+			if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+				STEP_OVERLAY_TEMP_FIX="$(cat ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set | grep "temp_fix=" | tail -n1 | awk -F'=' '{ print $2 }')"
 			else
 				STEP_OVERLAY_TEMP_FIX=0
 			fi
-			overlay_mount ${STEP_STAGE} env/${STEP_STAGE}/overlay.set "${STEP_OVERLAY_TEMP_FIX}"
+			overlay_mount ${STEP_STAGE} ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set "${STEP_OVERLAY_TEMP_FIX}"
 		else
-			overlay_mount ${STEP_STAGE} env/${STEP_STAGE}/overlay.set "2"
+			overlay_mount ${STEP_STAGE} ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set "2"
 		fi
 	fi
 	
@@ -1946,7 +2064,7 @@ do
 	fi
 
 	STATUS_LOG_FILE="${STATUS_FILE}"
-	if [ -f env/${STEP_STAGE}/overlay.set ]; then
+	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
                 if [ "x${ORIG_OVERLAY_DIR}" != "x" ]; then
 			if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${ORIG_OVERLAY_DIR}.released ]; then
 				STATUS_LOG_FILE="update/${STATUS_LOG_FILE}"
@@ -1958,22 +2076,22 @@ do
 	fi
 	ln -sf ${STATUS_LOG_FILE}.log ${NEW_TARGET_SYSDIR}/logs/current.log
 	os_run_clean "${STEP_STAGE}" "${PACKAGE_NAME}"
-	tools/run_package_script.sh ${SCRIPT_FILE} >${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 2>&1
+	tools/run_package_script.sh ${WORLD_PARM} ${SCRIPT_FILE} >${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 2>&1
 	if [ "x$?" != "x0" ]; then
 		echo "错误！"
-		tools/show_package_script.sh  ${SCRIPT_FILE}
+		tools/show_package_script.sh ${WORLD_PARM} ${SCRIPT_FILE}
 		echo "${SCRIPT_FILE}制作错误!"
 		echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"
 		exit 1
 	fi
 
-	if [ -f env/${STEP_STAGE}/overlay.set ]; then
+	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
 		overlay_umount
 		if [ "x${SINGLE_PACKAGE}" != "x1" ]; then
 			if ([ "x${STEP_OVERLAY_TEMP_FIX}" == "x1" ] && [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/overlay_temp_fix_run ]) || [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.tempfix ]; then
 #			if [ "x${STEP_OVERLAY_TEMP_FIX}" == "x1" ] && [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
 				if [ "x${SET_OVERLAY_DIR}" == "x" ]; then
-					cp -af ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/* ${NEW_TARGET_SYSDIR}/overlaydir/$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)/
+					cp -af ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/* ${NEW_TARGET_SYSDIR}/overlaydir/$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)/
 				else
 					cp -af ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${STEP_STAGE}/${PACKAGE_NAME}/* ${NEW_TARGET_SYSDIR}/overlaydir/${SET_OVERLAY_DIR}/
 				fi
@@ -1986,24 +2104,24 @@ do
 	fi
 
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ] && [ "x${PACKAGE_SET_STATUS_FILE}" == "x1" ] && [ "x${SINGLE_PACKAGE}" == "x0" ]; then
-		if [ -f env/${STEP_STAGE}/overlay.set ]; then
-	                SAVEFILE_OVERLAY_NAME=$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)
+		if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+	                SAVEFILE_OVERLAY_NAME=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 			if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${SAVEFILE_OVERLAY_NAME}.released ]; then
-				echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE}
+				echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE}
 #				if [ ! -d ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/ ]; then
 #					mkdir -p ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}
 #				fi
 #				cp -f ${NEW_TARGET_SYSDIR}/status/${STATUS_FILE} ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/
 			else
 				mkdir -p ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/
-				echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE}
+				echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE}
 #				if [ ! -d ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/ ]; then
 #					mkdir -p ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}
 #				fi
 #				cp -f ${NEW_TARGET_SYSDIR}/status/update/${STATUS_FILE} ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/
 			fi
 		else
-			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE}
+			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE}
 			
 		fi
 	fi
@@ -2012,10 +2130,10 @@ do
 
 	create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}" "${PACKAGE_INDEX}"
 
-	if [ -f env/${STEP_STAGE}/overlay.set ]; then
+	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
 		SAVEFILE_OVERLAY_NAME=""
 		if [ "x${SET_OVERLAY_DIR}" == "x" ]; then
-			SAVEFILE_OVERLAY_NAME=$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)
+			SAVEFILE_OVERLAY_NAME=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		else
 			SAVEFILE_OVERLAY_NAME=${SET_OVERLAY_DIR}
 		fi
@@ -2048,22 +2166,22 @@ do
 	fi
 
 	echo -n "${STEP_STAGE}/${PACKAGE_NAME} : " >> ${NEW_TARGET_SYSDIR}/logs/build_log
-	if [ -f sources/url/${STEP_STAGE}/${PACKAGE_NAME} ]; then
-		PACKAGE_URL=$(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME})
+	if [ -f ${SOURCES_DIR}/url/${STEP_STAGE}/${PACKAGE_NAME} ]; then
+		PACKAGE_URL=$(cat ${SOURCES_DIR}/url/${STEP_STAGE}/${PACKAGE_NAME})
 		if [ "x${PACKAGE_URL}" != "x" ]; then
 			echo -n "${PACKAGE_URL}" >> ${NEW_TARGET_SYSDIR}/logs/build_log
                 	case "$(echo ${PACKAGE_URL%%/*} | awk -F'|' '{ print $1 }')" in
 			GIT)
-				if [ -f sources/url/${STEP_STAGE}/${PACKAGE_NAME}.gitinfo ]; then
-					echo -n " $(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME}.gitinfo) " >> ${NEW_TARGET_SYSDIR}/logs/build_log
+				if [ -f ${SOURCES_DIR}/url/${STEP_STAGE}/${PACKAGE_NAME}.gitinfo ]; then
+					echo -n " $(cat ${SOURCES_DIR}/url/${STEP_STAGE}/${PACKAGE_NAME}.gitinfo) " >> ${NEW_TARGET_SYSDIR}/logs/build_log
 				fi
 				;;
 	                *)
 				;;
 			esac
-			PKG_FILENAME=$(cat sources/url/${STEP_STAGE}/${PACKAGE_NAME} | awk -F'|' '{ print $3 }' | sed "s@\.tar\.gz\$@@g")
-			if [ -f downloads/sources/files/${PKG_FILENAME}.commit ]; then
-				echo -n " | $(cat downloads/sources/files/${PKG_FILENAME}.commit) " >> ${NEW_TARGET_SYSDIR}/logs/build_log
+			PKG_FILENAME=$(cat ${SOURCES_DIR}/url/${STEP_STAGE}/${PACKAGE_NAME} | awk -F'|' '{ print $3 }' | sed "s@\.tar\.gz\$@@g")
+			if [ -f ${NEW_BASE_DIR}/downloads/sources/files/${PKG_FILENAME}.commit ]; then
+				echo -n " | $(cat ${NEW_BASE_DIR}/downloads/sources/files/${PKG_FILENAME}.commit) " >> ${NEW_TARGET_SYSDIR}/logs/build_log
 			fi
 		fi
 	fi
@@ -2076,7 +2194,7 @@ if [ "x$?" == "x0" ]; then
 	cat ${NEW_TARGET_SYSDIR}/logs/info_pool
 	
 	if [ "x${1}" == "x" ]; then
-		echo "接下来可以使用./strip_os.sh脚本来清除调试信息，使用./install_os_run.sh安装系统启动脚本，以及使用./pack_os.sh脚本来打包系统。"
+		echo "接下来可以使用 ./strip_os.sh 脚本来清除调试信息，使用 ./install_os_run.sh 安装系统启动脚本，使用 ./release_info.sh 来创建软件包信息汇总 ，以及使用 ./pack_os.sh 脚本来打包系统。"
 	fi
 else
 	exit

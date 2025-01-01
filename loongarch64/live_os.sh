@@ -1,18 +1,25 @@
 #!/bin/bash -e
 
-export NEW_TARGET_SYSDIR="${PWD}/workbase"
 export BASE_DIR="${PWD}"
 
 declare UPDATE_MODE=FALSE
 declare DISTRO_LABEL=""
+declare WORLD_PARM=""
 
-while getopts 'ul:' OPT; do
+while getopts 'uwl:' OPT; do
     case $OPT in
         u)
             UPDATE_MODE=TRUE
             ;;
 	l)
 	    DISTRO_LABEL=$OPTARG
+	    ;;
+	w)
+	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+	    NEW_BASE_DIR="${BASE_DIR}"
+	    RELEASE_BUILD_MODE=0
+	    WORLD_PARM="-w"
+	    echo "强制指定使用主线环境中进行构建。"
 	    ;;
         ?)
             echo "用法: `basename $0` [选项]"
@@ -22,42 +29,65 @@ while getopts 'ul:' OPT; do
 done
 shift $(($OPTIND - 1))
 
-
-if [ "x${1}" == "x" ]; then
-	echo "错误：必须指定一个目录。"
-	exit 1
+if [ "x${WORLD_PARM}" == "x" ]; then
+	if [ -f ${BASE_DIR}/current_branch ]; then
+		RELEASE_VERSION="$(cat ${BASE_DIR}/current_branch | grep -v "^#" | grep -v "^$" | head -n1 | sed "s@[^?\|^[:alnum:]\|^\.\|^[:space:]\|^_\|^-]@@g")"
+		if [ -d ${BASE_DIR}/Branch_${RELEASE_VERSION} ]; then
+			NEW_TARGET_SYSDIR="${BASE_DIR}/Branch_${RELEASE_VERSION}/workbase"
+			NEW_BASE_DIR="${BASE_DIR}/Branch_${RELEASE_VERSION}"
+			RELEASE_BUILD_MODE=1
+			echo "发现 current_branch 指定的 Branch_${RELEASE_VERSION} 目录，将在指定目录中制作Live系统。"
+		else
+			echo "没有发现 Branch_${RELEASE_VERSION} 目录。"
+			NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+			NEW_BASE_DIR="${BASE_DIR}"
+			RELEASE_BUILD_MODE=0
+		fi
+	else
+		NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+		NEW_BASE_DIR="${BASE_DIR}"
+		RELEASE_BUILD_MODE=0
+	fi
 fi
 
-LIVE_DIRECTORY="${1}"
+if [ "x${1}" == "x" ]; then
+#	echo "错误：必须指定一个目录。"
+#	exit 1
+	echo "警告：没有指定一个制作目录，将使用默认目录 ${NEW_TARGET_SYSDIR}/live_usb 。"
+	LIVE_DIRECTORY="${NEW_TARGET_SYSDIR}/live_usb"
+else
+	LIVE_DIRECTORY="${1}"
+fi
+
 
 if [ ! -d ${LIVE_DIRECTORY} ]; then
 	mkdir -pv ${LIVE_DIRECTORY}
 fi
 
 
-DISTRO_NAME=$(grep -r "^DISTRO_NAME=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+DISTRO_NAME=$(grep -r "^DISTRO_NAME=" ${NEW_BASE_DIR}/env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
 if [ "x${DISTRO_NAME}" == "x" ]; then
-	echo "无法获取操作系统名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_NAME的定义。"
+	echo "无法获取操作系统名称，无法继续，请编辑 ${NEW_BASE_DIR}/env/distro.info 文件，并增加DISTRO_NAME的定义。"
 	exit 3
 fi
-DISTRO_ARCH=$(grep -r "^DISTRO_ARCH=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+DISTRO_ARCH=$(grep -r "^DISTRO_ARCH=" ${NEW_BASE_DIR}/env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
 if [ "x${DISTRO_ARCH}" == "x" ]; then
-	echo "缺少架构名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_ARCH的定义。"
+	echo "缺少架构名称，无法继续，请编辑 ${NEW_BASE_DIR}/env/distro.info 文件，并增加DISTRO_ARCH的定义。"
 	exit 3
 fi
-DISTRO_VERSION=$(grep -r "^DISTRO_VERSION=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+DISTRO_VERSION=$(grep -r "^DISTRO_VERSION=" ${NEW_BASE_DIR}/env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
 if [ "x${DISTRO_VERSION}" == "x" ]; then
-	echo "缺少系统的版本号，无法继续，请编辑env/distro.info文件，并增加DISTRO_VERSION的定义。"
+	echo "缺少系统的版本号，无法继续，请编辑 ${NEW_BASE_DIR}/env/distro.info 文件，并增加DISTRO_VERSION的定义。"
 	exit 3
 fi
-DISTRO_NAME_CN=$(grep -r "^DISTRO_NAME_CN=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+DISTRO_NAME_CN=$(grep -r "^DISTRO_NAME_CN=" ${NEW_BASE_DIR}/env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
 if [ "x${DISTRO_NAME_CN}" == "x" ]; then
-        echo "无法获取操作系统中文名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_NAME_CN的定义。"
+        echo "无法获取操作系统中文名称，无法继续，请编辑 ${NEW_BASE_DIR}/env/distro.info 文件，并增加DISTRO_NAME_CN的定义。"
         exit 3
 fi
-DISTRO_ARCH_NAME_CN=$(grep -r "^DISTRO_ARCH_NAME_CN=" env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
+DISTRO_ARCH_NAME_CN=$(grep -r "^DISTRO_ARCH_NAME_CN=" ${NEW_BASE_DIR}/env/distro.info | tail -n1 | awk -F'=' '{ print $2 }')
 if [ "x${DISTRO_ARCH_NAME_CN}" == "x" ]; then
-        echo "无法获取架构中文名称，无法继续，请编辑env/distro.info文件，并增加DISTRO_ARCH_NAME_CN的定义。"
+        echo "无法获取架构中文名称，无法继续，请编辑 ${NEW_BASE_DIR}/env/distro.info 文件，并增加DISTRO_ARCH_NAME_CN的定义。"
         exit 3
 fi
 
@@ -82,8 +112,8 @@ fi
 # 复制所有squashfs文件
 if [ -d ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/ ]; then
 	mkdir -p ${LIVE_DIRECTORY}/images/update
-	if [ -f ${BASE_DIR}/info_set/release_sort ]; then
-		for i in $(cat ${BASE_DIR}/info_set/release_sort | grep -v "^#")
+	if [ -f ${NEW_BASE_DIR}/info_set/release_sort ]; then
+		for i in $(cat ${NEW_BASE_DIR}/info_set/release_sort | grep -v "^#")
 		do
 			if [ -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs ]; then
 				echo "发现 ${i}.... ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/${i}.${DISTRO_ARCH}.squashfs "
@@ -147,8 +177,8 @@ else
 fi
 
 # 处理各个squashfs文件
-if [ -f ${BASE_DIR}/info_set/release_sort ]; then
-	for i in $(cat ${BASE_DIR}/info_set/release_sort | grep -v "^#" | sed -e "/^boot$/d" -e "/^sysroot$/d" )
+if [ -f ${NEW_BASE_DIR}/info_set/release_sort ]; then
+	for i in $(cat ${NEW_BASE_DIR}/info_set/release_sort | grep -v "^#" | sed -e "/^boot$/d" -e "/^sysroot$/d" )
 	do
 		if [ -f ${LIVE_DIRECTORY}/images/${i}.${DISTRO_ARCH}.squashfs ]; then
 			echo "${IMAGE_INDEX} ${i}.${DISTRO_ARCH}" >> ${LIVE_DIRECTORY}/images/images.list
@@ -247,8 +277,8 @@ echo "${NEW_LABEL}" > ${LIVE_DIRECTORY}/LABEL
 
 # 提示可能漏掉的安装包
 # ls ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/*.squashfs | awk -F'/' '{ print $NF }' | sed -e "s@\.docs\.${DISTRO_ARCH}\.squashfs@@g" -e "s@\.devel\.${DISTRO_ARCH}\.squashfs@@g" -e "s@\.${DISTRO_ARCH}\.squashfs@@g" | sed -e "/^kernel_/d" | sort | uniq > ${NEW_TARGET_SYSDIR}/temp/all_can_install_file.temp
-# cat ${BASE_DIR}/info_set/release_sort | grep -v "^#" | sort | uniq > ${NEW_TARGET_SYSDIR}/temp/is_install_file.temp1
-# cat ${BASE_DIR}/info_set/release_sort | grep -v "^#" | sed "s@\$@&.update@g" |sort | uniq >> ${NEW_TARGET_SYSDIR}/temp/is_install_file.temp1
+# cat ${NEW_BASE_DIR}/info_set/release_sort | grep -v "^#" | sort | uniq > ${NEW_TARGET_SYSDIR}/temp/is_install_file.temp1
+# cat ${NEW_BASE_DIR}/info_set/release_sort | grep -v "^#" | sed "s@\$@&.update@g" |sort | uniq >> ${NEW_TARGET_SYSDIR}/temp/is_install_file.temp1
 
 find ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/ -maxdepth 1 -type f -name "*.squashfs" | awk -F'/' '{ print $NF }' | sed -e "s@\.${DISTRO_ARCH}\.squashfs@@g" | sed -e "/^kernel_/d" | sort | uniq > ${NEW_TARGET_SYSDIR}/temp/all_can_install_file.temp
 find ${LIVE_DIRECTORY}/images/ -maxdepth 1 -type f -name "*.squashfs" | awk -F'/' '{ print $NF }' | sed -e "s@\.${DISTRO_ARCH}\.squashfs@@g" | sed -e "/^kernel_/d" > ${NEW_TARGET_SYSDIR}/temp/is_install_file.temp1
@@ -263,7 +293,7 @@ fi
 
 # 安装文档文件
 
-cp -a ${BASE_DIR}/docs ${LIVE_DIRECTORY}/ 
+cp -a ${NEW_BASE_DIR}/docs ${LIVE_DIRECTORY}/ 
 
 # 安装发布信息文件
 if [ -f ${NEW_TARGET_SYSDIR}/logs/release_summary.txt ]; then

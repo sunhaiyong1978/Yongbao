@@ -1,5 +1,34 @@
 #!/bin/bash -e
 
+export BASE_DIR="${PWD}"
+export NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+
+declare RELEASE_BUILD_MODE=0
+declare NEW_BASE_DIR="${PWD}"
+
+if [ -f ${BASE_DIR}/current_branch ]; then
+	RELEASE_VERSION="$(cat ${BASE_DIR}/current_branch | grep -v "^#" | grep -v "^$" | head -n1 | sed "s@[^?\|^[:alnum:]\|^\.\|^[:space:]\|^_\|^-]@@g")"
+	if [ -d ${BASE_DIR}/Branch_${RELEASE_VERSION} ]; then
+		NEW_TARGET_SYSDIR="${BASE_DIR}/Branch_${RELEASE_VERSION}/workbase"
+		SCRIPTS_DIR="${BASE_DIR}/Branch_${RELEASE_VERSION}/scripts"
+		NEW_BASE_DIR="${BASE_DIR}/Branch_${RELEASE_VERSION}"
+		RELEASE_BUILD_MODE=1
+#		echo "发现 current_branch 指定的 Branch_${RELEASE_VERSION} 目录，将在指定目录中进行构建。"
+	else
+#		echo "没有发现 Branch_${RELEASE_VERSION} 目录。"
+		NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+		NEW_BASE_DIR="${BASE_DIR}"
+		SCRIPTS_DIR="${BASE_DIR}/scripts"
+		RELEASE_BUILD_MODE=0
+	fi
+else
+	NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+	NEW_BASE_DIR="${BASE_DIR}"
+	SCRIPTS_DIR="${BASE_DIR}/scripts"
+	RELEASE_BUILD_MODE=0
+fi
+
+
 declare OPT_SET_STR=""
 declare OPT_SET_ENV=""
 declare SINGLE_PACKAGE=0
@@ -9,8 +38,9 @@ declare SET_OVERLAY_DIR=""
 declare AUTO_SET_PARENT_DIR=0
 declare SET_PARENT_DIR=""
 declare OPT_SET_PARENT_DIR=""
+declare WORLD_PARM=""
 
-while getopts 'e:sS:O:h?' OPT; do
+while getopts 'e:sS:O:wh?' OPT; do
     case $OPT in
 	e)
 	    OPT_SET_ENV=$OPTARG
@@ -23,6 +53,13 @@ while getopts 'e:sS:O:h?' OPT; do
 	    ;;
 	O)
 	    SET_PARENT_DIR=$OPTARG
+	    ;;
+	w)
+	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+	    NEW_BASE_DIR="${BASE_DIR}"
+	    SCRIPTS_DIR="${BASE_DIR}/scripts"
+	    RELEASE_BUILD_MODE=0
+	    WORLD_PARM="-w"
 	    ;;
         h|?)
             echo "进入步骤制作环境。"
@@ -40,6 +77,7 @@ while getopts 'e:sS:O:h?' OPT; do
             echo "    -e <变量名=变量,变量名=变量,...>: 设置编译过程中传递给编译步骤的变量设置。"
             echo "    -S <目录名>: 构建过程中默认安装到sysroot目录中的文件将安装到指定目录中。"
             echo "    -O <目录名>: 构建过程中设置用于OverlayFS的目录，当需要指定多个目录时使用“,”符号进行分隔，特殊名称ORIG代表编译的软件包所在组设置的目录，目录优先级从后往前。"
+	    echo "    -w: 强制设置使用主线环境的软件包编译的步骤"
             exit 127
     esac
 done
@@ -51,8 +89,6 @@ if [ "x${1}" == "x" ]; then
         exit 1
 fi
 
-export NEW_TARGET_SYSDIR="${PWD}/workbase"
-export BASE_DIR="${PWD}"
 export PACKAGE_NAME="foo"
 
 function get_overlay_dirname
@@ -70,10 +106,10 @@ function fn_overlay_temp_fix_run
 		return
 	fi
 	declare STEP_STAGE="${1}"
-	if [ -f scripts/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
+	if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/overlay_temp_fix_run ]; then
 		echo "执行${STEP_STAGE}的临时修改脚本……"
 		set +e
-		tools/run_package_script.sh ${STEP_STAGE}/overlay_temp_fix_run >${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 2>&1
+		tools/run_package_script.sh ${WORLD_PARM} ${STEP_STAGE}/overlay_temp_fix_run >${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/overlay_temp_fix_run_${STEP_STAGE}_0000.log 获取更详细的内容。"
 			exit -3
@@ -88,10 +124,10 @@ function fn_package_temp_fix_run
 		return
 	fi
 	declare STEP_STAGE="${1}"
-	if [ -f scripts/step/${STEP_STAGE}.tempfix ]; then
+	if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}.tempfix ]; then
 		echo "执行${STEP_STAGE}的临时修改脚本……"
 		set +e
-		tools/run_package_script.sh ${STEP_STAGE}.tempfix >${NEW_TARGET_SYSDIR}/logs/temp_fix_run_$(echo ${STEP_STAGE} | sed "s@/@_@g")_0000.log 2>&1
+		tools/run_package_script.sh ${WORLD_PARM} ${STEP_STAGE}.tempfix >${NEW_TARGET_SYSDIR}/logs/temp_fix_run_$(echo ${STEP_STAGE} | sed "s@/@_@g")_0000.log 2>&1
 		if [ "x$?" != "x0" ]; then
 			echo "临时修改脚本执行错误，可查看 ${NEW_TARGET_SYSDIR}/logs/temp_fix_run_$(echo ${STEP_STAGE} | sed "s@/@_@g")_0000.log 获取更详细的内容。"
 			exit -3
@@ -239,7 +275,7 @@ echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 	fi
 
 	if [ "x${OVERLAY_TEMP_FIX}" == "x1" ]; then
-		if [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ] || [ -f scripts/step/${1}/overlay_temp_fix_run ]; then
+		if [ -f ${SCRIPTS_DIR}/step/${1}/${PACKAGE_NAME}.tempfix ] || [ -f ${SCRIPTS_DIR}/step/${1}/overlay_temp_fix_run ]; then
 			if [ -d ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME} ]; then
 				mv ${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}{,.$(date +%Y%m%d%H%M%S)}
 			fi
@@ -256,7 +292,7 @@ echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 				echo "sudo mount -t overlay overlay -o lowerdir=${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 				exit -2
 			fi
-			if [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
+			if [ -f ${SCRIPTS_DIR}/step/${1}/${PACKAGE_NAME}.tempfix ]; then
 				fn_package_temp_fix_run "${1}/${PACKAGE_NAME}"
 			else
 				fn_overlay_temp_fix_run "${1}"
@@ -283,7 +319,7 @@ echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 		ln -sf DEST.${DATA_SUFF} ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST
 		sync
 
-	        if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]) || [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
+	        if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f ${SCRIPTS_DIR}/step/${1}/overlay_temp_fix_run ]) || [ -f ${SCRIPTS_DIR}/step/${1}/${PACKAGE_NAME}.tempfix ]; then
 			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 			if [ "x$?" != "x0" ]; then
 				echo "挂载sysroot错误！"
@@ -299,7 +335,7 @@ echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 			fi
 		fi
 	else
-		if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f scripts/step/${1}/overlay_temp_fix_run ]) || [ -f scripts/step/${1}/${PACKAGE_NAME}.tempfix ]; then
+		if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f ${SCRIPTS_DIR}/step/${1}/overlay_temp_fix_run ]) || [ -f ${SCRIPTS_DIR}/step/${1}/${PACKAGE_NAME}.tempfix ]; then
 			echo "sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 			sudo mount -t overlay overlay -o lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME},workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 			if [ "x$?" != "x0" ]; then
@@ -395,12 +431,12 @@ STEP_STAGE=$(echo ${1} | awk -F'/' '{ print $1 }')
 STEP_PACKAGE=$(echo ${1} | awk -F'/' '{ print $2 }')
 
 if [ "x${STEP_PACKAGE}" == "x" ]; then
-	if [ ! -d scripts/step/${STEP_STAGE} ]; then
+	if [ ! -d ${SCRIPTS_DIR}/step/${STEP_STAGE} ]; then
 		echo "没有${STEP_STAGE}组对应的环境。"
 		exit 2
 	fi
 else
-	PACKAGE_FILE=scripts/step/${1}
+	PACKAGE_FILE=${SCRIPTS_DIR}/step/${1}
 
 	if [ ! -f ${PACKAGE_FILE} ]; then
 		echo "没有${PACKAGE_FILE}脚本文件。"
@@ -444,8 +480,8 @@ if [ "x${OPT_SET_PARENT_DIR}" != "x" ]; then
 	echo "${PACKAGE_NAME} 设置了临时上级目录: ${OPT_SET_PARENT_DIR} 。"
 fi
 ORIG_OVERLAY_DIR=""
-if [ -f env/${STEP_STAGE}/overlay.set ]; then
-	ORIG_OVERLAY_DIR=$(get_overlay_dirname env/${STEP_STAGE}/overlay.set)
+if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+	ORIG_OVERLAY_DIR=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${ORIG_OVERLAY_DIR}.released ]; then
  		if [ "x${SET_OVERLAY_DIR}" == "x" ]; then
  			SET_OVERLAY_DIR="${ORIG_OVERLAY_DIR}.update"
@@ -460,21 +496,21 @@ fi
 
 
 declare STEP_OVERLAY_TEMP_FIX=0
-if [ -f env/${STEP_STAGE}/overlay.set ]; then
+if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
-		if [ -f env/${STEP_STAGE}/overlay.set ]; then
-			STEP_OVERLAY_TEMP_FIX="$(cat env/${STEP_STAGE}/overlay.set | grep "temp_fix=" | tail -n1 | awk -F'=' '{ print $2 }')"
+		if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+			STEP_OVERLAY_TEMP_FIX="$(cat ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set | grep "temp_fix=" | tail -n1 | awk -F'=' '{ print $2 }')"
 		else
 			STEP_OVERLAY_TEMP_FIX=0
 		fi
 		if [ "x${STEP_PACKAGE}" != "x" ]; then
-			if [ -f scripts/step/${STEP_STAGE}/${STEP_PACKAGE}.tempfix ]; then
+			if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${STEP_PACKAGE}.tempfix ]; then
 				STEP_OVERLAY_TEMP_FIX=1
 			fi
 		fi
-		overlay_mount ${STEP_STAGE} env/${STEP_STAGE}/overlay.set "${STEP_OVERLAY_TEMP_FIX}"
+		overlay_mount ${STEP_STAGE} ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set "${STEP_OVERLAY_TEMP_FIX}"
 	else
-		overlay_mount ${STEP_STAGE} env/${STEP_STAGE}/overlay.set "2"
+		overlay_mount ${STEP_STAGE} ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set "2"
 	fi
 fi
 
@@ -491,22 +527,22 @@ if [ "x${STEP_PACKAGE}" != "x" ]; then
 			exit 3
 		fi
 	done
-	source env/${STEP_STAGE}/config
-	source env/distro.info
-	source env/function.sh
-if [ -f env/${STEP_STAGE}/custom ]; then
-	source env/${STEP_STAGE}/custom
+	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/config
+	source ${NEW_BASE_DIR}/env/distro.info
+	source ${NEW_BASE_DIR}/env/function.sh
+if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom ]; then
+	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom
 fi
 	export STEP_BUILDNAME=${STEP_STAGE}
 	export STEP_PACKAGENAME=${STEP_PACKAGE}
 	export PACKAGE_VERSION=$(cat ${PACKAGE_FILE} | grep "^export PACKAGE_VERSION=" | head -n1 | awk -F'=' '{ print $2 }')
 	eval "export RESOURCEDIR=$(cat ${PACKAGE_FILE} | grep "^export RESOURCEDIR=" | head -n1 | awk -F'=' '{ print $2 }')"
 else
-	source env/${STEP_STAGE}/config
-	source env/distro.info
-	source env/function.sh
-if [ -f env/${STEP_STAGE}/custom ]; then
-	source env/${STEP_STAGE}/custom
+	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/config
+	source ${NEW_BASE_DIR}/env/distro.info
+	source ${NEW_BASE_DIR}/env/function.sh
+if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom ]; then
+	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom
 fi
 	export STEP_BUILDNAME=${STEP_STAGE}
 	export STEP_PACKAGENAME=foo

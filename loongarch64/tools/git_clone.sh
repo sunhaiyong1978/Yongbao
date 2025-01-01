@@ -1,14 +1,39 @@
 #!/bin/bash -e
 BASE_DIR="${PWD}"
 
-declare GIT_DIR=${BASE_DIR}/downloads/sources/git
-declare DEST_DIR=${BASE_DIR}/downloads/sources/files/
+declare RELEASE_BUILD_MODE=0
+declare NEW_BASE_DIR="${PWD}"
 
-while getopts 'd:h' OPT; do
+if [ -f ${BASE_DIR}/current_branch ]; then
+        RELEASE_VERSION="$(cat ${BASE_DIR}/current_branch | grep -v "^#" | grep -v "^$" | head -n1 | sed "s@[^?\|^[:alnum:]\|^\.\|^[:space:]\|^_\|^-]@@g")"
+        if [ -d ${BASE_DIR}/Branch_${RELEASE_VERSION} ]; then
+                NEW_TARGET_SYSDIR="${BASE_DIR}/Branch_${RELEASE_VERSION}/workbase"
+                NEW_BASE_DIR="${BASE_DIR}/Branch_${RELEASE_VERSION}"
+                RELEASE_BUILD_MODE=1
+#                echo "发现 current_branch 指定的 Branch_${RELEASE_VERSION} 目录，将在指定目录中进行构建。"
+        else
+#                echo "没有发现 Branch_${RELEASE_VERSION} 目录。"
+                NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+                NEW_BASE_DIR="${BASE_DIR}"
+                RELEASE_BUILD_MODE=0
+        fi
+else
+        NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+        NEW_BASE_DIR="${BASE_DIR}"
+        RELEASE_BUILD_MODE=0
+fi
+
+declare SET_DEST_DIR=""
+while getopts 'd:wh' OPT; do
     case $OPT in
         d)
-            DEST_DIR=$OPTARG
+            SET_DEST_DIR=$OPTARG
             ;;
+	w)
+            NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
+            NEW_BASE_DIR="${BASE_DIR}"
+            RELEASE_BUILD_MODE=0
+	    ;;
         h|?)
             echo "用法: `basename $0` [选项] 软件包名 软件版本 GIT地址 分支名 提交号"
 	    exit 0
@@ -16,6 +41,13 @@ while getopts 'd:h' OPT; do
     esac
 done
 shift $(($OPTIND - 1))
+
+declare GIT_DIR=${NEW_BASE_DIR}/downloads/sources/git
+if [ "x${SET_DEST_DIR}" == "x" ]; then
+	declare DEST_DIR=${NEW_BASE_DIR}/downloads/sources/files/
+else
+	declare DEST_DIR=${SET_DEST_DIR}
+fi
 
 if [ "x${1}" == "x" ]; then
 	exit 1
@@ -57,10 +89,10 @@ fi
 
 
 if [ "x${GIT_DIR}" == "x" ]; then
-	GIT_DIR=${BASE_DIR}/downloads/sources/git
-	DEST_DIR=${BASE_DIR}/downloads/sources/files/
+	GIT_DIR=${NEW_BASE_DIR}/downloads/sources/git
+	DEST_DIR=${NEW_BASE_DIR}/downloads/sources/files/
 else
-	GIT_DIR=${BASE_DIR}/downloads/sources/resource_git/${PKG_NAME}/
+	GIT_DIR=${NEW_BASE_DIR}/downloads/sources/resource_git/${PKG_NAME}/
 fi
 mkdir -p ${GIT_DIR}
 echo "pushd ${GIT_DIR}"
