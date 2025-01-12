@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=opam
-export PACKAGE_VERSION=2.1.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/opam/2.1.6/
-rm -rf ${BUILD_DIRECTORY}/opam-full-2.1.6
-tar xvf ${DOWNLOADDIR}/opam-full-2.1.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/opam-full-2.1.6
-	patch -Np1 -i ${SYSDIR}/files/computer_language/opam/2.1.6/patches/0001-opam-remove-create-man-file-step-for-cross-build.patch 
+export PACKAGE_VERSION=2.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/opam/2.3.0/
+rm -rf ${BUILD_DIRECTORY}/opam-full-2.3.0
+tar xvf ${DOWNLOADDIR}/opam-full-2.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/opam-full-2.3.0
+	patch -Np1 -i ${SYSDIR}/files/computer_language/opam/2.3.0/patches/0001-opam-remove-create-man-file-step-for-cross-build.patch 
 	 
 	PATH=${CROSSTOOLS_DIR}/ocaml-cross/bin:${PATH}
 	./configure --host=${CROSS_TARGET} --prefix=/usr
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/opam-full-2.1.6
 	make
 	dune install --prefix /usr --destdir ${SYSROOT_DIR} opam opam-installer
 popd 
-rm -rf ${BUILD_DIRECTORY}/opam-full-2.1.6
+rm -rf ${BUILD_DIRECTORY}/opam-full-2.3.0

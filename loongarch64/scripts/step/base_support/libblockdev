@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libblockdev
-export PACKAGE_VERSION=3.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libblockdev/3.1.1/
-rm -rf ${BUILD_DIRECTORY}/libblockdev-3.1.1
-tar xvf ${DOWNLOADDIR}/libblockdev-3.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libblockdev-3.1.1
+export PACKAGE_VERSION=3.2.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libblockdev/3.2.1/
+rm -rf ${BUILD_DIRECTORY}/libblockdev-3.2.1
+tar xvf ${DOWNLOADDIR}/libblockdev-3.2.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libblockdev-3.2.1
         
         for config_i in $(find -name "config.sub")
         do
@@ -34,4 +34,4 @@ pushd ${BUILD_DIRECTORY}/libblockdev-3.1.1
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libblockdev-3.1.1
+rm -rf ${BUILD_DIRECTORY}/libblockdev-3.2.1

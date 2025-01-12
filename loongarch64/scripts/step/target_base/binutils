@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=binutils
-export PACKAGE_VERSION=2.42
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/binutils/2.42/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.42
-tar xvf ${DOWNLOADDIR}/binutils-2.42.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.42
-	patch -Np1 -i ${SYSDIR}/files/target_base/binutils/2.42/patches/0001-remove-default-use-relax-for-lld.patch 
+export PACKAGE_VERSION=2.43.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/binutils/2.43.1/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1
+tar xvf ${DOWNLOADDIR}/binutils-2.43.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.43.1
+	patch -Np1 -i ${SYSDIR}/files/target_base/binutils/2.43.1/patches/RESEND-LoongArch-Default-to-a-maximum-page-size-of-64KiB.patch 
 	 
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -pv cross-build
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.42
 		make DESTDIR=${SYSROOT_DIR} tooldir=/usr install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.42
+rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1

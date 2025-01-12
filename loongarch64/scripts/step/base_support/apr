@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=apr
-export PACKAGE_VERSION=1.7.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/apr/1.7.4/
-rm -rf ${BUILD_DIRECTORY}/apr-1.7.4
-tar xvf ${DOWNLOADDIR}/apr-1.7.4.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/apr-1.7.4
+export PACKAGE_VERSION=1.7.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/apr/1.7.5/
+rm -rf ${BUILD_DIRECTORY}/apr-1.7.5
+tar xvf ${DOWNLOADDIR}/apr-1.7.5.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/apr-1.7.5
     sed -e "/shift/i \
             \    if (xt->tm_mon < 0 || xt->tm_mon >= 12) return APR_EBADDATE;" \
         -i.orig time/unix/time.c
-    cp ${CROSSTOOLS_DIR}/share/automake-1.16/config.* build/
+    cp -a -f $(automake --print-libdir)/config.{sub,guess} build/
     sed -i.orig -e "/hasposixser/s@0@1@g" \
            -e "/hasprocpthreadser/s@0@1@g" \
            -e "/have_iovec/s@0@1@g" \
@@ -26,4 +26,4 @@ pushd ${BUILD_DIRECTORY}/apr-1.7.4
     cp -v ${SYSROOT_DIR}/usr/bin/apr-1-config ${CROSSTOOLS_DIR}/bin/
     sed -i "/APR_TARGET_DIR=/s@APR_TARGET_DIR=.*@APR_TARGET_DIR=${SYSROOT_DIR};@g" ${CROSSTOOLS_DIR}/bin/apr-1-config
 popd 
-rm -rf ${BUILD_DIRECTORY}/apr-1.7.4
+rm -rf ${BUILD_DIRECTORY}/apr-1.7.5

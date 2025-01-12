@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=fcitx5-configtool
-export PACKAGE_VERSION=5.1.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/fcitx5-configtool/5.1.6/
-rm -rf ${BUILD_DIRECTORY}/fcitx5-configtool-5.1.6
-tar xvf ${DOWNLOADDIR}/fcitx5-configtool-5.1.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fcitx5-configtool-5.1.6
+export PACKAGE_VERSION=5.1.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/fcitx5-configtool/5.1.7/
+rm -rf ${BUILD_DIRECTORY}/fcitx5-configtool-5.1.7
+tar xvf ${DOWNLOADDIR}/fcitx5-configtool-5.1.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fcitx5-configtool-5.1.7
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/fcitx5-configtool-5.1.6
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fcitx5-configtool-5.1.6
+rm -rf ${BUILD_DIRECTORY}/fcitx5-configtool-5.1.7

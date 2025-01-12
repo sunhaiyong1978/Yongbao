@@ -3,16 +3,17 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=obs-studio
-export PACKAGE_VERSION=30.1.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/obs-studio/30.1.2/
-rm -rf ${BUILD_DIRECTORY}/obs-studio-30.1.2
-tar xvf ${DOWNLOADDIR}/obs-studio-30.1.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/obs-studio-30.1.2
+export PACKAGE_VERSION=30.2.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/obs-studio/30.2.3/
+rm -rf ${BUILD_DIRECTORY}/obs-studio-30.2.3
+tar xvf ${DOWNLOADDIR}/obs-studio-30.2.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/obs-studio-30.2.3
 	tar xvf ${RESOURCEDIR}/files/obs-studio-obs-browser_git.tar.gz
 	mv obs-studio-obs-browser_git/* plugins/obs-browser/
 	tar xvf ${RESOURCEDIR}/files/obs-studio-obs-websocket_git.tar.gz
 	mv obs-studio-obs-websocket_git/* plugins/obs-websocket/
         
+	sed -i "/target_disable/d" plugins/obs-browser/CMakeLists.txt
 	sed -i "/obs-qsv11/d" plugins/CMakeLists.txt
         mkdir cross-build
         pushd cross-build
@@ -45,9 +46,11 @@ pushd ${BUILD_DIRECTORY}/obs-studio-30.1.2
 		      -DENABLE_NEW_MPEGTS_OUTPUT=OFF \
 		      -DENABLE_AJA=0 \
 		      -DLINUX_PORTABLE=OFF \
+		      -DENABLE_NATIVE_NVENC=OFF \
+		      -DENABLE_RNNOISE=OFF \
                       -Wno-dev ..
                 eval ${NINJA_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/obs-studio-30.1.2
+rm -rf ${BUILD_DIRECTORY}/obs-studio-30.2.3

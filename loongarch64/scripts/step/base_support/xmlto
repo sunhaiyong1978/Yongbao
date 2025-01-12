@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xmlto
-export PACKAGE_VERSION=0.0.28
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xmlto/0.0.28/
-rm -rf ${BUILD_DIRECTORY}/xmlto-0.0.28
-tar xvf ${DOWNLOADDIR}/xmlto-0.0.28.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xmlto-0.0.28
+export PACKAGE_VERSION=0.0.29
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xmlto/0.0.29/
+rm -rf ${BUILD_DIRECTORY}/xmlto-0.0.29
+tar xvf ${DOWNLOADDIR}/xmlto-0.0.29.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xmlto-0.0.29
 	
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/xmlto-0.0.28
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xmlto-0.0.28
+rm -rf ${BUILD_DIRECTORY}/xmlto-0.0.29

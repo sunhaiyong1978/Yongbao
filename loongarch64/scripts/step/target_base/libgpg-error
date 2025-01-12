@@ -3,18 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libgpg-error
-export PACKAGE_VERSION=1.50
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libgpg-error/1.50/
-rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.50
-tar xvf ${DOWNLOADDIR}/libgpg-error-1.50.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libgpg-error-1.50
-    cp ${SYSROOT_DIR}/usr/share/automake-*/config.* build-aux/
+export PACKAGE_VERSION=1.51
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libgpg-error/1.51/
+rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.51
+tar xvf ${DOWNLOADDIR}/libgpg-error-1.51.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libgpg-error-1.51
+    cp -a -f $(automake --print-libdir)/config.{sub,guess} build-aux/
     ./configure ${COMMON_CONFIG} --enable-install-gpg-error-config
     eval ${MAKE_AND_INSTALL}
     rm -f ${SYSROOT_DIR}/usr/lib64/*.la
     cp -av ${SYSROOT_DIR}/bin/gpgrt-config  ${CROSSTOOLS_DIR}/bin/
     cp -av ${SYSROOT_DIR}/bin/gpg-error-config  ${CROSSTOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.50
+rm -rf ${BUILD_DIRECTORY}/libgpg-error-1.51
 sed -i "/^prefix/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config
 sed -i "/^libdir/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/gpg-error-config

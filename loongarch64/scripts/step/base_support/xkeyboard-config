@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xkeyboard-config
-export PACKAGE_VERSION=2.42
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xkeyboard-config/2.42/
-rm -rf ${BUILD_DIRECTORY}/xkeyboard-config-2.42
-tar xvf ${DOWNLOADDIR}/xkeyboard-config-2.42.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xkeyboard-config-2.42
+export PACKAGE_VERSION=2.43
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xkeyboard-config/2.43/
+rm -rf ${BUILD_DIRECTORY}/xkeyboard-config-2.43
+tar xvf ${DOWNLOADDIR}/xkeyboard-config-2.43.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xkeyboard-config-2.43
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/xkeyboard-config-2.42
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xkeyboard-config-2.42
+rm -rf ${BUILD_DIRECTORY}/xkeyboard-config-2.43

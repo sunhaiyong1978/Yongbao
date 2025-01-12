@@ -4,12 +4,12 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=binutils_git
-export PACKAGE_VERSION=2.41-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/binutils_git/2.41-default/
-rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
-tar xvf ${DOWNLOADDIR}/binutils_git-2.41-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/binutils_git/2.41-default/patches/0001-remove-default-use-relax-for-lld.patch 
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/binutils_git/git-default/
+rm -rf ${BUILD_DIRECTORY}/binutils_git-git-default_git
+tar xvf ${DOWNLOADDIR}/binutils_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils_git-git-default_git
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/binutils_git/git-default/patches/0001-remove-default-use-relax-for-lld.patch 
 	 
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -p tools-build
@@ -24,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
     	cp -v ../include/libiberty.h ${SYSDIR}/sysroot/usr/include
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
+rm -rf ${BUILD_DIRECTORY}/binutils_git-git-default_git

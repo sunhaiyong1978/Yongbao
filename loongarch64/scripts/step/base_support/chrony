@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=chrony
-export PACKAGE_VERSION=4.5-pre1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/chrony/4.5-pre1/
-rm -rf ${BUILD_DIRECTORY}/chrony-4.5-pre1
-tar xvf ${DOWNLOADDIR}/chrony-4.5-pre1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/chrony-4.5-pre1
+export PACKAGE_VERSION=4.6.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/chrony/4.6.1/
+rm -rf ${BUILD_DIRECTORY}/chrony-4.6.1
+tar xvf ${DOWNLOADDIR}/chrony-4.6.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/chrony-4.6.1
 	CC=${CROSS_TARGET}-gcc ./configure --prefix=/usr --host-system=Linux --host-release=$(cat ${COMMON_DIR}/linux-kernel.version) --host-machine=loongarch64
 	eval ${MAKE_AND_INSTALL}
 	cp -a examples/chrony.conf.example1 ${SYSROOT_DIR}/etc/chrony.conf
 	cp -a examples/chronyd.service examples/chrony-wait.service ${SYSROOT_DIR}/usr/lib/systemd/system/
 popd 
-rm -rf ${BUILD_DIRECTORY}/chrony-4.5-pre1
+rm -rf ${BUILD_DIRECTORY}/chrony-4.6.1

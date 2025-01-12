@@ -3,20 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=elfutils
-export PACKAGE_VERSION=0.191
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/elfutils/0.191/
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.191
-tar xvf ${DOWNLOADDIR}/elfutils-0.191.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elfutils-0.191
+export PACKAGE_VERSION=0.192
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/elfutils/0.192/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.192
+tar xvf ${DOWNLOADDIR}/elfutils-0.192.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.192
 	
         for config_i in $(find -name "config.sub")
         do
                 chmod 0644 $(dirname ${config_i})/config.{sub,guess}
-                cp ${CROSSTOOLS_DIR}/share/automake*/config.{sub,guess} $(dirname ${config_i})/
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
-        if [ ! -f configure ]; then
-                autoreconf -ifv
-        fi
+        autoreconf -ifv
 
 	sed -i.orig "s@GENDIS_ENV) \./i386_gendis@GENDIS_ENV) qemu-${ARCH_NAME} \./i386_gendis@g" libcpu/Makefile.am
 
@@ -28,4 +26,4 @@ echo '#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/eu-readelf "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
 popd 
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.191
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.192

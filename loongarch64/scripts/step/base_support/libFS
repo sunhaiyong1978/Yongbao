@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libFS
-export PACKAGE_VERSION=1.0.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libFS/1.0.9/
-rm -rf ${BUILD_DIRECTORY}/libFS-1.0.9
-tar xvf ${DOWNLOADDIR}/libFS-1.0.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libFS-1.0.9
+export PACKAGE_VERSION=1.0.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libFS/1.0.10/
+rm -rf ${BUILD_DIRECTORY}/libFS-1.0.10
+tar xvf ${DOWNLOADDIR}/libFS-1.0.10.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libFS-1.0.10
 	
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/libFS-1.0.9
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libFS-1.0.9
+rm -rf ${BUILD_DIRECTORY}/libFS-1.0.10

@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=asio
-export PACKAGE_VERSION=1.30.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/asio/1.30.2/
-rm -rf ${BUILD_DIRECTORY}/asio-1.30.2
-tar xvf ${DOWNLOADDIR}/asio-1.30.2.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/asio-1.30.2
-	patch -Np1 -i ${SYSDIR}/files/base_support/asio/1.30.2/patches/0001-asio-fix-compiler-error-for-gcc14.patch 
+export PACKAGE_VERSION=1.31.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/asio/1.31.0/
+rm -rf ${BUILD_DIRECTORY}/asio-1.31.0
+tar xvf ${DOWNLOADDIR}/asio-1.31.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/asio-1.31.0
+	patch -Np1 -i ${SYSDIR}/files/base_support/asio/1.31.0/patches/0001-asio-fix-compiler-error-for-gcc14.patch 
 	 
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/asio-1.30.2
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/asio-1.30.2
+rm -rf ${BUILD_DIRECTORY}/asio-1.31.0

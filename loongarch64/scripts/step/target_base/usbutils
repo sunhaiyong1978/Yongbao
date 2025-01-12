@@ -3,15 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=usbutils
-export PACKAGE_VERSION=017
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/usbutils/017/
-rm -rf ${BUILD_DIRECTORY}/usbutils-017
-tar xvf ${DOWNLOADDIR}/usbutils-017.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/usbutils-017
-    ./configure ${COMMON_CONFIG} \
-                --datadir=/usr/share/hwdata
-    eval ${MAKE_AND_INSTALL}
-    mkdir -pv ${SYSROOT_DIR}/usr/share/hwdata/
-    cp -a ${RESOURCEDIR}/files/usb.ids ${SYSROOT_DIR}/usr/share/hwdata/usb.ids
+export PACKAGE_VERSION=018
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/usbutils/018/
+rm -rf ${BUILD_DIRECTORY}/usbutils-018
+tar xvf ${DOWNLOADDIR}/usbutils-018.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/usbutils-018
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  \
+                      ..
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/usbutils-017
+rm -rf ${BUILD_DIRECTORY}/usbutils-018

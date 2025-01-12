@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libical
-export PACKAGE_VERSION=3.0.18
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libical/3.0.18/
-rm -rf ${BUILD_DIRECTORY}/libical-3.0.18
-tar xvf ${DOWNLOADDIR}/libical-3.0.18.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libical-3.0.18
+export PACKAGE_VERSION=3.0.19
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libical/3.0.19/
+rm -rf ${BUILD_DIRECTORY}/libical-3.0.19
+tar xvf ${DOWNLOADDIR}/libical-3.0.19.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libical-3.0.19
     sed -i "s@COMMAND \${ical-glib-src-generator_EXE}@COMMAND qemu-${ARCH_NAME} ../../bin/ical-glib-src-generator@g" \
            src/libical-glib/CMakeLists.txt
     mkdir cross-prebuild
@@ -34,4 +34,4 @@ pushd ${BUILD_DIRECTORY}/libical-3.0.18
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/libical-3.0.18
+rm -rf ${BUILD_DIRECTORY}/libical-3.0.19

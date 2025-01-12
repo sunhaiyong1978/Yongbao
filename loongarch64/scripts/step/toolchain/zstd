@@ -17,24 +17,31 @@ pushd ${BUILD_DIRECTORY}/zstd-1.5.6
     fi
     LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
     INSTALL_PREFIX_DIR=$(archname_to_anyparm "${CROSS_TARGET}" "PREFIX_DIR" "/usr")
+
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_TARGET="${CROSS_TARGET}"
+    fi
+
+    INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target"
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
+
 	
 
-	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
 
 	case "${CROSS_TARGET}" in
 		*-mingw*)
 		        pushd lib
 				make -j${JOBS} CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=${INSTALL_PREFIX_DIR}
 
-				INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
 				make CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=${INSTALL_PREFIX_DIR} DESTDIR=${INSTALL_DIST_DIR} install
         		popd
 			;;
 		*)
-			make -j${JOBS} CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=${INSTALL_PREFIX_DIR} LIBDIR=${INSTALL_PREFIX_DIR}/lib${LIB_SUFF}
+			make -j${JOBS} CC="${COMPAT_TARGET}-gcc ${ARCH_MABI}" PREFIX=${INSTALL_PREFIX_DIR} LIBDIR=${INSTALL_PREFIX_DIR}/lib${LIB_SUFF}
 
-			INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
-			make CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF} DESTDIR=${INSTALL_DIST_DIR} install
+			make CC="${COMPAT_TARGET}-gcc ${ARCH_MABI}" PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF} DESTDIR=${INSTALL_DIST_DIR} install
 			;;
 	esac
 popd 

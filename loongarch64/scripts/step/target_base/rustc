@@ -3,32 +3,36 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.79.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.79.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.79.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.79.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.79.0-src
-     
+export PACKAGE_VERSION=1.84.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.84.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.84.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.84.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.84.0-src
+    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.84.0/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
+	 
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
     PKG_CONFIG_SYSROOT_DIR="" \
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} \
-                --host=${CROSS_TARGET} \
+                --host=${CROSS_TARGET} --target=${CROSS_TARGET} \
                 --local-rust-root=${CROSSTOOLS_DIR} \
-                --enable-extended --enable-vendor --release-channel=stable \
+                --enable-extended --enable-vendor --disable-docs --release-channel=stable \
+		--set=target.${CROSS_TARGET}.linker="${CROSS_TARGET}-gcc" \
+		--set=target.${CROSS_TARGET}.cc="${CROSS_TARGET}-gcc" \
+		--set=target.${CROSS_TARGET}.cxx="${CROSS_TARGET}-g++" \
+		--set=target.${CROSS_TARGET}.llvm-config="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config" \
+		--set=target.$(echo ${CROSS_HOST} | sed 's@cross@unknown@g').llvm-config="${CROSSTOOLS_DIR}/bin/llvm-config" \
+		--set=target.$(echo ${CROSS_HOST} | sed 's@cross@unknown@g').linker="clang" \
                 --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler
+    export CARGO_TARGET_$(echo ${CROSS_TARGET^^} | tr '-' '_')_RUSTFLAGS="$RUSTFLAGS -C link-args=-lz -C link-args=-lzstd -C link-args=-lLLVM -Ccode-model=large"
     PKG_CONFIG_SYSROOT_DIR="" \
-    RUSTFLAGS="$RUSTFLAGS -C link-args=-lz" \
-    make -j${JOBS} HOST_CC="gcc" CC="${CROSS_TARGET}-gcc" \
-         HOST_CXX="g++" CXX="${CROSS_TARGET}-g++" \
-         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
-         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64
+    make -j${JOBS} \
+         $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
+         $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64
     PKG_CONFIG_SYSROOT_DIR="" \
-    RUSTFLAGS="$RUSTFLAGS -C link-args=-lz" \
-    make -j${JOBS} HOST_CC="gcc" CC="${CROSS_TARGET}-gcc" \
-         HOST_CXX="g++" CXX="${CROSS_TARGET}-g++" \
-         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
-         LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
+    make -j${JOBS} \
+         $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
+         $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          DESTDIR=${SYSROOT_DIR}/ install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.79.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.84.0-src

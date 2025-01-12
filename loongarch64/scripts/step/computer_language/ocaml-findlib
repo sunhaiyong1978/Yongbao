@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=ocaml-findlib
-export PACKAGE_VERSION=1.9.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/ocaml-findlib/1.9.6/
-rm -rf ${BUILD_DIRECTORY}/findlib-1.9.6
-tar xvf ${DOWNLOADDIR}/findlib-1.9.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/findlib-1.9.6
+export PACKAGE_VERSION=1.9.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/ocaml-findlib/1.9.8/
+rm -rf ${BUILD_DIRECTORY}/findlib-1.9.8
+tar xvf ${DOWNLOADDIR}/findlib-1.9.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/findlib-1.9.8
 	pushd tools/extract_args
                 make clean
                 make
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/findlib-1.9.6
 	make opt
 	make DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/findlib-1.9.6
+rm -rf ${BUILD_DIRECTORY}/findlib-1.9.8

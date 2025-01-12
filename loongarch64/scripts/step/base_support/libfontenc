@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/libfontenc-1.1.8
 	
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv

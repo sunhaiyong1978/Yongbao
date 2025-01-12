@@ -3,39 +3,46 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=18.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/llvm-project/18.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+export PACKAGE_VERSION=19.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/llvm-project/19.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+    HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+    HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+    ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
     
 
 
+    cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/target ${PREFIX}/cross-tools/${HOST_HOST}_target
+    cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/target ${PREFIX}/cross-tools/${HOST_TARGET}_target
 
-
-    pushd llvm
-	    mkdir -p native-build
-	    pushd native-build
-		LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64" \
-        	PKG_CONFIG_SYSROOT_DIR="" \
-	        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${TOOLCHAIN_DIRECTORY}/cross-target/llvm-project \
-        	         -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
-                	 -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
-	                 -DLLVM_LIBDIR_SUFFIX=64 \
-        	         -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
-                	 -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
-	                 -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
-        	         -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
-                	 -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
-	                 -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/build-tools/lib64;${TOOLCHAIN_DIRECTORY}/cross-target/llvm-project/lib${LIB_SUFF};\\\${ORIGIN}/../lib${LIB_SUFF}" \
-        	         -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
-                	 -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
-			 -DLLVM_ENABLE_PROJECTS='clang;lld' \
-	                 -DLLVM_VERSION_SUFFIX='' \
-        	         -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_HOST}
-	        ninja
-        	ninja install
-	    popd
-    popd
-popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+pushd llvm
+    mkdir -p host-build
+    pushd host-build
+	export PATH=${CROSSTOOLS_DIR}/build-tools/bin:${CROSSTOOLS_DIR}/bin:/usr/bin:/usr/sbin
+        export PKG_CONFIG_SYSROOT_DIR=""
+	export PKG_CONFIG_PATH=""
+	cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${TOOLCHAIN_DIRECTORY}/cross-target/llvm-project \
+                 -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
+                 -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
+                 -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+		 -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+                 -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
+                 -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
+                 -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
+		 -DLLVM_ENABLE_PROJECTS='llvm;clang;lld' \
+		 -DLLVM_INCLUDE_RUNTIMES:BOOL=ON \
+		 -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;libcxx;compiler-rt" \
+		 -DLLVM_RUNTIME_TARGETS="${HOST_HOST};${HOST_TARGET}" \
+		 -DLLVM_BUILTIN_TARGETS="${HOST_HOST};${HOST_TARGET}" \
+		 -DBUILTINS_${HOST_TARGET}_CMAKE_SYSROOT=${PREFIX}/cross-tools/${HOST_TARGET}_target \
+		 -DRUNTIMES_${HOST_TARGET}_CMAKE_SYSROOT=${PREFIX}/cross-tools/${HOST_TARGET}_target \
+		 -DBUILTINS_${HOST_HOST}_CMAKE_SYSROOT=${PREFIX}/cross-tools/${HOST_HOST}_target \
+		 -DRUNTIMES_${HOST_HOST}_CMAKE_SYSROOT=${PREFIX}/cross-tools/${HOST_HOST}_target \
+		 -DLLVM_DEFAULT_TARGET_TRIPLE=${HOST_HOST} \
+		 -DLLVM_HOST_TRIPLE=${HOST_HOST} \
+                 -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF
+        ninja
+        ninja install
+popd

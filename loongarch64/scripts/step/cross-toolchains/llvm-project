@@ -4,37 +4,42 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=18.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/llvm-project/18.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+export PACKAGE_VERSION=19.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/llvm-project/19.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
 
 pushd llvm
     mkdir -p native-build
     pushd native-build
 	LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64" \
 	PKG_CONFIG_SYSROOT_DIR="" \
-        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX}/llvm-project \
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX}/${LINUX_HOST} \
                  -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
                  -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
-                 -DLLVM_LIBDIR_SUFFIX=64 \
                  -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
-                 -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
 		 -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
                  -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
-                 -DCMAKE_INSTALL_RPATH="${PREFIX}/llvm-project/lib64;${CROSSTOOLS_DIR}/build-tools/lib64;\\\${ORIGIN}/../lib64" \
 		 -DLLVM_VERSION_SUFFIX='' \
-		 -DLLVM_ENABLE_PROJECTS='clang;lld' \
-                 -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
+		 -DLLVM_LIBDIR_SUFFIX=64 \
+		 -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
+		 -DLLVM_ENABLE_PROJECTS='llvm;clang;lld' \
+		 -DLLVM_INCLUDE_RUNTIMES:BOOL=ON \
+		 -DLLVM_RUNTIME_TARGETS="${LINUX_HOST}" \
+		 -DLLVM_BUILTIN_TARGETS="${LINUX_HOST}" \
+		 -DBUILTINS_${LINUX_HOST}_CMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
+		 -DRUNTIMES_${LINUX_HOST}_CMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
+		 -DLLVM_DEFAULT_TARGET_TRIPLE=${LINUX_HOST} \
+		 -DLLVM_HOST_TRIPLE=${LINUX_HOST} \
                  -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF
         ninja
         ninja install
 popd
 
-LLVM_DIST_VERSION="$(${PREFIX}/llvm-project/bin/llvm-config --version)"
+LLVM_DIST_VERSION="$(${PREFIX}/${LINUX_HOST}/bin/llvm-config --version)"
 save_package_version cross_toolchains_llvm-project "${LLVM_DIST_VERSION}"
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src

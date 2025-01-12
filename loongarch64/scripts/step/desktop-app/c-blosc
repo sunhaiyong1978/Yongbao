@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=c-blosc
-export PACKAGE_VERSION=1.21.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/c-blosc/1.21.5/
-rm -rf ${BUILD_DIRECTORY}/c-blosc-1.21.5
-tar xvf ${DOWNLOADDIR}/c-blosc-1.21.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/c-blosc-1.21.5
+export PACKAGE_VERSION=1.21.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/c-blosc/1.21.6/
+rm -rf ${BUILD_DIRECTORY}/c-blosc-1.21.6
+tar xvf ${DOWNLOADDIR}/c-blosc-1.21.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/c-blosc-1.21.6
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/c-blosc-1.21.5
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/c-blosc-1.21.5
+rm -rf ${BUILD_DIRECTORY}/c-blosc-1.21.6

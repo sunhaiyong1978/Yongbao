@@ -25,6 +25,7 @@
 00051  step/target_base/libffi|
 00052  step/target_base/openssl|
 00054  step/target_base/check|
+00066  step/target_base/libpsl|
 00067  step/target_base/curl|
 00073  step/target_base/sqlite|
 00075  step/target_base/util-linux|
@@ -43,6 +44,7 @@
 00109  step/target_base/libevent|
 00123  step/target_base/pcre|
 00124  step/target_base/pcre2|
+00125  step/target_base/glib_pre|
 00125  step/target_base/gobject-introspection|
 00125  step/target_base/glib|
 00134  step/target_base/libpng|
@@ -127,6 +129,7 @@
 00001  step/unusual/mesa_git_nollvm|g_opt;mesa_git
 00097  step/base_support/libva|g_opt
 00147  step/base_support/pixman|g_opt
+00151  step/base_support/libepoxy|g_opt
 00150  step/base_support/libtirpc|g_opt
 00153  step/base_support/mtdev|g_opt
 00154  step/base_support/libevdev|g_opt

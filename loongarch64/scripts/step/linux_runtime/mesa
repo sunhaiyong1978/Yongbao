@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=mesa
-export PACKAGE_VERSION=24.0.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/mesa/24.0.7/
-rm -rf ${BUILD_DIRECTORY}/mesa-24.0.7
-tar xvf ${DOWNLOADDIR}/mesa-24.0.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mesa-24.0.7
+export PACKAGE_VERSION=24.3.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/mesa/24.3.3/
+rm -rf ${BUILD_DIRECTORY}/mesa-24.3.3
+tar xvf ${DOWNLOADDIR}/mesa-24.3.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa-24.3.3
     
     tar xf ${RESOURCEDIR}/files/mesa-DirectX-Headers_git.tar.gz -C subprojects/
     mv subprojects/{mesa-DirectX-Headers_git,DirectX-Headers-1.0}
@@ -18,21 +18,20 @@ pushd ${BUILD_DIRECTORY}/mesa-24.0.7
     sed -i -e "/LIBCLC_INCLUDEDIR/s@dep_clc.get_variable(pkgconfig : 'includedir')@'/usr/include'@g" \
            -e "/LIBCLC_LIBEXECDIR/s@dep_clc.get_variable(pkgconfig : 'libexecdir')@'/usr/lib${LIB_SUFF}/clc'@g" src/gallium/frontends/clover/meson.build
 
-    export CFLAGS="${CFLAGS} -fpermissive"
-    export CXXFLAGS="${CXXFLAGS} -fpermissive"
+
 
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} \
-              -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true \
-              -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dosmesa=true -Dgallium-opencl=icd \
-              -Dlibunwind=disabled \
-	      -Dgallium-drivers="kmsro,radeonsi,r300,r600,nouveau,freedreno,swrast,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,iris,lima,zink,d3d12,i915,crocus" \
-	      -Dvulkan-drivers="amd,broadcom,panfrost,swrast,virtio,imagination-experimental" \
-	      -Dvideo-codecs="vc1dec,h264dec,h264enc,h265dec,h265enc" \
-	      -Dgallium-nine=true -Dllvm=enabled -Dshared-llvm=enabled -Ddraw-use-llvm=true -Dgallium-d3d12-video=auto -Dshader-cache-max-size=8G -Dglx-direct=true -Dvulkan-layers=overlay \
+	      -Dgallium-drivers="radeonsi,r300,r600,nouveau,freedreno,swrast,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,lima,zink,d3d12,crocus,llvmpipe" \
+              -Dplatforms=x11,wayland \
+              -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true -Dosmesa=true -Dllvm-orcjit=true \
+              -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dgallium-opencl=icd \
+              -Dlibunwind=disabled -Dvulkan-drivers="amd,broadcom,panfrost,swrast,virtio,imagination-experimental" \
+              -Dvideo-codecs="vc1dec,h264dec,h264enc,h265dec,h265enc,av1dec,av1enc,vp9dec" \
+              -Dgallium-nine=true -Dllvm=enabled -Dshared-llvm=enabled -Ddraw-use-llvm=true -Dgallium-d3d12-video=auto -Dshader-cache-max-size=8G -Dglx-direct=true -Dvulkan-layers=overlay \
               ..
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mesa-24.0.7
+rm -rf ${BUILD_DIRECTORY}/mesa-24.3.3

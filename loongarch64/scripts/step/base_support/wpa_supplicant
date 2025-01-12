@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=wpa_supplicant
-export PACKAGE_VERSION=2.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/wpa_supplicant/2.10/
-rm -rf ${BUILD_DIRECTORY}/wpa_supplicant-2.10
-tar xvf ${DOWNLOADDIR}/wpa_supplicant-2.10.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wpa_supplicant-2.10
+export PACKAGE_VERSION=2.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/wpa_supplicant/2.11/
+rm -rf ${BUILD_DIRECTORY}/wpa_supplicant-2.11
+tar xvf ${DOWNLOADDIR}/wpa_supplicant-2.11.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wpa_supplicant-2.11
 pushd wpa_supplicant
 cat > .config << "EOF"
     CONFIG_BACKEND=file
@@ -47,4 +47,4 @@ EOF
                      ${SYSROOT_DIR}/etc/dbus-1/system.d/wpa_supplicant.conf
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/wpa_supplicant-2.10
+rm -rf ${BUILD_DIRECTORY}/wpa_supplicant-2.11

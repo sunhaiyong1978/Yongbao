@@ -9,7 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/inkscape-git-default_git
 tar xvf ${DOWNLOADDIR}/inkscape-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/inkscape-git-default_git
         patch -Np1 -i ${SYSDIR}/files/desktop-app/inkscape/git-default/patches/0001-inkscap-3rdparty-2geom-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/inkscape/git-default/patches/0001-inkscape-fix-build-error.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -35,7 +34,7 @@ pushd ${BUILD_DIRECTORY}/inkscape-git-default_git
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		      -DENABLE_POPPLER=OFF -DGZIP=/usr/bin/gzip -Wno-dev ..
+		      -DPOPPLER_INCLUDE_DIR=${SYSROOT_DIR}/usr/include/poppler -DGZIP=/usr/bin/gzip -DWITH_POPPLER=OFF -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

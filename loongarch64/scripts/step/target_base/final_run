@@ -15,8 +15,12 @@ sed -i "s@${CROSSTOOLS_DIR}/bin/perl@/usr/bin/perl@g" \
        $(file ${SYSROOT_DIR}/usr/{bin,libexec}/* | grep "Perl script text" | awk -F':' '{ print $1 }') \
        ${TEMP_DIRECTORY}/strip-foo
 
+sed -i "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
+       $(file ${SYSROOT_DIR}/usr/{bin,sbin,libexec}/* | grep "Python script, ASCII text" | awk -F':' '{ print $1 }') \
+       ${TEMP_DIRECTORY}/strip-foo
+
 sed -i "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
-       $(file ${SYSROOT_DIR}/usr/{bin,libexec}/* | grep "Python script, ASCII text" | awk -F':' '{ print $1 }') \
+       $(file ${SYSROOT_DIR}/usr/{bin,sbin,libexec}/* | grep "Python script, ASCII text" | awk -F':' '{ print $1 }') \
        ${TEMP_DIRECTORY}/strip-foo
 
 sed -i -e "s@${SYSROOT_DIR}/lib@/usr/lib@g" \
@@ -49,6 +53,12 @@ sed -i -e "s@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-@/usr/bin/@g" \
 sed -i -e "s@${CROSSTOOLS_DIR}/bin@/usr/bin@g" \
        $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep ASCII | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
        $(grep -rl "cross-tools" $(file ${SYSROOT_DIR}/usr/bin/* | grep text | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
+       $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.pl") \
+       ${TEMP_DIRECTORY}/strip-foo
+
+sed -i -e "s@bin/${CROSS_TARGET}-@bin/@g" \
+       $(grep -rl "bin/${CROSS_TARGET}-" $(file ${SYSROOT_DIR}/usr/bin/* | grep ASCII | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
+       $(grep -rl "bin/${CROSS_TARGET}-" $(file ${SYSROOT_DIR}/usr/bin/* | grep text | awk -F':' '{ print $1 }') ${TEMP_DIRECTORY}/strip-foo) \
        $(find ${SYSROOT_DIR}/usr/share/ -type f -name "*.pl") \
        ${TEMP_DIRECTORY}/strip-foo
 

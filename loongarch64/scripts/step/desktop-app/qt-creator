@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=qt-creator
-export PACKAGE_VERSION=14.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qt-creator/14.0.0/
-rm -rf ${BUILD_DIRECTORY}/qt-creator-14.0.0
-tar xvf ${DOWNLOADDIR}/qt-creator-14.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-creator-14.0.0
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/qt-creator/14.0.0/patches/0001-qt-creator-12.0.2-add-loongarch-support.patch 
+export PACKAGE_VERSION=15.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qt-creator/15.0.0/
+rm -rf ${BUILD_DIRECTORY}/qt-creator-15.0.0
+tar xvf ${DOWNLOADDIR}/qt-creator-15.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-creator-15.0.0
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/qt-creator/15.0.0/patches/0001-qt-creator-12.0.2-add-loongarch-support.patch 
 	 
 	export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib${LIB_SUFF} -Wl,-rpath=/usr/lib${LIB_SUFF}/qtcreator"
         mkdir cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/qt-creator-14.0.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-creator-14.0.0
+rm -rf ${BUILD_DIRECTORY}/qt-creator-15.0.0

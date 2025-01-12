@@ -3,14 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=256.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/256.1/
-rm -rf ${BUILD_DIRECTORY}/systemd-256.1
-tar xvf ${DOWNLOADDIR}/systemd-256.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-256.1
-	patch -Np1 -i ${SYSDIR}/files/base_support/systemd/256.1/patches/ed01b92e1c92871bbd92711f280e2b2d15753f0e.diff 
-	patch -Np1 -i ${SYSDIR}/files/base_support/systemd/256.1/patches/201148b08de65de004d10679a8c3d201cc08fb28.diff 
-	 
+export PACKAGE_VERSION=257.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/257.2/
+rm -rf ${BUILD_DIRECTORY}/systemd-257.2
+tar xvf ${DOWNLOADDIR}/systemd-257.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-257.2
+	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
 	popd
@@ -32,6 +30,7 @@ pushd ${BUILD_DIRECTORY}/systemd-256.1
 	popd
 
 	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/systemd-networkd-wait-online.service
+	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/nm-cloud-setup.{service,timer}
 
 cat >> ${SYSROOT_DIR}/etc/pam.d/system-session << "EOF"
 session  required    pam_loginuid.so
@@ -54,6 +53,6 @@ password required    pam_deny.so
 EOF
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-256.1
+rm -rf ${BUILD_DIRECTORY}/systemd-257.2
 
 set_strip_step "/usr/lib/systemd" "0"

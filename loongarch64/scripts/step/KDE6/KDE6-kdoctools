@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kdoctools
-export PACKAGE_VERSION=6.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kdoctools/6.3.0/
-rm -rf ${BUILD_DIRECTORY}/kdoctools-6.3.0
-tar xvf ${DOWNLOADDIR}/kdoctools-6.3.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kdoctools-6.3.0
+export PACKAGE_VERSION=6.10.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kdoctools/6.10.0/
+rm -rf ${BUILD_DIRECTORY}/kdoctools-6.10.0
+tar xvf ${DOWNLOADDIR}/kdoctools-6.10.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kdoctools-6.10.0
         
         sed -i "s@COMMAND \$<TARGET_FILE:KF6::docbookl10nhelper>@COMMAND qemu-loongarch64 ../bin/docbookl10nhelper@g" \
                 src/CMakeLists.txt
@@ -44,7 +44,7 @@ pushd ${BUILD_DIRECTORY}/kdoctools-6.3.0
         cp ${SYSROOT_DIR}/usr/share/kf6/kdoctools/customization/xsl/pt{_br,-BR}.xml
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kdoctools-6.3.0
+rm -rf ${BUILD_DIRECTORY}/kdoctools-6.10.0
 
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/meinproc6 --srcdir ${SYSROOT_DIR}/usr/share/kf6/kdoctools \"\$@\"" \
         > ${CROSSTOOLS_DIR}/bin/meinproc6

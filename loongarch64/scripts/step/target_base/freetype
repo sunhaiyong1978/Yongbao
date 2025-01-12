@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=freetype
-export PACKAGE_VERSION=2.13.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/freetype/2.13.2/
-rm -rf ${BUILD_DIRECTORY}/freetype-2.13.2
-tar xvf ${DOWNLOADDIR}/freetype-2.13.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/freetype-2.13.2
+export PACKAGE_VERSION=2.13.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/freetype/2.13.3/
+rm -rf ${BUILD_DIRECTORY}/freetype-2.13.3
+tar xvf ${DOWNLOADDIR}/freetype-2.13.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/freetype-2.13.3
     sed -ri "s:.*(AUX_MODULES.*valid):\1:" modules.cfg
     sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" \
            -i include/freetype/config/ftoption.h
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/freetype-2.13.2
            -e "s@${CROSS_TARGET}-@@g" \
            ${SYSROOT_DIR}/usr/bin/freetype-config
 popd 
-rm -rf ${BUILD_DIRECTORY}/freetype-2.13.2
+rm -rf ${BUILD_DIRECTORY}/freetype-2.13.3

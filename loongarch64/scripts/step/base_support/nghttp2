@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=nghttp2
-export PACKAGE_VERSION=1.62.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/nghttp2/1.62.1/
-rm -rf ${BUILD_DIRECTORY}/nghttp2-1.62.1
-tar xvf ${DOWNLOADDIR}/nghttp2-1.62.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nghttp2-1.62.1
+export PACKAGE_VERSION=1.64.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/nghttp2/1.64.0/
+rm -rf ${BUILD_DIRECTORY}/nghttp2-1.64.0
+tar xvf ${DOWNLOADDIR}/nghttp2-1.64.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nghttp2-1.64.0
 	
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/nghttp2-1.62.1
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/nghttp2-1.62.1
+rm -rf ${BUILD_DIRECTORY}/nghttp2-1.64.0

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dav1d
-export PACKAGE_VERSION=1.4.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dav1d/1.4.3/
-rm -rf ${BUILD_DIRECTORY}/dav1d-1.4.3
-tar xvf ${DOWNLOADDIR}/dav1d-1.4.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dav1d-1.4.3
+export PACKAGE_VERSION=1.5.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dav1d/1.5.0/
+rm -rf ${BUILD_DIRECTORY}/dav1d-1.5.0
+tar xvf ${DOWNLOADDIR}/dav1d-1.5.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dav1d-1.5.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/dav1d-1.4.3
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/dav1d-1.4.3
+rm -rf ${BUILD_DIRECTORY}/dav1d-1.5.0

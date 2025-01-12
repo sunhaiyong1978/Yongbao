@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=binutils_git
-export PACKAGE_VERSION=2.41-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/binutils_git/2.41-default/
-rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
-tar xvf ${DOWNLOADDIR}/binutils_git-2.41-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
-	patch -Np1 -i ${SYSDIR}/files/target_base/binutils_git/2.41-default/patches/0001-remove-default-use-relax-for-lld.patch 
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/binutils_git/git-default/
+rm -rf ${BUILD_DIRECTORY}/binutils_git-git-default_git
+tar xvf ${DOWNLOADDIR}/binutils_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils_git-git-default_git
+	patch -Np1 -i ${SYSDIR}/files/target_base/binutils_git/git-default/patches/0001-remove-default-use-relax-for-lld.patch 
 	 
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -pv cross-build
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
 		make DESTDIR=${SYSROOT_DIR} tooldir=/usr install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils_git-2.41-default_git
+rm -rf ${BUILD_DIRECTORY}/binutils_git-git-default_git

@@ -4,11 +4,12 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.79.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/rustc/1.79.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.79.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.79.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.79.0-src
+export PACKAGE_VERSION=1.84.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/rustc/1.84.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.84.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.84.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.84.0-src
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/rustc/1.84.0/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
 	 
 	sed -i "s@ifdef LLVM_RUSTLLVM@if 0@g" compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp
 	find vendor -name .cargo-checksum.json \
@@ -16,9 +17,19 @@ pushd ${BUILD_DIRECTORY}/rustc-1.79.0-src
 	./configure --target=${CROSS_TARGET},$(echo ${CROSS_HOST} | sed 's@cross@unknown@g') \
 	            --prefix=${CROSSTOOLS_DIR} --sysconfdir=${CROSSTOOLS_DIR}/etc --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
 	            --local-rust-root=${CROSSTOOLS_DIR}/rust/usr/local \
-	            --enable-extended --enable-vendor --release-channel=release \
-	            --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler
-	make -j${JOBS} TARGET_CC="${CROSS_TARGET}-gcc" HOST_CC="gcc"
-	make TARGET_CC="${CROSS_TARGET}-gcc" install
+	            --enable-extended --enable-vendor --disable-docs --disable-dist-src --release-channel=dev \
+	            --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler \
+		    --set=target.${CROSS_TARGET}.linker="${CROSS_TARGET}-gcc" \
+		    --set=target.${CROSS_TARGET}.cc="${CROSS_TARGET}-gcc" \
+		    --set=target.${CROSS_TARGET}.cxx="${CROSS_TARGET}-g++" \
+		    --set=target.${CROSS_TARGET}.llvm-config="${CROSS_TARGET}-llvm-config" \
+		    --set=target.$(echo ${CROSS_HOST} | sed 's@cross@unknown@g').llvm-config="${CROSSTOOLS_DIR}/bin/llvm-config"
+
+        export CARGO_TARGET_$(echo ${CROSS_TARGET^^} | tr '-' '_')_LINKER="${CROSS_TARGET}-gcc"
+        export CARGO_TARGET_$(echo ${CROSS_TARGET^^} | tr '-' '_')_RUSTFLAGS="-Ccode-model=large"
+        make -j${JOBS} HOST_CC="gcc"
+        make -j${JOBS} HOST_CC="gcc" install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.79.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.84.0-src
+
+save_package_version cross-tools_rustc "${PACKAGE_VERSION}-dev"

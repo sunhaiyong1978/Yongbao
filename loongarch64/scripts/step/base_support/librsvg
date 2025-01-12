@@ -3,26 +3,24 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=librsvg
-export PACKAGE_VERSION=2.58.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/librsvg/2.58.0/
-rm -rf ${BUILD_DIRECTORY}/librsvg-2.58.0
-tar xvf ${DOWNLOADDIR}/librsvg-2.58.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/librsvg-2.58.0
-    patch -Np1 -i ${SYSDIR}/files/base_support/librsvg/2.58.0/patches/0001-librsvg-fix-gdk-pixbuf-dir-for-cross-build.patch 
+export PACKAGE_VERSION=2.59.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/librsvg/2.59.2/
+rm -rf ${BUILD_DIRECTORY}/librsvg-2.59.2
+tar xvf ${DOWNLOADDIR}/librsvg-2.59.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/librsvg-2.59.2
+    patch -Np1 -i ${SYSDIR}/files/base_support/librsvg/2.59.2/patches/0001-librsvg-2.58.94-fix-for-cross-build.patch 
 	 
-    sed -i "/GI_DOCGEN/s@ generate @ generate --add-include-path=${SYSROOT_DIR}/usr/share/gir-1.0 @g" doc/Makefile.in
-    sed -i "s@\$PKG_CONFIG_SYSROOT_DIR@@g" configure
+    mkdir cross-prebuild
+    pushd cross-prebuild
+	meson ${MESON_CONFIG} -Dtriplet=${CROSS_TARGET} -Dintrospection=disabled -Dpixbuf-loader=disabled ..
+	RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" ninja
+	DESTDIR=${SYSROOT_DIR} ninja install
+    popd
     mkdir cross-build
     pushd cross-build
-        PKG_CONFIG=${CROSS_TARGET}-pkg-config \
-        ../configure ${COMMON_CONFIG} --enable-vala
-        make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
-             RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
-             INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
-             VAPIGEN=${CROSS_TARGET}-vapigen
-        RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" \
-        make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
-        rm -v ${SYSROOT_DIR}/usr/lib64/librsvg*.la
+	meson ${MESON_CONFIG} -Dtriplet=${CROSS_TARGET} ..
+	RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" ninja
+	DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/librsvg-2.58.0
+rm -rf ${BUILD_DIRECTORY}/librsvg-2.59.2

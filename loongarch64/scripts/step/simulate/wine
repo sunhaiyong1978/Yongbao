@@ -3,18 +3,17 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=wine
-export PACKAGE_VERSION=9.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine/9.11/
-rm -rf ${BUILD_DIRECTORY}/wine-9.11
-tar xvf ${DOWNLOADDIR}/wine-9.11.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-9.11
+export PACKAGE_VERSION=9.22
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine/9.22/
+rm -rf ${BUILD_DIRECTORY}/wine-9.22
+tar xvf ${DOWNLOADDIR}/wine-9.22.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-9.22
 	git init
 	if [ -f ${RESOURCEDIR}/files/wine-staging.tar.gz ]; then
 		tar xvf ${RESOURCEDIR}/files/wine-staging.tar.gz
 		wine-staging-v$(echo ${PACKAGE_VERSION} | sed "s@-default\$@@g")/staging/patchinstall.py DESTDIR=${PWD} --all
 	fi
-        patch -Np1 -i ${SYSDIR}/files/simulate/wine/9.11/patches/0001-set-winecfg-staging-DXVA2-default-is-TRUE.patch 
-	 
+        
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
@@ -22,7 +21,7 @@ pushd ${BUILD_DIRECTORY}/wine-9.11
 	mkdir -p wine-build-tools
 	pushd wine-build-tools
 		CC="gcc" CXX="g++" PKG_CONFIG_SYSROOT_DIR="" PKG_CONFIG_LIBDIR="" PKG_CONFIG_PATH="" \
-		CFLAGS="" CXXFLAGS="" LDFLAGS="" \
+		LDFLAGS="" \
 		../configure --prefix=${PWD}/ --enable-win64 --without-x
 		make __tooldeps__
 		cp -a ../nls ./
@@ -40,6 +39,8 @@ pushd ${BUILD_DIRECTORY}/wine-9.11
 	export LIB_SUFF="64"
 	export LIB32_SUFF=""
 
+	export CFLAGS=$(archname_to_cflags "$(get_user_set_env target "x86_64")" "-O3")
+	export CFLAGS_32=$(archname_to_cflags "$(get_user_set_env "i686")" "-O3")
 
 	export PKG_CONFIG_SYSROOT_DIR="${LINUX_SYSROOT_DIR}"
 	export PKG_CONFIG_PATH="${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${LINUX_SYSROOT_DIR}/usr/share/pkgconfig"
@@ -47,7 +48,7 @@ pushd ${BUILD_DIRECTORY}/wine-9.11
 
 	mkdir -p cross-build-64
 	pushd cross-build-64
-		export CROSSCFLAGS="-g -O2"
+		export CROSSCFLAGS="-g -O2 ${CFLAGS}"
 		CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
 		LDFLAGS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}" \
         	../configure --prefix=/opt/wine --build=${CROSS_HOST} --host=${LINUX_HOST} \
@@ -68,8 +69,8 @@ pushd ${BUILD_DIRECTORY}/wine-9.11
 
 	mkdir -p cross-build-32
 	pushd cross-build-32
-		export CROSSCFLAGS="-g -O2 -Wno-incompatible-pointer-types"
-		export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types"
+		export CROSSCFLAGS="-g -O2 -Wno-incompatible-pointer-types ${CFLAGS_32}"
+		export CFLAGS="${CFLAGS_32} -Wno-incompatible-pointer-types"
 		LDFLAGS="-Wl,-rpath-link=${LINUX32_SYSROOT_DIR}/usr/lib${LIB32_SUFF}" \
         	../configure --prefix=/opt/wine --build=${CROSS_HOST} --host=${LINUX32_HOST} \
 			--with-wine-tools=../wine-build-tools \
@@ -100,7 +101,7 @@ pushd ${BUILD_DIRECTORY}/wine-9.11
 	tar xf ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86_64.tar.xz -C ${SYSROOT_DIR}/opt/wine/share/wine/gecko/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-9.11
+rm -rf ${BUILD_DIRECTORY}/wine-9.22
 
 set_strip_step "/opt/wine/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
 set_strip_step "/opt/wine/lib/wine/i386-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS32_PREFIX}/bin/${LINUX32_HOST}-strip"

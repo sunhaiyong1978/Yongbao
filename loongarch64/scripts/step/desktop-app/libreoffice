@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=libreoffice
-export PACKAGE_VERSION=24.2.4.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/
-rm -rf ${BUILD_DIRECTORY}/libreoffice-24.2.4.2
-tar xvf ${DOWNLOADDIR}/libreoffice-24.2.4.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libreoffice-24.2.4.2
+export PACKAGE_VERSION=25.2.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/
+rm -rf ${BUILD_DIRECTORY}/libreoffice-25.2.0.1
+tar xvf ${DOWNLOADDIR}/libreoffice-25.2.0.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libreoffice-25.2.0.1
     mkdir -p external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-24.2.4.2.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-help-24.2.4.2.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-translations-24.2.4.2.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-25.2.0.1.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-help-25.2.0.1.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-translations-25.2.0.1.tar.xz external/tarballs/
     tar xvf ${RESOURCEDIR}/files/tarballs.listfile_dir.tar.gz
     mv tarballs.listfile_dir/* external/tarballs/
     rmdir tarballs.listfile_dir
@@ -19,33 +19,35 @@ pushd ${BUILD_DIRECTORY}/libreoffice-24.2.4.2
     mv tarballs_extern.listfile_dir/* external/tarballs/
     rmdir tarballs_extern.listfile_dir
     mkdir -p src
-    ln -sv src/libreoffice-help-24.2.4.2/helpcontent2
-    ln -sv src/libreoffice-dictionaries-24.2.4.2/dictionaries
-    ln -sv src/libreoffice-translations-24.2.4.2/translations
+    ln -sv src/libreoffice-help-25.2.0.1/helpcontent2
+    ln -sv src/libreoffice-dictionaries-25.2.0.1/dictionaries
+    ln -sv src/libreoffice-translations-25.2.0.1/translations
 
     cp -a ${SYSROOT_DIR}/usr/include/{math,stdlib}.h ${SYSROOT_DIR}/usr/local/include/
 
 
-    cp ${CROSSTOOLS_DIR}/share/automake-*/config.* ./
+    cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     aclocal -I m4
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-libreoffice-24.2.1.1-fix-for-cross-build.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-libreoffice-24.2.1.1-external-liblangtag-fix-for-cro.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-libreoffice-24.2.0-external-curl-configure-add-witho.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-fix-build-error-at-use-without-java.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-libreoffice-fix-for-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-libreoffice-7.6-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0002-libreoffice-7.6-pdfium-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0003-libreoffice-7.6-box2d-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-external-libcmis-add-0001-libcmis-fix-build-error-fo.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-libreoffice-external-bzip2-remove-test-for-cross-bui.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-libreoffice-24.2.1.2-external-xmlsec-add-0001-xmlsec.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/libreoffice-7.6-fix-build-error-for-libxml2-2.12.0.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/24.2.4.2/patches/0001-fix-link-miss-zlib.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-libreoffice-24.2.1.1-fix-for-cross-build.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-libreoffice-24.2.0-external-curl-configure-add-witho.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-fix-build-error-at-use-without-java.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-libreoffice-fix-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0002-libreoffice-7.6-pdfium-fix-for-gcc14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0003-libreoffice-7.6-box2d-fix-for-gcc14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-external-libcmis-add-0001-libcmis-fix-build-error-fo.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-libreoffice-external-bzip2-remove-test-for-cross-bui.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-libreoffice-24.8.0.1-external-xmlsec-add-0001-xmlsec.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-fix-link-miss-zlib.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-external-redland-fix-build-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-calc.cxx-fix-build-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/0001-xmlsecurity-add-nss-nss.h-header-file.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.0.1/patches/44438b7a.diff 
 	 
+    sed -i "s@python python3 dnl@python3 python dnl@g" aclocal.m4
     autoconf -I .
     LDFLAGS_FOR_BUILD="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64" \
     PKG_CONFIG_FOR_BUILD=/bin/pkg-config \
-    ./configure CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ \
+    ./configure CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ LO_CLANG_CC="${CROSSTOOLS_DIR}/bin/clang -target ${CROSS_TARGET} --sysroot=${SYSROOT_DIR}" LO_CLANG_CXX="${CROSSTOOLS_DIR}/bin/clang++ -target ${CROSS_TARGET} --sysroot=${SYSROOT_DIR}" \
                       --build=${CROSS_HOST} --host=${CROSS_TARGET} --target=${CROSS_TARGET} \
                       --prefix=/usr --libdir=/usr/lib${LIB_SUFF} \
                       --with-lang="zh-CN" --with-vendor=Sunhaiyong \
@@ -66,6 +68,15 @@ pushd ${BUILD_DIRECTORY}/libreoffice-24.2.4.2
     make DESTDIR=${PWD}/dest distro-pack-install
     cp -a ${PWD}/dest/usr ${SYSROOT_DIR}/
 
+    pushd ${PWD}/dest
+	find -type f -exec ${CROSS_TARGET}-strip --strip-unneeded '{}' ';'
+	cd ..
+	mv dest libreoffice-25.2.0.1
+	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.2.0.1" | sed "s@-default@@g")/
+	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.2.0.1" | sed "s@-default@@g")/libreoffice-$(echo "25.2.0.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* libreoffice-25.2.0.1
+	info_pool "生成了可发布的LibreOffice 25.2.0.1 虚拟机压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.2.0.1" | sed "s@-default@@g")/libreoffice-$(echo "25.2.0.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
+    popd
+
     rm -f ${SYSROOT_DIR}/usr/local/include/{math,stdlib}.h
 popd 
-rm -rf ${BUILD_DIRECTORY}/libreoffice-24.2.4.2
+rm -rf ${BUILD_DIRECTORY}/libreoffice-25.2.0.1

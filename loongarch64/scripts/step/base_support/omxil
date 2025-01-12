@@ -20,7 +20,7 @@ pushd ${BUILD_DIRECTORY}/libomxil-bellagio-0.9.3
 	 
         for config_i in $(find -name "config.sub")
         do
-                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
         autoreconf -ifv
         CFLAGS="${CFLAGS} -Wno-error=array-bounds -Wno-error=stringop-overflow -Wno-error=stringop-truncation -Wno-error=maybe-uninitialized -fcommon" ./configure ${COMMON_CONFIG} ac_cv_func_realloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes --enable-malloc0returnsnull

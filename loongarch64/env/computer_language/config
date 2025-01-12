@@ -19,7 +19,7 @@ export CFLAGS="-O3"
 export CXXFLAGS="-O3"
 export RUN_TARGET_ARCH=${HOST_ARCH_NAME}
 export PREFIX=/usr
-export LDFLAGS="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib${LIB_SUFF}"
+export LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64"
 export PKG_CONFIG_SYSROOT_DIR=${SYSROOT_DIR}
 export PKG_CONFIG_PATH="${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig"
 export PKG_CONFIG_LIBDIR="${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig"

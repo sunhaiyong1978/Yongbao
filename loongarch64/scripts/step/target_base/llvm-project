@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=18.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/18.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+export PACKAGE_VERSION=19.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/19.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
     
     pushd llvm
     mkdir cross-build
     pushd cross-build
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+        CC="${CROSS_TARGET}-gcc -mcmodel=medium" CXX="${CROSS_TARGET}-g++ -mcmodel=medium" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
               -DLLVM_LIBDIR_SUFFIX=64 \
@@ -21,10 +21,18 @@ pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
               -DLLVM_ENABLE_ZLIB:BOOL=ON -DLLVM_ENABLE_FFI:BOOL=ON \
               -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
               -DLLVM_TABLEGEN:PATH=${CROSSTOOLS_DIR}/bin/llvm-tblgen \
+	      -DCLANG_TABLEGEN:PATH=${CROSSTOOLS_DIR}/bin/clang-tblgen \
+	      -DPython3_EXECUTABLE:PATH=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
               -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
               -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
               -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+	      -DLLVM_ENABLE_PROJECTS='llvm;clang;clang-tools-extra;lld;lldb;mlir;polly;pstl' \
+              -DLLVM_HOST_TRIPLE=${CROSS_TARGET} \
               -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
+	for program_name in clang-ast-dump lldb-tblgen mlir-tblgen clang-tidy-confusable-chars-gen clang-pseudo-gen mlir-linalg-ods-yaml-gen mlir-pdll mlir-src-sharder
+	do
+		sed -i "s@${PWD}/bin/${program_name}@qemu-${ARCH_NAME} ${PWD}/bin/${program_name}@g" build.ninja
+	done
 	eval ${NINJA_AND_INSTALL}
     popd
     popd
@@ -38,4 +46,4 @@ chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config
 save_package_version target_base_llvm-project
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src

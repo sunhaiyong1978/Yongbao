@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=libxcrypt
-export PACKAGE_VERSION=4.4.36
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/libxcrypt/4.4.36/
-rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.36
-tar xvf ${DOWNLOADDIR}/libxcrypt-4.4.36.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.36
-    patch -Np1 -i ${SYSDIR}/files/toolchain/libxcrypt/4.4.36/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
+export PACKAGE_VERSION=4.4.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/libxcrypt/4.4.37/
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.37
+tar xvf ${DOWNLOADDIR}/libxcrypt-4.4.37.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.37
+    patch -Np1 -i ${SYSDIR}/files/toolchain/libxcrypt/4.4.37/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
 	 
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
@@ -17,19 +17,26 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.36
     fi
     LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
 
-    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_TARGET="${CROSS_TARGET}"
+    fi
+
+
+    INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target"
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
 
     if [ ! -f configure ]; then
             autoreconf -ifv
     fi
 
-    export CFLAGS="${CFLAGS} -Wno-error=stringop-overread"
 
-    ./configure  --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
-                 --libdir=/usr/lib${LIB_SUFF} 
+    ./configure  --prefix=/usr --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
+                 --libdir=/usr/lib${LIB_SUFF}  --disable-werror
     make -j${JOBS}
 
-    INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
     make DESTDIR=${INSTALL_DIST_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.36
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.37

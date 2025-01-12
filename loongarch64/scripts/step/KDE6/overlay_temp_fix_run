@@ -56,6 +56,14 @@ do
 	fi
 done
 
+for kf6_file in $(grep -rl "\.a\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo)
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${kf6_file}
+	fi
+done
+
+
 for kf6_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
 do
 	if [ -f ${kf6_file} ]; then

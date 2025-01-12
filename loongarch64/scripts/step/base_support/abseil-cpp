@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=abseil-cpp
-export PACKAGE_VERSION=20240116.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/abseil-cpp/20240116.2/
-rm -rf ${BUILD_DIRECTORY}/abseil-cpp-20240116.2
-tar xvf ${DOWNLOADDIR}/abseil-cpp-20240116.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/abseil-cpp-20240116.2
+export PACKAGE_VERSION=20240722.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/abseil-cpp/20240722.0/
+rm -rf ${BUILD_DIRECTORY}/abseil-cpp-20240722.0
+tar xvf ${DOWNLOADDIR}/abseil-cpp-20240722.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/abseil-cpp-20240722.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -36,9 +36,9 @@ pushd ${BUILD_DIRECTORY}/abseil-cpp-20240116.2
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		      -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname -Wno-dev ..
+		      -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname -DABSL_USE_EXTERNAL_GOOGLETEST:BOOL=ON -DABSL_FIND_GOOGLETEST:BOOL=ON -DABSL_BUILD_TESTING:BOOL=ON -DABSL_BUILD_TEST_HELPERS:BOOL=ON -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/abseil-cpp-20240116.2
+rm -rf ${BUILD_DIRECTORY}/abseil-cpp-20240722.0

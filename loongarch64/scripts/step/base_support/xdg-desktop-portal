@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xdg-desktop-portal
-export PACKAGE_VERSION=1.18.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xdg-desktop-portal/1.18.4/
-rm -rf ${BUILD_DIRECTORY}/xdg-desktop-portal-1.18.4
-tar xvf ${DOWNLOADDIR}/xdg-desktop-portal-1.18.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xdg-desktop-portal-1.18.4
-	
+export PACKAGE_VERSION=1.19.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xdg-desktop-portal/1.19.1/
+rm -rf ${BUILD_DIRECTORY}/xdg-desktop-portal-1.19.1
+tar xvf ${DOWNLOADDIR}/xdg-desktop-portal-1.19.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xdg-desktop-portal-1.19.1
+	patch -Np1 -i ${SYSDIR}/files/base_support/xdg-desktop-portal/1.19.1/patches/0001-xdg-desktop-portal-disable-tests-for-cross-build.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		 meson ${MESON_CONFIG}  \
@@ -18,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/xdg-desktop-portal-1.18.4
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xdg-desktop-portal-1.18.4
+rm -rf ${BUILD_DIRECTORY}/xdg-desktop-portal-1.19.1

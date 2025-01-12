@@ -4,22 +4,24 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=glibc
-export PACKAGE_VERSION=2.39
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glibc/2.39/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.39
-tar xvf ${DOWNLOADDIR}/glibc-2.39.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.39
+export PACKAGE_VERSION=2.40
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glibc/2.40/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.40
+tar xvf ${DOWNLOADDIR}/glibc-2.40.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.40
     
     ARCH_PARM_STR=""
     case "${ARCH_NAME}" in
-	i686)
-		ARCH_PARM_STR="--disable-cet"
+	x86_64)
+		ARCH_PARM_STR="--enable-cet"
 		;;
 	*)
 		;;
     esac
     mkdir -p build-${ARCH_NAME}
     pushd build-${ARCH_NAME}
+	CFLAGS="${BASE_CFLAGS}"
+	CXXFLAGS="${BASE_CFLAGS}"
         BUILD_CC="gcc" CC="${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-gcc ${CFLAGS}" \
         CXX="${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-gcc ${CXXFLAGS}" \
         AS="${LINUX_HOST}-as" AR="${LINUX_HOST}-ar" RANLIB="${LINUX_HOST}-ranlib" \
@@ -33,4 +35,4 @@ pushd ${BUILD_DIRECTORY}/glibc-2.39
     popd
     mkdir -p ${LINUX_SYSROOT_DIR}/usr/lib
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.39
+rm -rf ${BUILD_DIRECTORY}/glibc-2.40

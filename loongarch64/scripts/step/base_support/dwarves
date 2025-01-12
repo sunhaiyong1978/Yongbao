@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dwarves
-export PACKAGE_VERSION=1.27
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dwarves/1.27/
-rm -rf ${BUILD_DIRECTORY}/dwarves-1.27
-tar xvf ${DOWNLOADDIR}/dwarves-1.27.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dwarves-1.27
+export PACKAGE_VERSION=1.28
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dwarves/1.28/
+rm -rf ${BUILD_DIRECTORY}/dwarves-1.28
+tar xvf ${DOWNLOADDIR}/dwarves-1.28.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dwarves-1.28
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/dwarves-1.27
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/dwarves-1.27
+rm -rf ${BUILD_DIRECTORY}/dwarves-1.28

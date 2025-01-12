@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=gcc
-export PACKAGE_VERSION=git-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gcc/git-default/
-rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
-tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
+export PACKAGE_VERSION=14.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gcc/14.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
+tar xvf ${DOWNLOADDIR}/gcc-14.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 	
 
 	export PATH=/usr/bin:/usr/sbin
@@ -29,4 +29,4 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 	popd
 	rm -fv ${CROSSTOOLS_DIR}/build-tools/bin/$(${CROSSTOOLS_DIR}/build-tools/bin/gcc -dumpmachine)-*
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
+rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0

@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=18.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/llvm-project/18.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+export PACKAGE_VERSION=19.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/llvm-project/19.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
     
     pushd llvm
     mkdir cross-build
@@ -21,19 +21,27 @@ pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
               -DLLVM_BUILD_RUNTIME:BOOL=ON -DLLVM_ENABLE_RTTI:BOOL=ON \
               -DLLVM_ENABLE_ZLIB:BOOL=ON -DLLVM_ENABLE_FFI:BOOL=ON \
               -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
-              -DLLVM_TABLEGEN:PATH=${SYSDIR}/cross-toolchains/llvm-project/bin/llvm-tblgen \
+              -DLLVM_TABLEGEN:PATH=${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/llvm-tblgen \
+	      -DCLANG_TABLEGEN:PATH=${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/clang-tblgen \
               -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
               -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
               -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+	      -DLLVM_ENABLE_PROJECTS='llvm;clang' \
+	      -DLLVM_HOST_TRIPLE=${LINUX_HOST} \
               -DLLVM_DEFAULT_TARGET_TRIPLE=${LINUX_HOST}
+	sed -i "s@${PWD}/bin/clang-ast-dump@qemu-${QEMU_ARCH} ${PWD}/bin/clang-ast-dump@g" build.ninja
 	eval ${NINJA_AND_INSTALL}
     popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
 
-cat > ${SYSDIR}/cross-toolchains/llvm-project/bin/${LINUX_HOST}-llvm-config << EOF
+cat > ${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/${LINUX_HOST}-llvm-config << EOF
 #!/bin/bash -e
 qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/llvm-config "\$@"
 EOF
-chmod +x ${SYSDIR}/cross-toolchains/llvm-project/bin/${LINUX_HOST}-llvm-config
+chmod +x ${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/${LINUX_HOST}-llvm-config
+
+
+LLVM_DIST_VERSION="$(${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/${LINUX_HOST}-llvm-config --version)"
+save_package_version ${LINUX_HOST}_llvm-project "${LLVM_DIST_VERSION}"

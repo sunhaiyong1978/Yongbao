@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=unusual
 export STEP_PACKAGENAME=qt6-qtbase
-export PACKAGE_VERSION=6.7.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/qt6-qtbase/6.7.2/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.2
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.7.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.2
+export PACKAGE_VERSION=6.7.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/qt6-qtbase/6.7.3/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.3
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.7.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.3
         
         mkdir cross-build
         pushd cross-build
@@ -52,4 +52,4 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.2
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.2
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.3

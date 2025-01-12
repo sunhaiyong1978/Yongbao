@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/libgcrypt-1.11.0
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
     done
-    ./configure ${COMMON_CONFIG}
+    ./configure ${COMMON_CONFIG} --disable-amd64-as-feature-detection SYSROOT=${SYSROOT_DIR} GPGRT_CONFIG=${CROSSTOOLS_DIR}/bin/gpgrt-config
     eval ${MAKE_AND_INSTALL}
     cp -av ${SYSROOT_DIR}/bin/libgcrypt-config ${CROSSTOOLS_DIR}/bin/
 popd 

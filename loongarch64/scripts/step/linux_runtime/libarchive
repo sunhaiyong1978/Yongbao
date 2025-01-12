@@ -4,13 +4,13 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libarchive
-export PACKAGE_VERSION=3.7.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libarchive/3.7.4/
-rm -rf ${BUILD_DIRECTORY}/libarchive-3.7.4
-tar xvf ${DOWNLOADDIR}/libarchive-3.7.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libarchive-3.7.4
+export PACKAGE_VERSION=3.7.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libarchive/3.7.7/
+rm -rf ${BUILD_DIRECTORY}/libarchive-3.7.7
+tar xvf ${DOWNLOADDIR}/libarchive-3.7.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libarchive-3.7.7
     sed -i "/linux\/fs.h/d" libarchive/archive_read_disk_posix.c
     ./configure ${COMMON_CONFIG}
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libarchive-3.7.4
+rm -rf ${BUILD_DIRECTORY}/libarchive-3.7.7

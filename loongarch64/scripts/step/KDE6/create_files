@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/create_files//
 cat > ${SYSROOT_DIR}/etc/profile.d/kde.sh << "EOF"
 export QT_PLUGIN_PATH=${QT_PLUGIN_PATH}:/usr/lib64/plugins:/usr/lib64/plugins/kcms
 export QML2_IMPORT_PATH=${QML2_IMPORT_PATH}:/usr/lib64/qml
+export KPACKAGE_DEP_RESOLVERS_PATH=/usr/libexec/kf6/kpackagehandlers
 EOF
 
 

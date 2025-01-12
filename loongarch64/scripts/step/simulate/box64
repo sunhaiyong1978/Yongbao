@@ -33,7 +33,7 @@ pushd ${BUILD_DIRECTORY}/box64-git-default_git
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		      -DLARCH64=OFF -Wno-dev ..
+		      -DLARCH64=OFF -DBOX32=ON -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

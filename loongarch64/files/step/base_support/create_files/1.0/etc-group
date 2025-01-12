@@ -35,10 +35,13 @@ systemd-network:x:76:
 systemd-resolve:x:77:
 systemd-timesync:x:78:
 systemd-coredump:x:79:
-systemd-oom:x:80:
-saslauth:x:81:
+uuidd:x:80:
+systemd-oom:x:81:
+saslauth:x:82:
+avahi:x:85:
 netdev:x:86:
 qemu:x:90:
+libvirt:x:91:
 usershares:x:92:
 wheel:x:97:
 nogroup:x:99:

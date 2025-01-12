@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=wpebackend-fdo
-export PACKAGE_VERSION=1.14.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/wpebackend-fdo/1.14.2/
-rm -rf ${BUILD_DIRECTORY}/wpebackend-fdo-1.14.2
-tar xvf ${DOWNLOADDIR}/wpebackend-fdo-1.14.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wpebackend-fdo-1.14.2
+export PACKAGE_VERSION=1.15.90
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/wpebackend-fdo/1.15.90/
+rm -rf ${BUILD_DIRECTORY}/wpebackend-fdo-1.15.90
+tar xvf ${DOWNLOADDIR}/wpebackend-fdo-1.15.90.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wpebackend-fdo-1.15.90
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/wpebackend-fdo-1.14.2
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/wpebackend-fdo-1.14.2
+rm -rf ${BUILD_DIRECTORY}/wpebackend-fdo-1.15.90

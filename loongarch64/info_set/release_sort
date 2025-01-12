@@ -3,6 +3,7 @@ sysroot
 sddm
 lightdm
 KDE6
+KDE5
 desk_app
 bin-pkg
 game_emu

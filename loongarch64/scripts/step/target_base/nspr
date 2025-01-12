@@ -3,17 +3,17 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=nspr
-export PACKAGE_VERSION=4.35
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nspr/4.35/
-rm -rf ${BUILD_DIRECTORY}/nspr-4.35
-tar xvf ${DOWNLOADDIR}/nspr-4.35.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nspr-4.35
+export PACKAGE_VERSION=4.36
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nspr/4.36/
+rm -rf ${BUILD_DIRECTORY}/nspr-4.36
+tar xvf ${DOWNLOADDIR}/nspr-4.36.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nspr-4.36
     pushd nspr
-    patch -Np2 -i ${SYSDIR}/files/target_base/nspr/4.35/patches/nspr-4.32-add-loongarch64.patch 
+    patch -Np2 -i ${SYSDIR}/files/target_base/nspr/4.36/patches/nspr-4.32-add-loongarch64.patch 
 	 
     for config_i in $(find -name "config.sub")
     do
-            cp ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+            cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
     done
     ./configure ${COMMON_CONFIG} \
                 --with-mozilla --with-pthreads --enable-64bit
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/nspr-4.35
     eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/nspr-4.35
+rm -rf ${BUILD_DIRECTORY}/nspr-4.36

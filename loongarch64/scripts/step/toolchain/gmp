@@ -15,14 +15,23 @@ pushd ${BUILD_DIRECTORY}/gmp-6.3.0
     fi
     LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
     INSTALL_PREFIX_DIR=$(archname_to_anyparm "${CROSS_TARGET}" "PREFIX_DIR" "/usr")
+
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_TARGET="${CROSS_TARGET}"
+    fi
+
+     INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target"
+     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
+
 	
 
-        PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
 
-	./configure --prefix=${INSTALL_PREFIX_DIR} --host=${CROSS_TARGET} --build=${CROSS_HOST} \
+	export CFLAGS="${CFLAGS} -std=gnu11"
+	./configure --prefix=${INSTALL_PREFIX_DIR} --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
                          --libdir=/usr/lib${LIB_SUFF} --enable-cxx
 	make -j${JOBS}
-	INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
 	make DESTDIR=${INSTALL_DIST_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0

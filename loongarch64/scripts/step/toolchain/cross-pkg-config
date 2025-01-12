@@ -14,21 +14,27 @@ pushd ${BUILD_DIRECTORY}/pkg-config-0.29.2
 	ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
 	LIB_SUFF=$(archname_to_lib_suff "${HOST_TARGET}")
 
-	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+	if [ "x$(get_user_set_env compat)" == "x1" ]; then
+		COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
+	else
+		COMPAT_HOST="${HOST_HOST}"
+	fi
 
-	LDFLAGS="-static" CFLAGS="-Wno-error=format -Wno-incompatible-pointer-types -Wno-int-conversion" \
+	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+
+	LDFLAGS="-static" CFLAGS="-Wno-error=format -Wno-incompatible-pointer-types -Wno-int-conversion -std=gnu11" \
         ./configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} \
-                --host=${HOST_HOST} --target=${HOST_TARGET} \
+                --host=${COMPAT_HOST} --target=${HOST_TARGET} \
                 --with-pc_path=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target/usr/lib${LIB_SUFF}/pkgconfig:${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target/usr/share/pkgconfig --program-prefix=${HOST_TARGET}- --with-internal-glib --disable-host-tool glib_cv_stack_grows=yes glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes
         make -j${JOBS}
-	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/pkg-config ]; then
-		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/pkg-config{,.$(date +%Y%m%d%H%M%S)}
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/pkg-config ]; then
+		mv ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/pkg-config{,.$(date +%Y%m%d%H%M%S)}
 	fi
-        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/pkg-config install
-	if [ "x${HOST_HOST}" == "x${CROSS_HOST}" ]; then
-		strip ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/pkg-config/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/bin/*
+        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/pkg-config install
+	if [ "x${COMPAT_HOST}" == "x${CROSS_HOST}" ]; then
+		strip ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/pkg-config/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/bin/*
 	else
-	        ${HOST_HOST}-strip ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/pkg-config/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/bin/*
+	        ${COMPAT_HOST}-strip ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/pkg-config/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/bin/*
 	fi
 popd 
 rm -rf ${BUILD_DIRECTORY}/pkg-config-0.29.2

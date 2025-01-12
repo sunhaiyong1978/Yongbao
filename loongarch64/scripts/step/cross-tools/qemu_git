@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qemu_git
-export PACKAGE_VERSION=8.2.0-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu_git/8.2.0-default/
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.2.0-default_git
-tar xvf ${DOWNLOADDIR}/qemu_git-8.2.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu_git-8.2.0-default_git
+export PACKAGE_VERSION=git
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu_git/git/
+rm -rf ${BUILD_DIRECTORY}/qemu_git-git_git
+tar xvf ${DOWNLOADDIR}/qemu_git-git_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu_git-git_git
     mkdir -p build
     pushd build
         ../configure --prefix=${CROSSTOOLS_DIR} \
@@ -27,4 +27,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}.bin -L ${SYSROOT_DIR} -E LD_TR
 
 chmod +x ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH}{,-ldd}
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.2.0-default_git
+rm -rf ${BUILD_DIRECTORY}/qemu_git-git_git

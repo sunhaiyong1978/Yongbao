@@ -3,13 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pycairo
-export PACKAGE_VERSION=1.26.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pycairo/1.26.1/
-rm -rf ${BUILD_DIRECTORY}/pycairo-1.26.1
-tar xvf ${DOWNLOADDIR}/pycairo-1.26.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pycairo-1.26.1
+export PACKAGE_VERSION=1.27.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pycairo/1.27.0/
+rm -rf ${BUILD_DIRECTORY}/pycairo-1.27.0
+tar xvf ${DOWNLOADDIR}/pycairo-1.27.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pycairo-1.27.0
 	
-	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG} -Dpython=${CROSS_TARGET}-python3 \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pycairo-1.26.1
+rm -rf ${BUILD_DIRECTORY}/pycairo-1.27.0

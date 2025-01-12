@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pyside6/git-default/
 rm -rf ${BUILD_DIRECTORY}/pyside6-git-default_git
 tar xvf ${DOWNLOADDIR}/pyside6-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pyside6-git-default_git
-    
+    patch -Np1 -i ${SYSDIR}/files/host-tools/pyside6/git-default/patches/0001-pyside6-fix-compiler-error-for-Qt-6.8.1.patch 
+	 
     pushd sources/shiboken6
 	mkdir -p native-build
 	pushd native-build

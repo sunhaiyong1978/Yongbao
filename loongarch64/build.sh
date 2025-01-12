@@ -1595,8 +1595,7 @@ function start_download_source
 	echo -n -e "\r下载 ${1} 所需的源码包及资源文件..."
 	for down_retry in 1 2 3
 	do
- #  > /dev/null
-		tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -s ${1}
+		tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -s ${1} > /dev/null
 		if [ "x$?" == "x0" ]; then
 			echo "完成！"
 			break;

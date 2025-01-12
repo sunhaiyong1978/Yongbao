@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=kmod
-export PACKAGE_VERSION=32
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/kmod/32/
-rm -rf ${BUILD_DIRECTORY}/kmod-32
-tar xvf ${DOWNLOADDIR}/kmod-32.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kmod-32
+export PACKAGE_VERSION=33
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/kmod/33/
+rm -rf ${BUILD_DIRECTORY}/kmod-33
+tar xvf ${DOWNLOADDIR}/kmod-33.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kmod-33
 	./configure --prefix=/usr --libdir=/usr/lib64 --bindir=/bin \
 	            --sysconfdir=/etc --build=${CROSS_HOST} --host=${CROSS_TARGET} \
-	            --with-xz --with-zstd --with-zlib \
+	            --with-xz --with-zstd --with-zlib --disable-manpages \
 		    --with-bashcompletiondir=/usr/share/bash-completion/completions as_ln_s="ln -sf"
 	eval ${MAKE_AND_INSTALL}
 	
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/kmod-32
 	done
 	ln -sfv kmod ${SYSROOT_DIR}/bin/lsmod
 popd 
-rm -rf ${BUILD_DIRECTORY}/kmod-32
+rm -rf ${BUILD_DIRECTORY}/kmod-33

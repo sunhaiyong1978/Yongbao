@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-powerdevil
-export PACKAGE_VERSION=6.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-powerdevil/6.1.1/
-rm -rf ${BUILD_DIRECTORY}/powerdevil-6.1.1
-tar xvf ${DOWNLOADDIR}/powerdevil-6.1.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/powerdevil-6.1.1
-        patch -Np1 -i ${SYSDIR}/files/KDE6/KDE6-powerdevil/6.1.1/patches/0001-powerdevil-5.90-set-None-to-suspend-session-by-defau.patch 
+export PACKAGE_VERSION=6.2.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-powerdevil/6.2.5/
+rm -rf ${BUILD_DIRECTORY}/powerdevil-6.2.5
+tar xvf ${DOWNLOADDIR}/powerdevil-6.2.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/powerdevil-6.2.5
+        patch -Np1 -i ${SYSDIR}/files/KDE6/KDE6-powerdevil/6.2.5/patches/0001-powerdevil-5.90-set-None-to-suspend-session-by-defau.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/powerdevil-6.1.1
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/powerdevil-6.1.1
+rm -rf ${BUILD_DIRECTORY}/powerdevil-6.2.5

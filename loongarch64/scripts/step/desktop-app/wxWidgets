@@ -3,29 +3,31 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=wxWidgets
-export PACKAGE_VERSION=3.2.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxWidgets/3.2.5/
-rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.5
-tar xvf ${DOWNLOADDIR}/wxWidgets-3.2.5.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.5
+export PACKAGE_VERSION=3.2.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxWidgets/3.2.6/
+rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.6
+tar xvf ${DOWNLOADDIR}/wxWidgets-3.2.6.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.6
         
         for config_i in $(find -name "config.sub")
         do
-                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        ./configure ${COMMON_CONFIG} --enable-config  --with-liblzma --with-sdl --enable-stl --enable-printfposparam
+        ./configure ${COMMON_CONFIG} --enable-config  --with-liblzma --with-sdl --enable-stl --enable-printfposparam --enable-glcanvasegl
         make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 
-	cp -f ${SYSROOT_DIR}/$(readlink ${SYSROOT_DIR}/usr/bin/wx-config) ${CROSSTOOLS_DIR}/bin/wx-config 
+	cp -f ${SYSROOT_DIR}/$(readlink ${SYSROOT_DIR}/usr/bin/wx-config) ${CROSSTOOLS_DIR}/bin/wx-config
 	sed -i.orig "/^libdir/s@\"/usr@\"\${prefix}@g" ${CROSSTOOLS_DIR}/bin/wx-config
+	cp ${CROSSTOOLS_DIR}/bin/wx-config ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config
+	sed -i "/^prefix=/s@-/usr@-${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config
 
 	echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/wxrc \"\$@\"" \
         	> ${CROSSTOOLS_DIR}/bin/wxrc
 	chmod +x ${CROSSTOOLS_DIR}/bin/wxrc
 popd 
-rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.5
+rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.6

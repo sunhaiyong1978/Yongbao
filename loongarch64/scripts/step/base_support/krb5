@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/krb5-1.21.3
 tar xvf ${DOWNLOADDIR}/krb5-1.21.3.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/krb5-1.21.3
     pushd src
-        cp ${SYSROOT_DIR}/usr/share/automake-*/config.* config/
+        cp -a -f $(automake --print-libdir)/config.{sub,guess} config/
         sed -i "s@error=discarded-qualifiers@@g" configure
         ./configure ${COMMON_CONFIG} --runstatedir=/run \
                     --with-system-ss --with-system-verto=no \

@@ -4,24 +4,23 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=clang
-export PACKAGE_VERSION=18.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/clang/18.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+export PACKAGE_VERSION=19.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/clang/19.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
     pushd clang
     mkdir cross-build
     pushd cross-build
         CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
-              -DLLVM_CONFIG=${SYSDIR}/cross-toolchains/llvm-project/bin/${LINUX_HOST}-llvm-config \
+              -DLLVM_CONFIG=${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/${LINUX_HOST}-llvm-config \
               -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
-              -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF} \
               -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
               -DLLVM_ENABLE_RTTI:BOOL=ON \
               -DLLVM_ENABLE_ZLIB:BOOL=ON \
-              -DCLANG_TABLEGEN:PATH=${SYSDIR}/cross-toolchains/llvm-project/bin/clang-tblgen \
-              -DLLVM_TABLEGEN_EXE:FILEPATH=${SYSDIR}/cross-toolchains/llvm-project/bin/llvm-tblgen \
+              -DCLANG_TABLEGEN:PATH=${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/clang-tblgen \
+              -DLLVM_TABLEGEN_EXE:FILEPATH=${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/llvm-tblgen \
               -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
               -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
               -DCMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
@@ -34,4 +33,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
     popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src

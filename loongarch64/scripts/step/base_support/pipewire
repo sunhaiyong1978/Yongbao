@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pipewire
-export PACKAGE_VERSION=1.1.83
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pipewire/1.1.83/
-rm -rf ${BUILD_DIRECTORY}/pipewire-1.1.83
-tar xvf ${DOWNLOADDIR}/pipewire-1.1.83.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pipewire-1.1.83
+export PACKAGE_VERSION=1.2.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pipewire/1.2.7/
+rm -rf ${BUILD_DIRECTORY}/pipewire-1.2.7
+tar xvf ${DOWNLOADDIR}/pipewire-1.2.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pipewire-1.2.7
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/pipewire-1.1.83
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pipewire-1.1.83
+rm -rf ${BUILD_DIRECTORY}/pipewire-1.2.7

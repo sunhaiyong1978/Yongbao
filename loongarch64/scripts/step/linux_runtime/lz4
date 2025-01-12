@@ -4,12 +4,13 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=lz4
-export PACKAGE_VERSION=1.9.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/lz4/1.9.4/
-rm -rf ${BUILD_DIRECTORY}/lz4-1.9.4
-tar xvf ${DOWNLOADDIR}/lz4-1.9.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/lz4-1.9.4
-    make -j${JOBS} CC=${LINUX_HOST}-gcc PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF}
-    make CC=${LINUX_HOST}-gcc PREFIX=/usr LIBDIR=/usr/lib${LIB_SUFF} DESTDIR=${LINUX_SYSROOT_DIR} install
+export PACKAGE_VERSION=1.10.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/lz4/1.10.0/
+rm -rf ${BUILD_DIRECTORY}/lz4-1.10.0
+tar xvf ${DOWNLOADDIR}/lz4-1.10.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lz4-1.10.0
+    sed -i.orig "/^LIBDIR /s@lib\$@lib${LIB_SUFF}@g" lib/Makefile
+    make -j${JOBS} CC=${LINUX_HOST}-gcc PREFIX=/usr
+    make CC=${LINUX_HOST}-gcc PREFIX=/usr DESTDIR=${LINUX_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/lz4-1.9.4
+rm -rf ${BUILD_DIRECTORY}/lz4-1.10.0

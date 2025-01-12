@@ -3,17 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=qemu_git
-export PACKAGE_VERSION=8.2.0-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu_git/8.2.0-default/
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.2.0-default_git
-tar xvf ${DOWNLOADDIR}/qemu_git-8.2.0-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu_git-8.2.0-default_git
+export PACKAGE_VERSION=git
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu_git/git/
+rm -rf ${BUILD_DIRECTORY}/qemu_git-git_git
+tar xvf ${DOWNLOADDIR}/qemu_git-git_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu_git-git_git
 	
 	mkdir -p cross-build
 	pushd cross-build
 		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
-			     --audio-drv-list=alsa,pa \
-		             --target-list=aarch64-softmmu,alpha-softmmu,arm-softmmu,avr-softmmu,cris-softmmu,hppa-softmmu,i386-softmmu,loongarch64-softmmu,m68k-softmmu,microblaze-softmmu,microblazeel-softmmu,mips-softmmu,mips64-softmmu,mips64el-softmmu,mipsel-softmmu,nios2-softmmu,or1k-softmmu,ppc-softmmu,ppc64-softmmu,riscv32-softmmu,riscv64-softmmu,rx-softmmu,s390x-softmmu,sh4-softmmu,sh4eb-softmmu,sparc-softmmu,sparc64-softmmu,tricore-softmmu,x86_64-softmmu,xtensa-softmmu,xtensaeb-softmmu,aarch64-linux-user,aarch64_be-linux-user,alpha-linux-user,arm-linux-user,armeb-linux-user,cris-linux-user,hppa-linux-user,i386-linux-user,loongarch64-linux-user,m68k-linux-user,microblaze-linux-user,microblazeel-linux-user,mips-linux-user,mips64-linux-user,mips64el-linux-user,mipsel-linux-user,mipsn32-linux-user,mipsn32el-linux-user,nios2-linux-user,or1k-linux-user,ppc-linux-user,ppc64-linux-user,ppc64le-linux-user,riscv32-linux-user,riscv64-linux-user,s390x-linux-user,sh4-linux-user,sh4eb-linux-user,sparc-linux-user,sparc32plus-linux-user,sparc64-linux-user,x86_64-linux-user,xtensa-linux-user,xtensaeb-linux-user
+			     --audio-drv-list=alsa,pa --enable-virglrenderer \
+		             --target-list=aarch64-softmmu,alpha-softmmu,arm-softmmu,avr-softmmu,hppa-softmmu,i386-softmmu,loongarch64-softmmu,m68k-softmmu,microblaze-softmmu,microblazeel-softmmu,mips-softmmu,mips64-softmmu,mips64el-softmmu,mipsel-softmmu,or1k-softmmu,ppc-softmmu,ppc64-softmmu,riscv32-softmmu,riscv64-softmmu,rx-softmmu,s390x-softmmu,sh4-softmmu,sparc-softmmu,sparc64-softmmu,tricore-softmmu,x86_64-softmmu,xtensa-softmmu,xtensaeb-softmmu,aarch64-linux-user,aarch64_be-linux-user,alpha-linux-user,arm-linux-user,armeb-linux-user,hppa-linux-user,i386-linux-user,loongarch64-linux-user,m68k-linux-user,microblaze-linux-user,microblazeel-linux-user,mips-linux-user,mips64-linux-user,mips64el-linux-user,mipsel-linux-user,mipsn32-linux-user,mipsn32el-linux-user,or1k-linux-user,ppc-linux-user,ppc64-linux-user,ppc64le-linux-user,riscv32-linux-user,riscv64-linux-user,s390x-linux-user,sh4-linux-user,sh4eb-linux-user,sparc-linux-user,sparc32plus-linux-user,sparc64-linux-user,x86_64-linux-user,xtensa-linux-user,xtensaeb-linux-user --enable-kvm
+		sed -i "s@${SYSROOT_DIR}/usr/bin/gdbus-codegen@${CROSSTOOLS_DIR}/bin/gdbus-codegen@g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 
@@ -24,15 +25,16 @@ pushd ${BUILD_DIRECTORY}/qemu_git-8.2.0-default_git
 	done
 
 	mkdir -p ${SYSROOT_DIR}/usr/gnemul
-        mkdir -p ${SYSROOT_DIR}/etc/qemu/
-        echo "allow br0" > ${SYSROOT_DIR}/etc/qemu/bridge.conf
+
+	install -vdm 755 ${SYSROOT_DIR}/etc/qemu
+	echo "allow br0" > ${SYSROOT_DIR}/etc/qemu/bridge.conf
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu_git-8.2.0-default_git
+rm -rf ${BUILD_DIRECTORY}/qemu_git-git_git
 
 mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
 cat > ${SYSROOT_DIR}/etc/sysctl.d/60-net-forward.conf << EOF
 net.ipv4.ip_forward=1
 EOF
 
-default_set_conf "x86_64-emu" "qemu-${PACKAGE_VERSION}" "QEMU x86_64" "/usr/bin/x86_64-emu" "/usr/bin/qemu-x86_64"
-default_set_conf "x86-emu" "qemu-${PACKAGE_VERSION}" "QEMU x86" "/usr/bin/x86-emu" "/usr/bin/qemu-i386"
+default_set_conf "x86_64-emu" "qemu-${PACKAGE_VERSION}" "QEMU ${PACKAGE_VERSION} x86_64" "/usr/bin/x86_64-emu" "/usr/bin/qemu-x86_64"
+default_set_conf "x86-emu" "qemu-${PACKAGE_VERSION}" "QEMU ${PACKAGE_VERSION} x86" "/usr/bin/x86-emu" "/usr/bin/qemu-i386"

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=poetry-core
-export PACKAGE_VERSION=1.9.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/poetry-core/1.9.0/
-rm -rf ${BUILD_DIRECTORY}/poetry-core-1.9.0
-tar xvf ${DOWNLOADDIR}/poetry-core-1.9.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/poetry-core-1.9.0
+export PACKAGE_VERSION=2.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/poetry-core/2.0.1/
+rm -rf ${BUILD_DIRECTORY}/poetry-core-2.0.1
+tar xvf ${DOWNLOADDIR}/poetry-core-2.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/poetry-core-2.0.1
 	
 	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user poetry-core
 popd 
-rm -rf ${BUILD_DIRECTORY}/poetry-core-1.9.0
+rm -rf ${BUILD_DIRECTORY}/poetry-core-2.0.1

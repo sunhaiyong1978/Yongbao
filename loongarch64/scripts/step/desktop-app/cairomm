@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=cairomm
-export PACKAGE_VERSION=git
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/cairomm/git/
-rm -rf ${BUILD_DIRECTORY}/cairomm-git_git
-tar xvf ${DOWNLOADDIR}/cairomm-git_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cairomm-git_git
+export PACKAGE_VERSION=1.18.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/cairomm/1.18.0/
+rm -rf ${BUILD_DIRECTORY}/cairomm-1.18.0
+tar xvf ${DOWNLOADDIR}/cairomm-1.18.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cairomm-1.18.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/cairomm-git_git
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/cairomm-git_git
+rm -rf ${BUILD_DIRECTORY}/cairomm-1.18.0

@@ -1496,7 +1496,7 @@ index e77b8d40e..a49f686f5 100644
        bpf_dsl::Trap(syscall_broker::BrokerClient::SIGSYS_Handler,
                      broker_process_->GetBrokerClientSignalBased());
 +#if defined(__loongarch_lp64)
-+  if (sysno == __NR_statx_default) {
++  if (sysno == __NR_statx_default) { // __NR_fstatat_default or __NR_statx_default
 +#else
    if (sysno == __NR_fstatat_default) {
 +#endif

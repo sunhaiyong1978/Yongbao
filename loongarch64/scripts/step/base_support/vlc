@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/vlc-3.0.21
 tar xvf ${DOWNLOADDIR}/vlc-3.0.21.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/vlc-3.0.21
     patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.21/patches/0001-VLC-fix-for-gcc13.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.21/patches/vlc-for-tablib-2.patch 
 	 
     CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-chromecast
     make -j${JOBS} -C compat

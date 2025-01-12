@@ -3,33 +3,39 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-gdb_git
-export PACKAGE_VERSION=14.0.50-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gdb_git/14.0.50-default/
-rm -rf ${BUILD_DIRECTORY}/gdb_git-14.0.50-default_git
-tar xvf ${DOWNLOADDIR}/gdb_git-14.0.50-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gdb_git-14.0.50-default_git
-    CROSS_BUILD=$(archname_to_triple "${CROSS_HOST}" "${CROSS_HOST}")
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gdb_git/git-default/
+rm -rf ${BUILD_DIRECTORY}/binutils_git-git-default_git
+tar xvf ${DOWNLOADDIR}/binutils_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils_git-git-default_git
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
     
 
-    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_HOST="${HOST_HOST}"
+    fi
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
     tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
     tar xvf $(ls ${DOWNLOADDIR}/mpfr-*.tar.* | sort -V | tail -n1)
     mv gmp-* gmp
     mv mpfr-* mpfr
+
     mkdir cross-build
     pushd cross-build
-	LDFLAGS="--static -pthread" CFLAGS="${CFLAGS} -Wno-error=format-truncation"  \
-	../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_BUILD} --host=${HOST_HOST} --target=${HOST_TARGET} \
- --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-64-bit-bfd
-	make -j${JOBS} all-gdb LIBS="${LIBS} -lzstd -lpthread"
-	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gdb ]; then
-		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gdb{,.$(date +%Y%m%d%H%M%S)}
+	LDFLAGS="--static" CFLAGS="${CFLAGS} -std=gnu11" \
+	../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${COMPAT_HOST} --target=${HOST_TARGET} \
+ --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-64-bit-bfd --disable-werror
+	make -j${JOBS} LIBS="${LIBS} -lzstd -lpthread"
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gdb ]; then
+		mv ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gdb{,.$(date +%Y%m%d%H%M%S)}
 	fi
-	make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gdb install-strip-gdb
+	make DESTDIR=${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gdb install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gdb_git-14.0.50-default_git
+rm -rf ${BUILD_DIRECTORY}/binutils_git-git-default_git

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.80.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glib/2.80.3/
-rm -rf ${BUILD_DIRECTORY}/glib-2.80.3
-tar xvf ${DOWNLOADDIR}/glib-2.80.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.80.3
+export PACKAGE_VERSION=2.83.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glib/2.83.2/
+rm -rf ${BUILD_DIRECTORY}/glib-2.83.2
+tar xvf ${DOWNLOADDIR}/glib-2.83.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.83.2
         
         mkdir cross-build
         pushd cross-build
@@ -25,5 +25,7 @@ qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/glib-compile-schemas \"\$@\"" > ${CROSS
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-schemas
 cp -a ${CROSSTOOLS_DIR}/bin/{${CROSS_TARGET}-,}glib-compile-schemas
 
+cp -a ${SYSROOT_DIR}/usr/bin/glib-mkenums ${CROSSTOOLS_DIR}/bin/
+
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.80.3
+rm -rf ${BUILD_DIRECTORY}/glib-2.83.2

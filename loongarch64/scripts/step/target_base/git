@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=git
-export PACKAGE_VERSION=2.45.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/git/2.45.2/
-rm -rf ${BUILD_DIRECTORY}/git-2.45.2
-tar xvf ${DOWNLOADDIR}/git-2.45.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/git-2.45.2
+export PACKAGE_VERSION=2.48.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/git/2.48.0/
+rm -rf ${BUILD_DIRECTORY}/git-2.48.0
+tar xvf ${DOWNLOADDIR}/git-2.48.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/git-2.48.0
     ./configure ${COMMON_CONFIG} \
                 --with-gitconfig=/etc/gitconfig --with-python=python3 --without-iconv \
                  ac_cv_fread_reads_directories=yes ac_cv_snprintf_returns_bogus=no
     make -j${JOBS}
     make DESTDIR=${SYSROOT_DIR} perllibdir=$(perl -V:installsitelib | grep -o "'.*'" | sed "s@'@@g" | sed "s@${CROSSTOOLS_DIR}@/usr@g") install
 popd 
-rm -rf ${BUILD_DIRECTORY}/git-2.45.2
+rm -rf ${BUILD_DIRECTORY}/git-2.48.0

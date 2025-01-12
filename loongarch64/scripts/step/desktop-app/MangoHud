@@ -3,19 +3,31 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=MangoHud
-export PACKAGE_VERSION=0.7.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/MangoHud/0.7.1/
-rm -rf ${BUILD_DIRECTORY}/MangoHud-0.7.1
-tar xvf ${DOWNLOADDIR}/MangoHud-0.7.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/MangoHud-0.7.1
-	
-	mkdir cross-build
-	pushd cross-build
-		 meson ${MESON_CONFIG} -Dwith_xnvctrl=disabled \
+export PACKAGE_VERSION=0.7.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/MangoHud/0.7.2/
+rm -rf ${BUILD_DIRECTORY}/MangoHud-0.7.2
+tar xvf ${DOWNLOADDIR}/MangoHud-0.7.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/MangoHud-0.7.2
+        
+
+	tar xvf ${RESOURCEDIR}/files/vulkan-headers-1.2.158.tar.gz -C subprojects/
+	unzip ${RESOURCEDIR}/files/vulkan-headers-1.2.158-2-wrap.zip -d subprojects/
+	tar xvf ${RESOURCEDIR}/files/imgui-1.89.9.tar.gz -C subprojects/
+	unzip ${RESOURCEDIR}/files/imgui_1.89.9-1_patch.zip -d subprojects/
+	unzip ${RESOURCEDIR}/files/implot-0.16.zip -d subprojects/
+	unzip ${RESOURCEDIR}/files/implot_0.16-1_patch.zip -d subprojects/
+	tar xvf ${RESOURCEDIR}/files/spdlog-1.14.1.tar.gz -C subprojects/
+	unzip ${RESOURCEDIR}/files/spdlog_1.14.1-1_patch.zip -d subprojects/
+	mkdir -p subprojects/nlohmann_json-3.10.5
+	unzip ${RESOURCEDIR}/files/nlohmann_json-3.10.5.zip -d subprojects/nlohmann_json-3.10.5/
+
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} -Dwith_xnvctrl=disabled \
                       ..
-		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
-		eval ${NINJA_AND_INSTALL}
-	popd
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+                sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+                eval ${NINJA_AND_INSTALL}
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/MangoHud-0.7.1
+rm -rf ${BUILD_DIRECTORY}/MangoHud-0.7.2

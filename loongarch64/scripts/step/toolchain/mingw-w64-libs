@@ -10,13 +10,19 @@ tar xvf ${DOWNLOADDIR}/mingw-w64-v12.0.0.tar.bz2 -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/mingw-w64-v12.0.0
 	
         MINGW_HOST=$(archname_to_triple "$(get_user_set_env mingw_target ${MINGW_HOST})" "${MINGW_HOST}")
-        PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/bin:${PATH}
+
+	if [ "x$(get_user_set_env compat)" == "x1" ]; then
+        	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}-compat/cross-tools/bin:${PATH}
+		INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}-compat/cross-tools/target"
+	else
+        	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/bin:${PATH}
+		INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/target"
+	fi
 
 	mkdir -p build
 	pushd build
 		../configure --host=${MINGW_HOST} --prefix=/mingw --without-headers --without-crt --with-libraries
 		make -j${JOBS}
-		INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/target"
 		make -j${JOBS} DESTDIR=${INSTALL_DIST_DIR} install
 	popd
 popd 

@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xkbevd
-export PACKAGE_VERSION=1.1.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xkbevd/1.1.5/
-rm -rf ${BUILD_DIRECTORY}/xkbevd-1.1.5
-tar xvf ${DOWNLOADDIR}/xkbevd-1.1.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xkbevd-1.1.5
+export PACKAGE_VERSION=1.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xkbevd/1.1.6/
+rm -rf ${BUILD_DIRECTORY}/xkbevd-1.1.6
+tar xvf ${DOWNLOADDIR}/xkbevd-1.1.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xkbevd-1.1.6
 	
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/xkbevd-1.1.5
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xkbevd-1.1.5
+rm -rf ${BUILD_DIRECTORY}/xkbevd-1.1.6

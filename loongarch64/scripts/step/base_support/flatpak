@@ -3,19 +3,23 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=flatpak
-export PACKAGE_VERSION=git-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/flatpak/git-default/
-rm -rf ${BUILD_DIRECTORY}/flatpak-git-default_git
-tar xvf ${DOWNLOADDIR}/flatpak-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/flatpak-git-default_git
-	
-	mkdir cross-build
-	pushd cross-build
-		 meson ${MESON_CONFIG} -Dseccomp=disabled -Dtests=false -Dwayland_security_context=disabled \
+export PACKAGE_VERSION=1.16.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/flatpak/1.16.0/
+rm -rf ${BUILD_DIRECTORY}/flatpak-1.16.0
+tar xvf ${DOWNLOADDIR}/flatpak-1.16.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/flatpak-1.16.0
+	mkdir -p subprojects/bubblewrap
+	tar xvf ${RESOURCEDIR}/files/flatpak-bubblewrap_git.tar.gz -C subprojects/bubblewrap --strip-components=1
+	mkdir -p subprojects/dbus-proxy
+	tar xvf ${RESOURCEDIR}/files/flatpak-dbus-proxy_git.tar.gz -C subprojects/dbus-proxy --strip-components=1
+        
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} -Dseccomp=disabled -Dtests=false -Dwayland_security_context=disabled \
                       ..
-		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
-		eval ${NINJA_AND_INSTALL}
-	popd
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+                sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+                eval ${NINJA_AND_INSTALL}
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/flatpak-git-default_git
+rm -rf ${BUILD_DIRECTORY}/flatpak-1.16.0

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=poppler
-export PACKAGE_VERSION=24.06.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/poppler/24.06.1/
-rm -rf ${BUILD_DIRECTORY}/poppler-24.06.1
-tar xvf ${DOWNLOADDIR}/poppler-24.06.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/poppler-24.06.1
+export PACKAGE_VERSION=25.01.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/poppler/25.01.0/
+rm -rf ${BUILD_DIRECTORY}/poppler-25.01.0
+tar xvf ${DOWNLOADDIR}/poppler-25.01.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/poppler-25.01.0
         
         mkdir cross-build
         pushd cross-build
@@ -35,11 +35,11 @@ pushd ${BUILD_DIRECTORY}/poppler-24.06.1
 		      -DVAPIGEN=${CROSS_TARGET}-vapigen \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
                       -DCMAKE_INSTALL_PREFIX=/usr \
-                      -DBUILD_SHARED_LIBS=ON -DENABLE_QT6=ON \
+                      -DBUILD_SHARED_LIBS=ON -DENABLE_QT6=ON -DENABLE_UNSTABLE_API_ABI_HEADERS=ON \
                       -Wno-dev ..
                 CC=${CROSS_TARGET}-gcc make -j${JOBS}
 		make DESTDIR=${SYSROOT_DIR} install
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/poppler-24.06.1
+rm -rf ${BUILD_DIRECTORY}/poppler-25.01.0

@@ -29,6 +29,7 @@ export CROSS_TARGET=${LINUX_HOST}
 
 export CFLAGS=$(archname_to_cflags "$(get_user_set_env target "x86_64")" "-O3")
 export CXXFLAGS=$(archname_to_cxxflags "$(get_user_set_env target "x86_64")" "-O3")
+export BASE_CFLAGS=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "BASE_CFLAGS" "-O2 -g")
 
 export CROSS_TOOLS_PREFIX=${SYSDIR}/cross-toolchains/${LINUX_HOST}
-export PATH=${CROSS_TOOLS_PREFIX}/bin:${SYSDIR}/cross-toolchains/llvm-project/bin:$PATH
+export PATH=${CROSS_TOOLS_PREFIX}/bin:$PATH

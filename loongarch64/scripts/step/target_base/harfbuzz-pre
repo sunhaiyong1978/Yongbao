@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=harfbuzz-pre
-export PACKAGE_VERSION=8.5.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/harfbuzz-pre/8.5.0/
-rm -rf ${BUILD_DIRECTORY}/harfbuzz-8.5.0
-tar xvf ${DOWNLOADDIR}/harfbuzz-8.5.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/harfbuzz-8.5.0
-	patch -Np1 -i ${SYSDIR}/files/target_base/harfbuzz-pre/8.5.0/patches/0001-harfbuzz-8.4.4-fix-cpp_std-to-c-17-for-icu4c-75_1.patch 
+export PACKAGE_VERSION=10.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/harfbuzz-pre/10.2.0/
+rm -rf ${BUILD_DIRECTORY}/harfbuzz-10.2.0
+tar xvf ${DOWNLOADDIR}/harfbuzz-10.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/harfbuzz-10.2.0
+	patch -Np1 -i ${SYSDIR}/files/target_base/harfbuzz-pre/10.2.0/patches/0001-harfbuzz-8.4.4-fix-cpp_std-to-c-17-for-icu4c-75_1.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/harfbuzz-8.5.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/harfbuzz-8.5.0
+rm -rf ${BUILD_DIRECTORY}/harfbuzz-10.2.0

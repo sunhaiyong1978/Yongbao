@@ -4,13 +4,13 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=YAML-Tiny
-export PACKAGE_VERSION=1.74
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/YAML-Tiny/1.74/
-rm -rf ${BUILD_DIRECTORY}/YAML-Tiny-1.74
-tar xvf ${DOWNLOADDIR}/YAML-Tiny-1.74.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/YAML-Tiny-1.74
+export PACKAGE_VERSION=1.76
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/YAML-Tiny/1.76/
+rm -rf ${BUILD_DIRECTORY}/YAML-Tiny-1.76
+tar xvf ${DOWNLOADDIR}/YAML-Tiny-1.76.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/YAML-Tiny-1.76
 	
 	${CROSSTOOLS_DIR}/bin/perl Makefile.PL
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/YAML-Tiny-1.74
+rm -rf ${BUILD_DIRECTORY}/YAML-Tiny-1.76

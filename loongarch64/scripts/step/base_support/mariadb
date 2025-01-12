@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mariadb
-export PACKAGE_VERSION=11.6.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mariadb/11.6.0/
-rm -rf ${BUILD_DIRECTORY}/mariadb-11.6.0
-tar xvf ${DOWNLOADDIR}/mariadb-11.6.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mariadb-11.6.0
-        patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/11.6.0/patches/0001-mariadb-fix-for-gcc13.patch 
+export PACKAGE_VERSION=11.8.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mariadb/11.8.0/
+rm -rf ${BUILD_DIRECTORY}/mariadb-11.8.0
+tar xvf ${DOWNLOADDIR}/mariadb-11.8.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mariadb-11.8.0
+        patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/11.8.0/patches/0001-mariadb-fix-for-gcc13.patch 
 	 
 	sed -i "s@COMMAND factorial@COMMAND qemu-loongarch64 factorial@g" dbug/CMakeLists.txt
 	sed -i "s@COMMAND comp_err@COMMAND qemu-loongarch64 comp_err@g" extra/CMakeLists.txt
@@ -18,6 +18,8 @@ pushd ${BUILD_DIRECTORY}/mariadb-11.6.0
 	sed -i "s@COMMAND uca-dump@COMMAND qemu-loongarch64 uca-dump@g" strings/CMakeLists.txt
         mkdir cross-build
         pushd cross-build
+		mkdir -p extra/libfmt/src/
+		mv ${RESOURCEDIR}/files/libfmt.zip extra/libfmt/src/fmt-11.0.2.zip
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
 		CXXFLAGS="${CXXFLAGS} -fpermissive" CFLAGS="${CFLAGS} -fpermissive" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
@@ -34,6 +36,7 @@ pushd ${BUILD_DIRECTORY}/mariadb-11.6.0
                       -DCAT_EXECUTABLE=/bin/cat \
                       -DBISON_EXECUTABLE=/bin/bison \
                       -DGPERF_EXECUTABLE=/bin/gperf \
+		      -DGROFF=${CROSSTOOLS_DIR}/bin/groff \
                       -DGETCONF=/usr/bin/getconf \
                       -DDOXYGEN_EXECUTABLE=/bin/doxygen \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DINSTALL_LIBDIR=/usr/lib64 \
@@ -61,4 +64,4 @@ pushd ${BUILD_DIRECTORY}/mariadb-11.6.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mariadb-11.6.0
+rm -rf ${BUILD_DIRECTORY}/mariadb-11.8.0

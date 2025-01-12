@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=LibrePCB
-export PACKAGE_VERSION=1.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/LibrePCB/1.1.0/
-rm -rf ${BUILD_DIRECTORY}/LibrePCB-1.1.0
-tar xvf ${DOWNLOADDIR}/LibrePCB-1.1.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/LibrePCB-1.1.0
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/LibrePCB/git-default/
+rm -rf ${BUILD_DIRECTORY}/LibrePCB-git-default_git
+tar xvf ${DOWNLOADDIR}/LibrePCB-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/LibrePCB-git-default_git
         
 	mkdir cross-build
 	pushd cross-build
@@ -33,9 +33,9 @@ pushd ${BUILD_DIRECTORY}/LibrePCB-1.1.0
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		       -Wno-dev ..
+		      -DQT_MAJOR_VERSION=6 -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/LibrePCB-1.1.0
+rm -rf ${BUILD_DIRECTORY}/LibrePCB-git-default_git

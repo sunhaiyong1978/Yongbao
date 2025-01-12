@@ -8,8 +8,11 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/pyside6/git-default/
 rm -rf ${BUILD_DIRECTORY}/pyside6-git-default_git
 tar xvf ${DOWNLOADDIR}/pyside6-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pyside6-git-default_git
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/pyside6/git-default/patches/0001-fix-for-qt6-6.7.patch 
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/pyside6/git-default/patches/0001-pyside6-fix-compiler-error-for-Qt-6.8.1.patch 
 	 
+	pushd sources/pyside6
+
+
 	mkdir cross-build
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
@@ -34,8 +37,10 @@ pushd ${BUILD_DIRECTORY}/pyside6-git-default_git
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		      -DSHIBOKEN_BUILD_TOOLS=ON -DBUILD_TESTS=OFF -DQFP_SHIBOKEN_HOST_PATH=${CROSSTOOLS_DIR} -DQFP_PYTHON_HOST_PATH=${CROSSTOOLS_DIR}/bin/python3 -DCMAKE_C_FLAGS="${CFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version)" -DCMAKE_CXX_FLAGS="${CXXFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version) -fpermissive" -DQT6_HOST_INFO_BINDIR=lib64/qt6/bin -DQT6_HOST_INFO_LIBEXECDIR=lib64/qt6/libexec -Wno-dev ..
+		      -DSHIBOKEN_BUILD_TOOLS=ON -DBUILD_TESTS=OFF -DQFP_SHIBOKEN_HOST_PATH=${CROSSTOOLS_DIR} -DQFP_PYTHON_HOST_PATH=${CROSSTOOLS_DIR}/bin/python3 -DCMAKE_C_FLAGS="${CFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version)" -DCMAKE_CXX_FLAGS="${CXXFLAGS} -I${SYSROOT_DIR}/usr/include/python$(cat ${COMMON_DIR}/Python3.version) -fpermissive" -DQT6_HOST_INFO_BINDIR=lib64/qt6/bin -DQT6_HOST_INFO_LIBEXECDIR=lib64/qt6/libexec \
+		      -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
+	popd
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 

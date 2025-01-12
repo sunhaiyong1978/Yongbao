@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=file
-export PACKAGE_VERSION=5.45
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/file/5.45/
-rm -rf ${BUILD_DIRECTORY}/file-5.45
-tar xvf ${DOWNLOADDIR}/file-5.45.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/file-5.45
+export PACKAGE_VERSION=5.46
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/file/5.46/
+rm -rf ${BUILD_DIRECTORY}/file-5.46
+tar xvf ${DOWNLOADDIR}/file-5.46.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/file-5.46
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/file-5.45
 	LDFLAGS="" ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/file-5.45
+rm -rf ${BUILD_DIRECTORY}/file-5.46

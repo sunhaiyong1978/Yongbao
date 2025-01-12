@@ -3,18 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=pugixml
-export PACKAGE_VERSION=1.14
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pugixml/1.14/
-rm -rf ${BUILD_DIRECTORY}/pugixml-1.14
-tar xvf ${DOWNLOADDIR}/pugixml-1.14.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pugixml-1.14
+export PACKAGE_VERSION=1.15
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pugixml/1.15/
+rm -rf ${BUILD_DIRECTORY}/pugixml-1.15
+tar xvf ${DOWNLOADDIR}/pugixml-1.15.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pugixml-1.15
     
     mkdir -p native-build
     pushd native-build
 	CC="gcc" CXX="g++" \
         cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}  \
-              -DCMAKE_BUILD_TYPE=RELEASE ..
+              -DCMAKE_BUILD_TYPE=Release ..
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/pugixml-1.14
+rm -rf ${BUILD_DIRECTORY}/pugixml-1.15

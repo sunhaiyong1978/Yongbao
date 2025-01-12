@@ -3,15 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ruby
-export PACKAGE_VERSION=3.3.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ruby/3.3.3/
-rm -rf ${BUILD_DIRECTORY}/ruby-3.3.3
-tar xvf ${DOWNLOADDIR}/ruby-3.3.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ruby-3.3.3
-	
+export PACKAGE_VERSION=3.4.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ruby/3.4.1/
+rm -rf ${BUILD_DIRECTORY}/ruby-3.4.1
+tar xvf ${DOWNLOADDIR}/ruby-3.4.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ruby-3.4.1
+	patch -Np1 -i ${SYSDIR}/files/base_support/ruby/3.4.1/patches/3b6c8830f5e0221e480851d6c76bef0a1c9a84ae.diff 
+	 
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -22,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/ruby-3.3.3
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/ruby-3.3.3
+rm -rf ${BUILD_DIRECTORY}/ruby-3.4.1

@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=alsa-lib
-export PACKAGE_VERSION=1.2.12
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alsa-lib/1.2.12/
-rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.12
-tar xvf ${DOWNLOADDIR}/alsa-lib-1.2.12.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.12
+export PACKAGE_VERSION=1.2.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alsa-lib/1.2.13/
+rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.13
+tar xvf ${DOWNLOADDIR}/alsa-lib-1.2.13.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.13
 	
 	for config_i in $(find -name "config.sub")
 	do
-		cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.12
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.12
+rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.13

@@ -4,12 +4,12 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-gtk3
-export PACKAGE_VERSION=3.24.42
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gtk3/3.24.42/
-rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.42
-tar xvf ${DOWNLOADDIR}/gtk+-3.24.42.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gtk+-3.24.42
-        patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/mingw-gtk3/3.24.42/patches/0001-fix-cross-compile-error-for-mingw.patch 
+export PACKAGE_VERSION=3.24.43
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gtk3/3.24.43/
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.43
+tar xvf ${DOWNLOADDIR}/gtk+-3.24.43.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gtk+-3.24.43
+        patch -Np1 -i ${SYSDIR}/files/mingw_sysroot/mingw-gtk3/3.24.43/patches/0001-fix-cross-compile-error-for-mingw.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/gtk+-3.24.42
         popd
         rm -f ${MINGW_SYSROOT_DIR}/ming/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.42
+rm -rf ${BUILD_DIRECTORY}/gtk+-3.24.43

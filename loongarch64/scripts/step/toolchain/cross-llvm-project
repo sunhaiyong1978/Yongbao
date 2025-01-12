@@ -3,17 +3,23 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-llvm-project
-export PACKAGE_VERSION=18.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-llvm-project/18.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-18.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+export PACKAGE_VERSION=19.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-llvm-project/19.1.6/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
     
 
-    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_HOST="${HOST_HOST}"
+    fi
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/llvm-project/bin:${PATH}
 
     if [ -d ${PREFIX}/cross-tools ]; then
@@ -23,13 +29,13 @@ pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
     cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/target ${PREFIX}/cross-tools/
 
 
-    LLVM_DIST_VERSION="$(echo "18.1.8" | sed "s@-default@@g")"
+    LLVM_DIST_VERSION="$(echo "19.1.6" | sed "s@-default@@g")"
 
     pushd llvm
 
 	    mkdir -p cross-build
 	    pushd cross-build
-        	CC="${HOST_HOST}-gcc" CXX="${HOST_HOST}-g++" \
+        	CC="${COMPAT_HOST}-gcc" CXX="${COMPAT_HOST}-g++" \
         	LDFLAGS="" PKG_CONFIG_SYSROOT_DIR="" \
 	        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=${PREFIX}/cross-tools -DCMAKE_BUILD_TYPE=Release \
         	      -DBUILD_SHARED_LIBS:BOOL=OFF -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
@@ -50,11 +56,11 @@ pushd ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
 		sed -i "s@${PWD}/bin/clang-ast-dump@qemu-x86_64 ${PWD}/bin/clang-ast-dump@g" build.ninja
 		ninja
 
-		if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/llvm-project ]; then
-			mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/llvm-project{,.$(date +%Y%m%d%H%M%S)}
+		if [ -d ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/llvm-project ]; then
+			mv ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/llvm-project{,.$(date +%Y%m%d%H%M%S)}
 		fi
-		DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/llvm-project ninja install
+		DESTDIR=${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/llvm-project ninja install
 	    popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-18.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src

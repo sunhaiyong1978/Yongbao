@@ -3,16 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mozjs-115
-export PACKAGE_VERSION=115.12.0esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mozjs-115/115.12.0esr/
-rm -rf ${BUILD_DIRECTORY}/firefox-115.11.0
-tar xvf ${DOWNLOADDIR}/firefox-115.12.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-115.11.0
+export PACKAGE_VERSION=115.19.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mozjs-115/115.19.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-115.19.0
+tar xvf ${DOWNLOADDIR}/firefox-115.19.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-115.19.0
     
     cp -a ${CROSSTOOLS_DIR}/lib/python$(get_package_version Python3)/site-packages/six{.py,-*} third_party/python/six/
     mkdir cross-build
     pushd cross-build
+	export RUSTFLAGS="$RUSTFLAGS -Ccode-model=large"
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+	LDFLAGS="${LDFLAGS} -Wl,--copy-dt-needed-entries" \
         ../js/src/configure --prefix=/usr --libdir=/usr/lib64 \
                     --target=${CROSS_TARGET} \
                     --with-intl-api --with-system-zlib --with-system-icu \
@@ -22,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/firefox-115.11.0
         sed -i '/@NSPR_CFLAGS@/d' ${SYSROOT_DIR}/usr/bin/js115-config
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-115.11.0
+rm -rf ${BUILD_DIRECTORY}/firefox-115.19.0

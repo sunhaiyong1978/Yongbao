@@ -3,35 +3,29 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=firefox
-export PACKAGE_VERSION=127.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/127.0.2/
-rm -rf ${BUILD_DIRECTORY}/firefox-127.0.2
-tar xvf ${DOWNLOADDIR}/firefox-127.0.2.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-127.0.2
+export PACKAGE_VERSION=128.6.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/128.6.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-128.6.0
+tar xvf ${DOWNLOADDIR}/firefox-128.6.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-128.6.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
         mv zh-CN* zh-CN
     popd
-    rm -rf third_party/python/pathspec/*
-    rm -rf third_party/python/setuptools/*
-    rm -rf third_party/python/pip/*
-    rm -rf third_party/python/Jinja2/*
-    rm -rf third_party/python/six/*
-    rm -rf third_party/python/urllib3/*
-    rm -rf third_party/python/requests/*
-    rm -rf third_party/python/packaging/*
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/127.0.2/patches/0001-firefox-125-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/127.0.2/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/127.0.2/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.6.0esr/patches/0001-firefox-125-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.6.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.6.0esr/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
 	 
 
     sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@12@g" mach
 
+    sed -i "/define PNG_LOONGARCH_LSX_OPT/s@ 1@ 0@g" media/libpng/pngpriv.h
+
     find third_party/rust/ -name .cargo-checksum.json \
          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
     cat > mozconfig << "EOF"
-ac_add_options --enable-linker=bfd
+ac_add_options --enable-linker=lld
 ac_add_options --disable-necko-wifi
 ac_add_options --enable-jit
 ac_add_options --disable-strip
@@ -52,20 +46,21 @@ ac_add_options --with-sysroot=${SYSROOT_DIR}
 unset MOZ_TELEMETRY_REPORTING
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 EOF
+    export RUSTFLAGS="$RUSTFLAGS -Ccode-model=large"
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
-    CXXFLAGS="-fpermissive -Wnonnull" \
+    CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach configure
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
-    CXXFLAGS="-fpermissive -Wnonnull" \
+    CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach build -j${JOBS}
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
-    CXXFLAGS="-fpermissive -Wnonnull" \
+    CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach package
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
-    CXXFLAGS="-fpermissive -Wnonnull" \
+    CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
     MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach build installers-zh-CN
     mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/firefox/
@@ -94,4 +89,4 @@ EOF
 ln -sfv /usr/lib64/firefox/browser/chrome/icons/default/default128.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/firefox.png
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-127.0.2
+rm -rf ${BUILD_DIRECTORY}/firefox-128.6.0

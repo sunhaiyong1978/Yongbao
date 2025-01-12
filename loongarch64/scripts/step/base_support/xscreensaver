@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/xscreensaver-6.09.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/xscreensaver-6.09
     patch -Np1 -i ${SYSDIR}/files/base_support/xscreensaver/6.09/patches/0001-xscreensaver-fix-for-cross-build.patch 
 	 
-    cp ${SYSROOT_DIR}/usr/share/automake-*/config.* ./
+    cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     ./configure $COMMON_CONFIG --includedir=${SYSROOT_DIR}/usr/include
     make -j${JOBS} GTK_DATADIR=/usr/share GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
     make install_prefix=${SYSROOT_DIR} GTK_DATADIR=/usr/share install

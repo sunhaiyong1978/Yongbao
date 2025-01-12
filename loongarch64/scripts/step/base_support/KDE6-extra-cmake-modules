@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=KDE6-extra-cmake-modules
-export PACKAGE_VERSION=6.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/KDE6-extra-cmake-modules/6.3.0/
-rm -rf ${BUILD_DIRECTORY}/extra-cmake-modules-6.3.0
-tar xvf ${DOWNLOADDIR}/extra-cmake-modules-6.3.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/extra-cmake-modules-6.3.0
+export PACKAGE_VERSION=6.10.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/KDE6-extra-cmake-modules/6.10.0/
+rm -rf ${BUILD_DIRECTORY}/extra-cmake-modules-6.10.0
+tar xvf ${DOWNLOADDIR}/extra-cmake-modules-6.10.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/extra-cmake-modules-6.10.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -36,9 +36,9 @@ pushd ${BUILD_DIRECTORY}/extra-cmake-modules-6.3.0
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		      -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -Wno-dev ..
+		      -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -DQT_MAJOR_VERSION=6 -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/extra-cmake-modules-6.3.0
+rm -rf ${BUILD_DIRECTORY}/extra-cmake-modules-6.10.0

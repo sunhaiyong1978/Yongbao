@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gawk
-export PACKAGE_VERSION=5.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gawk/5.3.0/
-rm -rf ${BUILD_DIRECTORY}/gawk-5.3.0
-tar xvf ${DOWNLOADDIR}/gawk-5.3.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gawk-5.3.0
+export PACKAGE_VERSION=5.3.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gawk/5.3.1/
+rm -rf ${BUILD_DIRECTORY}/gawk-5.3.1
+tar xvf ${DOWNLOADDIR}/gawk-5.3.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gawk-5.3.1
 	sed -i 's/extras//' Makefile.in
 	./configure --prefix=/usr  --libdir=/usr/lib64 --build=${CROSS_HOST} --host=${CROSS_TARGET}
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/gawk-5.3.0
+rm -rf ${BUILD_DIRECTORY}/gawk-5.3.1

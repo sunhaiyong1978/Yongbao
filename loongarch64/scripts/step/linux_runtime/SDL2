@@ -4,16 +4,16 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=SDL2
-export PACKAGE_VERSION=2.30.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/SDL2/2.30.4/
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.4
-tar xvf ${DOWNLOADDIR}/SDL2-2.30.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SDL2-2.30.4
+export PACKAGE_VERSION=2.30.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/SDL2/2.30.11/
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.11
+tar xvf ${DOWNLOADDIR}/SDL2-2.30.11.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SDL2-2.30.11
     ./configure ${COMMON_CONFIG}
     make -j${JOBS} WAYLAND_SCANNER=wayland-scanner
     make DESTDIR=${LINUX_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.4
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.11
 
 cp ${LINUX_SYSROOT_DIR}/usr/bin/sdl2-config ${CROSS_TOOLS_PREFIX}/bin/${ARCH_NAME}-sdl2-config
 sed -i \

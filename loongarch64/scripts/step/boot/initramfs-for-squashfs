@@ -44,9 +44,16 @@ pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
 
 	for i in fs/fat/fat fs/fat/msdos fs/fat/vfat drivers/usb/storage/usb-storage drivers/usb/storage/uas
 	do
-	if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko ]; then
-	        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko lib/
-	fi
+		if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko.xz ]; then
+		        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko.xz lib/
+			unxz -d lib/*.ko.xz
+		else
+			if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko ]; then
+		        	cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko lib/
+			else
+				exit 1
+			fi
+		fi
 	done
 
 

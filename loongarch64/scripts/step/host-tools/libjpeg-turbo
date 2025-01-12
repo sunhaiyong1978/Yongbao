@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/libjpeg-turbo-3.0.1
     pushd native-build
 	CC="gcc" CXX="g++" \
         cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR} -DWITH_JPEG8=ON \
-              -DCMAKE_BUILD_TYPE=RELEASE ..
+              -DCMAKE_BUILD_TYPE=Release ..
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 

@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/groff-1.23.0.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/groff-1.23.0
 	for config_i in $(find -name "config.sub")
         do
-                cp ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
 	PAGE=A4 ./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET}
 	make -j${JOBS} TROFFBIN=troff GROFFBIN=groff GROFF_BIN_PATH=

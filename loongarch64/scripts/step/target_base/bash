@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=bash
-export PACKAGE_VERSION=5.2.21
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/bash/5.2.21/
-rm -rf ${BUILD_DIRECTORY}/bash-5.2.21
-tar xvf ${DOWNLOADDIR}/bash-5.2.21.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/bash-5.2.21
+export PACKAGE_VERSION=5.2.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/bash/5.2.37/
+rm -rf ${BUILD_DIRECTORY}/bash-5.2.37
+tar xvf ${DOWNLOADDIR}/bash-5.2.37.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bash-5.2.37
 cat > config.cache << "EOF"
 	ac_cv_func_mmap_fixed_mapped=yes
 	ac_cv_func_strcoll_works=yes
@@ -30,6 +30,6 @@ EOF
 	make DESTDIR=${SYSROOT_DIR} install
 	ln -sfv bash ${SYSROOT_DIR}/bin/sh
 popd 
-rm -rf ${BUILD_DIRECTORY}/bash-5.2.21
+rm -rf ${BUILD_DIRECTORY}/bash-5.2.37
 
 set_strip_step "usr/lib64/bash/"

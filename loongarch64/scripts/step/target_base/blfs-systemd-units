@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=blfs-systemd-units
-export PACKAGE_VERSION=20240205
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/blfs-systemd-units/20240205/
-rm -rf ${BUILD_DIRECTORY}/blfs-systemd-units-20240205
-tar xvf ${DOWNLOADDIR}/blfs-systemd-units-20240205.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/blfs-systemd-units-20240205
+export PACKAGE_VERSION=20241211
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/blfs-systemd-units/20241211/
+rm -rf ${BUILD_DIRECTORY}/blfs-systemd-units-20241211
+tar xvf ${DOWNLOADDIR}/blfs-systemd-units-20241211.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/blfs-systemd-units-20241211
 	make DESTDIR=${SYSROOT_DIR} install-sshd
 popd 
-rm -rf ${BUILD_DIRECTORY}/blfs-systemd-units-20240205
+rm -rf ${BUILD_DIRECTORY}/blfs-systemd-units-20241211

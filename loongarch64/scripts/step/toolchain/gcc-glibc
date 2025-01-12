@@ -3,17 +3,24 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=gcc-glibc
-export PACKAGE_VERSION=14.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc-glibc/14.1.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0
-tar xvf ${DOWNLOADDIR}/gcc-14.1.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-14.1.0
+export PACKAGE_VERSION=14.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc-glibc/14.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
+tar xvf ${DOWNLOADDIR}/gcc-14.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-14.2.0
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
         ARCH_ABI=$(archname_to_archabi "$(get_user_set_env host ${CROSS_TARGET})" "${ARCH_ABI}")
     else
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
         ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
+    fi
+
+
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_TARGET="${CROSS_TARGET}"
     fi
 
     
@@ -27,12 +34,12 @@ pushd ${BUILD_DIRECTORY}/gcc-14.1.0
     mkdir cross-build
     pushd cross-build
         AR=ar LDFLAGS="-static" \
-        ../configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
-                     --target=${CROSS_TARGET} \
+        ../configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
+                     --target=${COMPAT_TARGET} \
                      --enable-__cxa_atexit --enable-threads=posix \
                      --enable-libstdcxx-time \
                      --enable-checking=release \
-                     --with-sysroot=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target \
+                     --with-sysroot=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target \
                      --enable-default-pie \
 		     --disable-multilib --enable-linker-build-id \
                      --with-abi=${ARCH_ABI} \
@@ -40,7 +47,7 @@ pushd ${BUILD_DIRECTORY}/gcc-14.1.0
         make -j${JOBS} all-gcc
         make -j${JOBS}
         make install-strip
-	ln -sf ${CROSS_TARGET}-gcc ${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-cc
+	ln -sf ${COMPAT_TARGET}-gcc ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-cc
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-14.1.0
+rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0

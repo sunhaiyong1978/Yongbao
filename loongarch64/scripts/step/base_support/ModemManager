@@ -16,6 +16,7 @@ pushd ${BUILD_DIRECTORY}/ModemManager-1.18.12
 		     --with-systemdsystemunitdir=/usr/lib/systemd/system
         make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
              INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+	     GDBUS_CODEGEN=gdbus-codegen \
              VAPIGEN=${CROSS_TARGET}-vapigen
         make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
     popd

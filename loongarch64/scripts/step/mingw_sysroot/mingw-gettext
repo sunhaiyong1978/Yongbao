@@ -4,11 +4,11 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-gettext
-export PACKAGE_VERSION=0.22.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gettext/0.22.5/
-rm -rf ${BUILD_DIRECTORY}/gettext-0.22.5
-tar xvf ${DOWNLOADDIR}/gettext-0.22.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gettext-0.22.5
+export PACKAGE_VERSION=0.23.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gettext/0.23.1/
+rm -rf ${BUILD_DIRECTORY}/gettext-0.23.1
+tar xvf ${DOWNLOADDIR}/gettext-0.23.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gettext-0.23.1
 	sed -i "/hello-c++-kde/d" gettext-tools/examples/Makefile.in
 	sed -i "/close_used_without_requesting_gnulib_module_close/d" $(grep -rl "close_used_without_requesting_gnulib_module_close" *)
 	./configure ${COMMON_CONFIG} --disable-shared --enable-threads=win32 --enable-static --without-emacs --disable-openmp
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/gettext-0.22.5
         make DESTDIR=${MINGW_SYSROOT_DIR} install
 	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gettext-0.22.5
+rm -rf ${BUILD_DIRECTORY}/gettext-0.23.1

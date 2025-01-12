@@ -8,7 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gtk2/2.24.33/
 rm -rf ${BUILD_DIRECTORY}/gtk+-2.24.33
 tar xvf ${DOWNLOADDIR}/gtk+-2.24.33.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gtk+-2.24.33
-    cp -v ${SYSROOT_DIR}/usr/share/automake-*/config.* ./
+    cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     sed -i.orig -e "s@gtk-builder-convert@@g" \
         -e "/\tgtk-update-icon-cache\$(EXEEXT)/s@gtk-update-icon-cache\$(EXEEXT)@@g" \
         gtk/Makefile.in

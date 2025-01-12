@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fmt
-export PACKAGE_VERSION=git-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fmt/git-default/
-rm -rf ${BUILD_DIRECTORY}/fmt-git-default_git
-tar xvf ${DOWNLOADDIR}/fmt-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fmt-git-default_git
+export PACKAGE_VERSION=11.1.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fmt/11.1.1/
+rm -rf ${BUILD_DIRECTORY}/fmt-11.1.1
+tar xvf ${DOWNLOADDIR}/fmt-11.1.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fmt-11.1.1
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/fmt-git-default_git
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fmt-git-default_git
+rm -rf ${BUILD_DIRECTORY}/fmt-11.1.1

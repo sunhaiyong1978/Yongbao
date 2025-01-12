@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=sane-backends
-export PACKAGE_VERSION=1.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sane-backends/1.3.0/
-rm -rf ${BUILD_DIRECTORY}/backends-1.3.0-7088afe04dc83395af599b6c224b020a142e64d8
-tar xvf ${DOWNLOADDIR}/sane-backends-1.3.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/backends-1.3.0-7088afe04dc83395af599b6c224b020a142e64d8
+export PACKAGE_VERSION=1.3.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sane-backends/1.3.1/
+rm -rf ${BUILD_DIRECTORY}/backends-1.3.1-3ff55fd8ee04ae459e199088ebe11ac979671d0e
+tar xvf ${DOWNLOADDIR}/sane-backends-1.3.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/backends-1.3.1-3ff55fd8ee04ae459e199088ebe11ac979671d0e
         
 	echo ${PACKAGE_VERSION} > .tarball-version
         for config_i in $(find -name "config.sub")
         do
-                cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
         if [ ! -f configure ]; then
                 autoreconf -ifv
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/backends-1.3.0-7088afe04dc83395af599b6c224b020a142e64d8
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/backends-1.3.0-7088afe04dc83395af599b6c224b020a142e64d8
+rm -rf ${BUILD_DIRECTORY}/backends-1.3.1-3ff55fd8ee04ae459e199088ebe11ac979671d0e

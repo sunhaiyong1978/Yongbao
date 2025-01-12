@@ -8,13 +8,18 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc_git-libc/git-d
 rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
 tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
-    CROSS_BUILD=$(archname_to_triple "${CROSS_HOST}" "${CROSS_HOST}")
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
     
 
-    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_HOST="${HOST_HOST}"
+    fi
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
     if [ -d ${PREFIX}/cross-tools ]; then
         mv ${PREFIX}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
@@ -32,22 +37,21 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     mkdir cross-build
     pushd cross-build
         LDFLAGS="-static" \
-        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_BUILD} --host=${HOST_HOST} \
+        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${COMPAT_HOST} \
                      --target=${HOST_TARGET} \
                      --enable-__cxa_atexit --enable-threads=posix \
                      --enable-libstdcxx-time \
                      --enable-checking=release \
                      --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
-		     --with-build-sysroot=${PREFIX}/cross-tools/target \
-                     --disable-multilib --enable-linker-build-id \
+                     --with-build-sysroot=${PREFIX}/cross-tools/target \
+		     --disable-multilib --enable-linker-build-id \
                      --with-abi=${ARCH_ABI} \
-                     --enable-languages=c,c++,fortran,objc,obj-c++,lto,ada
-        make -j${JOBS} all-gcc
+                     --enable-languages=c,c++,fortran,objc,obj-c++,lto
         make -j${JOBS}
-	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc ]; then
-		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc{,.$(date +%Y%m%d%H%M%S)}
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gcc ]; then
+		mv ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gcc{,.$(date +%Y%m%d%H%M%S)}
 	fi
-        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc install-strip
+        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gcc install-strip
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git

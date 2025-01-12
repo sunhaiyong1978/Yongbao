@@ -3,29 +3,32 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt6-tools
-export PACKAGE_VERSION=6.7.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6-tools/6.7.2/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.2
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.7.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.2
-        patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0001-qt6-webengine-configure-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0002-qtwebengine-fix-loongarch64-define-because-chromium-.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0003-qtwebengine-6.7.0-chromium-add-some-define-for-loong.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0004-qt6webengine-add-host-ldflags-for-cross-build.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0005-qtwebengine-6.7.0-fix-chromium-boringssl-openssl-tar.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0007-qtwebengine-6.7.0-crashpad-add-support-for-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0008-qtwebengine-6.7.0-fix-x11-has-not-been-declared.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0009-qtwebengine-6.7.0-libvpx-fix-for-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0010-qtwebengine-6.7.0-fix-regexp-macro-assembler-for-loo.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0011-qtwebengine-ffmpeg-first_dts.-patch-form-Fedora-qt6-.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0012-qtwebengine-sandbox-Add-loongarch64-architecture-sup.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0013-qtwebengine-6.7.0-fix-blink-for-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0014-fix-spellcheck_buildflags.h-file-mission.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0015-qtwebengine-6.7.0-chromium-libyuv-add-loongarch_lsx-.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0016-qtwebengine-6.7.0-fix-libvpx-build-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0017-qtwebengine-6.7.0-fix-web_cache-build-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0018-qtwebengine-6.7.0-open-lsx-and-lasx-option-for-loong.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.2/patches/0019-qtwebengine-6.7.0-add-sandbox-syscalls-for-loongarch.patch 
+export PACKAGE_VERSION=6.7.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6-tools/6.7.3/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.3
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.7.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.3
+        patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0001-qt6-webengine-configure-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0002-qtwebengine-fix-loongarch64-define-because-chromium-.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0003-qtwebengine-6.7.0-chromium-add-some-define-for-loong.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0004-qt6webengine-add-host-ldflags-for-cross-build.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0005-qtwebengine-6.7.0-fix-chromium-boringssl-openssl-tar.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0007-qtwebengine-6.7.0-crashpad-add-support-for-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0008-qtwebengine-6.7.0-fix-x11-has-not-been-declared.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0009-qtwebengine-6.7.0-libvpx-fix-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0010-qtwebengine-6.7.0-fix-regexp-macro-assembler-for-loo.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0011-qtwebengine-ffmpeg-first_dts.-patch-form-Fedora-qt6-.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0012-qtwebengine-sandbox-Add-loongarch64-architecture-sup.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0013-qtwebengine-6.7.0-fix-blink-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0014-fix-spellcheck_buildflags.h-file-mission.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0015-qtwebengine-6.7.0-chromium-libyuv-add-loongarch_lsx-.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0016-qtwebengine-6.7.0-fix-libvpx-build-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0017-qtwebengine-6.7.0-fix-web_cache-build-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0018-qtwebengine-6.7.0-open-lsx-and-lasx-option-for-loong.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0019-qtwebengine-6.7.0-add-sandbox-syscalls-for-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0001-qtwebengine-3rdparty-chromium-api-runtime-add-loonga.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0002-qtwebengine-3rdparty-chromium-enable-swiftshader-add.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-tools/6.7.3/patches/0001-qt-6.7.3-fix-compile-for-clang-19.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -87,4 +90,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${PWD}/qtbase/lib64/qt6/libexec/${tool_i
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.2
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.7.3

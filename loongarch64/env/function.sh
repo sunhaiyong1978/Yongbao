@@ -669,9 +669,13 @@ function default_set_conf
         fi
 }
 
-if [ -f ${NEW_TARGET_SYSDIR}/set_env.conf ]; then
-	source ${NEW_TARGET_SYSDIR}/set_env.conf
-fi
+# if [ -f ${NEW_TARGET_SYSDIR}/set_env.conf ]; then
+# 	source ${NEW_TARGET_SYSDIR}/set_env.conf
+# fi
 if [ -f ${NEW_TARGET_SYSDIR}/package_env.conf ]; then
 	source ${NEW_TARGET_SYSDIR}/package_env.conf
 fi
+
+# if [ -f ${NEW_TARGET_SYSDIR}/package_unset.conf ]; then
+# 	source ${NEW_TARGET_SYSDIR}/package_unset.conf
+# fi

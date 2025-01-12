@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gst-libav
-export PACKAGE_VERSION=1.24.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gst-libav/1.24.5/
-rm -rf ${BUILD_DIRECTORY}/gst-libav-1.24.5
-tar xvf ${DOWNLOADDIR}/gst-libav-1.24.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gst-libav-1.24.5
+export PACKAGE_VERSION=1.24.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gst-libav/1.24.11/
+rm -rf ${BUILD_DIRECTORY}/gst-libav-1.24.11
+tar xvf ${DOWNLOADDIR}/gst-libav-1.24.11.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gst-libav-1.24.11
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/gst-libav-1.24.5
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gst-libav-1.24.5
+rm -rf ${BUILD_DIRECTORY}/gst-libav-1.24.11

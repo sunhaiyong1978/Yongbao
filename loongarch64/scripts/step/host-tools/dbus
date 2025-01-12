@@ -3,13 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=dbus
-export PACKAGE_VERSION=1.15.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/dbus/1.15.8/
-rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8
-tar xvf ${DOWNLOADDIR}/dbus-1.15.8.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dbus-1.15.8
-    ./autogen.sh
-    ./configure ${COMMON_CONFIG} --disable-systemd --disable-doxygen-docs --disable-xml-docs
-    eval ${MAKE_AND_INSTALL}
+export PACKAGE_VERSION=1.16.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/dbus/1.16.0/
+rm -rf ${BUILD_DIRECTORY}/dbus-1.16.0
+tar xvf ${DOWNLOADDIR}/dbus-1.16.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dbus-1.16.0
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Dsystemd=disabled \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/dbus-1.15.8
+rm -rf ${BUILD_DIRECTORY}/dbus-1.16.0

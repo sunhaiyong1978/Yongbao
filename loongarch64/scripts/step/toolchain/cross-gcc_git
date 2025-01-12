@@ -8,13 +8,18 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gcc_git/git-defaul
 rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git
 tar xvf ${DOWNLOADDIR}/gcc_git-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
-    CROSS_BUILD=$(archname_to_triple "${CROSS_HOST}" "${CROSS_HOST}")
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
     
 
-    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_HOST="${HOST_HOST}"
+    fi
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
     tar xvf $(ls ${DOWNLOADDIR}/gmp-*.tar.* | sort -V | tail -n1)
     tar xvf $(ls ${DOWNLOADDIR}/mpfr-*.tar.* | sort -V | tail -n1)
@@ -24,21 +29,33 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
     mv mpc-* mpc
     mkdir cross-build
     pushd cross-build
-	LDFLAGS="-static" CFLAGS="-Wno-implicit-function-declaration" \
-        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_BUILD} --host=${HOST_HOST} \
+	LDFLAGS="-static" \
+        ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${COMPAT_HOST} \
                      --target=${HOST_TARGET} \
                      --with-newlib --disable-shared --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
                      --disable-decimal-float --disable-libgomp --disable-libitm \
                      --disable-libsanitizer --disable-libquadmath --disable-threads \
                      --disable-target-zlib --with-system-zlib --enable-checking=release \
-                     --enable-default-pie --disable-multilib \
+		     --disable-multilib \
                      --with-abi=${ARCH_ABI} \
                      --enable-languages=c,c++
-        make -j${JOBS} all-gcc all-target-libgcc
-	if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib ]; then
-		mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib{,.$(date +%Y%m%d%H%M%S)}
-	fi
-        make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib install-strip-gcc install-strip-target-libgcc                                                                                                             
+
+	case "${HOST_TARGET}" in
+		*-mingw*)
+			make -j${JOBS} all-gcc
+			if [ -d ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib ]; then
+				mv ${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib{,.$(date +%Y%m%d%H%M%S)}
+			fi
+        		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${HOST_HOST}/${HOST_TARGET}/gcc-newlib install-strip-gcc
+			;;
+		*)
+			make -j${JOBS} all-gcc
+			if [ -d ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gcc-newlib ]; then
+				mv ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gcc-newlib{,.$(date +%Y%m%d%H%M%S)}
+			fi
+        		make DESTDIR=${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gcc-newlib install-strip-gcc
+			;;
+	esac
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git

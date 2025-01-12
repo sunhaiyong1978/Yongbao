@@ -3,26 +3,33 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=binutils
-export PACKAGE_VERSION=2.42
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/binutils/2.42/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.42
-tar xvf ${DOWNLOADDIR}/binutils-2.42.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.42
+export PACKAGE_VERSION=2.43.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/binutils/2.43.1/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1
+tar xvf ${DOWNLOADDIR}/binutils-2.43.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.43.1
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     else
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
     fi
+
+    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+	COMPAT_TARGET="${CROSS_TARGET}"
+    fi
+
     rm -rf gdb* libdecnumber readline sim
     mkdir cross-build
     pushd cross-build
         CC=gcc \
-        ../configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
-                     --target=${CROSS_TARGET} --with-sysroot=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target --enable-nls \
-                     --enable-64-bit-bfd --disable-shared
+        ../configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST} \
+                     --target=${COMPAT_TARGET} --with-sysroot=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target --enable-nls \
+                     --enable-64-bit-bfd --disable-shared --disable-werror
         make -j${JOBS} configure-host
         make -j${JOBS}
         make install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.42
+rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1

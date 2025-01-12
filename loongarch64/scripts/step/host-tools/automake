@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=automake
-export PACKAGE_VERSION=1.16.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/automake/1.16.5/
-rm -rf ${BUILD_DIRECTORY}/automake-1.16.5
-tar xvf ${DOWNLOADDIR}/automake-1.16.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/automake-1.16.5
+export PACKAGE_VERSION=1.17
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/automake/1.17/
+rm -rf ${BUILD_DIRECTORY}/automake-1.17
+tar xvf ${DOWNLOADDIR}/automake-1.17.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/automake-1.17
         
         ./configure --prefix=${CROSSTOOLS_DIR}
         eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/automake-1.16.5
+rm -rf ${BUILD_DIRECTORY}/automake-1.17

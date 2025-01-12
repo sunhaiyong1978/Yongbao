@@ -4,11 +4,11 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-libiconv
-export PACKAGE_VERSION=1.17
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-libiconv/1.17/
-rm -rf ${BUILD_DIRECTORY}/libiconv-1.17
-tar xvf ${DOWNLOADDIR}/libiconv-1.17.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libiconv-1.17
+export PACKAGE_VERSION=1.18
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-libiconv/1.18/
+rm -rf ${BUILD_DIRECTORY}/libiconv-1.18
+tar xvf ${DOWNLOADDIR}/libiconv-1.18.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libiconv-1.18
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libiconv-1.17
         make DESTDIR=${MINGW_SYSROOT_DIR} install
 	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libiconv-1.17
+rm -rf ${BUILD_DIRECTORY}/libiconv-1.18

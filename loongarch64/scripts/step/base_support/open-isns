@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=open-isns
-export PACKAGE_VERSION=0.102
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/open-isns/0.102/
-rm -rf ${BUILD_DIRECTORY}/open-isns-0.102
-tar xvf ${DOWNLOADDIR}/open-isns-0.102.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/open-isns-0.102
+export PACKAGE_VERSION=0.103
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/open-isns/0.103/
+rm -rf ${BUILD_DIRECTORY}/open-isns-0.103
+tar xvf ${DOWNLOADDIR}/open-isns-0.103.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/open-isns-0.103
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/open-isns-0.102
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/open-isns-0.102
+rm -rf ${BUILD_DIRECTORY}/open-isns-0.103

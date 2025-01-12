@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=hwdata
-export PACKAGE_VERSION=0.383
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/hwdata/0.383/
-rm -rf ${BUILD_DIRECTORY}/hwdata-0.383
-tar xvf ${DOWNLOADDIR}/hwdata-0.383.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/hwdata-0.383
+export PACKAGE_VERSION=0.391
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/hwdata/0.391/
+rm -rf ${BUILD_DIRECTORY}/hwdata-0.391
+tar xvf ${DOWNLOADDIR}/hwdata-0.391.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/hwdata-0.391
 	
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}
-		cp ${CROSSTOOLS_DIR}/share/automake*/config.{sub,guess} $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/hwdata-0.383
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/hwdata-0.383
+rm -rf ${BUILD_DIRECTORY}/hwdata-0.391

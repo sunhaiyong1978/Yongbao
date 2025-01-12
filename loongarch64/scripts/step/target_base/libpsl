@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/libpsl-0.21.5
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}
-		cp ${CROSSTOOLS_DIR}/share/automake*/config.{sub,guess} $(dirname ${config_i})/
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	if [ ! -f configure ]; then
 		autoreconf -ifv

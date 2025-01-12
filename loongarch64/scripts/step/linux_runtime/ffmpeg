@@ -4,13 +4,13 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=ffmpeg
-export PACKAGE_VERSION=git-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/ffmpeg/git-default/
-rm -rf ${BUILD_DIRECTORY}/ffmpeg-git-default_git
-tar xvf ${DOWNLOADDIR}/ffmpeg-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ffmpeg-git-default_git
+export PACKAGE_VERSION=6.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/ffmpeg/6.1.2/
+rm -rf ${BUILD_DIRECTORY}/ffmpeg-6.1.2
+tar xvf ${DOWNLOADDIR}/ffmpeg-6.1.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ffmpeg-6.1.2
 	
-	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" \
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types -Wno-int-conversion" \
 	LDFLAGS="${LDFLAGS} -Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio" \
 	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} \
                 --cross-prefix=${LINUX_HOST}- --sysroot=${LINUX_SYSROOT_DIR} \
@@ -34,4 +34,4 @@ pushd ${BUILD_DIRECTORY}/ffmpeg-git-default_git
                 --arch=${ARCH_NAME} --target-os=linux --cc=${LINUX_HOST}-gcc --host-cc=gcc
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ffmpeg-git-default_git
+rm -rf ${BUILD_DIRECTORY}/ffmpeg-6.1.2

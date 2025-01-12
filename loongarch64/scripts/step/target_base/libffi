@@ -12,13 +12,13 @@ pushd ${BUILD_DIRECTORY}/libffi-3.4.6
         for config_i in $(find -name "config.sub")
         do
                 chmod 0644 $(dirname ${config_i})/config.{sub,guess}
-                cp ${CROSSTOOLS_DIR}/share/automake*/config.{sub,guess} $(dirname ${config_i})/
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
 	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -mcmodel=medium" ./configure ${COMMON_CONFIG} --with-gcc-arch=native
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS} all
         make DESTDIR=${SYSROOT_DIR} install
 	cp -a ${CROSS_TARGET}/.libs/libffi_convenience.a ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libffi_pic.a
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

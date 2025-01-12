@@ -10,9 +10,9 @@ rm -rf ${BUILD_DIRECTORY}/pciutils-3.13.0
 tar xvf ${DOWNLOADDIR}/pciutils-3.13.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pciutils-3.13.0
 	make -j${JOBS} CROSS_COMPILE="${LINUX_HOST}-" HOST="${LINUX_HOST}" \
-	     PREFIX=/usr SHARED=yes LIBDIR=/usr/lib64
+	     PREFIX=/usr SHARED=yes LIBDIR=/usr/lib${LIB_SUFF}
 	make CROSS_COMPILE="${LINUX_HOST}-" HOST="${LINUX_HOST}" \
-	     PREFIX=/usr SHARED=yes LIBDIR=/usr/lib64 STRIP="" \
+	     PREFIX=/usr SHARED=yes LIBDIR=/usr/lib${LIB_SUFF} STRIP="" \
 	     DESTDIR=${LINUX_SYSROOT_DIR} install install-lib
 popd 
 rm -rf ${BUILD_DIRECTORY}/pciutils-3.13.0
