@@ -1,0 +1,24 @@
+From 428284f77758e33219fa89578b8ceb66098c3184 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 31 Dec 2024 07:29:11 +0000
+Subject: [PATCH] kstar 3.7.0 fix for gcc 14.
+
+---
+ .../MPI_IS_gaussian_process/src/gaussian_process.cpp             | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kstars/ekos/guide/internalguide/MPI_IS_gaussian_process/src/gaussian_process.cpp b/kstars/ekos/guide/internalguide/MPI_IS_gaussian_process/src/gaussian_process.cpp
+index 5817252..da28815 100644
+--- a/kstars/ekos/guide/internalguide/MPI_IS_gaussian_process/src/gaussian_process.cpp
++++ b/kstars/ekos/guide/internalguide/MPI_IS_gaussian_process/src/gaussian_process.cpp
+@@ -18,6 +18,7 @@
+  */
+ 
+ #include <cstdint>
++#include <cassert>
+ 
+ #include "gaussian_process.h"
+ #include "math_tools.h"
+-- 
+2.31.1
+

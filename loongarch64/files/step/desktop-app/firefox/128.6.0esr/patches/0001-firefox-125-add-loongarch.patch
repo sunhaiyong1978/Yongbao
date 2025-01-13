@@ -1,0 +1,27 @@
+From 8b077df1d380e8ad66da042b84f9a7769a4ea84f Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 17 Apr 2024 17:01:21 +0000
+Subject: [PATCH] firefox 125 add loongarch.
+
+---
+ third_party/libwebrtc/build/build_config.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/third_party/libwebrtc/build/build_config.h b/third_party/libwebrtc/build/build_config.h
+index c39ae9da50..f2283bbf56 100644
+--- a/third_party/libwebrtc/build/build_config.h
++++ b/third_party/libwebrtc/build/build_config.h
+@@ -210,6 +210,10 @@
+ #define ARCH_CPU_SPARC 1
+ #define ARCH_CPU_32_BITS 1
+ #define ARCH_CPU_BIG_ENDIAN 1
++#elif defined(__loongarch64)
++#define ARCH_CPU_LOONGARCH64 1
++#define ARCH_CPU_64_BITS 1
++#define ARCH_CPU_LITTLE_ENDIAN 1
+ #else
+ #error Please add support for your architecture in build/build_config.h
+ #endif
+-- 
+2.31.1
+

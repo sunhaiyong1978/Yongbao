@@ -1,0 +1,14 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=dtc
+export PACKAGE_VERSION=1.7.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/dtc/1.7.2/
+rm -rf ${BUILD_DIRECTORY}/dtc-1.7.2
+tar xvf ${DOWNLOADDIR}/dtc-1.7.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dtc-1.7.2
+	PYTHON=${CROSS_TARGET}-python3 make PREFIX=/usr LIBDIR=/usr/lib64 CC=${CROSS_TARGET}-gcc -j${JOBS}
+	PYTHON=${CROSS_TARGET}-python3 make PREFIX=/usr LIBDIR=/usr/lib64 DESTDIR=${PWD}/dest install
+popd 
+rm -rf ${BUILD_DIRECTORY}/dtc-1.7.2

@@ -1,0 +1,78 @@
+From cfd3d439d7080f5f2085a2fc13f1c1d1d8a59913 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 7 Jan 2025 02:28:50 +0000
+Subject: [PATCH] qt 6.7.3 fix compile for clang 19.
+
+---
+ .../src/linguist/lupdate/clangtoolastreader.cpp   |  6 ++++++
+ .../src/qdoc/qdoc/src/qdoc/clangcodeparser.cpp    | 15 +++++++++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/qttools/src/linguist/lupdate/clangtoolastreader.cpp b/qttools/src/linguist/lupdate/clangtoolastreader.cpp
+index 6b85c6c..3db9e0d 100644
+--- a/qttools/src/linguist/lupdate/clangtoolastreader.cpp
++++ b/qttools/src/linguist/lupdate/clangtoolastreader.cpp
+@@ -782,8 +782,14 @@ bool LupdateVisitor::VisitNamedDecl(clang::NamedDecl *namedDeclaration)
+     if (!fullLocation.isValid() || !fullLocation.getFileEntry())
+         return true;
+ 
++#if (LUPDATE_CLANG_VERSION >= LUPDATE_CLANG_VERSION_CHECK(18,0,0))
++    auto fileEntry = fullLocation.getFileEntryRef();
++    if (fileEntry && !LupdatePrivate::isFileSignificant(fileEntry->getName().str()))
++        return true;
++#else
+     if (!LupdatePrivate::isFileSignificant(fullLocation.getFileEntry()->getName().str()))
+         return true;
++#endif
+ 
+     qCDebug(lcClang) << "NamedDecl Name:   " << QString::fromStdString(namedDeclaration->getQualifiedNameAsString());
+     qCDebug(lcClang) << "NamedDecl source: " << QString::fromStdString(namedDeclaration->getSourceRange().printToString(
+diff --git a/qttools/src/qdoc/qdoc/src/qdoc/clangcodeparser.cpp b/qttools/src/qdoc/qdoc/src/qdoc/clangcodeparser.cpp
+index bd3cc63..333bffd 100644
+--- a/qttools/src/qdoc/qdoc/src/qdoc/clangcodeparser.cpp
++++ b/qttools/src/qdoc/qdoc/src/qdoc/clangcodeparser.cpp
+@@ -167,9 +167,15 @@ static std::string get_expression_as_string(const clang::Expr* expression, const
+  * If the parameter has no default value the empty string will be returned.
+  */
+ static std::string get_default_value_initializer_as_string(const clang::TemplateTypeParmDecl* parameter) {
++#if LIBCLANG_VERSION_MAJOR >= 19
++    return (parameter && parameter->hasDefaultArgument()) ?
++                get_fully_qualified_type_name(parameter->getDefaultArgument().getArgument().getAsType(), parameter->getASTContext()) :
++                "";
++#else
+     return (parameter && parameter->hasDefaultArgument()) ?
+                 get_fully_qualified_type_name(parameter->getDefaultArgument(), parameter->getASTContext()) :
+                 "";
++#endif
+ 
+ }
+ 
+@@ -183,8 +189,13 @@ static std::string get_default_value_initializer_as_string(const clang::Template
+  * If the parameter as no default value the empty string will be returned.
+  */
+ static std::string get_default_value_initializer_as_string(const clang::NonTypeTemplateParmDecl* parameter) {
++#if LIBCLANG_VERSION_MAJOR >= 19
++    return (parameter && parameter->hasDefaultArgument()) ?
++        get_expression_as_string(parameter->getDefaultArgument().getSourceExpression(), parameter->getASTContext()) : "";
++#else
+     return (parameter && parameter->hasDefaultArgument()) ?
+         get_expression_as_string(parameter->getDefaultArgument(), parameter->getASTContext()) : "";
++#endif
+ 
+ }
+ 
+@@ -204,7 +215,11 @@ static std::string get_default_value_initializer_as_string(const clang::Template
+         const clang::TemplateName template_name = parameter->getDefaultArgument().getArgument().getAsTemplate();
+ 
+         llvm::raw_string_ostream ss{default_value};
++#if LIBCLANG_VERSION_MAJOR >= 19
++        template_name.print(ss, parameter->getASTContext().getPrintingPolicy(), clang::TemplateName::Qualified::AsWritten);
++#else
+         template_name.print(ss, parameter->getASTContext().getPrintingPolicy(), clang::TemplateName::Qualified::Fully);
++#endif
+     }
+ 
+     return default_value;
+-- 
+2.31.1
+

@@ -1,0 +1,24 @@
+From adb27cba88c99785abc68a8e19b01bc64361b719 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 27 Aug 2024 01:24:31 +0000
+Subject: [PATCH] sddm fix build error.
+
+---
+ test/QMLThemeConfigTest.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/test/QMLThemeConfigTest.cpp b/test/QMLThemeConfigTest.cpp
+index 800f14f..4d58644 100644
+--- a/test/QMLThemeConfigTest.cpp
++++ b/test/QMLThemeConfigTest.cpp
+@@ -20,6 +20,7 @@
+ #include <QQmlContext>
+ #include <QQmlEngine>
+ #include <QtQuickTest>
++#include <quicktest.h>
+ 
+ #include "ThemeConfig.h"
+ 
+-- 
+2.31.1
+

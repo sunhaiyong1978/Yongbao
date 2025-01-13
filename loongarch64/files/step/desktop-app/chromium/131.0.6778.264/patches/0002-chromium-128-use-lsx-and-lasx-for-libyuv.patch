@@ -1,0 +1,26 @@
+From 8521fa7189e22a8f821876773fd697b7ad3d0143 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 9 Sep 2024 14:45:57 +0000
+Subject: [PATCH 2/3] chromium 128 use lsx and lasx for libyuv.
+
+---
+ build/config/loongarch64.gni | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build/config/loongarch64.gni b/build/config/loongarch64.gni
+index 9a95ec9..e9e0ded 100644
+--- a/build/config/loongarch64.gni
++++ b/build/config/loongarch64.gni
+@@ -7,7 +7,7 @@ import("//build/config/v8_target_cpu.gni")
+ if (current_cpu == "loong64") {
+   declare_args() {
+     # LOONGARCH64 SIMD Arch compilation flag.
+-    loongarch64_use_lsx = false
+-    loongarch64_use_lasx = false
++    loongarch64_use_lsx = true
++    loongarch64_use_lasx = false
+   }
+ }
+-- 
+2.31.1
+

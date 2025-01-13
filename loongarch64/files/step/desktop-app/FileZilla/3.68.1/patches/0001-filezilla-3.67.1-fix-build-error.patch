@@ -1,0 +1,25 @@
+From a4b854663cdc7adacdde2bd57e69846fe9aa9d3f Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Jul 2024 03:16:14 +0000
+Subject: [PATCH] filezilla 3.67.1 fix build error.
+
+---
+ src/interface/sftp_crypt_info_dlg.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/interface/sftp_crypt_info_dlg.cpp b/src/interface/sftp_crypt_info_dlg.cpp
+index 4c75fe7..7cdfcbd 100644
+--- a/src/interface/sftp_crypt_info_dlg.cpp
++++ b/src/interface/sftp_crypt_info_dlg.cpp
+@@ -28,7 +28,7 @@ void CSftpEncryptioInfoDialog::ShowDialog(CSftpEncryptionNotification* pNotifica
+ 	{
+ 		auto [box, inner] = lay.createStatBox(main, _("Server host key"), 2);
+ 		inner->Add(new wxStaticText(box, nullID, _("Algorithm:")));
+-		inner->Add(new wxStaticText(box, nullID, pNotification->hostKeyAlgorithm.empty() ? _("Unknown") : LabelEscape(pNotification->hostKeyAlgorithm)));
++		inner->Add(new wxStaticText(box, nullID, pNotification->hostKeyAlgorithm.empty() ? _("Unknown") : _(LabelEscape(pNotification->hostKeyAlgorithm))));
+ 		inner->Add(new wxStaticText(box, nullID, _("Fingerprints:")));
+ 		inner->Add(new wxStaticText(box, nullID, LabelEscape(pNotification->hostKeyFingerprint)));
+ 	}
+-- 
+2.31.1
+

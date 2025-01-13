@@ -1,0 +1,12 @@
+source env/benchmark/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=benchmark
+export STEP_PACKAGENAME=vkmark
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/benchmark/vkmark//
+if [ -f ${SYSROOT_DIR}/usr/bin/wayland-scanner ]; then
+	mv ${SYSROOT_DIR}/usr/bin/wayland-scanner ${SYSROOT_DIR}/usr/bin/wayland-scanner.orig
+	echo "qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/wayland-scanner.orig \"\$@\"" > ${SYSROOT_DIR}/usr/bin/wayland-scanner
+	chmod +x ${SYSROOT_DIR}/usr/bin/wayland-scanner
+fi

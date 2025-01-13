@@ -1,0 +1,57 @@
+From ae3acfae87d6e6ea5ecdf956cfbb5ba2dd324431 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 9 Mar 2024 14:38:43 +0000
+Subject: [PATCH] libreoffice external bzip2 remove test for cross-build.
+
+---
+ ...-bzip2-remove-test-for-cross-build.patch.1 | 25 +++++++++++++++++++
+ external/bzip2/UnpackedTarball_bzip2.mk       |  1 +
+ 2 files changed, 26 insertions(+)
+ create mode 100644 external/bzip2/0001-bzip2-remove-test-for-cross-build.patch.1
+
+diff --git a/external/bzip2/0001-bzip2-remove-test-for-cross-build.patch.1 b/external/bzip2/0001-bzip2-remove-test-for-cross-build.patch.1
+new file mode 100644
+index 0000000..0fc0acc
+--- /dev/null
++++ b/external/bzip2/0001-bzip2-remove-test-for-cross-build.patch.1
+@@ -0,0 +1,25 @@
++From b5d66ca718061975ee42e15f482df0e59dc87c60 Mon Sep 17 00:00:00 2001
++From: Sun Haiyong <sunhaiyong@zdbr.net>
++Date: Sat, 9 Mar 2024 10:00:30 +0000
++Subject: [PATCH] bzip2 remove test for cross build.
++
++---
++ Makefile | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/Makefile b/Makefile
++index f8a1772..3e76d41 100644
++--- a/Makefile
+++++ b/Makefile
++@@ -35,7 +35,7 @@ OBJS= blocksort.o  \
++       decompress.o \
++       bzlib.o
++ 
++-all: libbz2.a bzip2 bzip2recover test
+++all: libbz2.a bzip2 bzip2recover
++ 
++ bzip2: libbz2.a bzip2.o
++ 	$(CC) $(CFLAGS) $(LDFLAGS) -o bzip2 bzip2.o -L. -lbz2
++-- 
++2.31.1
++
+diff --git a/external/bzip2/UnpackedTarball_bzip2.mk b/external/bzip2/UnpackedTarball_bzip2.mk
+index 350b45c..225b4c1 100644
+--- a/external/bzip2/UnpackedTarball_bzip2.mk
++++ b/external/bzip2/UnpackedTarball_bzip2.mk
+@@ -18,6 +18,7 @@ $(eval $(call gb_UnpackedTarball_fix_end_of_line,bzip2,\
+ ifneq ($(CROSS_COMPILING),)
+ $(eval $(call gb_UnpackedTarball_add_patches,bzip2,\
+ 	external/bzip2/disable-test.patch.0 \
++	external/bzip2/0001-bzip2-remove-test-for-cross-build.patch.1 \
+ ))
+ endif
+ 
+-- 
+2.31.1
+

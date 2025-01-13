@@ -1,0 +1,29 @@
+From c78fe320616457e89064b7de03eb0ea3e63361d6 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 8 Nov 2024 02:49:35 +0000
+Subject: [PATCH] Celestia set default font to wqy-microhei.
+
+---
+ celestia.cfg.in | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/celestia.cfg.in b/celestia.cfg.in
+index 61c2ad5..e181f1c 100644
+--- a/celestia.cfg.in
++++ b/celestia.cfg.in
+@@ -235,9 +235,9 @@ StarTextures
+ # TitleFont: Used to display object names, messages, and script text.
+ #            Default "DejaVuSans-Bold.ttf,15"
+ #------------------------------------------------------------------------
+-  Font       "DejaVuSans.ttf,9"
+-  LabelFont  "DejaVuSans.ttf,9"
+-  TitleFont  "DejaVuSans-Bold.ttf,15"
++  Font       "wqy-microhei.ttc,9"
++  LabelFont  "wqy-microhei.ttc,9"
++  TitleFont  "wqy-microhei.ttc,15"
+ 
+ 
+ #------------------------------------------------------------------------
+-- 
+2.31.1
+

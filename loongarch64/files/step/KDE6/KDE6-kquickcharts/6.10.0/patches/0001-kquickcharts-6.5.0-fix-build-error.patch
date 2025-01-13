@@ -1,0 +1,24 @@
+From 0954b29d1486337e523721ddb15617c84cc767a6 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 27 Aug 2024 02:23:10 +0000
+Subject: [PATCH] kquickcharts 6.5.0 fix build error.
+
+---
+ autotests/qmltest.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/autotests/qmltest.cpp b/autotests/qmltest.cpp
+index 88152e8..de9c248 100644
+--- a/autotests/qmltest.cpp
++++ b/autotests/qmltest.cpp
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <QtQuickTest>
++#include <quicktest.h>
+ 
+ #ifdef IMPORT_KQUICKCHARTS_QML_PLUGIN
+ #include <QPluginLoader>
+-- 
+2.31.1
+

@@ -1,0 +1,59 @@
+From 61108fc470c4d1477a9e7d0e78fa8fc59c33df1e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 11 Oct 2023 16:03:36 +0000
+Subject: [PATCH 2/3] libreoffice 7.6 pdfium fix for gcc14
+
+Change-Id: Ibc8cc456856e952f72074c1c7ed36c6eead28b2c
+---
+ .../pdfium/0001-pdfium-fix-for-gcc14.patch    | 25 +++++++++++++++++++
+ external/pdfium/UnpackedTarball_pdfium.mk     |  2 ++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 external/pdfium/0001-pdfium-fix-for-gcc14.patch
+
+diff --git a/external/pdfium/0001-pdfium-fix-for-gcc14.patch b/external/pdfium/0001-pdfium-fix-for-gcc14.patch
+new file mode 100644
+index 000000000..a688d2f1b
+--- /dev/null
++++ b/external/pdfium/0001-pdfium-fix-for-gcc14.patch
+@@ -0,0 +1,25 @@
++From cc7896ea80e5a8d901d320bbd84f1befa443cc3b Mon Sep 17 00:00:00 2001
++From: Sun Haiyong <sunhaiyong@zdbr.net>
++Date: Wed, 11 Oct 2023 16:00:32 +0000
++Subject: [PATCH] pdfium fix for gcc14
++
++---
++ core/fpdfapi/page/cpdf_psengine.cpp | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git core/fpdfapi/page/cpdf_psengine.cpp core/fpdfapi/page/cpdf_psengine.cpp
++index da7b00d..bda2d41 100644
++--- core/fpdfapi/page/cpdf_psengine.cpp
+++++ core/fpdfapi/page/cpdf_psengine.cpp
++@@ -75,7 +75,7 @@ constexpr PDF_PSOpName kPsOpNames[] = {
++ // Round half up is a nearest integer round with half-way numbers always rounded
++ // up. Example: -5.5 rounds to -5.
++ float RoundHalfUp(float f) {
++-  if (isnan(f))
+++  if (std::isnan(f))
++     return 0;
++   if (f > std::numeric_limits<float>::max() - 0.5f)
++     return std::numeric_limits<float>::max();
++-- 
++2.31.1
++
+diff --git a/external/pdfium/UnpackedTarball_pdfium.mk b/external/pdfium/UnpackedTarball_pdfium.mk
+index 79e93d24d..0ce90a4c2 100644
+--- a/external/pdfium/UnpackedTarball_pdfium.mk
++++ b/external/pdfium/UnpackedTarball_pdfium.mk
+@@ -17,6 +17,8 @@ pdfium_patches += c++20-comparison.patch
+ 
+ pdfium_patches += constexpr-template.patch
+ 
++pdfium_patches += 0001-pdfium-fix-for-gcc14.patch
++
+ $(eval $(call gb_UnpackedTarball_UnpackedTarball,pdfium))
+ 
+ $(eval $(call gb_UnpackedTarball_set_tarball,pdfium,$(PDFIUM_TARBALL)))
+-- 
+2.31.1
+

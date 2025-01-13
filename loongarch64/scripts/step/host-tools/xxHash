@@ -1,0 +1,14 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=xxHash
+export PACKAGE_VERSION=0.8.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/xxHash/0.8.3/
+rm -rf ${BUILD_DIRECTORY}/xxHash-0.8.3
+tar xvf ${DOWNLOADDIR}/xxHash-0.8.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xxHash-0.8.3
+    make -j${JOBS} CC=gcc PREFIX=${CROSSTOOLS_DIR} LIBDIR=${CROSSTOOLS_DIR}/lib64
+    make CC=gcc PREFIX=${CROSSTOOLS_DIR} LIBDIR=${CROSSTOOLS_DIR}/lib64 install
+popd 
+rm -rf ${BUILD_DIRECTORY}/xxHash-0.8.3

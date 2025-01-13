@@ -1,0 +1,47 @@
+From f72d8e30f08f9efafed73a5334694ee3111385ef Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 2 Jan 2025 14:50:44 +0000
+Subject: [PATCH] Celestia fix for fmt 11.1
+
+---
+ src/celutil/formatnum.cpp | 4 ----
+ src/celutil/formatnum.h   | 4 ----
+ 2 files changed, 8 deletions(-)
+
+diff --git a/src/celutil/formatnum.cpp b/src/celutil/formatnum.cpp
+index bb86d08..dd72a2e 100644
+--- a/src/celutil/formatnum.cpp
++++ b/src/celutil/formatnum.cpp
+@@ -57,12 +57,8 @@ struct fmt::formatter<ExtendedSubstring>
+         auto it = ctx.begin();
+         if (it != ctx.end() && *it != '}')
+         {
+-#if FMT_VERSION >= 100100
+-            throw_format_error("invalid format");
+-#else
+             assert(0);
+             return ctx.end();
+-#endif
+         }
+ 
+         return it;
+diff --git a/src/celutil/formatnum.h b/src/celutil/formatnum.h
+index 5b7fba9..7dfdcc4 100644
+--- a/src/celutil/formatnum.h
++++ b/src/celutil/formatnum.h
+@@ -121,12 +121,8 @@ struct fmt::formatter<celestia::util::FormattedFloat<T>>
+         auto it = ctx.begin();
+         if (it != ctx.end() && *it != '}')
+         {
+-#if FMT_VERSION >= 100100
+-            throw_format_error("invalid format");
+-#else
+             assert(0);
+             return ctx.end();
+-#endif
+         }
+ 
+         return it;
+-- 
+2.31.1
+

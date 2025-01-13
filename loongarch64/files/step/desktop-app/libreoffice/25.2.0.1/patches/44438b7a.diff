@@ -1,0 +1,41 @@
+From 44438b7ab8505572409a3ef96cf69f9975ef952e Mon Sep 17 00:00:00 2001
+From: Rene Engelhard <rene@rene-engelhard.de>
+Date: Sat, 07 Dec 2024 19:36:30 +0100
+Subject: [PATCH] fix skia build on loongarch64
+
+Add missing _lasx files, because otherwise we get
+
+/usr/bin/ld: /<<PKGBUILDDIR>>/workdir/GenCxxObject/UnpackedTarball/skia/src/core/SkBitmapProcState_opts.o: in function `SkOpts::Init_BitmapProcState()':
+./././workdir/UnpackedTarball/skia/src/core/SkBitmapProcState_opts.cpp:36:(.text+0x58): undefined reference to `SkOpts::Init_BitmapProcState_lasx()'
+/usr/bin/ld: /<<PKGBUILDDIR>>/workdir/GenCxxObject/UnpackedTarball/skia/src/core/SkBlitRow_opts.o: in function `SkOpts::Init_BlitRow()':
+./././workdir/UnpackedTarball/skia/src/core/SkBlitRow_opts.cpp:36:(.text+0x58): undefined reference to `SkOpts::Init_BlitRow_lasx()'
+/usr/bin/ld: /<<PKGBUILDDIR>>/workdir/GenCxxObject/UnpackedTarball/skia/src/core/SkOpts.o: in function `SkOpts::Init()':
+./././workdir/UnpackedTarball/skia/src/core/SkOpts.cpp:65:(.text+0x237d8): undefined reference to `SkOpts::Init_lasx()'
+/usr/bin/ld: /<<PKGBUILDDIR>>/workdir/GenCxxObject/UnpackedTarball/skia/src/core/SkSwizzler_opts.o: in function `SkOpts::Init_Swizzler()':
+./././workdir/UnpackedTarball/skia/src/core/SkSwizzler_opts.cpp:51:(.text+0x58): undefined reference to `SkOpts::Init_Swizzler_lasx()'
+
+cf. https://buildd.debian.org/status/fetch.php?pkg=libreoffice&arch=loong64&ver=4%3A25.2.0~beta1-1&stamp=1733592509&raw=1
+
+Change-Id: I232b4656a87a4c3d87d669769c6483e01425c0e6
+---
+
+diff --git a/external/skia/Library_skia.mk b/external/skia/Library_skia.mk
+index 40fe09a..dd99e6f 100644
+--- a/external/skia/Library_skia.mk
++++ b/external/skia/Library_skia.mk
+@@ -1309,6 +1309,15 @@
+ 	$(LO_SKIA_AVOID_INLINE_COPIES) \
+ ))
+ 
++ifeq ($(CPUNAME),LOONGARCH64)
++$(eval $(call gb_Library_add_generated_exception_objects,skia,\
++    UnpackedTarball/skia/src/opts/SkOpts_lasx \
++    UnpackedTarball/skia/src/core/SkSwizzler_opts_lasx \
++    UnpackedTarball/skia/src/core/SkBlitRow_opts_lasx \
++    UnpackedTarball/skia/src/core/SkBitmapProcState_opts_lasx, \
++        $(LO_SKIA_AVOID_INLINE_COPIES) \
++))
++endif
+ 
+ # Skcms code is used by png writer, which is used by SkiaHelper::dump(). Building
+ # this without optimizations would mean having each pixel of saved images be

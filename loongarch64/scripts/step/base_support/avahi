@@ -1,0 +1,54 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=avahi
+export PACKAGE_VERSION=0.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/avahi/0.8/
+rm -rf ${BUILD_DIRECTORY}/avahi-0.8
+tar xvf ${DOWNLOADDIR}/avahi-0.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/avahi-0.8
+        patch -Np1 -i ${SYSDIR}/files/base_support/avahi/0.8/patches/avahi-0.8-ipv6_race_condition_fix-1.patch 
+	 
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	sed -i '426a if (events & AVAHI_WATCH_HUP) { \
+client_free(c); \
+return; \
+}' avahi-daemon/simple-protocol.c
+
+        sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
+        mkdir pre-cross-build
+        pushd pre-cross-build
+                ../configure ${COMMON_CONFIG} --enable-introspection=no  --disable-static --disable-libevent \
+                --disable-mono --disable-monodoc --disable-python --disable-qt3 --disable-qt4 --disable-gtk --disable-gtk3 \
+                --enable-core-docs --with-distro=none \
+		--with-systemdsystemunitdir=/usr/lib/systemd/system \
+                --with-dbus-system-address='unix:path=/run/dbus/system_bus_socket'
+                make -j${JOBS}
+                make DESTDIR=${SYSROOT_DIR} install
+	popd
+        mkdir cross-build
+        pushd cross-build
+                ../configure ${COMMON_CONFIG} --enable-introspection=yes  --disable-static --disable-libevent \
+                --disable-mono --disable-monodoc --disable-python --disable-qt3 --disable-qt4 \
+                --enable-core-docs --with-distro=none \
+		--enable-compat-libdns_sd \
+		--with-systemdsystemunitdir=/usr/lib/systemd/system \
+                --with-dbus-system-address='unix:path=/run/dbus/system_bus_socket'
+                make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+                     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+                     VAPIGEN=${CROSS_TARGET}-vapigen
+                make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
+	popd
+	ln -sf avahi-compat-libdns_sd.pc ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig/libdns_sd.pc
+	ln -sf avahi-compat-libdns_sd/dns_sd.h ${SYSROOT_DIR}/usr/include/
+
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/avahi-0.8

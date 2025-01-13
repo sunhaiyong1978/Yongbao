@@ -1,0 +1,3 @@
+overlay_dir=KDE5
+parent_dirs=sysroot
+temp_fix=1

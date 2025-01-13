@@ -1,0 +1,36 @@
+From 457c79c492e8937d980d08e22855a68ad04eb6c3 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 8 Aug 2024 08:05:59 +0000
+Subject: [PATCH] sphinx_rtd_theme fix for sphinx require version.
+
+---
+ setup.cfg                              | 2 +-
+ sphinx_rtd_theme.egg-info/requires.txt | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/setup.cfg b/setup.cfg
+index 0f29948..4d06e95 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -45,7 +45,7 @@ zip_safe = False
+ packages = sphinx_rtd_theme
+ python_requires = >=3.6
+ install_requires = 
+-	sphinx >=5,<8
++	sphinx
+ 	docutils
+ 	sphinxcontrib-jquery >=4,<5
+ tests_require = 
+diff --git a/sphinx_rtd_theme.egg-info/requires.txt b/sphinx_rtd_theme.egg-info/requires.txt
+index 47b8fd4..f0287d9 100644
+--- a/sphinx_rtd_theme.egg-info/requires.txt
++++ b/sphinx_rtd_theme.egg-info/requires.txt
+@@ -1,4 +1,4 @@
+-sphinx<8,>=5
++sphinx
+ docutils<0.21
+ sphinxcontrib-jquery<5,>=4
+ 
+-- 
+2.31.1
+

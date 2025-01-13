@@ -1,0 +1,25 @@
+From eb3597288010793842ab24dfae654dc29dbb07b7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Jul 2024 01:43:49 +0000
+Subject: [PATCH] calc.cxx fix build for gcc 14.
+
+---
+ sw/source/core/bastyp/calc.cxx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sw/source/core/bastyp/calc.cxx b/sw/source/core/bastyp/calc.cxx
+index fbfc4b7..3621458 100644
+--- a/sw/source/core/bastyp/calc.cxx
++++ b/sw/source/core/bastyp/calc.cxx
+@@ -1000,7 +1000,7 @@ SwSbxValue SwCalc::PrimFunc(bool &rChkPow)
+             return StdFunc(&acos, true);
+         case CALC_ABS:
+             SAL_INFO("sw.calc", "abs");
+-            return StdFunc(&abs, false);
++            return StdFunc(&std::abs, false);
+         case CALC_SIGN:
+         {
+             SAL_INFO("sw.calc", "sign");
+-- 
+2.31.1
+

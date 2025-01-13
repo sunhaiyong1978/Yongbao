@@ -1,0 +1,24 @@
+From bf621929f54dbab3f3fca97bdd14a01058c54458 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 12 Jan 2024 01:20:35 +0000
+Subject: [PATCH] kodi fix build error for gcc 14.
+
+---
+ xbmc/platform/posix/filesystem/SMBWSDiscoveryListener.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/xbmc/platform/posix/filesystem/SMBWSDiscoveryListener.cpp b/xbmc/platform/posix/filesystem/SMBWSDiscoveryListener.cpp
+index d42c19b..247eac0 100644
+--- a/xbmc/platform/posix/filesystem/SMBWSDiscoveryListener.cpp
++++ b/xbmc/platform/posix/filesystem/SMBWSDiscoveryListener.cpp
+@@ -23,6 +23,7 @@
+ #include <stdio.h>
+ #include <string>
+ #include <utility>
++#include <algorithm>
+ 
+ #include <arpa/inet.h>
+ #include <fmt/format.h>
+-- 
+2.31.1
+

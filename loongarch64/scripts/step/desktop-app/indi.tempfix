@@ -1,0 +1,14 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=indi
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/indi//
+for cmake_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo) \
+                  $(find ${SYSROOT_DIR}/usr/lib64/cmake/GTest/  -name "*-release.cmake")
+do
+        if [ -f ${cmake_file} ]; then
+                sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${cmake_file}
+        fi
+done

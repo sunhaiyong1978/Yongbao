@@ -1,0 +1,1508 @@
+From 4f569892e925e1f231446e59e1cc88d226d8a8f2 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Apr 2024 06:56:37 +0000
+Subject: [PATCH 12/19] qtwebengine sandbox Add loongarch64 architecture
+ support.
+
+---
+ .../3rdparty/chromium/sandbox/features.gni    |  9 +--
+ .../3rdparty/chromium/sandbox/linux/BUILD.gn  |  1 +
+ .../linux/bpf_dsl/linux_syscall_ranges.h      |  7 ++
+ .../sandbox/linux/bpf_dsl/seccomp_macros.h    | 44 +++++++++++++
+ .../bpf_dsl_seccomp_unittest.cc               |  5 +-
+ .../seccomp_broker_process_unittest.cc        | 43 +++++++++++-
+ .../seccomp-bpf-helpers/baseline_policy.cc    | 10 +--
+ .../baseline_policy_unittest.cc               | 12 +++-
+ .../seccomp-bpf-helpers/sigsys_handlers.cc    |  2 +
+ .../syscall_parameters_restrictions.cc        | 10 +--
+ .../linux/seccomp-bpf-helpers/syscall_sets.cc | 65 +++++++++++--------
+ .../linux/seccomp-bpf-helpers/syscall_sets.h  | 16 +++--
+ .../sandbox/linux/seccomp-bpf/syscall.cc      | 32 ++++++++-
+ .../linux/seccomp-bpf/syscall_unittest.cc     |  1 +
+ .../sandbox/linux/services/credentials.cc     |  2 +-
+ .../linux/services/syscall_wrappers.cc        | 62 +++++++++++++++++-
+ .../sandbox/linux/services/syscall_wrappers.h |  6 ++
+ .../services/syscall_wrappers_unittest.cc     |  2 +
+ .../linux/syscall_broker/broker_client.cc     | 15 +++++
+ .../linux/syscall_broker/broker_client.h      |  3 +
+ .../linux/syscall_broker/broker_command.h     |  1 +
+ .../linux/syscall_broker/broker_host.cc       | 20 +++++-
+ .../linux/syscall_broker/broker_process.cc    | 21 +++---
+ .../syscall_broker/broker_process_unittest.cc | 12 +++-
+ .../remote_syscall_arg_handler_unittest.cc    |  4 ++
+ .../syscall_broker/syscall_dispatcher.cc      |  7 ++
+ .../linux/syscall_broker/syscall_dispatcher.h |  3 +
+ .../linux/system_headers/linux_seccomp.h      |  9 +++
+ .../linux/system_headers/linux_signal.h       | 10 ++-
+ .../sandbox/linux/system_headers/linux_stat.h | 47 +++++++++++++-
+ .../linux/system_headers/linux_syscalls.h     |  4 ++
+ .../policy/linux/bpf_broker_policy_linux.cc   |  6 ++
+ .../linux/bpf_cros_amd_gpu_policy_linux.cc    |  2 +-
+ .../policy/linux/bpf_gpu_policy_linux.cc      |  2 +-
+ .../policy/linux/bpf_network_policy_linux.cc  |  2 +-
+ .../sandbox/policy/linux/sandbox_linux.cc     |  4 ++
+ 36 files changed, 428 insertions(+), 73 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/features.gni b/qtwebengine/src/3rdparty/chromium/sandbox/features.gni
+index 843414411..abcec1425 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/features.gni
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/features.gni
+@@ -6,10 +6,11 @@
+ # currently.
+ # Do not disable seccomp_bpf anywhere without talking to
+ # security@chromium.org!
+-use_seccomp_bpf = (is_linux || is_chromeos || is_android) &&
+-                  (current_cpu == "x86" || current_cpu == "x64" ||
+-                   current_cpu == "arm" || current_cpu == "arm64" ||
+-                   current_cpu == "mipsel" || current_cpu == "mips64el")
++use_seccomp_bpf =
++    (is_linux || is_chromeos || is_android) &&
++    (current_cpu == "x86" || current_cpu == "x64" || current_cpu == "arm" ||
++     current_cpu == "arm64" || current_cpu == "mipsel" ||
++     current_cpu == "mips64el" || current_cpu == "loong64")
+ 
+ # SSBD (Speculative Store Bypass Disable) is a mitigation of Spectre Variant 4.
+ # As Spectre Variant 4 can be mitigated by site isolation, opt-out SSBD on site
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/BUILD.gn b/qtwebengine/src/3rdparty/chromium/sandbox/linux/BUILD.gn
+index 483488a3f..72d2f08cd 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/BUILD.gn
+@@ -396,6 +396,7 @@ source_set("sandbox_services_headers") {
+     "system_headers/linux_stat.h",
+     "system_headers/linux_syscalls.h",
+     "system_headers/linux_time.h",
++    "system_headers/loongarch64_linux_syscalls.h",
+     "system_headers/mips64_linux_syscalls.h",
+     "system_headers/mips_linux_syscalls.h",
+     "system_headers/x86_32_linux_syscalls.h",
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/linux_syscall_ranges.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/linux_syscall_ranges.h
+index 1d0590b7d..f12599c65 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/linux_syscall_ranges.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/linux_syscall_ranges.h
+@@ -56,6 +56,13 @@
+ #define MAX_PUBLIC_SYSCALL __NR_syscalls
+ #define MAX_SYSCALL MAX_PUBLIC_SYSCALL
+ 
++#elif defined(__loongarch_lp64)
++
++#include <asm-generic/unistd.h>
++#define MIN_SYSCALL 0u
++#define MAX_PUBLIC_SYSCALL __NR_syscalls
++#define MAX_SYSCALL MAX_PUBLIC_SYSCALL
++
+ #else
+ #error "Unsupported architecture"
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/seccomp_macros.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/seccomp_macros.h
+index 87d5825aa..063232448 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/seccomp_macros.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/bpf_dsl/seccomp_macros.h
+@@ -343,6 +343,50 @@ struct regs_struct {
+ #define SECCOMP_PT_PARM4(_regs) (_regs).regs[3]
+ #define SECCOMP_PT_PARM5(_regs) (_regs).regs[4]
+ #define SECCOMP_PT_PARM6(_regs) (_regs).regs[5]
++
++#elif defined(__loongarch_lp64)
++struct regs_struct {
++  uint64_t regs[32];
++  uint64_t pc;
++};
++
++typedef unsigned long int greg_t;
++
++#define SECCOMP_ARCH AUDIT_ARCH_LOONGARCH64
++
++#define SECCOMP_REG(_ctx, _reg) ((_ctx)->uc_mcontext.__gregs[_reg])
++
++#define SECCOMP_RESULT(_ctx) SECCOMP_REG(_ctx, 4)
++#define SECCOMP_SYSCALL(_ctx) SECCOMP_REG(_ctx, 11)
++#define SECCOMP_IP(_ctx) (_ctx)->uc_mcontext.__pc
++#define SECCOMP_PARM1(_ctx) SECCOMP_REG(_ctx, 4)
++#define SECCOMP_PARM2(_ctx) SECCOMP_REG(_ctx, 5)
++#define SECCOMP_PARM3(_ctx) SECCOMP_REG(_ctx, 6)
++#define SECCOMP_PARM4(_ctx) SECCOMP_REG(_ctx, 7)
++#define SECCOMP_PARM5(_ctx) SECCOMP_REG(_ctx, 8)
++#define SECCOMP_PARM6(_ctx) SECCOMP_REG(_ctx, 9)
++
++#define SECCOMP_NR_IDX (offsetof(struct arch_seccomp_data, nr))
++#define SECCOMP_ARCH_IDX (offsetof(struct arch_seccomp_data, arch))
++#define SECCOMP_IP_MSB_IDX \
++  (offsetof(struct arch_seccomp_data, instruction_pointer) + 4)
++#define SECCOMP_IP_LSB_IDX \
++  (offsetof(struct arch_seccomp_data, instruction_pointer) + 0)
++#define SECCOMP_ARG_MSB_IDX(nr) \
++  (offsetof(struct arch_seccomp_data, args) + 8 * (nr) + 4)
++#define SECCOMP_ARG_LSB_IDX(nr) \
++  (offsetof(struct arch_seccomp_data, args) + 8 * (nr) + 0)
++
++#define SECCOMP_PT_RESULT(_regs) (_regs).regs[4]
++#define SECCOMP_PT_SYSCALL(_regs) (_regs).regs[11]
++#define SECCOMP_PT_IP(_regs) (_regs).pc
++#define SECCOMP_PT_PARM1(_regs) (_regs).regs[4]
++#define SECCOMP_PT_PARM2(_regs) (_regs).regs[5]
++#define SECCOMP_PT_PARM3(_regs) (_regs).regs[6]
++#define SECCOMP_PT_PARM4(_regs) (_regs).regs[7]
++#define SECCOMP_PT_PARM5(_regs) (_regs).regs[8]
++#define SECCOMP_PT_PARM6(_regs) (_regs).regs[9]
++
+ #else
+ #error Unsupported target platform
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc
+index 4a2721c7c..45bf9bf79 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc
+@@ -1932,7 +1932,8 @@ BPF_TEST_C(SandboxBPF, PthreadBitMask, PthreadPolicyBitMask) {
+ //
+ // Depending on the architecture, this may modify regs, so the caller is
+ // responsible for committing these changes using PTRACE_SETREGS.
+-#if !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__)
++#if !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__) && \
++    !defined(__loongarch__)
+ long SetSyscall(pid_t pid, regs_struct* regs, int syscall_number) {
+ #if defined(__arm__)
+   // On ARM, the syscall is changed using PTRACE_SET_SYSCALL.  We cannot use the
+@@ -1972,7 +1973,7 @@ SANDBOX_TEST(SandboxBPF, DISABLE_ON_TSAN(SeccompRetTrace)) {
+ // See https://code.google.com/p/chromium/issues/detail?id=383977
+ #if defined(__arm__) || defined(__aarch64__)
+   printf("This test is currently disabled on ARM32/64 due to a kernel bug.");
+-#elif defined(__mips__)
++#elif defined(__mips__) || defined(__loongarch__)
+   // TODO: Figure out how to support specificity of handling indirect syscalls
+   //        in this test and enable it.
+   printf("This test is currently disabled on MIPS.");
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/seccomp_broker_process_unittest.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/seccomp_broker_process_unittest.cc
+index 967b50741..db2c1cf08 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/seccomp_broker_process_unittest.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/integration_tests/seccomp_broker_process_unittest.cc
+@@ -224,6 +224,7 @@ const int kFakeErrnoSentinel = 254;
+ 
+ void ConvertKernelStatToLibcStat(default_stat_struct& in_stat,
+                                  struct stat& out_stat) {
++#if !defined(ARCH_CPU_LOONGARCH64)
+   out_stat.st_dev = in_stat.st_dev;
+   out_stat.st_ino = in_stat.st_ino;
+   out_stat.st_mode = in_stat.st_mode;
+@@ -240,6 +241,28 @@ void ConvertKernelStatToLibcStat(default_stat_struct& in_stat,
+   out_stat.st_mtim.tv_nsec = in_stat.st_mtime_nsec_;
+   out_stat.st_ctim.tv_sec = in_stat.st_ctime_;
+   out_stat.st_ctim.tv_nsec = in_stat.st_ctime_nsec_;
++#else
++  out_stat.st_dev =
++      ((in_stat.stx_dev_minor & 0xff) | (in_stat.stx_dev_major << 8) |
++       ((in_stat.stx_dev_minor & ~0xff) << 12));
++  out_stat.st_rdev =
++      ((in_stat.stx_rdev_minor & 0xff) | (in_stat.stx_rdev_major << 8) |
++       ((in_stat.stx_rdev_minor & ~0xff) << 12));
++  out_stat.st_ino = in_stat.stx_ino;
++  out_stat.st_mode = in_stat.stx_mode;
++  out_stat.st_nlink = in_stat.stx_nlink;
++  out_stat.st_uid = in_stat.stx_uid;
++  out_stat.st_gid = in_stat.stx_gid;
++  out_stat.st_atim.tv_sec = in_stat.stx_atime.tv_sec;
++  out_stat.st_atim.tv_nsec = in_stat.stx_atime.tv_nsec;
++  out_stat.st_mtim.tv_sec = in_stat.stx_mtime.tv_sec;
++  out_stat.st_mtim.tv_nsec = in_stat.stx_mtime.tv_nsec;
++  out_stat.st_ctim.tv_sec = in_stat.stx_ctime.tv_sec;
++  out_stat.st_ctim.tv_nsec = in_stat.stx_ctime.tv_nsec;
++  out_stat.st_size = in_stat.stx_size;
++  out_stat.st_blocks = in_stat.stx_blocks;
++  out_stat.st_blksize = in_stat.stx_blksize;
++#endif
+ }
+ }  // namespace
+ 
+@@ -408,6 +431,7 @@ class DirectSyscaller : public Syscaller {
+ };
+ #endif  // defined(DIRECT_SYSCALLER_ENABLED)
+ 
++#if !defined(ARCH_CPU_LOONGARCH64)
+ class LibcSyscaller : public Syscaller {
+  public:
+   ~LibcSyscaller() override = default;
+@@ -476,6 +500,7 @@ class LibcSyscaller : public Syscaller {
+     return ret;
+   }
+ };
++#endif
+ 
+ enum class SyscallerType {
+   IPCSyscaller = 0,
+@@ -629,7 +654,12 @@ class BPFTesterBrokerDelegate : public BPFTesterDelegate {
+ #endif
+         break;
+       case SyscallerType::LibcSyscaller:
++#if !defined(ARCH_CPU_LOONGARCH64)
+         syscaller_ = std::make_unique<LibcSyscaller>();
++#else
++        CHECK(false) << "Requested instantiation of LibcSyscaller on a "
++                        "platform that doesn't support it";
++#endif
+         break;
+       case SyscallerType::NoSyscaller:
+         syscaller_ = nullptr;
+@@ -663,16 +693,21 @@ const std::vector<BrokerTestConfiguration> broker_test_configs = {
+     {"FastCheckInClient_DirectSyscaller", true, SyscallerType::DirectSyscaller,
+      BrokerType::SIGNAL_BASED},
+ #endif
++#if !defined(ARCH_CPU_LOONGARCH64)
+     {"FastCheckInClient_LibcSyscaller", true, SyscallerType::LibcSyscaller,
+      BrokerType::SIGNAL_BASED},
++#endif
+     {"NoFastCheckInClient_IPCSyscaller", false, SyscallerType::IPCSyscaller,
+      BrokerType::SIGNAL_BASED},
+ #if defined(DIRECT_SYSCALLER_ENABLED)
+     {"NoFastCheckInClient_DirectSyscaller", false,
+      SyscallerType::DirectSyscaller, BrokerType::SIGNAL_BASED},
+ #endif
++#if !defined(ARCH_CPU_LOONGARCH64)
+     {"NoFastCheckInClient_LibcSyscaller", false, SyscallerType::LibcSyscaller,
+-     BrokerType::SIGNAL_BASED}};
++     BrokerType::SIGNAL_BASED}
++#endif
++};
+ }  // namespace
+ 
+ void RunSingleBrokerTest(BrokerTestDelegate* test_delegate,
+@@ -1394,6 +1429,7 @@ class StatNonexistentFileWithPermissionsDelegate final
+   }
+ 
+   void RunTestInSandboxedChild(Syscaller* syscaller) override {
++#if !defined(ARCH_CPU_LOONGARCH64)
+     BPF_ASSERT_EQ(-ENOENT, syscaller->Stat(nonesuch_name, follow_links, &sb_));
+ 
+     // Gets denied all the way back to root since no create permission.
+@@ -1417,6 +1453,7 @@ class StatNonexistentFileWithPermissionsDelegate final
+                   syscaller->Stat(bad_leading_path5, follow_links, &sb_));
+     BPF_ASSERT_EQ(-kFakeErrnoSentinel,
+                   syscaller->Stat(bad_leading_path6, follow_links, &sb_));
++#endif
+   }
+ };
+ 
+@@ -1446,6 +1483,7 @@ class StatNonexistentFileWithCreatePermissionsDelegate final
+   }
+ 
+   void RunTestInSandboxedChild(Syscaller* syscaller) override {
++#if !defined(ARCH_CPU_LOONGARCH64)
+     BPF_ASSERT_EQ(-ENOENT, syscaller->Stat(nonesuch_name, follow_links, &sb_));
+ 
+     // Gets ENOENT all the way back to root since it has create permission.
+@@ -1468,6 +1506,7 @@ class StatNonexistentFileWithCreatePermissionsDelegate final
+                   syscaller->Stat(bad_leading_path5, follow_links, &sb_));
+     BPF_ASSERT_EQ(-kFakeErrnoSentinel,
+                   syscaller->Stat(bad_leading_path6, follow_links, &sb_));
++#endif
+   }
+ };
+ 
+@@ -1496,6 +1535,7 @@ class StatFileWithPermissionsDelegate final : public StatFileDelegate {
+   }
+ 
+   void RunTestInSandboxedChild(Syscaller* syscaller) override {
++#if !defined(ARCH_CPU_LOONGARCH64)
+     BPF_ASSERT_EQ(0, syscaller->Stat(tempfile_name_, follow_links, &sb_));
+ 
+     // Following fields may never be consistent but should be non-zero.
+@@ -1518,6 +1558,7 @@ class StatFileWithPermissionsDelegate final : public StatFileDelegate {
+     BPF_ASSERT_LT(1500000000u, static_cast<unsigned int>(sb_.st_atime));
+     BPF_ASSERT_LT(1500000000u, static_cast<unsigned int>(sb_.st_mtime));
+     BPF_ASSERT_LT(1500000000u, static_cast<unsigned int>(sb_.st_ctime));
++#endif
+   }
+ };
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+index 7bde50111..06276560d 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+@@ -193,7 +193,7 @@ ResultExpr EvaluateSyscallImpl(int fs_denied_errno,
+     return RestrictFcntlCommands();
+ #endif
+ 
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+   // fork() is never used as a system call (clone() is used instead), but we
+   // have seen it in fallback code on Android.
+   if (sysno == __NR_fork) {
+@@ -255,7 +255,7 @@ ResultExpr EvaluateSyscallImpl(int fs_denied_errno,
+   }
+ 
+ #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch_lp64)
+   if (sysno == __NR_mmap)
+     return RestrictMmapFlags();
+ #endif
+@@ -276,7 +276,7 @@ ResultExpr EvaluateSyscallImpl(int fs_denied_errno,
+     return RestrictPrctl();
+ 
+ #if defined(__x86_64__) || defined(__arm__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch_lp64)
+   if (sysno == __NR_socketpair) {
+     // Only allow AF_UNIX, PF_UNIX. Crash if anything else is seen.
+     static_assert(AF_UNIX == PF_UNIX,
+@@ -302,12 +302,14 @@ ResultExpr EvaluateSyscallImpl(int fs_denied_errno,
+     return Allow();
+   }
+ 
++#if !defined(__loongarch__)
+   // The fstatat syscalls are file system syscalls, which will be denied below
+   // with fs_denied_errno. However some allowed fstat syscalls are rewritten by
+   // libc implementations to fstatat syscalls, and we need to rewrite them back.
+   if (sysno == __NR_fstatat_default) {
+     return RewriteFstatatSIGSYS(fs_denied_errno);
+   }
++#endif
+ 
+   // The statx syscall is a filesystem syscall, which will be denied below with
+   // fs_denied_errno. However, on some platforms, glibc will default to statx
+@@ -366,7 +368,7 @@ ResultExpr EvaluateSyscallImpl(int fs_denied_errno,
+   // Allow creating pipes, but don't allow weird flags to pipe2().
+   // O_NOTIFICATION_PIPE (== O_EXCL) can be used to create
+   // "notification pipes", which are rarely used.
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+   if (sysno == __NR_pipe) {
+     return Allow();
+   }
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc
+index dbbf1fb51..3972f9e7b 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc
+@@ -54,9 +54,12 @@ namespace {
+ 
+ // This also tests that read(), write(), fstat(), and fstatat(.., "", ..,
+ // AT_EMPTY_PATH) are allowed.
++// Use statx instead of stat,lstat and fstatat on loongarch64 architecture,
++// So not test fstat(), and fstatat on loongarch64.
+ void TestPipeOrSocketPair(base::ScopedFD read_end, base::ScopedFD write_end) {
+   BPF_ASSERT_LE(0, read_end.get());
+   BPF_ASSERT_LE(0, write_end.get());
++#if !defined(__loongarch_lp64)
+   struct stat stat_buf;
+   int sys_ret = fstat(read_end.get(), &stat_buf);
+   BPF_ASSERT_EQ(0, sys_ret);
+@@ -75,6 +78,7 @@ void TestPipeOrSocketPair(base::ScopedFD read_end, base::ScopedFD write_end) {
+   sys_ret = fstatat(read_end.get(), "", &stat_buf, 0);
+   BPF_ASSERT_EQ(sys_ret, -1);
+   BPF_ASSERT_EQ(EPERM, errno);
++#endif
+ 
+   const ssize_t kTestTransferSize = 4;
+   static const char kTestString[kTestTransferSize] = {'T', 'E', 'S', 'T'};
+@@ -256,7 +260,8 @@ BPF_TEST_C(BaselinePolicy, GetRandom, BaselinePolicy) {
+ }
+ 
+ // Not all architectures can restrict the domain for socketpair().
+-#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
++#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
++    defined(__loongarch_lp64)
+ BPF_DEATH_TEST_C(BaselinePolicy,
+                  SocketpairWrongDomain,
+                  DEATH_SEGV_MESSAGE(GetErrorMessageContentForTests()),
+@@ -265,7 +270,8 @@ BPF_DEATH_TEST_C(BaselinePolicy,
+   std::ignore = socketpair(AF_INET, SOCK_STREAM, 0, sv);
+   _exit(1);
+ }
+-#endif  // defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
++#endif  // defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) ||
++        // defined(__loongarch_lp64)
+ 
+ BPF_TEST_C(BaselinePolicy, EPERM_open, BaselinePolicy) {
+   errno = 0;
+@@ -329,7 +335,7 @@ TEST_BASELINE_SIGSYS(__NR_sysinfo)
+ TEST_BASELINE_SIGSYS(__NR_syslog)
+ TEST_BASELINE_SIGSYS(__NR_timer_create)
+ 
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+ TEST_BASELINE_SIGSYS(__NR_inotify_init)
+ TEST_BASELINE_SIGSYS(__NR_vserver)
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
+index 4bf133a4e..d275bd5b0 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
+@@ -354,6 +354,7 @@ intptr_t SIGSYSSchedHandler(const struct arch_seccomp_data& args,
+ 
+ intptr_t SIGSYSFstatatHandler(const struct arch_seccomp_data& args,
+                               void* fs_denied_errno) {
++#if !defined(__loongarch__)
+   if (args.nr == __NR_fstatat_default) {
+     if (*reinterpret_cast<const char*>(args.args[1]) == '\0' &&
+         args.args[3] == static_cast<uint64_t>(AT_EMPTY_PATH)) {
+@@ -362,6 +363,7 @@ intptr_t SIGSYSFstatatHandler(const struct arch_seccomp_data& args,
+     }
+     return -reinterpret_cast<intptr_t>(fs_denied_errno);
+   }
++#endif
+ 
+   CrashSIGSYS_Handler(args, fs_denied_errno);
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+index ba995ace6..52a18b7cb 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+@@ -35,8 +35,8 @@
+ #include "sandbox/linux/system_headers/linux_syscalls.h"
+ #include "sandbox/linux/system_headers/linux_time.h"
+ 
+-#if (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)) && \
+-    !defined(__arm__) && !defined(__aarch64__) &&             \
++#if (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)) &&                \
++    !defined(__arm__) && !defined(__aarch64__) && !defined(__loongarch__) && \
+     !defined(PTRACE_GET_THREAD_AREA)
+ // Also include asm/ptrace-abi.h since ptrace.h in older libc (for instance
+ // the one in Ubuntu 16.04 LTS) is missing PTRACE_GET_THREAD_AREA.
+@@ -460,8 +460,10 @@ ResultExpr RestrictPtrace() {
+   return Switch(request)
+       .Cases({
+ #if !defined(__aarch64__)
+-                 PTRACE_GETREGS, PTRACE_GETFPREGS, PTRACE_GET_THREAD_AREA,
+-                 PTRACE_GETREGSET,
++                 PTRACE_GETREGS, PTRACE_GETFPREGS, PTRACE_GETREGSET,
++#if !defined(__loongarch_lp64)
++                 PTRACE_GET_THREAD_AREA,
++#endif
+ #endif
+ #if defined(__arm__)
+                  PTRACE_GETVFPREGS,
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+index 27ea26407..d74f9b162 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+@@ -103,7 +103,7 @@ bool SyscallSets::IsUmask(int sysno) {
+ // Both EPERM and ENOENT are valid errno unless otherwise noted in comment.
+ bool SyscallSets::IsFileSystem(int sysno) {
+   switch (sysno) {
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_access:  // EPERM not a valid errno.
+     case __NR_chmod:
+     case __NR_chown:
+@@ -133,7 +133,9 @@ bool SyscallSets::IsFileSystem(int sysno) {
+ 
+     case __NR_execve:
+     case __NR_faccessat:  // EPERM not a valid errno.
++#if !defined(__loongarch__)
+     case __NR_faccessat2:
++#endif
+     case __NR_fchmodat:
+     case __NR_fchownat:  // Should be called chownat ?
+ #if defined(__x86_64__) || defined(__aarch64__)
+@@ -211,7 +213,12 @@ bool SyscallSets::IsTruncate(int sysno) {
+ 
+ bool SyscallSets::IsAllowedFileSystemAccessViaFd(int sysno) {
+   switch (sysno) {
++#if !defined(__loongarch__)
+     case __NR_fstat:
++#endif
++#if defined(__loongarch__)
++    case __NR_statx:
++#endif
+     case __NR_ftruncate:
+ #if defined(__i386__) || defined(__arm__) || \
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS))
+@@ -241,7 +248,7 @@ bool SyscallSets::IsAllowedFileSystemAccessViaFd(int sysno) {
+     case __NR_oldfstat:
+ #endif
+ #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch__)
+     case __NR_sync_file_range:  // EPERM not a valid errno.
+ #elif defined(__arm__)
+     case __NR_arm_sync_file_range:  // EPERM not a valid errno.
+@@ -260,7 +267,7 @@ bool SyscallSets::IsDeniedFileSystemAccessViaFd(int sysno) {
+ #if defined(__i386__) || defined(__arm__)
+     case __NR_fchown32:
+ #endif
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_getdents:    // EPERM not a valid errno.
+ #endif
+     case __NR_getdents64:  // EPERM not a valid errno.
+@@ -339,7 +346,7 @@ bool SyscallSets::IsProcessPrivilegeChange(int sysno) {
+ bool SyscallSets::IsProcessGroupOrSession(int sysno) {
+   switch (sysno) {
+     case __NR_setpgid:
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_getpgrp:
+ #endif
+     case __NR_setsid:
+@@ -373,7 +380,7 @@ bool SyscallSets::IsAllowedSignalHandling(int sysno) {
+     case __NR_rt_sigqueueinfo:
+     case __NR_rt_sigsuspend:
+     case __NR_rt_tgsigqueueinfo:
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_signalfd:
+ #endif
+     case __NR_signalfd4:
+@@ -397,12 +404,12 @@ bool SyscallSets::IsAllowedOperationOnFd(int sysno) {
+   switch (sysno) {
+     case __NR_close:
+     case __NR_dup:
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_dup2:
+ #endif
+     case __NR_dup3:
+ #if defined(__x86_64__) || defined(__arm__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch_lp64)
+     case __NR_shutdown:
+ #endif
+       return true;
+@@ -441,7 +448,7 @@ bool SyscallSets::IsAllowedProcessStartOrDeath(int sysno) {
+       return true;
+     case __NR_clone:  // Should be parameter-restricted.
+     case __NR_setns:  // Privileged.
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_fork:
+ #endif
+ #if defined(__i386__) || defined(__x86_64__)
+@@ -452,7 +459,7 @@ bool SyscallSets::IsAllowedProcessStartOrDeath(int sysno) {
+ #endif
+     case __NR_set_tid_address:
+     case __NR_unshare:
+-#if !defined(__mips__) && !defined(__aarch64__)
++#if !defined(__mips__) && !defined(__aarch64__) && !defined(__loongarch__)
+     case __NR_vfork:
+ #endif
+     default:
+@@ -477,7 +484,7 @@ bool SyscallSets::IsAllowedFutex(int sysno) {
+ 
+ bool SyscallSets::IsAllowedEpoll(int sysno) {
+   switch (sysno) {
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_epoll_create:
+     case __NR_epoll_wait:
+ #endif
+@@ -499,7 +506,7 @@ bool SyscallSets::IsAllowedEpoll(int sysno) {
+ bool SyscallSets::IsDeniedGetOrModifySocket(int sysno) {
+   switch (sysno) {
+ #if defined(__x86_64__) || defined(__arm__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch__)
+     case __NR_accept:
+     case __NR_accept4:
+     case __NR_bind:
+@@ -528,7 +535,8 @@ bool SyscallSets::IsSocketCall(int sysno) {
+ }
+ #endif
+ 
+-#if defined(__x86_64__) || defined(__arm__) || defined(__mips__)
++#if defined(__x86_64__) || defined(__arm__) || defined(__mips__) || \
++    defined(__loongarch__)
+ bool SyscallSets::IsNetworkSocketInformation(int sysno) {
+   switch (sysno) {
+     case __NR_getpeername:
+@@ -553,7 +561,7 @@ bool SyscallSets::IsAllowedAddressSpaceAccess(int sysno) {
+     case __NR_mincore:
+     case __NR_mlockall:
+ #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch__)
+     case __NR_mmap:
+ #endif
+ #if defined(__i386__) || defined(__arm__) || \
+@@ -586,7 +594,7 @@ bool SyscallSets::IsAllowedGeneralIo(int sysno) {
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS))
+     case __NR__llseek:
+ #endif
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_poll:
+ #endif
+     case __NR_ppoll:
+@@ -607,7 +615,7 @@ bool SyscallSets::IsAllowedGeneralIo(int sysno) {
+     case __NR_recv:
+ #endif
+ #if defined(__x86_64__) || defined(__arm__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch__)
+     case __NR_recvfrom:  // Could specify source.
+     case __NR_recvmsg:   // Could specify source.
+ #endif
+@@ -622,7 +630,7 @@ bool SyscallSets::IsAllowedGeneralIo(int sysno) {
+     case __NR_send:
+ #endif
+ #if defined(__x86_64__) || defined(__arm__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch__)
+     case __NR_sendmsg:  // Could specify destination.
+     case __NR_sendto:   // Could specify destination.
+ #endif
+@@ -671,7 +679,7 @@ bool SyscallSets::IsSeccomp(int sysno) {
+ bool SyscallSets::IsAllowedBasicScheduler(int sysno) {
+   switch (sysno) {
+     case __NR_sched_yield:
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_pause:
+ #endif
+     case __NR_nanosleep:
+@@ -755,7 +763,7 @@ bool SyscallSets::IsNuma(int sysno) {
+     case __NR_getcpu:
+     case __NR_mbind:
+ #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch__)
+     case __NR_migrate_pages:
+ #endif
+     case __NR_move_pages:
+@@ -790,7 +798,7 @@ bool SyscallSets::IsGlobalProcessEnvironment(int sysno) {
+   switch (sysno) {
+     case __NR_acct:  // Privileged.
+ #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch__)
+     case __NR_getrlimit:
+ #endif
+ #if defined(__i386__) || defined(__arm__)
+@@ -825,7 +833,7 @@ bool SyscallSets::IsDebug(int sysno) {
+ 
+ bool SyscallSets::IsGlobalSystemStatus(int sysno) {
+   switch (sysno) {
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR__sysctl:
+     case __NR_sysfs:
+ #endif
+@@ -843,7 +851,7 @@ bool SyscallSets::IsGlobalSystemStatus(int sysno) {
+ 
+ bool SyscallSets::IsEventFd(int sysno) {
+   switch (sysno) {
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_eventfd:
+ #endif
+     case __NR_eventfd2:
+@@ -895,7 +903,8 @@ bool SyscallSets::IsKeyManagement(int sysno) {
+ }
+ 
+ #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
+-    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) ||    \
++    defined(__loongarch_lp64)
+ bool SyscallSets::IsSystemVSemaphores(int sysno) {
+   switch (sysno) {
+     case __NR_semctl:
+@@ -914,7 +923,7 @@ bool SyscallSets::IsSystemVSemaphores(int sysno) {
+ #endif
+ 
+ #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || \
+-    defined(__aarch64__) ||                                         \
++    defined(__aarch64__) || defined(__loongarch_lp64) ||               \
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
+ // These give a lot of ambient authority and bypass the setuid sandbox.
+ bool SyscallSets::IsSystemVSharedMemory(int sysno) {
+@@ -931,7 +940,8 @@ bool SyscallSets::IsSystemVSharedMemory(int sysno) {
+ #endif
+ 
+ #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
+-    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) ||    \
++    defined(__loongarch_lp64)
+ bool SyscallSets::IsSystemVMessageQueue(int sysno) {
+   switch (sysno) {
+     case __NR_msgctl:
+@@ -962,7 +972,8 @@ bool SyscallSets::IsSystemVIpc(int sysno) {
+ 
+ bool SyscallSets::IsAnySystemV(int sysno) {
+ #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
+-    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) ||    \
++    defined(__loongarch_lp64)
+   return IsSystemVMessageQueue(sysno) || IsSystemVSemaphores(sysno) ||
+          IsSystemVSharedMemory(sysno);
+ #elif defined(__i386__) || \
+@@ -999,7 +1010,7 @@ bool SyscallSets::IsAdvancedScheduler(int sysno) {
+ bool SyscallSets::IsInotify(int sysno) {
+   switch (sysno) {
+     case __NR_inotify_add_watch:
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_inotify_init:
+ #endif
+     case __NR_inotify_init1:
+@@ -1137,7 +1148,7 @@ bool SyscallSets::IsMisc(int sysno) {
+ #if defined(__x86_64__)
+     case __NR_tuxcall:
+ #endif
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_vserver:
+ #endif
+       return true;
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.h
+index 9be7b03ec..2acc20f8b 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.h
+@@ -52,7 +52,7 @@ class SANDBOX_EXPORT SyscallSets {
+ #endif
+ 
+ #if defined(__x86_64__) || defined(__arm__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch_lp64)
+   static bool IsNetworkSocketInformation(int sysno);
+ #endif
+ 
+@@ -79,23 +79,27 @@ class SANDBOX_EXPORT SyscallSets {
+   static bool IsAsyncIo(int sysno);
+   static bool IsKeyManagement(int sysno);
+ #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
+-    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) ||    \
++    defined(__loongarch_lp64)
+   static bool IsSystemVSemaphores(int sysno);
+ #endif
+ #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || \
+     defined(__aarch64__) ||                                         \
+-    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) || \
++    defined(__loongarch_lp64)
+   // These give a lot of ambient authority and bypass the setuid sandbox.
+   static bool IsSystemVSharedMemory(int sysno);
+ #endif
+ 
+ #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
+-    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) ||    \
++    defined(__loongarch_lp64)
+   static bool IsSystemVMessageQueue(int sysno);
+ #endif
+ 
+-#if defined(__i386__) || \
+-    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS))
++#if defined(__i386__) ||                                            \
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS)) || \
++    defined(__looongarch__)
+   // Big system V multiplexing system call.
+   static bool IsSystemVIpc(int sysno);
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall.cc
+index 02cbb047c..733e48b0c 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall.cc
+@@ -18,7 +18,7 @@ namespace sandbox {
+ namespace {
+ 
+ #if defined(ARCH_CPU_X86_FAMILY) || defined(ARCH_CPU_ARM_FAMILY) || \
+-    defined(ARCH_CPU_MIPS_FAMILY)
++    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_LOONGARCH_FAMILY)
+ // Number that's not currently used by any Linux kernel ABIs.
+ const int kInvalidSyscallNumber = 0x351d3;
+ #else
+@@ -308,6 +308,25 @@ asm(// We need to be able to tell the kernel exactly where we made a
+     "2:ret\n"
+     ".cfi_endproc\n"
+     ".size SyscallAsm, .-SyscallAsm\n"
++#elif defined(__loongarch_lp64)
++    ".text\n"
++    ".global SyscallAsm\n"
++    ".type SyscallAsm, %function\n"
++    "SyscallAsm:\n"
++    "bge $a0, $zero, 1f\n"
++    "la $a0, 2f\n"
++    "b 2f\n"
++    "1:ld.d $a5, $a6, 40\n"
++    "ld.d $a4, $a6, 32\n"
++    "ld.d $a3, $a6, 24\n"
++    "ld.d $a2, $a6, 16\n"
++    "ld.d $a1, $a6, 8\n"
++    "move $a7, $a0\n"
++    "ld.d $a0, $a6, 0\n"
++    // Enter the kernel
++    "syscall 0\n"
++    "2:jirl $zero, $ra, 0\n"
++    ".size SyscallAsm, .-SyscallAsm\n"
+ #endif
+     );  // asm
+ 
+@@ -425,6 +444,17 @@ intptr_t Syscall::Call(int nr,
+     ret = inout;
+   }
+ 
++#elif defined(__loongarch_lp64)
++  intptr_t ret;
++  {
++    register intptr_t inout __asm__("$r4") = nr;
++    register const intptr_t* data __asm__("$r10") = args;
++    asm volatile("bl SyscallAsm\n"
++                 : "=r"(inout)
++                 : "0"(inout), "r"(data)
++                 : "memory", "$r5", "$r6", "$r7", "$r8", "$r9", "$r11", "$r1");
++    ret = inout;
++  }
+ #else
+ #error "Unimplemented architecture"
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall_unittest.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall_unittest.cc
+index 9667feaae..80403a2f6 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall_unittest.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/syscall_unittest.cc
+@@ -65,6 +65,7 @@ TEST(Syscall, WellKnownEntryPoint) {
+   EXPECT_EQ(0x0cu, (((uint32_t*)Syscall::Call(-1))[-1]) & 0x0000FFFF);
+ #elif defined(__aarch64__)
+   EXPECT_EQ(0xD4000001u, ((uint32_t*)Syscall::Call(-1))[-1]);  // SVC 0
++#elif defined(__loongarch_lp64)
+ #else
+ #warning Incomplete test case; need port for target platform
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/credentials.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/credentials.cc
+index e284c59d2..ea30f3627 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/credentials.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/credentials.cc
+@@ -80,7 +80,7 @@ bool ChrootToSafeEmptyDir() {
+   pid_t pid = -1;
+   alignas(16) char stack_buf[PTHREAD_STACK_MIN];
+ #if defined(ARCH_CPU_X86_FAMILY) || defined(ARCH_CPU_ARM_FAMILY) || \
+-    defined(ARCH_CPU_MIPS_FAMILY)
++    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_LOONGARCH_FAMILY)
+   // The stack grows downward.
+   void* stack = stack_buf + sizeof(stack_buf);
+ #else
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.cc
+index 7650e983b..bfed1c20f 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.cc
+@@ -58,7 +58,7 @@ long sys_clone(unsigned long flags,
+   if (ctid) MSAN_UNPOISON(ctid, sizeof(*ctid));
+   // See kernel/fork.c in Linux. There is different ordering of sys_clone
+   // parameters depending on CONFIG_CLONE_BACKWARDS* configuration options.
+-#if defined(ARCH_CPU_X86_64)
++#if defined(ARCH_CPU_X86_64) || defined(ARCH_CPU_LOONGARCH64)
+   return syscall(__NR_clone, flags, child_stack, ptid, ctid, tls);
+ #elif defined(ARCH_CPU_X86) || defined(ARCH_CPU_ARM_FAMILY) || \
+     defined(ARCH_CPU_MIPS_FAMILY)
+@@ -163,11 +163,58 @@ int sys_sigaction(int signum,
+   return sigaction(signum, act, oldact);
+ }
+ 
++void statx_to_stat(struct kernel_stat* to, struct kernel_statx* from) {
++  memset(to, 0, sizeof(struct kernel_stat));
++  to->st_dev = ((from->stx_dev_minor & 0xff) | (from->stx_dev_major << 8) |
++                ((from->stx_dev_minor & ~0xff) << 12));
++  to->st_rdev = ((from->stx_rdev_minor & 0xff) | (from->stx_rdev_major << 8) |
++                 ((from->stx_rdev_minor & ~0xff) << 12));
++  to->st_ino = from->stx_ino;
++  to->st_mode = from->stx_mode;
++  to->st_nlink = from->stx_nlink;
++  to->st_uid = from->stx_uid;
++  to->st_gid = from->stx_gid;
++  to->st_atime_ = from->stx_atime.tv_sec;
++  to->st_atime_nsec_ = from->stx_atime.tv_nsec;
++  to->st_mtime_ = from->stx_mtime.tv_sec;
++  to->st_mtime_nsec_ = from->stx_mtime.tv_nsec;
++  to->st_ctime_ = from->stx_ctime.tv_sec;
++  to->st_ctime_nsec_ = from->stx_ctime.tv_nsec;
++  to->st_size = from->stx_size;
++  to->st_blocks = from->stx_blocks;
++  to->st_blksize = from->stx_blksize;
++}
++
++int sys_statx(int fd,
++              const char* path,
++              int flags,
++              unsigned int mask,
++              struct kernel_statx* statx_buf) {
++#if defined(__NR_statx)
++  int res;
++  res = syscall(__NR_statx, fd, path, flags, mask, statx_buf);
++  if (res == 0)
++    MSAN_UNPOISON(stat_buf, sizeof(*stat_buf));
++  return res;
++#else  // defined(__NR_statx)
++  RAW_CHECK(false);
++  return -ENOSYS;
++#endif
++}
++
+ int sys_stat(const char* path, struct kernel_stat* stat_buf) {
+   int res;
+ #if !defined(__NR_stat)
++#if defined(__NR_statx)
++  kernel_statx statx_buf;
++  res = sys_statx(AT_FDCWD, path, AT_STATX_SYNC_AS_STAT, STATX_BASIC_STATS,
++                  &statx_buf);
++  if (res == 0)
++    statx_to_stat(stat_buf, &statx_buf);
++#else  // defined(__NR_statx)
+   res = syscall(__NR_newfstatat, AT_FDCWD, path, stat_buf, 0);
+-#else
++#endif
++#else  //! defined(__NR_stat)
+   res = syscall(__NR_stat, path, stat_buf);
+ #endif
+   if (res == 0)
+@@ -178,8 +225,17 @@ int sys_stat(const char* path, struct kernel_stat* stat_buf) {
+ int sys_lstat(const char* path, struct kernel_stat* stat_buf) {
+   int res;
+ #if !defined(__NR_lstat)
++#if defined(__NR_statx)
++  kernel_statx statx_buf;
++  int flag = 0;
++  flag = AT_NO_AUTOMOUNT | AT_SYMLINK_NOFOLLOW;
++  res = sys_statx(AT_FDCWD, path, flag, STATX_BASIC_STATS, &statx_buf);
++  if (res == 0)
++    statx_to_stat(stat_buf, &statx_buf);
++#else  // defined(__NR_statx)
+   res = syscall(__NR_newfstatat, AT_FDCWD, path, stat_buf, AT_SYMLINK_NOFOLLOW);
+-#else
++#endif
++#else  //! defined(__NR_lstat)
+   res = syscall(__NR_lstat, path, stat_buf);
+ #endif
+   if (res == 0)
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.h
+index a05d44702..2952f9a34 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers.h
+@@ -18,6 +18,7 @@ struct rlimit64;
+ struct cap_hdr;
+ struct cap_data;
+ struct kernel_stat;
++struct kernel_statx;
+ struct kernel_stat64;
+ 
+ namespace sandbox {
+@@ -91,6 +92,11 @@ SANDBOX_EXPORT int sys_sigaction(int signum,
+ // architectures, with the same capabilities as stat() and lstat().
+ SANDBOX_EXPORT int sys_stat(const char* path, struct kernel_stat* stat_buf);
+ SANDBOX_EXPORT int sys_lstat(const char* path, struct kernel_stat* stat_buf);
++SANDBOX_EXPORT int sys_statx(int fd,
++                             const char* path,
++                             int flags,
++                             unsigned int mask,
++                             struct kernel_statx* statx_buf);
+ 
+ // Takes care of unpoisoning |stat_buf| for MSAN. Check-fails if fstatat64() is
+ // not a supported syscall on the current platform.
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers_unittest.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers_unittest.cc
+index d8a0fbc48..e93321321 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers_unittest.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/services/syscall_wrappers_unittest.cc
+@@ -99,6 +99,7 @@ TEST(SyscallWrappers, LinuxSigSet) {
+             linux_sigset);
+ }
+ 
++#if !defined(__loongarch_lp64)
+ TEST(SyscallWrappers, Stat) {
+   // Create a file to stat, with 12 bytes of data.
+   ScopedTemporaryFile tmp_file;
+@@ -165,6 +166,7 @@ TEST(SyscallWrappers, Stat) {
+   EXPECT_EQ(0u, sb->__unused5);
+ #endif
+ }
++#endif
+ 
+ #if defined(__NR_fstatat64)
+ TEST(SyscallWrappers, Stat64) {
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.cc
+index 679ff420d..95113afb0 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.cc
+@@ -193,6 +193,21 @@ int BrokerClient::Stat64(const char* pathname,
+                            sizeof(*sb));
+ }
+ 
++int BrokerClient::Statx(const char* pathname,
++                        bool follow_links,
++                        struct kernel_statx* sb) const {
++  if (!pathname || !sb)
++    return -EFAULT;
++
++  if (fast_check_in_client_ &&
++      !CommandStatIsSafe(policy_->allowed_command_set,
++                         *policy_->file_permissions, pathname)) {
++    return -policy_->file_permissions->denied_errno();
++  }
++  return StatFamilySyscall(COMMAND_STATX, pathname, follow_links, sb,
++                           sizeof(*sb));
++}
++
+ int BrokerClient::Unlink(const char* path) const {
+   if (!path)
+     return -EFAULT;
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.h
+index 9d0fdee5f..32efc3f59 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_client.h
+@@ -67,6 +67,9 @@ class SANDBOX_EXPORT BrokerClient : public SyscallDispatcher {
+   int Stat64(const char* pathname,
+              bool follow_links,
+              struct kernel_stat64* sb) const override;
++  int Statx(const char* pathname,
++            bool follow_links,
++            struct kernel_statx* sb) const override;
+   int Unlink(const char* unlink) const override;
+   int InotifyAddWatch(int fd,
+                       const char* pathname,
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_command.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_command.h
+index d44c42fe2..5fd22d818 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_command.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_command.h
+@@ -42,6 +42,7 @@ enum BrokerCommand {
+   COMMAND_RMDIR,
+   COMMAND_STAT,
+   COMMAND_STAT64,
++  COMMAND_STATX,
+   COMMAND_UNLINK,
+   COMMAND_INOTIFY_ADD_WATCH,
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_host.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_host.cc
+index 844712100..d2a93f591 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_host.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_host.cc
+@@ -299,7 +299,22 @@ void BrokerHost::StatFileForIPC(BrokerCommand command_type,
+     RAW_CHECK(reply->AddIntToMessage(0));
+     RAW_CHECK(
+         reply->AddDataToMessage(reinterpret_cast<char*>(&sb), sizeof(sb)));
+-#else  // defined(__NR_fstatat64)
++#elif defined(__NR_statx)
++    DCHECK(command_type == COMMAND_STATX);
++    struct kernel_statx sb;
++
++    int sts = sandbox::sys_statx(AT_FDCWD, file_to_access,
++                                 follow_links ? 0 : AT_SYMLINK_NOFOLLOW,
++                                 STATX_BASIC_STATS, &sb);
++    if (sts < 0) {
++      RAW_CHECK(reply->AddIntToMessage(-errno));
++      return;
++    }
++    RAW_CHECK(reply->AddIntToMessage(0));
++    RAW_CHECK(
++        reply->AddDataToMessage(reinterpret_cast<char*>(&sb), sizeof(sb)));
++
++#else
+     // We should not reach here on 64-bit systems, as the *stat*64() are only
+     // necessary on 32-bit.
+     RAW_CHECK(false);
+@@ -438,7 +453,8 @@ bool BrokerHost::HandleRemoteCommand(BrokerSimpleMessage* message,
+       break;
+     }
+     case COMMAND_STAT:
+-    case COMMAND_STAT64: {
++    case COMMAND_STAT64:
++    case COMMAND_STATX: {
+       const char* requested_filename;
+       if (!message->ReadString(&requested_filename)) {
+         return false;
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process.cc
+index a55b548a8..794c126ac 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process.cc
+@@ -122,44 +122,46 @@ bool BrokerProcess::IsSyscallBrokerable(int sysno, bool fast_check) const {
+   // and are default disabled in Android. So, we should refuse to broker them
+   // to be consistent with the platform's restrictions.
+   switch (sysno) {
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_access:
+ #endif
+     case __NR_faccessat:
++#if !defined(__loongarch_lp64)
+     case __NR_faccessat2:
++#endif
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_ACCESS);
+ 
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_mkdir:
+ #endif
+     case __NR_mkdirat:
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_MKDIR);
+ 
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_open:
+ #endif
+     case __NR_openat:
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_OPEN);
+ 
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_readlink:
+ #endif
+     case __NR_readlinkat:
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_READLINK);
+ 
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_rename:
+ #endif
+     case __NR_renameat:
+     case __NR_renameat2:
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_RENAME);
+ 
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_rmdir:
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_RMDIR);
+ #endif
+ 
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_stat:
+     case __NR_lstat:
+ #endif
+@@ -171,6 +173,9 @@ bool BrokerProcess::IsSyscallBrokerable(int sysno, bool fast_check) const {
+ #endif
+ #if defined(__x86_64__) || defined(__aarch64__)
+     case __NR_newfstatat:
++#endif
++#if defined(__NR_statx)
++    case __NR_statx:
+ #endif
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_STAT);
+ 
+@@ -184,7 +189,7 @@ bool BrokerProcess::IsSyscallBrokerable(int sysno, bool fast_check) const {
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_STAT);
+ #endif
+ 
+-#if !defined(__aarch64__) && !BUILDFLAG(IS_ANDROID)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64) && !BUILDFLAG(IS_ANDROID)
+     case __NR_unlink:
+       return !fast_check || policy_->allowed_command_set.test(COMMAND_UNLINK);
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process_unittest.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process_unittest.cc
+index cb85c87f2..58164652c 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process_unittest.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/broker_process_unittest.cc
+@@ -880,6 +880,9 @@ TEST(BrokerProcess, CreateFile) {
+   unlink(permfile_name);
+ }
+ 
++// Use statx instead of stat,lstat and fstatat on loongarch64 architecture,
++// So not test run TestStatHelper on loongarch64.
++#if !defined(__loongarch_lp64)
+ void TestStatHelper(bool fast_check_in_client, bool follow_links) {
+   ScopedTemporaryFile tmp_file;
+   EXPECT_EQ(12, write(tmp_file.fd(), "blahblahblah", 12));
+@@ -1060,7 +1063,6 @@ void TestStatHelper(bool fast_check_in_client, bool follow_links) {
+     EXPECT_EQ(0,
+               open_broker.GetBrokerClientSignalBased()->DefaultStatForTesting(
+                   tempfile_name, follow_links, &sb));
+-
+     // Following fields may never be consistent but should be non-zero.
+     // Don't trust the platform to define fields with any particular sign.
+     EXPECT_NE(0u, static_cast<unsigned int>(sb.st_dev));
+@@ -1092,6 +1094,7 @@ TEST(BrokerProcess, StatFileHost) {
+   TestStatHelper(false, true);
+   TestStatHelper(false, false);
+ }
++#endif
+ 
+ void TestRenameHelper(bool fast_check_in_client) {
+   std::string oldpath;
+@@ -1973,7 +1976,10 @@ TEST(BrokerProcess, InotifyAddWatchHost) {
+ TEST(BrokerProcess, IsSyscallAllowed) {
+   const base::flat_map<BrokerCommand, base::flat_set<int>> kSysnosForCommand = {
+       {COMMAND_ACCESS,
+-       {__NR_faccessat, __NR_faccessat2,
++       {__NR_faccessat,
++#if !defined(__loongarch_lp64)
++	__NR_faccessat2,
++#endif
+ #if defined(__NR_access) && !BUILDFLAG(IS_ANDROID)
+         __NR_access
+ #endif
+@@ -1990,12 +1996,14 @@ TEST(BrokerProcess, IsSyscallAllowed) {
+         __NR_open
+ #endif
+        }},
++#if !defined(__loongarch_lp64)
+       {COMMAND_READLINK,
+        {__NR_readlinkat,
+ #if defined(__NR_readlink) && !BUILDFLAG(IS_ANDROID)
+         __NR_readlink
+ #endif
+        }},
++#endif
+       {COMMAND_RENAME,
+        {__NR_renameat,
+ #if defined(__NR_rename) && !BUILDFLAG(IS_ANDROID)
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/remote_syscall_arg_handler_unittest.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/remote_syscall_arg_handler_unittest.cc
+index 15b2ee66d..963de2f6b 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/remote_syscall_arg_handler_unittest.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/remote_syscall_arg_handler_unittest.cc
+@@ -28,7 +28,11 @@ namespace {
+ const char kPathPart[] = "/i/am/path";
+ 
+ void FillBufferWithPath(char* buf, size_t size, bool null_terminate) {
++#if defined(__loongarch_lp64)
++  SANDBOX_ASSERT_LE(size, static_cast<size_t>(PATH_MAX * 4));
++#else
+   SANDBOX_ASSERT_LE(size, static_cast<size_t>(PATH_MAX));
++#endif
+   size_t str_len = strlen(kPathPart);
+   size_t len_left_to_write = size;
+   char* curr_buf_pos = buf;
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.cc b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.cc
+index 6abc80b43..17e47af0c 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.cc
+@@ -26,6 +26,8 @@ int SyscallDispatcher::DefaultStatForTesting(const char* pathname,
+   return Stat64(pathname, follow_links, sb);
+ #elif defined(__NR_newfstatat)
+   return Stat(pathname, follow_links, sb);
++#elif defined(__NR_statx)
++  return Statx(pathname, follow_links, sb);
+ #endif
+ }
+ 
+@@ -169,6 +171,11 @@ int SyscallDispatcher::DispatchSyscall(const arch_seccomp_data& args) {
+       return Stat64(reinterpret_cast<const char*>(args.args[0]), true,
+                     reinterpret_cast<struct kernel_stat64*>(args.args[1]));
+ #endif
++#if defined(__NR_statx)
++    case __NR_statx:
++      return Statx(reinterpret_cast<const char*>(args.args[0]), true,
++                   reinterpret_cast<struct kernel_statx*>(args.args[1]));
++#endif
+ #if defined(__NR_lstat)
+     case __NR_lstat:
+       // See https://crbug.com/847096
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.h
+index 906c37d92..7d0b8e035 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/syscall_broker/syscall_dispatcher.h
+@@ -49,6 +49,9 @@ class SANDBOX_EXPORT SyscallDispatcher {
+   virtual int Stat64(const char* pathname,
+                      bool follow_links,
+                      struct kernel_stat64* sb) const = 0;
++  virtual int Statx(const char* pathname,
++                    bool follow_links,
++                    struct kernel_statx* sb) const = 0;
+ 
+   // Emulates unlink()/unlinkat().
+   virtual int Unlink(const char* unlink) const = 0;
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
+index 8690a96eb..528fb0cef 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
+@@ -39,6 +39,10 @@
+ #define EM_AARCH64 183
+ #endif
+ 
++#ifndef EM_LOONGARCH
++#define EM_LOONGARCH 258
++#endif
++
+ #ifndef __AUDIT_ARCH_64BIT
+ #define __AUDIT_ARCH_64BIT 0x80000000
+ #endif
+@@ -71,6 +75,11 @@
+ #define AUDIT_ARCH_AARCH64 (EM_AARCH64 | __AUDIT_ARCH_64BIT | __AUDIT_ARCH_LE)
+ #endif
+ 
++#ifndef AUDIT_ARCH_LOONGARCH64
++#define AUDIT_ARCH_LOONGARCH64 \
++  (EM_LOONGARCH | __AUDIT_ARCH_64BIT | __AUDIT_ARCH_LE)
++#endif
++
+ // For prctl.h
+ #ifndef PR_SET_SECCOMP
+ #define PR_SET_SECCOMP               22
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_signal.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_signal.h
+index 69ccaf108..12593316e 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_signal.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_signal.h
+@@ -13,7 +13,7 @@
+ // (not undefined, but defined different values and in different memory
+ // layouts). So, fill the gap here.
+ #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__loongarch_lp64)
+ 
+ #define LINUX_SIGHUP 1
+ #define LINUX_SIGINT 2
+@@ -97,6 +97,7 @@ typedef siginfo_t LinuxSigInfo;
+ struct LinuxSigSet {
+   unsigned long sig[_NSIG_WORDS];
+ };
++// TODO:LA64 Check this _NSIG_WORDS and LinuxSigAction
+ #elif defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)
+ #if !defined(_NSIG_WORDS)
+ #define _NSIG_WORDS 2
+@@ -104,6 +105,13 @@ struct LinuxSigSet {
+ struct LinuxSigSet {
+   unsigned long sig[_NSIG_WORDS];
+ };
++#elif defined(ARCH_CPU_LOONGARCH_FAMILY)
++#if !defined(_NSIG_WORDS)
++#define _NSIG_WORDS 1
++#endif
++struct LinuxSigSet {
++  unsigned long sig[_NSIG_WORDS];
++};
+ #else
+ typedef uint64_t LinuxSigSet;
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_stat.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_stat.h
+index 3aae8cbce..5104cea7c 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_stat.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_stat.h
+@@ -150,7 +150,7 @@ struct kernel_stat {
+   int st_blocks;
+   int st_pad4[14];
+ };
+-#elif defined(__aarch64__)
++#elif defined(__aarch64__) || defined(__loongarch_lp64)
+ struct kernel_stat {
+   unsigned long st_dev;
+   unsigned long st_ino;
+@@ -175,6 +175,37 @@ struct kernel_stat {
+ };
+ #endif
+ 
++#if defined(__loongarch_lp64)
++struct kernel_statx_timestamp {
++  long tv_sec;
++  unsigned int tv_nsec;
++  int __reserved;
++};
++struct kernel_statx {
++  unsigned int stx_mask;
++  unsigned int stx_blksize;
++  unsigned long stx_attributes;
++  unsigned int stx_nlink;
++  unsigned int stx_uid;
++  unsigned int stx_gid;
++  unsigned short stx_mode;
++  unsigned short __spare0[1];
++  unsigned long stx_ino;
++  unsigned long stx_size;
++  unsigned long stx_blocks;
++  unsigned long stx_attributes_mask;
++  struct kernel_statx_timestamp stx_atime;
++  struct kernel_statx_timestamp stx_btime;
++  struct kernel_statx_timestamp stx_ctime;
++  struct kernel_statx_timestamp stx_mtime;
++  unsigned int stx_rdev_major;
++  unsigned int stx_rdev_minor;
++  unsigned int stx_dev_major;
++  unsigned int stx_dev_minor;
++  unsigned long __spare2[14];
++};
++#endif
++
+ #if !defined(AT_EMPTY_PATH)
+ #define AT_EMPTY_PATH 0x1000
+ #endif
+@@ -207,6 +238,20 @@ using default_stat_struct = struct kernel_stat;
+ #define __NR_fstatat_default __NR_newfstatat
+ #define __NR_fstat_default __NR_fstat
+ 
++#elif defined(__NR_statx)
++
++namespace sandbox {
++using default_stat_struct = struct kernel_statx;
++}  // namespace sandbox
++
++#define AT_STATX_SYNC_TYPE 0x6000
++#define AT_STATX_SYNC_AS_STAT 0x0000
++#define AT_STATX_FORCE_SYNC 0x2000
++#define AT_STATX_DONT_SYNC 0x4000
++#define STATX_ALL 0x00000fffU
++
++#define __NR_statx_default __NR_statx
++
+ #else
+ #error "one of fstatat64 and newfstatat must be defined"
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_syscalls.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_syscalls.h
+index 438147b40..1353b081a 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_syscalls.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_syscalls.h
+@@ -35,5 +35,9 @@
+ #include "sandbox/linux/system_headers/arm64_linux_syscalls.h"
+ #endif
+ 
++#if defined(__loongarch_lp64)
++#include "sandbox/linux/system_headers/loongarch64_linux_syscalls.h"
++#endif
++
+ #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_LINUX_SYSCALLS_H_
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_broker_policy_linux.cc b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_broker_policy_linux.cc
+index 87a0cc1fa..3702bf91b 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_broker_policy_linux.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_broker_policy_linux.cc
+@@ -87,6 +87,12 @@ ResultExpr BrokerProcessPolicy::EvaluateSyscall(int sysno) const {
+         return Allow();
+       break;
+ #endif
++#if defined(__NR_statx)
++    case __NR_statx:
++      if (allowed_command_set_.test(syscall_broker::COMMAND_STAT))
++        return Allow();
++      break;
++#endif
+ #if defined(__NR_lstat)
+     case __NR_lstat:
+       if (allowed_command_set_.test(syscall_broker::COMMAND_STAT))
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_cros_amd_gpu_policy_linux.cc b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_cros_amd_gpu_policy_linux.cc
+index df2567f74..7c3327130 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_cros_amd_gpu_policy_linux.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_cros_amd_gpu_policy_linux.cc
+@@ -38,7 +38,7 @@ ResultExpr CrosAmdGpuProcessPolicy::EvaluateSyscall(int sysno) const {
+     case __NR_sched_setscheduler:
+     case __NR_sysinfo:
+     case __NR_uname:
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_readlink:
+     case __NR_stat:
+ #endif
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_gpu_policy_linux.cc b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_gpu_policy_linux.cc
+index ef49a63ee..7e8c6ccca 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_gpu_policy_linux.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_gpu_policy_linux.cc
+@@ -80,7 +80,7 @@ ResultExpr GpuProcessPolicy::EvaluateSyscall(int sysno) const {
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS))
+     case __NR_ftruncate64:
+ #endif
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_getdents:
+ #endif
+     case __NR_getdents64:
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_network_policy_linux.cc b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_network_policy_linux.cc
+index ed1582d79..f7a7b14df 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_network_policy_linux.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/bpf_network_policy_linux.cc
+@@ -255,7 +255,7 @@ ResultExpr NetworkProcessPolicy::EvaluateSyscall(int sysno) const {
+     case __NR_fdatasync:
+     case __NR_fsync:
+     case __NR_mremap:
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__loongarch_lp64)
+     case __NR_getdents:
+ #endif
+     case __NR_getdents64:
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/sandbox_linux.cc b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/sandbox_linux.cc
+index e77b8d40e..a49f686f5 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/sandbox_linux.cc
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/policy/linux/sandbox_linux.cc
+@@ -552,7 +552,11 @@ bpf_dsl::ResultExpr SandboxLinux::HandleViaBroker(int sysno) const {
+   const bpf_dsl::ResultExpr handle_via_broker =
+       bpf_dsl::Trap(syscall_broker::BrokerClient::SIGSYS_Handler,
+                     broker_process_->GetBrokerClientSignalBased());
++#if defined(__loongarch_lp64)
++  if (sysno == __NR_statx_default) { // __NR_fstatat_default or __NR_statx_default
++#else
+   if (sysno == __NR_fstatat_default) {
++#endif
+     // This may be an fstatat(fd, "", stat_buf, AT_EMPTY_PATH), which should be
+     // rewritten as fstat(fd, stat_buf). This should be consistent with how the
+     // baseline policy handles fstatat().
+-- 
+2.31.1
+

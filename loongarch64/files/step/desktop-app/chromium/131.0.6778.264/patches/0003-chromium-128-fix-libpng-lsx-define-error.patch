@@ -1,0 +1,25 @@
+From e5c91d61ea68e4f81ec4fd13fbbb7f4f95313bb8 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 9 Sep 2024 14:46:13 +0000
+Subject: [PATCH 3/3] chromium 128 fix libpng lsx define error.
+
+---
+ third_party/libpng/pngpriv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/third_party/libpng/pngpriv.h b/third_party/libpng/pngpriv.h
+index 9bfdb71..b16bcb2 100644
+--- a/third_party/libpng/pngpriv.h
++++ b/third_party/libpng/pngpriv.h
+@@ -220,7 +220,7 @@
+ #endif
+ 
+ #ifndef PNG_LOONGARCH_LSX_OPT
+-#  if defined(__loongarch_sx)
++#  if defined(__loongarch_lsx)
+ #     define PNG_LOONGARCH_LSX_OPT 1
+ #  else
+ #     define PNG_LOONGARCH_LSX_OPT 0
+-- 
+2.31.1
+

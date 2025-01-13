@@ -1,0 +1,168 @@
+From 1d080bc6e4d94c6b6c324d50f1d50742f5b63192 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 29 Oct 2024 02:50:24 +0000
+Subject: [PATCH] xplanet 1.3.1 fix inFile.getline
+
+---
+ src/libannotate/addArcs.cpp            | 4 ++--
+ src/libannotate/addMarkers.cpp         | 4 ++--
+ src/libannotate/addSatellites.cpp      | 8 ++++----
+ src/libannotate/addSpiceObjects.cpp    | 4 ++--
+ src/libmultiple/RayleighScattering.cpp | 6 +++---
+ src/libmultiple/drawStars.cpp          | 2 +-
+ src/readConfig.cpp                     | 2 +-
+ 7 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/src/libannotate/addArcs.cpp b/src/libannotate/addArcs.cpp
+index 2ee06c0..c261191 100644
+--- a/src/libannotate/addArcs.cpp
++++ b/src/libannotate/addArcs.cpp
+@@ -258,7 +258,7 @@ addArcs(PlanetProperties *planetProperties, Planet *planet,
+         {
+             ifstream inFile(arcFile.c_str());
+             char *line = new char[MAX_LINE_LENGTH];
+-            while (inFile.getline (line, MAX_LINE_LENGTH, '\n') != NULL)
++            while (static_cast<bool> (inFile.getline (line, MAX_LINE_LENGTH, '\n')))
+                 readArcFile(line, planet, view, projection,
+                             planetProperties, annotationMap);
+             
+@@ -292,7 +292,7 @@ addArcs(View *view, multimap<double, Annotation *> &annotationMap)
+         {
+             ifstream inFile(arcFile.c_str());
+             char *line = new char[256];
+-            while (inFile.getline (line, 256, '\n') != NULL)
++            while (static_cast<bool> (inFile.getline (line, 256, '\n')))
+                 readArcFile(line, NULL, view, NULL, NULL, annotationMap);
+ 
+             inFile.close();
+diff --git a/src/libannotate/addMarkers.cpp b/src/libannotate/addMarkers.cpp
+index dde51c1..c5c8ce4 100644
+--- a/src/libannotate/addMarkers.cpp
++++ b/src/libannotate/addMarkers.cpp
+@@ -429,7 +429,7 @@ addMarkers(PlanetProperties *planetProperties, Planet *planet,
+         {
+             ifstream inFile(markerFile.c_str());
+             char *line = new char[MAX_LINE_LENGTH];
+-            while (inFile.getline (line, MAX_LINE_LENGTH, '\n') != NULL)
++            while (static_cast<bool> (inFile.getline (line, MAX_LINE_LENGTH, '\n')))
+             {
+                 unsigned char color[3];
+                 memcpy(color, planetProperties->MarkerColor(), 3);
+@@ -475,7 +475,7 @@ addMarkers(View *view, const int width, const int height,
+         {
+             ifstream inFile(markerFile.c_str());
+             char *line = new char[MAX_LINE_LENGTH];
+-            while (inFile.getline (line, MAX_LINE_LENGTH, '\n') != NULL)
++            while (static_cast<bool> (inFile.getline (line, MAX_LINE_LENGTH, '\n')))
+             {
+                 unsigned char color[3];
+                 memcpy(color, options->Color(), 3);
+diff --git a/src/libannotate/addSatellites.cpp b/src/libannotate/addSatellites.cpp
+index 2634339..6b80905 100644
+--- a/src/libannotate/addSatellites.cpp
++++ b/src/libannotate/addSatellites.cpp
+@@ -488,10 +488,10 @@ loadSatelliteVector(PlanetProperties *planetProperties)
+         {
+             ifstream inFile(tleFile.c_str());
+             char lines[3][80];
+-            while (inFile.getline(lines[0], 80) != NULL)
++            while (static_cast<bool> (inFile.getline(lines[0], 80)))
+             {
+-                if ((inFile.getline(lines[1], 80) == NULL) 
+-                    || (inFile.getline(lines[2], 80) == NULL))
++                if (((!(static_cast<bool> (inFile.getline(lines[1], 80))))) 
++                    || ((!(static_cast<bool> (inFile.getline(lines[2], 80))))))
+                 {
+                     ostringstream errStr;
+                     errStr << "Malformed TLE file (" << tleFile << ")?\n";
+@@ -542,7 +542,7 @@ addSatellites(PlanetProperties *planetProperties, Planet *planet,
+         {
+             ifstream inFile(satFile.c_str());
+             char *line = new char[MAX_LINE_LENGTH];
+-            while (inFile.getline (line, MAX_LINE_LENGTH, '\n') != NULL)
++            while (static_cast<bool> (inFile.getline (line, MAX_LINE_LENGTH, '\n')))
+                 readSatelliteFile(line, planet, view, projection,
+                                   planetProperties, annotationMap);
+             
+diff --git a/src/libannotate/addSpiceObjects.cpp b/src/libannotate/addSpiceObjects.cpp
+index 67b752c..48fb054 100644
+--- a/src/libannotate/addSpiceObjects.cpp
++++ b/src/libannotate/addSpiceObjects.cpp
+@@ -524,7 +524,7 @@ processSpiceKernels(const bool load)
+         {
+             ifstream inFile(kernelFile.c_str());
+             char *line = new char[MAX_LINE_LENGTH];
+-            while (inFile.getline(line, MAX_LINE_LENGTH, '\n') != NULL)
++            while (static_cast<bool> (inFile.getline(line, MAX_LINE_LENGTH, '\n')))
+             {
+                 int ii = 0;
+                 while (isDelimiter(line[ii]))
+@@ -576,7 +576,7 @@ addSpiceObjects(map<double, Planet *> &planetsFromSunMap,
+         {
+             ifstream inFile(spiceFile.c_str());
+             char *line = new char[MAX_LINE_LENGTH];
+-            while (inFile.getline(line, MAX_LINE_LENGTH, '\n') != NULL)
++            while (static_cast<bool> (inFile.getline(line, MAX_LINE_LENGTH, '\n')))
+                 readSpiceFile(line, planetsFromSunMap, view, projection,
+                               annotationMap);
+             inFile.close();
+diff --git a/src/libmultiple/RayleighScattering.cpp b/src/libmultiple/RayleighScattering.cpp
+index d885173..a39e124 100644
+--- a/src/libmultiple/RayleighScattering.cpp
++++ b/src/libmultiple/RayleighScattering.cpp
+@@ -369,7 +369,7 @@ RayleighScattering::readConfigFile(string configFile)
+ 
+     diskTemplate_.clear();
+     limbTemplate_.clear();
+-    while (inFile.getline(line, MAX_LINE_LENGTH, '\n') != NULL)
++    while (static_cast<bool> (inFile.getline(line, MAX_LINE_LENGTH, '\n')))
+     {
+         int i = 0;
+         while (isDelimiter(line[i]))
+@@ -439,7 +439,7 @@ RayleighScattering::readBlock(ifstream &inFile,
+     values.clear();
+ 
+     char line[MAX_LINE_LENGTH];
+-    while (inFile.getline(line, MAX_LINE_LENGTH, '\n') != NULL)
++    while (static_cast<bool> (inFile.getline(line, MAX_LINE_LENGTH, '\n')))
+     {
+         int i = 0;
+         while (isDelimiter(line[i]))
+@@ -470,7 +470,7 @@ RayleighScattering::readValue(ifstream &inFile,
+                               double &value)
+ {
+     char line[MAX_LINE_LENGTH];
+-    while (inFile.getline(line, MAX_LINE_LENGTH, '\n') != NULL)
++    while (static_cast<bool> (inFile.getline(line, MAX_LINE_LENGTH, '\n')))
+     {
+         int i = 0;
+         while (isDelimiter(line[i]))
+diff --git a/src/libmultiple/drawStars.cpp b/src/libmultiple/drawStars.cpp
+index ff07c49..22e6a9c 100644
+--- a/src/libmultiple/drawStars.cpp
++++ b/src/libmultiple/drawStars.cpp
+@@ -41,7 +41,7 @@ drawStars(DisplayBase *display, View *view)
+     ifstream inFile(starMap.c_str());
+ 
+     char line[MAX_LINE_LENGTH];
+-    while (inFile.getline(line, MAX_LINE_LENGTH, '\n') != NULL)
++    while (static_cast<bool> (inFile.getline(line, MAX_LINE_LENGTH, '\n')))
+     {
+         if (line[0] == '#') continue;
+ 
+diff --git a/src/readConfig.cpp b/src/readConfig.cpp
+index cc1964f..f83e249 100644
+--- a/src/readConfig.cpp
++++ b/src/readConfig.cpp
+@@ -550,7 +550,7 @@ readConfigFile(string configFile, PlanetProperties *planetProperties[])
+ 
+         ifstream inFile(configFile.c_str());
+         char *line = new char[256];
+-        while (inFile.getline(line, 256, '\n') != NULL)
++        while (static_cast<bool> (inFile.getline(line, 256, '\n')))
+             readConfig(line, planetProperties);
+         
+         // This condition will only be true if [default] is the only
+-- 
+2.31.1
+

@@ -1,0 +1,26 @@
+From d080288a2f77b5a4465d2647f2f5dd9e0caec766 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 29 Sep 2024 07:45:18 +0000
+Subject: [PATCH 4/4] godot 4.3 thirdparty libpng remove loongarch64 lsx
+ define.
+
+---
+ thirdparty/libpng/pngpriv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/thirdparty/libpng/pngpriv.h b/thirdparty/libpng/pngpriv.h
+index 9bfdb71..7ed8d57 100644
+--- a/thirdparty/libpng/pngpriv.h
++++ b/thirdparty/libpng/pngpriv.h
+@@ -221,7 +221,7 @@
+ 
+ #ifndef PNG_LOONGARCH_LSX_OPT
+ #  if defined(__loongarch_sx)
+-#     define PNG_LOONGARCH_LSX_OPT 1
++#     define PNG_LOONGARCH_LSX_OPT 0
+ #  else
+ #     define PNG_LOONGARCH_LSX_OPT 0
+ #  endif
+-- 
+2.31.1
+

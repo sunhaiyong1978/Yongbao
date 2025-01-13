@@ -1,0 +1,26 @@
+From beefeebef3330ac3709251d986af54b91542f4c4 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 29 Apr 2024 06:25:50 +0000
+Subject: [PATCH] Revert "tcg/loongarch64: Set vector registers call clobbered"
+
+This reverts commit 45bf0e7aa648369cf8ab2333bd20144806fc1be3.
+---
+ tcg/loongarch64/tcg-target.c.inc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tcg/loongarch64/tcg-target.c.inc b/tcg/loongarch64/tcg-target.c.inc
+index 69c5b8ac4f..076fc8a917 100644
+--- a/tcg/loongarch64/tcg-target.c.inc
++++ b/tcg/loongarch64/tcg-target.c.inc
+@@ -2328,7 +2328,7 @@ static void tcg_target_init(TCGContext *s)
+     tcg_target_available_regs[TCG_TYPE_I32] = ALL_GENERAL_REGS;
+     tcg_target_available_regs[TCG_TYPE_I64] = ALL_GENERAL_REGS;
+ 
+-    tcg_target_call_clobber_regs = ALL_GENERAL_REGS | ALL_VECTOR_REGS;
++    tcg_target_call_clobber_regs = ALL_GENERAL_REGS;
+     tcg_regset_reset_reg(tcg_target_call_clobber_regs, TCG_REG_S0);
+     tcg_regset_reset_reg(tcg_target_call_clobber_regs, TCG_REG_S1);
+     tcg_regset_reset_reg(tcg_target_call_clobber_regs, TCG_REG_S2);
+-- 
+2.31.1
+

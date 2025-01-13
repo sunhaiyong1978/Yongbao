@@ -1,0 +1,14 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=wxPython
+export PACKAGE_VERSION=4.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxPython/4.2.2/
+rm -rf ${BUILD_DIRECTORY}/wxPython-4.2.2
+tar xvf ${DOWNLOADDIR}/wxPython-4.2.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wxPython-4.2.2
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ WX_CONFIG=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 -u build.py build --use_syswx
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ WX_CONFIG=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 -u build.py install --destdir=${SYSROOT_DIR} --extra_setup=--prefix=/usr
+popd 
+rm -rf ${BUILD_DIRECTORY}/wxPython-4.2.2

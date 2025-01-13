@@ -1,0 +1,25 @@
+From c72273f0137bf50133b4597a642223f1934fcca3 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 4 Nov 2024 06:17:17 +0000
+Subject: [PATCH] chromium 130 fix pthread_stack for loongarch64.
+
+---
+ base/process/launch.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/base/process/launch.h b/base/process/launch.h
+index edd2bd6..b80df6b 100644
+--- a/base/process/launch.h
++++ b/base/process/launch.h
+@@ -51,7 +51,7 @@ namespace base {
+ // defined as a constant.
+ 
+ // These constants are borrowed from glibc’s (arch)/bits/pthread_stack_min.h.
+-#if defined(ARCH_CPU_ARM64)
++#if defined(ARCH_CPU_ARM64) || defined(ARCH_CPU_LOONGARCH64)
+ #define PTHREAD_STACK_MIN_CONST \
+   (__builtin_constant_p(PTHREAD_STACK_MIN) ? PTHREAD_STACK_MIN : 131072)
+ #else
+-- 
+2.31.1
+

@@ -1,0 +1,24 @@
+From 78bb97eddf8aa965a87e16d07b992607faace1ae Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 27 Aug 2024 02:59:29 +0000
+Subject: [PATCH] kirigami addons 1.4.0 fix build error.
+
+---
+ autotests/qmltests.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/autotests/qmltests.cpp b/autotests/qmltests.cpp
+index 6b5cce5..e49982e 100644
+--- a/autotests/qmltests.cpp
++++ b/autotests/qmltests.cpp
+@@ -7,6 +7,7 @@
+ #include <QtQuickTest>
+ #include <QQmlEngine>
+ #include <QQmlContext>
++#include <quicktest.h>
+ 
+ #include <KLocalizedContext>
+ #include <KLocalizedString>
+-- 
+2.31.1
+

@@ -1,0 +1,32 @@
+From ed4ccc404eaa78e3ace4666cfa6c2c0e1491ce54 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 30 Dec 2024 02:59:03 +0000
+Subject: [PATCH] xdg-desktop-portal disable tests for cross-build.
+
+---
+ meson.build | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 26da8a4..3170a4c 100644
+--- a/meson.build
++++ b/meson.build
+@@ -223,7 +223,6 @@ pkgconfig.generate(
+ subdir('data')
+ subdir('src')
+ subdir('document-portal')
+-subdir('tests')
+ subdir('po')
+ subdir('doc')
+ 
+@@ -237,7 +236,6 @@ summary({
+     'Enable libportal support': have_libportal,
+     'Enable gudev support': have_gudev,
+     'Enable installed tests:': enable_installed_tests,
+-    'Enable python test suite': enable_pytest,
+     'Build man pages': rst2man.found(),
+     'Build flatpak interfaces': flatpak_intf_dir != '',
+     'Sandboxed image validation': bwrap.found(),
+-- 
+2.31.1
+

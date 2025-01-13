@@ -1,0 +1,25 @@
+From 6315bab0dfdaaf365563099f98435843bd60c35c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 15 Jul 2024 05:08:49 +0000
+Subject: [PATCH] external redland fix build error.
+
+---
+ external/redland/ExternalProject_raptor.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/external/redland/ExternalProject_raptor.mk b/external/redland/ExternalProject_raptor.mk
+index 8ac0588..aec6af9 100644
+--- a/external/redland/ExternalProject_raptor.mk
++++ b/external/redland/ExternalProject_raptor.mk
+@@ -20,7 +20,7 @@ $(call gb_ExternalProject_get_state_target,raptor,build):
+ 	$(call gb_ExternalProject_run,build,\
+ 		$(if $(filter iOS,$(OS)),LIBS="-liconv") \
+ 		$(if $(filter -fsanitize=undefined,$(CC)),CC='$(CC) -fno-sanitize=function') \
+-		CFLAGS="$(CFLAGS) \
++		CFLAGS="$(CFLAGS) -Wno-int-conversion \
+ 			$(call gb_ExternalProject_get_build_flags,raptor) \
+ 			$(if $(filter TRUE,$(DISABLE_DYNLOADING)),-fvisibility=hidden) \
+ 			$(if $(filter GCCLINUXPOWERPC64,$(COM)$(OS)$(CPUNAME)),-mminimal-toc)" \
+-- 
+2.31.1
+

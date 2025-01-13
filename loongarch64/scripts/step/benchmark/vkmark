@@ -1,0 +1,23 @@
+source env/benchmark/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=benchmark
+export STEP_PACKAGENAME=vkmark
+export PACKAGE_VERSION=git
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/benchmark/vkmark/git/
+rm -rf ${BUILD_DIRECTORY}/vkmark-git_git
+tar xvf ${DOWNLOADDIR}/vkmark-git_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vkmark-git_git
+	
+	mkdir cross-build
+	pushd cross-build
+		meson ${MESON_CONFIG}  \
+                      ..
+		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+		sed -i -e "s@\(${CROSSTOOLS_DIR}/\)\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/vkmark-git_git

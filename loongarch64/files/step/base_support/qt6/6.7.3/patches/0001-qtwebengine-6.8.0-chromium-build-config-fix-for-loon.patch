@@ -1,0 +1,28 @@
+From 43ade20f320dae92acb5ba1e69d4f7db11ee4109 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 28 Oct 2024 06:44:25 +0000
+Subject: [PATCH] qtwebengine 6.8.0 chromium build config fix for loongarch64.
+
+---
+ .../src/3rdparty/chromium/build/config/compiler/BUILD.gn     | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/build/config/compiler/BUILD.gn b/qtwebengine/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+index f28a833b95..8862ad2948 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/config/compiler/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+@@ -1509,6 +1509,11 @@ config("compiler_cpu_abi") {
+       cflags += [
+         "-mabi=lp64d",
+         "-mcmodel=medium",
++        "-mno-relax",
++      ]
++      ldflags += [
++        "-mcmodel=medium",
++        "-mno-relax",
+       ]
+     } else if (current_cpu == "s390x") {
+       cflags += [ "-m64" ]
+-- 
+2.31.1
+

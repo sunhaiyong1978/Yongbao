@@ -1,0 +1,266 @@
+From e1bfa6ee7e5565e9c937129d61472cee0ea07d19 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 25 Sep 2024 08:10:44 +0000
+Subject: [PATCH] OpenBLAS 0.3.28 fix cross build for loongarch64.
+
+---
+ cmake/arch.cmake                          |   4 +
+ cmake/system.cmake                        |   2 +-
+ driver/others/CMakeLists.txt              |   2 +
+ kernel/loongarch64/KERNEL.LOONGSONGENERIC | 171 ++++++++++++++++++++++
+ param.h                                   |   6 +
+ 5 files changed, 184 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/loongarch64/KERNEL.LOONGSONGENERIC
+
+diff --git a/cmake/arch.cmake b/cmake/arch.cmake
+index 5f3703a..3b0dd01 100644
+--- a/cmake/arch.cmake
++++ b/cmake/arch.cmake
+@@ -62,6 +62,10 @@ if (DYNAMIC_ARCH)
+ 	  set(DYNAMIC_CORE RISCV64_GENERIC RISCV64_ZVL128B RISCV64_ZVL256B) 
+   endif ()
+ 
++  if (LOONGARCH64)
++	  set(DYNAMIC_CORE LOONGSON2K1000 LOONGSON3R5 LOONGSONGENERIC)
++  endif ()
++
+   if (X86)
+     set(DYNAMIC_CORE KATMAI COPPERMINE NORTHWOOD PRESCOTT BANIAS CORE2 PENRYN DUNNINGTON NEHALEM ATHLON OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO)
+   endif ()
+diff --git a/cmake/system.cmake b/cmake/system.cmake
+index 683c318..031c72c 100644
+--- a/cmake/system.cmake
++++ b/cmake/system.cmake
+@@ -403,7 +403,7 @@ if (SMALL_MATRIX_OPT)
+ endif ()
+ 
+ if (DYNAMIC_ARCH)
+-  if (X86 OR X86_64 OR ARM64 OR POWER OR RISCV64)
++  if (X86 OR X86_64 OR ARM64 OR POWER OR RISCV64 OR LOONGARCH64)
+     set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
+     if (DYNAMIC_OLDER)
+       set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_OLDER")
+diff --git a/driver/others/CMakeLists.txt b/driver/others/CMakeLists.txt
+index 659449f..139f329 100644
+--- a/driver/others/CMakeLists.txt
++++ b/driver/others/CMakeLists.txt
+@@ -54,6 +54,8 @@ if (DYNAMIC_ARCH)
+     list(APPEND COMMON_SOURCES dynamic_power.c)
+   elseif (RISCV64)
+     list(APPEND COMMON_SOURCES dynamic_riscv64.c detect_riscv64.c)
++  elseif (LOONGARCH64)
++    list(APPEND COMMON_SOURCES dynamic_loongarch64.c)
+   else ()  
+     list(APPEND COMMON_SOURCES dynamic.c)
+   endif ()  
+diff --git a/kernel/loongarch64/KERNEL.LOONGSONGENERIC b/kernel/loongarch64/KERNEL.LOONGSONGENERIC
+new file mode 100644
+index 0000000..213add9
+--- /dev/null
++++ b/kernel/loongarch64/KERNEL.LOONGSONGENERIC
+@@ -0,0 +1,171 @@
++SGEMM_BETA = ../generic/gemm_beta.c
++DGEMM_BETA = ../generic/gemm_beta.c
++CGEMM_BETA = ../generic/zgemm_beta.c
++ZGEMM_BETA = ../generic/zgemm_beta.c
++
++STRMMKERNEL    = ../generic/trmmkernel_2x2.c
++DTRMMKERNEL    = ../generic/trmmkernel_2x2.c
++CTRMMKERNEL    = ../generic/ztrmmkernel_2x2.c
++ZTRMMKERNEL    = ../generic/ztrmmkernel_2x2.c
++
++SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
++SGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
++SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
++SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
++SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
++
++DGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
++DGEMMONCOPY    = ../generic/gemm_ncopy_2.c
++DGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
++DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
++DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
++
++CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
++CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
++CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
++CGEMMONCOPYOBJ = cgemm_oncopy$(TSUFFIX).$(SUFFIX)
++CGEMMOTCOPYOBJ = cgemm_otcopy$(TSUFFIX).$(SUFFIX)
++
++ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
++ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
++ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
++ZGEMMONCOPYOBJ = zgemm_oncopy$(TSUFFIX).$(SUFFIX)
++ZGEMMOTCOPYOBJ = zgemm_otcopy$(TSUFFIX).$(SUFFIX)
++
++STRSMKERNEL_LN  =  ../generic/trsm_kernel_LN.c
++STRSMKERNEL_LT  =  ../generic/trsm_kernel_LT.c
++STRSMKERNEL_RN  =  ../generic/trsm_kernel_RN.c
++STRSMKERNEL_RT  =  ../generic/trsm_kernel_RT.c
++
++DTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
++DTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
++DTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
++DTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
++
++CTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
++CTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
++CTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
++CTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
++
++ZTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
++ZTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
++ZTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
++ZTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
++
++#Pure C for other kernels
++SAMAXKERNEL  = ../arm/amax.c
++DAMAXKERNEL  = ../arm/amax.c
++CAMAXKERNEL  = ../arm/zamax.c
++ZAMAXKERNEL  = ../arm/zamax.c
++
++SAMINKERNEL  = ../arm/amin.c
++DAMINKERNEL  = ../arm/amin.c
++CAMINKERNEL  = ../arm/zamin.c
++ZAMINKERNEL  = ../arm/zamin.c
++
++SMAXKERNEL   = ../arm/max.c
++DMAXKERNEL   = ../arm/max.c
++
++SMINKERNEL   = ../arm/min.c
++DMINKERNEL   = ../arm/min.c
++
++ISAMAXKERNEL = ../arm/iamax.c
++IDAMAXKERNEL = ../arm/iamax.c
++ICAMAXKERNEL = ../arm/izamax.c
++IZAMAXKERNEL = ../arm/izamax.c
++
++ISAMINKERNEL = ../arm/iamin.c
++IDAMINKERNEL = ../arm/iamin.c
++ICAMINKERNEL = ../arm/izamin.c
++IZAMINKERNEL = ../arm/izamin.c
++
++ISMAXKERNEL  = ../arm/imax.c
++IDMAXKERNEL  = ../arm/imax.c
++
++ISMINKERNEL  = ../arm/imin.c
++IDMINKERNEL  = ../arm/imin.c
++
++SASUMKERNEL  = ../arm/asum.c
++DASUMKERNEL  = ../arm/asum.c
++CASUMKERNEL  = ../arm/zasum.c
++ZASUMKERNEL  = ../arm/zasum.c
++
++SSUMKERNEL   = ../arm/sum.c
++DSUMKERNEL   = ../arm/sum.c
++CSUMKERNEL   = ../arm/zsum.c
++ZSUMKERNEL   = ../arm/zsum.c
++
++
++SAXPYKERNEL  = ../arm/axpy.c
++DAXPYKERNEL  = ../arm/axpy.c
++CAXPYKERNEL  = ../arm/zaxpy.c
++ZAXPYKERNEL  = ../arm/zaxpy.c
++
++SCOPYKERNEL  = ../arm/copy.c
++DCOPYKERNEL  = ../arm/copy.c
++CCOPYKERNEL  = ../arm/zcopy.c
++ZCOPYKERNEL  = ../arm/zcopy.c
++
++SDOTKERNEL   = ../generic/dot.c
++DDOTKERNEL   = ../arm/dot.c
++CDOTKERNEL   = ../arm/zdot.c
++ZDOTKERNEL   = ../arm/zdot.c
++
++SNRM2KERNEL  = ../arm/nrm2.c
++DNRM2KERNEL  = ../arm/nrm2.c
++CNRM2KERNEL  = ../arm/znrm2.c
++ZNRM2KERNEL  = ../arm/znrm2.c
++
++SROTKERNEL   = ../arm/rot.c
++DROTKERNEL   = ../arm/rot.c
++CROTKERNEL   = ../arm/zrot.c
++ZROTKERNEL   = ../arm/zrot.c
++
++SSCALKERNEL  = ../arm/scal.c
++DSCALKERNEL  = ../arm/scal.c
++CSCALKERNEL  = ../arm/zscal.c
++ZSCALKERNEL  = ../arm/zscal.c
++
++SSWAPKERNEL  = ../arm/swap.c
++DSWAPKERNEL  = ../arm/swap.c
++CSWAPKERNEL  = ../arm/zswap.c
++ZSWAPKERNEL  = ../arm/zswap.c
++
++SGEMVNKERNEL = ../arm/gemv_n.c
++ifndef DGEMVNKERNEL
++DGEMVNKERNEL = ../arm/gemv_n.c
++endif
++CGEMVNKERNEL = ../arm/zgemv_n.c
++ZGEMVNKERNEL = ../arm/zgemv_n.c
++
++SGEMVTKERNEL = ../arm/gemv_t.c
++ifndef DGEMVTKERNEL
++DGEMVTKERNEL = ../arm/gemv_t.c
++endif
++CGEMVTKERNEL = ../arm/zgemv_t.c
++ZGEMVTKERNEL = ../arm/zgemv_t.c
++
++SSYMV_U_KERNEL =  ../generic/symv_k.c
++SSYMV_L_KERNEL =  ../generic/symv_k.c
++DSYMV_U_KERNEL =  ../generic/symv_k.c
++DSYMV_L_KERNEL =  ../generic/symv_k.c
++QSYMV_U_KERNEL =  ../generic/symv_k.c
++QSYMV_L_KERNEL =  ../generic/symv_k.c
++CSYMV_U_KERNEL =  ../generic/zsymv_k.c
++CSYMV_L_KERNEL =  ../generic/zsymv_k.c
++ZSYMV_U_KERNEL =  ../generic/zsymv_k.c
++ZSYMV_L_KERNEL =  ../generic/zsymv_k.c
++XSYMV_U_KERNEL =  ../generic/zsymv_k.c
++XSYMV_L_KERNEL =  ../generic/zsymv_k.c
++
++ZHEMV_U_KERNEL =  ../generic/zhemv_k.c
++ZHEMV_L_KERNEL =  ../generic/zhemv_k.c
++
++LSAME_KERNEL   = ../generic/lsame.c
++SCABS_KERNEL   = ../generic/cabs.c
++DCABS_KERNEL   = ../generic/cabs.c
++QCABS_KERNEL   = ../generic/cabs.c
++
++#Dump kernel
++CGEMM3MKERNEL  = ../generic/zgemm3mkernel_dump.c
++ZGEMM3MKERNEL  = ../generic/zgemm3mkernel_dump.c
+diff --git a/param.h b/param.h
+index 2618e1f..ada0aeb 100644
+--- a/param.h
++++ b/param.h
+@@ -2839,6 +2839,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #endif
+ 
+ #if defined (LOONGSON3R5)
++#define DTB_DEFAULT_ENTRIES 64
++
+ #define SNUMOPT         2
+ #define DNUMOPT         2
+ 
+@@ -2892,6 +2894,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #endif
+ 
+ #ifdef LOONGSON2K1000
++#define DTB_DEFAULT_ENTRIES 64
++
+ #define GEMM_DEFAULT_OFFSET_A 0
+ #define GEMM_DEFAULT_OFFSET_B 0
+ #define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
+@@ -2927,6 +2931,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #endif
+ 
+ #ifdef LOONGSONGENERIC
++#define DTB_DEFAULT_ENTRIES 64
++
+ #define GEMM_DEFAULT_OFFSET_A 0
+ #define GEMM_DEFAULT_OFFSET_B 0
+ #define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
+-- 
+2.31.1
+

@@ -1,0 +1,80 @@
+From 850bd4229c0cadb95febd5a6661890fbaf9e2dbe Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 31 Dec 2024 06:34:56 +0000
+Subject: [PATCH] wcslib 8.4 fix for cross build.
+
+---
+ configure.ac | 36 ------------------------------------
+ 1 file changed, 36 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 70d069b..5e0ec59 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -443,42 +443,13 @@ fi
+ 
+ if test "x$with_cfitsio" != xno -o \
+         "x$with_pgplot"  != xno ; then
+-  LIBDIRS="$LIBDIRS           \
+-           /usr/local/lib     \
+-           /local/lib         \
+-           /opt/local/lib     \
+-           /opt/SUNWspro/lib  \
+-           /sw/lib"
+-
+-  for LIBDIR in $LIBDIRS ; do
+-    AC_CHECK_FILE([$LIBDIR], [LDFLAGS="$LDFLAGS -L$LIBDIR"], [continue])
+-  done
+-
+-  # Generic include directories.
+-  INCDIRS="/usr/local/include \
+-           /local/include     \
+-           /opt/local/include \
+-           /sw/include        \
+-           /local             \
+-           /usr/include"
+-
+-
+   # CFITSIO.
+   if test "x$with_cfitsio" != xno ; then
+-    # Search for CFITSIO.
+-    for INCDIR in $CFITSIO_INCDIRS $INCDIRS ; do
+-      AC_CHECK_FILE([$INCDIR/cfitsio/fitsio.h],
+-                    [CFITSIOINC="-I$INCDIR/cfitsio"; break])
+-      AC_CHECK_FILE([$INCDIR/fitsio.h], [CFITSIOINC="-I$INCDIR"; break])
+-    done
+ 
+     AC_CHECK_LIB([socket],  [recv],   [CFITSIOLIB="-lsocket"], [], [$LIBS])
+     AC_CHECK_LIB([cfitsio], [ffopen], [CFITSIOLIB="-lcfitsio $CFITSIOLIB"], [],
+                  [$CFITSIOLIB $LIBS])
+ 
+-    if test "x$CFITSIOINC" = x -o "x$CFITSIOLIB" = x; then
+-      AC_MSG_WARN([CFITSIO not found, skipping CFITSIO-dependent tests.])
+-    else
+       AC_MSG_NOTICE([CFITSIO appears to be available.])
+       AC_DEFINE([HAVE_CFITSIO], [1], [Define to 1 if CFITSIO is available.])
+ 
+@@ -489,7 +460,6 @@ if test "x$with_cfitsio" != xno -o \
+         AC_MSG_WARN([fits_read_wcstab not found in CFITSIO, will use
+                         getwcstab.c to compile test programs.])
+       fi
+-    fi
+ 
+     AC_SUBST([CFITSIOINC])
+     AC_SUBST([CFITSIOLIB])
+@@ -498,12 +468,6 @@ if test "x$with_cfitsio" != xno -o \
+ 
+   # PGPLOT.
+   if test "x$F77" != x -a "x$with_pgplot" != xno ; then
+-    # Search for PGPLOT.
+-    for INCDIR in $PGPLOT_INCDIRS $INCDIRS ; do
+-      AC_CHECK_FILE([$INCDIR/pgplot/cpgplot.h],
+-                    [PGPLOTINC="-I$INCDIR/pgplot"; break])
+-      AC_CHECK_FILE([$INCDIR/cpgplot.h], [PGPLOTINC="-I$INCDIR"; break])
+-    done
+ 
+     # FLIBS (found above via AC_F77_LIBRARY_LDFLAGS) only helps if PGPLOT was
+     # built using the same Fortran compiler that we are using here.
+-- 
+2.31.1
+

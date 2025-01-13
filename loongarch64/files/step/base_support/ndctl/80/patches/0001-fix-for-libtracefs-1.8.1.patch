@@ -1,0 +1,25 @@
+From 4b643d861b8654d09990dc938f22bf7391cb28aa Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 23 Dec 2024 06:01:09 +0000
+Subject: [PATCH] fix for libtracefs 1.8.1
+
+---
+ cxl/json.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cxl/json.c b/cxl/json.c
+index 5066d3b..9879471 100644
+--- a/cxl/json.c
++++ b/cxl/json.c
+@@ -9,7 +9,7 @@
+ #include <json-c/json.h>
+ #include <json-c/printbuf.h>
+ #include <ccan/short_types/short_types.h>
+-#include <tracefs/tracefs.h>
++#include <libtracefs/tracefs.h>
+ 
+ #include "filter.h"
+ #include "json.h"
+-- 
+2.31.1
+

@@ -1,0 +1,1 @@
+mount --bind /run/media ${RUNTIME_SYSROOT_DIR}/run/media

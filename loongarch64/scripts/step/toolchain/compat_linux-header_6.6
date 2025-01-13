@@ -1,0 +1,30 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=compat_linux-header_6.6
+export PACKAGE_VERSION=6.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/compat_linux-header_6.6/6.6/
+rm -rf ${BUILD_DIRECTORY}/linux-6.6
+tar xvf ${DOWNLOADDIR}/linux-6.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.6
+
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+	CROSS_KERNEL_NAME=$(archname_to_linuxname "$(get_user_set_env host $(uname -m))" "$(uname -m)")
+    else
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+	CROSS_KERNEL_NAME=$(archname_to_linuxname "$(get_user_set_env target $(uname -m))" "$(uname -m)")
+    fi
+
+    COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+
+	make ARCH=${CROSS_KERNEL_NAME} mrproper
+	make ARCH=${CROSS_KERNEL_NAME} INSTALL_HDR_PATH=dest headers_install
+	find dest/include -name '.*' -delete
+
+        INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target"
+        mkdir -pv ${INSTALL_DIST_DIR}/usr/include
+        cp -rv dest/include/* ${INSTALL_DIST_DIR}/usr/include/
+popd 
+rm -rf ${BUILD_DIRECTORY}/linux-6.6

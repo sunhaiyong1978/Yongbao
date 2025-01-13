@@ -1,0 +1,25 @@
+From d8b52791998f5f7f62d67539de9292254d0cd54a Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 25 Sep 2024 08:37:24 +0000
+Subject: [PATCH] spice-gtk 0.41 fix polkit dir for cross build.
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index dd46294..1200c26 100644
+--- a/meson.build
++++ b/meson.build
+@@ -252,7 +252,7 @@ spice_gtk_has_polkit = false
+ d = dependency('polkit-gobject-1', version : '>= 0.101', required : get_option('polkit'))
+ summary_info += {'polkit': d.found()}
+ if d.found()
+-  spice_gtk_policy_dir = d.get_pkgconfig_variable('policydir')
++  spice_gtk_policy_dir = d.get_pkgconfig_variable('policydir', define_variable: [ 'datadir', get_option('prefix') + '/share' ])
+ 
+   # TODO:  With 'auto', we should just disable polkit support if this is missing.
+   if not compiler.has_function('acl_get_file')
+-- 
+2.31.1
+

@@ -1,0 +1,25 @@
+From 265e6ce86a4b96450558bf113e2d34434b27166f Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 29 Sep 2024 07:43:56 +0000
+Subject: [PATCH 2/4] godot 4.3 thirdparty openxr add loongarch64 define.
+
+---
+ thirdparty/openxr/src/common/platform_utils.hpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/thirdparty/openxr/src/common/platform_utils.hpp b/thirdparty/openxr/src/common/platform_utils.hpp
+index 35369a1..cc23054 100644
+--- a/thirdparty/openxr/src/common/platform_utils.hpp
++++ b/thirdparty/openxr/src/common/platform_utils.hpp
+@@ -71,6 +71,8 @@
+ #define XR_ARCH_ABI "riscv64"
+ #elif defined(__sparc__) && defined(__arch64__)
+ #define XR_ARCH_ABI "sparc64"
++#elif defined(__loongarch_lp64)
++#define XR_ARCH_ABI "loongarch64"
+ #else
+ #error "No architecture string known!"
+ #endif
+-- 
+2.31.1
+

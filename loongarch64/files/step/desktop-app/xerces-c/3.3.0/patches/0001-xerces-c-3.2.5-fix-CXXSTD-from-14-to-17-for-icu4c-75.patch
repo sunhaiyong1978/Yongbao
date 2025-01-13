@@ -1,0 +1,25 @@
+From 2d5bf9c4cbd3f9861192e345102554432ce798e6 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 24 Apr 2024 03:48:47 +0000
+Subject: [PATCH] xerces-c 3.2.5 fix CXXSTD from 14 to 17 for icu4c 75_1
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 33bc40f..133468f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.12.0)
+ 
+ # Try C++14, then fall back to C++11 and C++98.  Used for feature tests
+ # for optional features.
+-set(CMAKE_CXX_STANDARD 14)
++set(CMAKE_CXX_STANDARD 17)
+ 
+ # Use folders (for IDE project grouping)
+ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+-- 
+2.31.1
+

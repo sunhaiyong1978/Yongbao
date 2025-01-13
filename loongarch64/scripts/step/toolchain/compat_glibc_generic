@@ -1,0 +1,47 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=compat_glibc_generic
+export PACKAGE_VERSION=2.36
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/compat_glibc_generic/2.36/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.36
+tar xvf ${DOWNLOADDIR}/glibc-2.36.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.36
+    
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+        ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env host ${CROSS_TARGET})" "MABI" "")
+    else
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+        ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env target ${CROSS_TARGET})" "MABI" "")
+    fi
+    LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
+
+    COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+
+    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
+
+    sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
+    mkdir -p build
+    pushd build
+        BUILD_CC="gcc" \
+	CC="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
+        CXX="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
+        AS="${COMPAT_TARGET}-as" AR="${COMPAT_TARGET}-ar" RANLIB="${COMPAT_TARGET}-ranlib" \
+        ../configure --prefix=/usr --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
+	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
+	                 --with-binutils=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin \
+	                 --with-headers=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target/usr/include \
+	                 --enable-stack-protector=strong --enable-add-ons \
+	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib${LIB_SUFF} \
+	                 --enable-kernel=4.15
+	make -j${JOBS}
+
+	mkdir -pv ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target/usr/lib{,64}
+
+        INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target"
+	make DESTDIR=${INSTALL_DIST_DIR} install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/glibc-2.36

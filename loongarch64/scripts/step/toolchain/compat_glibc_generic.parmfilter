@@ -1,0 +1,3 @@
+target=!mingw64ucrt
+host=!mingw64ucrt
+host=!x86_64

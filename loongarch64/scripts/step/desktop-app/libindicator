@@ -1,0 +1,24 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=libindicator
+export PACKAGE_VERSION=12.10.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libindicator/12.10.1/
+rm -rf ${BUILD_DIRECTORY}/libindicator-12.10.1
+tar xvf ${DOWNLOADDIR}/libindicator-12.10.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libindicator-12.10.1
+        patch -Np2 -i ${SYSDIR}/files/desktop-app/libindicator/12.10.1/patches/libindicator-12.10.1-glib262-g_define_type_with_private.patch 
+	 
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+	sed -i.addvar configure.ac -e '\@LIBINDICATOR_LIBS@s|\$LIBM| \$LIBM|'
+        autoreconf -ifv
+	CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations" ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
+        CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/libindicator-12.10.1

@@ -1,0 +1,6 @@
+URL=https://github.com/flatpak/xdg-dbus-proxy
+FILENAME=dbus-proxy
+MODE=GIT
+GIT_BRANCH=
+GIT_COMMIT=7466c8137fc06f863fde8486521984e43a26cd10
+GIT_SUBMODULE=0

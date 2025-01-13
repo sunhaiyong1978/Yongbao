@@ -1,0 +1,6 @@
+URL=git://git.sv.gnu.org/gnulib.git
+FILENAME=gnulib
+MODE=GIT
+GIT_BRANCH=
+GIT_COMMIT=
+GIT_SUBMODULE=0

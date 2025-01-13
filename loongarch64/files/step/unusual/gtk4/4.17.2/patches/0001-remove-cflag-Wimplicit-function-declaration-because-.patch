@@ -1,0 +1,25 @@
+From b1c16e9fabbbd060e201fbf435a93937752ff04e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 29 Jul 2024 02:08:07 +0000
+Subject: [PATCH] remove cflag -Wimplicit-function-declaration because build
+ error.
+
+---
+ meson.build | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index a866a0c..4d46c7a 100644
+--- a/meson.build
++++ b/meson.build
+@@ -294,7 +294,6 @@ elif cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+     '-Wformat-nonliteral',
+     '-Wformat-security',
+     '-Wignored-qualifiers',
+-    '-Wimplicit-function-declaration',
+     '-Wlogical-op',
+     '-Wmisleading-indentation',
+     '-Wmissing-format-attribute',
+-- 
+2.31.1
+

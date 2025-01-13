@@ -1,0 +1,24 @@
+From d9d159fbfbcc160d460d6594e06d1ecf5053c8d7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Jul 2024 01:46:58 +0000
+Subject: [PATCH] xmlsecurity add nss/nss.h header file.
+
+---
+ xmlsecurity/source/xmlsec/nss/nssinitializer.cxx | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx b/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx
+index 2647f79..959eeac 100644
+--- a/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx
++++ b/xmlsecurity/source/xmlsec/nss/nssinitializer.cxx
+@@ -37,6 +37,7 @@
+ #include <comphelper/sequence.hxx>
+ 
+ #include <nss/nssinitializer.hxx>
++#include <nss/nss.h>
+ 
+ #include "digestcontext.hxx"
+ #include "ciphercontext.hxx"
+-- 
+2.31.1
+

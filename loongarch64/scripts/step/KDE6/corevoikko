@@ -1,0 +1,26 @@
+source env/KDE6/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=KDE6
+export STEP_PACKAGENAME=corevoikko
+export PACKAGE_VERSION=rel-libvoikko-4.3.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/corevoikko/rel-libvoikko-4.3.2/
+rm -rf ${BUILD_DIRECTORY}/corevoikko-rel-libvoikko-4.3.2
+tar xvf ${DOWNLOADDIR}/corevoikko-rel-libvoikko-4.3.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/corevoikko-rel-libvoikko-4.3.2
+pushd libvoikko
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+        ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
+        make DESTDIR=${SYSROOT_DIR} install
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/corevoikko-rel-libvoikko-4.3.2

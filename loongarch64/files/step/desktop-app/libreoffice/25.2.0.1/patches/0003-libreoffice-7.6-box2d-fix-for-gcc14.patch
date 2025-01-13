@@ -1,0 +1,68 @@
+From fa9b04bc2d302ec3644522625a4b598ef3cccf51 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 11 Oct 2023 16:10:40 +0000
+Subject: [PATCH 3/3] libreoffice 7.6 box2d fix for gcc14
+
+Change-Id: I351db95278c4a3b25d1dd36409f02b76f8a9913a
+---
+ external/box2d/0001-box2d-fix-for-gcc14.patch | 25 +++++++++++++++++++
+ external/box2d/UnpackedTarball_box2d.mk       |  7 ++++++
+ 2 files changed, 32 insertions(+)
+ create mode 100644 external/box2d/0001-box2d-fix-for-gcc14.patch
+
+diff --git a/external/box2d/0001-box2d-fix-for-gcc14.patch b/external/box2d/0001-box2d-fix-for-gcc14.patch
+new file mode 100644
+index 000000000..7eca5dcf4
+--- /dev/null
++++ b/external/box2d/0001-box2d-fix-for-gcc14.patch
+@@ -0,0 +1,25 @@
++From 6a02e3905e321dabec0b9382674320c345c85e5a Mon Sep 17 00:00:00 2001
++From: Sun Haiyong <sunhaiyong@zdbr.net>
++Date: Wed, 11 Oct 2023 16:06:40 +0000
++Subject: [PATCH] box2d fix for gcc14
++
++---
++ include/box2d/b2_math.h | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/include/box2d/b2_math.h b/include/box2d/b2_math.h
++index 479e667..64ce86f 100644
++--- a/include/box2d/b2_math.h
+++++ b/include/box2d/b2_math.h
++@@ -31,7 +31,7 @@
++ /// This function is used to ensure that a floating point number is not a NaN or infinity.
++ inline bool b2IsValid(float x)
++ {
++-	return isfinite(x);
+++	return std::isfinite(x);
++ }
++ 
++ #define	b2Sqrt(x)	sqrtf(x)
++-- 
++2.31.1
++
+diff --git a/external/box2d/UnpackedTarball_box2d.mk b/external/box2d/UnpackedTarball_box2d.mk
+index 7d7d60e93..e41ae9c0b 100644
+--- a/external/box2d/UnpackedTarball_box2d.mk
++++ b/external/box2d/UnpackedTarball_box2d.mk
+@@ -7,10 +7,17 @@
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ #
+ 
++box2d_patches :=
++box2d_patches += 0001-box2d-fix-for-gcc14.patch
++
+ $(eval $(call gb_UnpackedTarball_UnpackedTarball,box2d))
+ 
+ $(eval $(call gb_UnpackedTarball_set_tarball,box2d,$(BOX2D_TARBALL)))
+ 
+ $(eval $(call gb_UnpackedTarball_set_patchlevel,box2d,1))
+ 
++$(eval $(call gb_UnpackedTarball_add_patches,box2d,\
++    $(foreach patch,$(box2d_patches),external/box2d/$(patch)) \
++))
++
+ # vim: set noet sw=4 ts=4:
+-- 
+2.31.1
+

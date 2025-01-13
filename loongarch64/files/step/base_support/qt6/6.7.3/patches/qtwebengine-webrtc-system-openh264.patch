@@ -1,0 +1,71 @@
+diff --git a/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/BUILD.gn b/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/BUILD.gn
+index 738d3d4ed..8344a19b0 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/BUILD.gn
++++ b/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/BUILD.gn
+@@ -6,6 +6,7 @@
+ # in the file PATENTS.  All contributing project authors may
+ # be found in the AUTHORS file in the root of the source tree.
+ 
++import("//build/config/linux/pkg_config.gni")
+ import("//third_party/libaom/options.gni")
+ import("../../webrtc.gni")
+ 
+@@ -453,6 +454,14 @@ rtc_library("video_coding_utility") {
+   ]
+ }
+ 
++if (rtc_use_h264 && rtc_use_system_openh264) {
++  pkg_config("openh264") {
++    packages = [
++      "openh264",
++    ]
++  }
++}
++
+ rtc_library("webrtc_h264") {
+   visibility = [ "*" ]
+   sources = [
+@@ -501,8 +510,14 @@ rtc_library("webrtc_h264") {
+   if (rtc_use_h264) {
+     deps += [
+       "//third_party/ffmpeg",
+-      "//third_party/openh264:encoder",
+     ]
++
++    if (rtc_use_system_openh264) {
++      configs += [":openh264"]
++    } else {
++      deps += [ "//third_party/openh264:encoder" ]
++    }
++
+     if (!build_with_mozilla) {
+       deps += [ "../../media:rtc_media_base" ]
+     }
+diff --git a/src/3rdparty/chromium/third_party/webrtc/webrtc.gni b/src/3rdparty/chromium/third_party/webrtc/webrtc.gni
+index 82870d2db..12231becc 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/webrtc.gni
++++ b/src/3rdparty/chromium/third_party/webrtc/webrtc.gni
+@@ -192,6 +192,9 @@ declare_args() {
+   # Enable to use H265
+   rtc_use_h265 = proprietary_codecs
+ 
++  # Allow to use system OpenH264
++  rtc_use_system_openh264 = false
++
+   # Enable this flag to make webrtc::Mutex be implemented by absl::Mutex.
+   rtc_use_absl_mutex = false
+ 
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index e7432d0c7..394f05011 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -436,6 +436,9 @@ foreach(arch ${archs})
+                 use_udev=true
+                 is_cfi=false
+                 use_ozone=true
++                media_use_openh264=true
++                rtc_use_h264=true
++                rtc_use_system_openh264=true
+                 ozone_auto_platforms=false
+                 ozone_platform_headless=false
+                 ozone_platform_external=true

@@ -1276,6 +1276,8 @@
 %step/KDE6/KDE6-kweather|g_opt+KDE6;f_KDE6_KDE6-kweather_bad
 %step/KDE6/KDE6-krdc|g_opt+KDE6;f_KDE6_KDE6-krdc_bad
 %step/KDE6/KDE6-kdevelop|g_opt+KDE6
+%step/KDE6/KDE6-kpmcore|g_opt+KDE6
+%step/KDE6/KDE6-partitionmanager|g_opt+KDE6
 %step/KDE6/NULL|g_opt+KDE6
 %step/KDE6/create_files|g_opt+KDE6
 %step/KDE6/final_run|g_opt+KDE6

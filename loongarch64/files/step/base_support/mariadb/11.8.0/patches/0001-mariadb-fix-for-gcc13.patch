@@ -1,0 +1,63 @@
+From 0bc014a1e387e499e991d53958e5d1b77a2a9e12 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 20 May 2023 08:43:06 +0000
+Subject: [PATCH] mariadb fix for gcc13.
+
+---
+ .../rocksdb/rocksdb/db/compaction/compaction_iteration_stats.h   | 1 +
+ storage/rocksdb/rocksdb/include/rocksdb/utilities/checkpoint.h   | 1 +
+ .../rocksdb/rocksdb/table/block_based/data_block_hash_index.h    | 1 +
+ storage/rocksdb/rocksdb/util/string_util.h                       | 1 +
+ 4 files changed, 4 insertions(+)
+
+diff --git a/storage/rocksdb/rocksdb/db/compaction/compaction_iteration_stats.h b/storage/rocksdb/rocksdb/db/compaction/compaction_iteration_stats.h
+index 963c1d8e..8d703097 100644
+--- a/storage/rocksdb/rocksdb/db/compaction/compaction_iteration_stats.h
++++ b/storage/rocksdb/rocksdb/db/compaction/compaction_iteration_stats.h
+@@ -6,6 +6,7 @@
+ #pragma once
+ 
+ #include "rocksdb/rocksdb_namespace.h"
++#include <cstdint>
+ 
+ struct CompactionIterationStats {
+   // Compaction statistics
+diff --git a/storage/rocksdb/rocksdb/include/rocksdb/utilities/checkpoint.h b/storage/rocksdb/rocksdb/include/rocksdb/utilities/checkpoint.h
+index c7f93b4c..d088d99d 100644
+--- a/storage/rocksdb/rocksdb/include/rocksdb/utilities/checkpoint.h
++++ b/storage/rocksdb/rocksdb/include/rocksdb/utilities/checkpoint.h
+@@ -9,6 +9,7 @@
+ #ifndef ROCKSDB_LITE
+ 
+ #include <string>
++#include <cstdint>
+ #include <vector>
+ #include "rocksdb/status.h"
+ 
+diff --git a/storage/rocksdb/rocksdb/table/block_based/data_block_hash_index.h b/storage/rocksdb/rocksdb/table/block_based/data_block_hash_index.h
+index f356395f..7222787d 100644
+--- a/storage/rocksdb/rocksdb/table/block_based/data_block_hash_index.h
++++ b/storage/rocksdb/rocksdb/table/block_based/data_block_hash_index.h
+@@ -6,6 +6,7 @@
+ #pragma once
+ 
+ #include <string>
++#include <cstdint>
+ #include <vector>
+ 
+ #include "rocksdb/slice.h"
+diff --git a/storage/rocksdb/rocksdb/util/string_util.h b/storage/rocksdb/rocksdb/util/string_util.h
+index a761be66..def2ca3b 100644
+--- a/storage/rocksdb/rocksdb/util/string_util.h
++++ b/storage/rocksdb/rocksdb/util/string_util.h
+@@ -8,6 +8,7 @@
+ 
+ #include <sstream>
+ #include <string>
++#include <cstdint>
+ #include <unordered_map>
+ #include <vector>
+ 
+-- 
+2.31.1
+

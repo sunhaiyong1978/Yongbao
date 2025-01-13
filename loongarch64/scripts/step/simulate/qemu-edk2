@@ -1,0 +1,81 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=qemu-edk2
+export PACKAGE_VERSION=1.0-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu-edk2/1.0-default/
+pushd ${BUILD_DIRECTORY}
+
+mkdir -pv ${BUILD_DIRECTORY}/qemu-edk2
+pushd ${BUILD_DIRECTORY}/qemu-edk2
+
+tar xvf ${RESOURCEDIR}/files/qemu-edk2-edk2_git.tar.gz
+tar xvf ${RESOURCEDIR}/files/qemu-edk2-edk2-platforms_git.tar.gz
+
+EDK2_DIRNAME=qemu-edk2-edk2_git
+EDK2_PLATFORMS_DIRNAME=qemu-edk2-edk2-platforms_git
+
+pushd ${EDK2_DIRNAME}
+	make -j${JOBS} -C BaseTools \
+	EXTRA_LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib:${CROSSTOOLS_DIR}/build-tools/lib64:/usr/lib:/usr/lib64"
+	cp -av BaseTools/Conf/build_rule.template Conf/build_rule.txt
+	cp -av BaseTools/Conf/tools_def.template Conf/tools_def.txt
+	cp -av BaseTools/Conf/target.template Conf/target.txt
+popd
+
+CONF_PATH="${PWD}/${EDK2_DIRNAME}/Conf" \
+EDK_TOOLS_PATH="${PWD}/${EDK2_DIRNAME}/BaseTools" \
+PATH="${PWD}/${EDK2_DIRNAME}/BaseTools/Bin/Linux-x86_64:${PWD}/${EDK2_DIRNAME}/BaseTools/BinWrappers/PosixLike:${PATH}" \
+PYTHONHASHSEED="1" \
+PYTHON_COMMAND="python3" \
+WORKSPACE="${PWD}" \
+PACKAGES_PATH=${PWD}/${EDK2_DIRNAME}:${PWD}/${EDK2_PLATFORMS_DIRNAME} \
+GCC5_LOONGARCH64_PREFIX=${CROSS_TARGET}- \
+${PWD}/${EDK2_DIRNAME}/BaseTools/BinWrappers/PosixLike/build -b RELEASE -t GCC5 -a LOONGARCH64  -p Platform/Loongson/LoongArchQemuPkg/Loongson.dsc
+
+
+truncate --size 16m Build/LoongArchQemu/RELEASE_GCC5/FV/*.fd
+
+mkdir -pv ${DIST_DIRECTORY}/host/qemu/edk2/
+cp -av Build/LoongArchQemu/RELEASE_GCC5/FV/*.fd ${DIST_DIRECTORY}/host/qemu/edk2/
+
+mkdir -pv ${SYSROOT_DIR}/usr/share/edk2/loongarch64/
+cp -av Build/LoongArchQemu/RELEASE_GCC5/FV/*.fd ${SYSROOT_DIR}/usr/share/edk2/loongarch64/
+
+cat > ${SYSROOT_DIR}/usr/share/qemu/firmware/50-edk2-loongarch64.json << EOF
+{
+    "interface-types": [
+        "uefi"
+    ],
+    "mapping": {
+        "device": "flash",
+        "mode": "split",
+        "executable": {
+            "filename": "/usr/share/edk2/loongarch64/QEMU_EFI.fd",
+            "format": "raw"
+        },
+        "nvram-template": {
+            "filename": "/usr/share/edk2/loongarch64/QEMU_VARS.fd",
+            "format": "raw"
+        }
+    },
+    "targets": [
+        {
+            "architecture": "loongarch64",
+            "machines": [
+                "virt",
+                "virt-*"
+            ]
+        }
+    ],
+    "features": [
+    ]
+}
+EOF
+
+popd
+
+rm -rf qemu-edk2
+
+popd

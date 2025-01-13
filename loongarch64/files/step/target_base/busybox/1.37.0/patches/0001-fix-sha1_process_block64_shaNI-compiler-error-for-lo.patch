@@ -1,0 +1,27 @@
+From cc7589344fd39b16232874a9eb7bc55a541092d5 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 19 Dec 2024 06:15:04 +0000
+Subject: [PATCH] fix sha1_process_block64_shaNI compiler error for
+ loongarch64.
+
+---
+ libbb/hash_md5_sha.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/libbb/hash_md5_sha.c b/libbb/hash_md5_sha.c
+index 57a8014..75a61c3 100644
+--- a/libbb/hash_md5_sha.c
++++ b/libbb/hash_md5_sha.c
+@@ -1313,7 +1313,9 @@ unsigned FAST_FUNC sha1_end(sha1_ctx_t *ctx, void *resbuf)
+ 	hash_size = 8;
+ 	if (ctx->process_block == sha1_process_block64
+ #if ENABLE_SHA1_HWACCEL
++# if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+ 	 || ctx->process_block == sha1_process_block64_shaNI
++# endif
+ #endif
+ 	) {
+ 		hash_size = 5;
+-- 
+2.31.1
+

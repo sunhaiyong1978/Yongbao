@@ -1,0 +1,19 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+source env/cross-tools/custom
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=qtchooser
+export PACKAGE_VERSION=39-g4717841
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qtchooser/39-g4717841/
+rm -rf ${BUILD_DIRECTORY}/qtchooser-39-g4717841
+tar xvf ${DOWNLOADDIR}/qtchooser-39-g4717841.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qtchooser-39-g4717841
+	make -j${JOBS} QTCHOOSER_GLOBAL_DIR=${CROSSTOOLS_DIR}/qt5/lib/qtchooser/etc/
+	make -j${JOBS} QTCHOOSER_GLOBAL_DIR=${CROSSTOOLS_DIR}/qt5/lib/qtchooser/etc/ install INSTALL_ROOT=${PWD}/dest
+	mkdir -p ${CROSSTOOLS_DIR}/qt5/lib/qtchooser/etc/qtchooser
+	cp -a ${PWD}/dest/usr/bin/* ${CROSSTOOLS_DIR}/qt5/lib/qtchooser/
+	echo "${CROSSTOOLS_DIR}/qt5/bin" > ${CROSSTOOLS_DIR}/qt5/lib/qtchooser/etc/qtchooser/qt5.conf
+	echo "${CROSSTOOLS_DIR}/qt5/lib" >> ${CROSSTOOLS_DIR}/qt5/lib/qtchooser/etc/qtchooser/qt5.conf
+popd 
+rm -rf ${BUILD_DIRECTORY}/qtchooser-39-g4717841
