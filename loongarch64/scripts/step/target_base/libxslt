@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/libxslt-1.1.42
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} $(if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then echo PYTHON=python3; else echo --with-python=no; fi)
+	 ./configure ${COMMON_CONFIG} $(if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then echo PYTHON=python3; else echo --with-python=no; fi) --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

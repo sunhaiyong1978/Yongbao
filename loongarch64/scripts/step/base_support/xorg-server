@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/xorg-server-21.1.15
 	    --with-fontrootdir=/usr/share/fonts/X11
     eval ${MAKE_AND_INSTALL}
 
-    cp -v ${SYSROOT_DIR}/usr/share/aclocal/xorg-server.m4 ${CROSSTOOLS_DIR}/share/aclocal/
+    cp -v ${SYSROOT_DIR}/usr/share/aclocal/xorg-server.m4 ${HOST_TOOLS_DIR}/share/aclocal/
 cat >> ${SYSROOT_DIR}/etc/sysconfig/createfiles << "EOF"
 /tmp/.ICE-unix dir 1777 root root
 /tmp/.X11-unix dir 1777 root root

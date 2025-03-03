@@ -1,0 +1,27 @@
+From 6e3513ef57e7a832023e9cd6d10e6c346be00afa Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 2 Jan 2024 11:53:51 +0000
+Subject: [PATCH] pcre2 10.43 fix build error for loongarch.
+
+---
+ src/sljit/sljitConfigInternal.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/sljit/sljitConfigInternal.h b/src/sljit/sljitConfigInternal.h
+index d224248..0d8d317 100644
+--- a/src/sljit/sljitConfigInternal.h
++++ b/src/sljit/sljitConfigInternal.h
+@@ -383,6 +383,10 @@ typedef double sljit_f64;
+ #define SLJIT_CONV_MAX_FLOAT SLJIT_CONV_RESULT_MAX_INT
+ #define SLJIT_CONV_MIN_FLOAT SLJIT_CONV_RESULT_MIN_INT
+ #define SLJIT_CONV_NAN_FLOAT SLJIT_CONV_RESULT_ZERO
++#elif (defined SLJIT_CONFIG_LOONGARCH && SLJIT_CONFIG_LOONGARCH)
++#define SLJIT_CONV_MAX_FLOAT SLJIT_CONV_RESULT_MAX_INT
++#define SLJIT_CONV_MIN_FLOAT SLJIT_CONV_RESULT_MIN_INT
++#define SLJIT_CONV_NAN_FLOAT SLJIT_CONV_RESULT_ZERO
+ #elif (defined SLJIT_CONFIG_MIPS && SLJIT_CONFIG_MIPS)
+ #define SLJIT_CONV_MAX_FLOAT SLJIT_CONV_RESULT_MAX_INT
+ #define SLJIT_CONV_MIN_FLOAT SLJIT_CONV_RESULT_MAX_INT
+-- 
+2.31.1
+

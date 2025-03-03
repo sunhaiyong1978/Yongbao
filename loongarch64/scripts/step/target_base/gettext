@@ -9,10 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/gettext-0.23.1
 tar xvf ${DOWNLOADDIR}/gettext-0.23.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gettext-0.23.1
 	sed -i "/hello-c++-kde/d" gettext-tools/examples/Makefile.in
-	for config_i in $(find -name "config.sub")
-        do
-                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
-        done
 	./configure ${COMMON_CONFIG} \
 	            --with-libncurses-prefix=${SYSROOT_DIR}
 	eval ${MAKE_AND_INSTALL}

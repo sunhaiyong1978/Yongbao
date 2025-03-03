@@ -8,7 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/pcre2/10.44/
 rm -rf ${BUILD_DIRECTORY}/pcre2-pcre2-10.44
 tar xvf ${DOWNLOADDIR}/pcre2-10.44.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.44
-	patch -Np1 -i ${SYSDIR}/files/target_base/pcre2/10.44/patches/0001-pcre2-10.43-fix-build-error-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/target_base/pcre2/10.44/patches/0001-pcre2-10.43-fix-build-error-for-loongarch.patch 
 	 
 	for config_i in $(find -name "config.sub")
 	do
@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/pcre2-pcre2-10.44
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --enable-unicode --enable-jit --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline
+	 ./configure ${COMMON_CONFIG} --enable-unicode --enable-jit --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

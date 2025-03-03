@@ -1,0 +1,24 @@
+From a76b9211f9638d69714cbd4008155e9cd443351b Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 27 Oct 2024 05:31:57 +0000
+Subject: [PATCH 04/15] qt6webengine add host ldflags for cross build.
+
+---
+ qtwebengine/src/host/BUILD.toolchain.gn.in | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/qtwebengine/src/host/BUILD.toolchain.gn.in b/qtwebengine/src/host/BUILD.toolchain.gn.in
+index 1beb9ee6d8..534e14ba3c 100644
+--- a/qtwebengine/src/host/BUILD.toolchain.gn.in
++++ b/qtwebengine/src/host/BUILD.toolchain.gn.in
+@@ -7,6 +7,7 @@ gcc_toolchain("@GN_TOOLCHAIN@") {
+   ar = "@CMAKE_AR@"
+   nm = "@CMAKE_NM@"
+   extra_cppflags = ""
++  extra_ldflags = "@YONGBAO_HOST_LDFLAGS@"
+   toolchain_args = {
+     current_os = "@GN_OS@"
+     current_cpu = "@GN_CPU@"
+-- 
+2.31.1
+

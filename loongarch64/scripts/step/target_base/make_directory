@@ -61,7 +61,7 @@ echo "[properties]" >> meson-cross.txt
 echo "skip_sanity_check = true" >> meson-cross.txt
 echo "needs_exe_wrapper = true" >> meson-cross.txt
 echo "sys_root = '${SYSROOT_DIR}'" >> meson-cross.txt
-echo "pkg_config_libdir = '${SYSROOT_DIR}/usr/lib64/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig'" >> meson-cross.txt
+echo "pkg_config_libdir = '${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${SYSROOT_DIR}/usr/share/pkgconfig'" >> meson-cross.txt
 echo "[host_machine]"  >> meson-cross.txt
 echo "system = 'linux'
 cpu_family = '${ARCH_NAME}'

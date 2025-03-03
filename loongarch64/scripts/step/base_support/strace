@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=strace
-export PACKAGE_VERSION=6.12
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/strace/6.12/
-rm -rf ${BUILD_DIRECTORY}/strace-6.12
-tar xvf ${DOWNLOADDIR}/strace-6.12.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/strace-6.12
+export PACKAGE_VERSION=6.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/strace/6.13/
+rm -rf ${BUILD_DIRECTORY}/strace-6.13
+tar xvf ${DOWNLOADDIR}/strace-6.13.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/strace-6.13
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,6 +20,6 @@ pushd ${BUILD_DIRECTORY}/strace-6.12
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/strace-6.12
+rm -rf ${BUILD_DIRECTORY}/strace-6.13

@@ -10,8 +10,8 @@ tar xvf ${DOWNLOADDIR}/lua-5.4.7.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/lua-5.4.7
     sed -i '/#define LUA_ROOT/s:/usr/local/:/usr/:' src/luaconf.h
     make MYCFLAGS="-fPIC" linux -j${JOBS}
-    make INSTALL_TOP=${CROSSTOOLS_DIR} \
-         INSTALL_LIB=${CROSSTOOLS_DIR}/lib64 \
-         INSTALL_MAN=${CROSSTOOLS_DIR}/share/man/man1 install
+    make INSTALL_TOP=${PREFIX} \
+         INSTALL_LIB=${PREFIX}/lib${LIB_SUFF} \
+         INSTALL_MAN=${PREFIX}/share/man/man1 install
 popd 
 rm -rf ${BUILD_DIRECTORY}/lua-5.4.7

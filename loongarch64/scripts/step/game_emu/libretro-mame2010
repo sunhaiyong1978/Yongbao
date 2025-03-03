@@ -1,0 +1,17 @@
+source env/game_emu/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=game_emu
+export STEP_PACKAGENAME=libretro-mame2010
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/libretro-mame2010/git-default/
+rm -rf ${BUILD_DIRECTORY}/libretro-mame2010-git-default_git
+tar xvf ${DOWNLOADDIR}/libretro-mame2010-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libretro-mame2010-git-default_git
+	patch -Np2 -i ${SYSDIR}/files/game_emu/libretro-mame2010/git-default/patches/libretro-mame2010-add-loongarch64.patch 
+	 
+	sed -i "s@ uname @ cross-uname @g" Makefile{,.common}
+	make -j${JOBS} CC="${CROSS_TARGET}-gcc -fpermissive" CXX="${CROSS_TARGET}-g++ -fpermissive" PTR64=1
+	cp -a mame2010_libretro.so ${SYSROOT_DIR}/usr/share/retroarch/cores/
+popd 
+rm -rf ${BUILD_DIRECTORY}/libretro-mame2010-git-default_git

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mesa
-export PACKAGE_VERSION=24.3.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/24.3.3/
-rm -rf ${BUILD_DIRECTORY}/mesa-24.3.3
-tar xvf ${DOWNLOADDIR}/mesa-24.3.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mesa-24.3.3
+export PACKAGE_VERSION=24.3.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/24.3.4/
+rm -rf ${BUILD_DIRECTORY}/mesa-24.3.4
+tar xvf ${DOWNLOADDIR}/mesa-24.3.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa-24.3.4
     
     tar xf ${RESOURCEDIR}/files/mesa-DirectX-Headers_git.tar.gz -C subprojects/
     mv subprojects/{mesa-DirectX-Headers_git,DirectX-Headers-1.0}
@@ -32,4 +32,4 @@ pushd ${BUILD_DIRECTORY}/mesa-24.3.3
         eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mesa-24.3.3
+rm -rf ${BUILD_DIRECTORY}/mesa-24.3.4

@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/firewalld-2.3.0
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
+	 ./configure ${COMMON_CONFIG} PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

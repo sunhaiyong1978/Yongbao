@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=Vulkan-Headers
-export PACKAGE_VERSION=1.4.304
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/Vulkan-Headers/1.4.304/
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.4.304
-tar xvf ${DOWNLOADDIR}/Vulkan-Headers-1.4.304.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Vulkan-Headers-1.4.304
+export PACKAGE_VERSION=1.4.307
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/Vulkan-Headers/1.4.307/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.4.307
+tar xvf ${DOWNLOADDIR}/Vulkan-Headers-1.4.307.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Headers-1.4.307
         
 	mkdir cross-build
 	pushd cross-build
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Headers-1.4.304
 	popd
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.4.304
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Headers-1.4.307

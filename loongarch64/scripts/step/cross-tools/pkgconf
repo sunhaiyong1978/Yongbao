@@ -6,6 +6,7 @@ export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=pkgconf
 export PACKAGE_VERSION=2.3.0
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/pkgconf/2.3.0/
+if [ ! -f ${HOST_TOOLS_DIR}/bin/pkgconf ]; then
 rm -rf ${BUILD_DIRECTORY}/pkgconf-2.3.0
 tar xvf ${DOWNLOADDIR}/pkgconf-2.3.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pkgconf-2.3.0
@@ -17,11 +18,12 @@ pushd ${BUILD_DIRECTORY}/pkgconf-2.3.0
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        ./configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} \
+        ./configure --prefix=${HOST_TOOLS_DIR} --build=${CROSS_HOST} \
                 --host=${CROSS_HOST} --target=${CROSS_TARGET}
         eval ${MAKE_AND_INSTALL}
-	mkdir -p ${CROSSTOOLS_DIR}/tmp/bin
-        cp -f ${CROSSTOOLS_DIR}/bin/pkgconf ${CROSSTOOLS_DIR}/tmp/bin/${CROSS_TARGET}-pkg-config
-	ln -sf pkgconf ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config
 popd 
 rm -rf ${BUILD_DIRECTORY}/pkgconf-2.3.0
+fi
+
+mkdir -p ${CROSSTOOLS_DIR}/bin
+ln -sf ${HOST_TOOLS_DIR}/bin/pkgconf ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config

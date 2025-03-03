@@ -23,7 +23,7 @@ cat > config.cache << "EOF"
 	gt_cv_int_divbyzero_sigfpe=yes
 EOF
 	
-	./configure --prefix=/usr --libdir=/usr/lib64 --build=${CROSS_HOST} \
+	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
 	            --host=${CROSS_TARGET} --without-bash-malloc \
 	            --with-installed-readline=${SYSROOT_DIR}/usr --cache-file=config.cache
 	make -j${JOBS} RL_INCLUDEDIR=""
@@ -32,4 +32,4 @@ EOF
 popd 
 rm -rf ${BUILD_DIRECTORY}/bash-5.2.37
 
-set_strip_step "usr/lib64/bash/"
+set_strip_step "usr/lib${LIB_SUFF}/bash/"

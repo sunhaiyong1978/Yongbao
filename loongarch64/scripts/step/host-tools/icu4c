@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/icu
 
     touch LICENSE
     pushd source
-    CC=gcc CXX=g++ ./configure --prefix=${CROSSTOOLS_DIR}
+    CC=gcc CXX=g++ ./configure --prefix=${PREFIX}
     eval ${MAKE_AND_INSTALL}
     popd
 popd 

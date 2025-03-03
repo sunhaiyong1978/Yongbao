@@ -50,6 +50,7 @@ usermod -a -G input ${DISTRO_DEFAULT_USER}
 usermod -a -G wheel ${DISTRO_DEFAULT_USER}
 usermod -a -G usershares ${DISTRO_DEFAULT_USER}
 usermod -a -G netdev ${DISTRO_DEFAULT_USER}
+usermod -a -G kvm ${DISTRO_DEFAULT_USER}
 EOF
 
 mkdir -pv ${SYSROOT_DIR}/var/unit/{dm,wm}

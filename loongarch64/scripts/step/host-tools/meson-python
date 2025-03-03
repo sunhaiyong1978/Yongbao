@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/meson-python-0.17.1
     
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF}  \
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF}  \
               --buildtype=release ..
         ninja
         ninja install

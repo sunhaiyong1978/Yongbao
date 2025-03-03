@@ -8,7 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/kmod/33/
 rm -rf ${BUILD_DIRECTORY}/kmod-33
 tar xvf ${DOWNLOADDIR}/kmod-33.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/kmod-33
-	./configure --prefix=/usr --libdir=/usr/lib64 --bindir=/bin \
+	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --bindir=/bin \
 	            --sysconfdir=/etc --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 	            --with-xz --with-zstd --with-zlib --disable-manpages \
 		    --with-bashcompletiondir=/usr/share/bash-completion/completions as_ln_s="ln -sf"

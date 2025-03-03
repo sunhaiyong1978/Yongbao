@@ -1,0 +1,13 @@
+source env/game_emu/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=game_emu
+export STEP_PACKAGENAME=libretro-common-overlays
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/libretro-common-overlays/git-default/
+rm -rf ${BUILD_DIRECTORY}/libretro-common-overlays-git-default_git
+tar xvf ${DOWNLOADDIR}/libretro-common-overlays-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libretro-common-overlays-git-default_git
+	make INSTALLDIR=/usr/share/retroarch/overlays DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/libretro-common-overlays-git-default_git

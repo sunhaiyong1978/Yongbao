@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=libdatachannel
-export PACKAGE_VERSION=0.22.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libdatachannel/0.22.3/
-rm -rf ${BUILD_DIRECTORY}/libdatachannel-0.22.3
-tar xvf ${DOWNLOADDIR}/libdatachannel-0.22.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libdatachannel-0.22.3
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/libdatachannel/0.22.3/patches/0001-libdatachannel-fix-for-gcc-14.patch 
+export PACKAGE_VERSION=0.22.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libdatachannel/0.22.4/
+rm -rf ${BUILD_DIRECTORY}/libdatachannel-0.22.4
+tar xvf ${DOWNLOADDIR}/libdatachannel-0.22.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libdatachannel-0.22.4
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/libdatachannel/0.22.4/patches/0001-libdatachannel-fix-for-gcc-14.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/libdatachannel-0.22.3
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libdatachannel-0.22.3
+rm -rf ${BUILD_DIRECTORY}/libdatachannel-0.22.4

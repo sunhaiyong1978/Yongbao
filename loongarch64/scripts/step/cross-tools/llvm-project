@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=19.1.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/19.1.6/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
-tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+export PACKAGE_VERSION=19.1.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/19.1.7/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.7.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
 	
 pushd llvm
     mkdir -p native-build
@@ -24,7 +24,7 @@ pushd llvm
 		 -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
                  -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
-                 -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib64;${CROSSTOOLS_DIR}/build-tools/lib64;\\\${ORIGIN}/../lib64" \
+                 -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib64;${HOST_TOOLS_DIR}/lib64;\\\${ORIGIN}/../lib64" \
                  -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
                  -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
 		 -DLLVM_ENABLE_PROJECTS='llvm;clang;lld;lldb'
@@ -35,4 +35,4 @@ pushd llvm
 	save_package_version cross-tools_llvm-project "${LLVM_DIST_VERSION}"
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src

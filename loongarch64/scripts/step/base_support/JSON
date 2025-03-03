@@ -8,9 +8,9 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/JSON/4.10/
 rm -rf ${BUILD_DIRECTORY}/JSON-4.10
 tar xvf ${DOWNLOADDIR}/JSON-4.10.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/JSON-4.10
-    ${CROSSTOOLS_DIR}/bin/perl Makefile.PL CC=${CROSS_TARGET}-gcc LD=${CROSS_TARGET}-ld
-    sed -i "/^INSTALL/s@${CROSSTOOLS_DIR}@/usr@g" Makefile
-    sed -i "/^PERL_INC/s@${CROSSTOOLS_DIR}@${SYSROOT_DIR}/usr@g" Makefile
+    ${HOST_TOOLS_DIR}/bin/perl Makefile.PL CC=${CROSS_TARGET}-gcc LD=${CROSS_TARGET}-ld
+    sed -i "/^INSTALL/s@${HOST_TOOLS_DIR}@/usr@g" Makefile
+    sed -i "/^PERL_INC/s@${HOST_TOOLS_DIR}@${SYSROOT_DIR}/usr@g" Makefile
     sed -i "/^LDDLFLAGS/s@/usr/local/lib@${SYSROOT_DIR}/usr/lib64@g" Makefile
     eval ${MAKE_AND_INSTALL}
 popd 

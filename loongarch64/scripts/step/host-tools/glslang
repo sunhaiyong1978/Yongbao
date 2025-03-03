@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/glslang-15.1.0
     mkdir -p native-build
     pushd native-build
 	CC="gcc" CXX="g++" \
-        cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR} -DENABLE_OPT=0 \
+        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DENABLE_OPT=0 \
               -DCMAKE_BUILD_TYPE=Release ..
 	eval ${MAKE_AND_INSTALL}
     popd

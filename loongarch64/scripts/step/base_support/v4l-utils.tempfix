@@ -5,7 +5,7 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=v4l-utils
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/v4l-utils//
-for bin_file in qmake moc uic rcc lrelease
+for bin_file in qmake moc uic rcc lrelease qmltyperegistrar qmlcachegen
 do
         if [ -f ${SYSROOT_DIR}/usr/bin/${bin_file} ]; then
                 mv ${SYSROOT_DIR}/usr/bin/${bin_file}{,.orig}

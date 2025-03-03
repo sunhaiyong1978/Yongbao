@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/automake-1.17
 tar xvf ${DOWNLOADDIR}/automake-1.17.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/automake-1.17
         
-        ./configure --prefix=${CROSSTOOLS_DIR}
+        ./configure --prefix=${PREFIX}
         eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/automake-1.17

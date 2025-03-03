@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gdb
-export PACKAGE_VERSION=15.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gdb/15.2/
-rm -rf ${BUILD_DIRECTORY}/gdb-15.2
-tar xvf ${DOWNLOADDIR}/gdb-15.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gdb-15.2
+export PACKAGE_VERSION=16.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gdb/16.2/
+rm -rf ${BUILD_DIRECTORY}/gdb-16.2
+tar xvf ${DOWNLOADDIR}/gdb-16.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdb-16.2
         
         for config_i in $(find -name "config.sub")
         do
@@ -17,11 +17,8 @@ pushd ${BUILD_DIRECTORY}/gdb-15.2
                 autoreconf -ifv
         fi
 	sed -i "s@ ac_cv_guild_program_name=\(.*\)@ ac_cv_guild_program_name=${CROSSTOOLS_DIR}/bin/guild@g" gdb/configure
-        mkdir -p cross-build
-        pushd cross-build
-                ../configure ${COMMON_CONFIG} --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd --with-system-readline --with-libgmp-prefix=${SYSROOT_DIR} --with-libexpat-prefix=${SYSROOT_DIR}
+                ./configure ${COMMON_CONFIG} --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd --with-system-readline --with-libgmp-prefix=${SYSROOT_DIR} --with-libexpat-prefix=${SYSROOT_DIR}
                 eval ${MAKE_AND_INSTALL}
-        popd
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+        rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gdb-15.2
+rm -rf ${BUILD_DIRECTORY}/gdb-16.2

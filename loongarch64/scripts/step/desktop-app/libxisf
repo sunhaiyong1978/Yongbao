@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=libxisf
-export PACKAGE_VERSION=0.2.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libxisf/0.2.8/
-rm -rf ${BUILD_DIRECTORY}/libxisf-0.2.8
-tar xvf ${DOWNLOADDIR}/libxisf_0.2.8.orig.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxisf-0.2.8
+export PACKAGE_VERSION=0.2.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libxisf/0.2.13/
+rm -rf ${BUILD_DIRECTORY}/libxisf-0.2.13
+tar xvf ${DOWNLOADDIR}/libxisf_0.2.13.orig.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxisf-0.2.13
         
 	mkdir cross-build
 	pushd cross-build
@@ -38,4 +38,4 @@ pushd ${BUILD_DIRECTORY}/libxisf-0.2.8
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxisf-0.2.8
+rm -rf ${BUILD_DIRECTORY}/libxisf-0.2.13

@@ -14,7 +14,7 @@ pushd ${BUILD_DIRECTORY}/gpm-1.20.7
 	./autogen.sh
 	./configure ${COMMON_CONFIG} ac_cv_path_emacs=no
 	eval ${MAKE_AND_INSTALL}
-	ln -sfv libgpm.so.2.1.0 ${SYSROOT_DIR}/usr/lib64/libgpm.so
+	ln -sfv libgpm.so.2.1.0 ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libgpm.so
 
 cat > ${SYSROOT_DIR}/etc/sysconfig/mouse << "EOF"
 MDEVICE="/dev/input/mice"

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=PyOpenGL
-export PACKAGE_VERSION=3.1.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/PyOpenGL/3.1.7/
-rm -rf ${BUILD_DIRECTORY}/PyOpenGL-3.1.7
-tar xvf ${DOWNLOADDIR}/PyOpenGL-3.1.7.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/PyOpenGL-3.1.7
+export PACKAGE_VERSION=3.1.9a2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/PyOpenGL/3.1.9a2/
+rm -rf ${BUILD_DIRECTORY}/pyopengl-3.1.9a2
+tar xvf ${DOWNLOADDIR}/pyopengl-3.1.9a2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pyopengl-3.1.9a2
 	
-	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
-	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py build
+	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/PyOpenGL-3.1.7
+rm -rf ${BUILD_DIRECTORY}/pyopengl-3.1.9a2

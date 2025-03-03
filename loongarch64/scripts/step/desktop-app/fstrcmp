@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/fstrcmp-0.7.D001
                 autoreconf -ifv
         fi
         ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
-	cp ${CROSSTOOLS_DIR}/bin/libtool ./
+	cp ${HOST_TOOLS_DIR}/bin/libtool ./
 	sed -i "/^CC=\"gcc\"/d" libtool
         make -j${JOBS} LIBTOOL=${PWD}/libtool CC=${CROSS_TARGET}-gcc all-bin
         make DESTDIR=${SYSROOT_DIR} install-bin install-include install-libdir install-man

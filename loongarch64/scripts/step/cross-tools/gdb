@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=gdb
-export PACKAGE_VERSION=15.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gdb/15.2/
-rm -rf ${BUILD_DIRECTORY}/gdb-15.2
-tar xvf ${DOWNLOADDIR}/gdb-15.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gdb-15.2
+export PACKAGE_VERSION=16.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gdb/16.2/
+rm -rf ${BUILD_DIRECTORY}/gdb-16.2
+tar xvf ${DOWNLOADDIR}/gdb-16.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdb-16.2
 	
         for config_i in $(find -name "config.sub")
         do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/gdb-15.2
 		--host=${CROSS_HOST} --target=${CROSS_TARGET} --with-sysroot=${SYSROOT_DIR} --enable-64-bit-bfd
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/gdb-15.2
+rm -rf ${BUILD_DIRECTORY}/gdb-16.2

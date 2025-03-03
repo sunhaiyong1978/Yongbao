@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/pyside6-git-default_git
 	pushd native-build
 		CC="gcc" CXX="g++" \
 		LLVM_INSTALL_DIR=${CROSSTOOLS_DIR} \
-	        cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR} -DBUILD_TESTS=OFF -DSHIBOKEN_BUILD_TOOLS=ON \
+	        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBUILD_TESTS=OFF -DSHIBOKEN_BUILD_TOOLS=ON \
         	      -DCMAKE_BUILD_TYPE=RELEASE ..
 	        eval ${MAKE_AND_INSTALL}
 	popd

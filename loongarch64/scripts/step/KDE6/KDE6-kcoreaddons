@@ -22,11 +22,11 @@ pushd ${BUILD_DIRECTORY}/kcoreaddons-6.10.0
 		      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
 		      -DKI18N_PYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
 	              -DPERL_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl \
-        	      -DRuby_EXECUTABLE=${CROSSTOOLS_DIR}/bin/ruby \
+        	      -DRuby_EXECUTABLE=${HOST_TOOLS_DIR}/bin/ruby \
 	              -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
 		      -DDOXYGEN_EXECUTABLE=/bin/doxygen \
 		      -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
-		      -DLIBXML2_XMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/xmllint \
+		      -DLIBXML2_XMLLINT_EXECUTABLE=${HOST_TOOLS_DIR}/bin/xmllint \
                       -DUPDATE_MIME_DATABASE_EXECUTABLE=${CROSSTOOLS_DIR}/bin/update-mime-database \
                       -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname \
 		      -DFLEX_EXECUTABLE=/bin/flex \

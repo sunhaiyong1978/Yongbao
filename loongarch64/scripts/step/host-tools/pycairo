@@ -9,8 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/pycairo-1.27.0
 tar xvf ${DOWNLOADDIR}/pycairo-1.27.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pycairo-1.27.0
 	
-	${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        ${CROSSTOOLS_DIR}/bin/python3 setup.py install
- #       ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1
+	${HOST_TOOLS_DIR}/bin/python3 setup.py build
+        ${HOST_TOOLS_DIR}/bin/python3 setup.py install
 popd 
 rm -rf ${BUILD_DIRECTORY}/pycairo-1.27.0

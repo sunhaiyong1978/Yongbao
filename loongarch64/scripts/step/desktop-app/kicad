@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=kicad
-export PACKAGE_VERSION=8.0.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kicad/8.0.7/
-rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.7
-tar xvf ${DOWNLOADDIR}/kicad-8.0.7.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.7
+export PACKAGE_VERSION=8.0.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kicad/8.0.8/
+rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.8
+tar xvf ${DOWNLOADDIR}/kicad-8.0.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.8
         
 	sed -i "s@COMMAND \${LEMON_EXE}@COMMAND qemu-${ARCH_NAME} \${LEMON_EXE}@g" cmake/BuildSteps/LemonParserGenerator.cmake
         mkdir cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.7
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.7
+rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.8

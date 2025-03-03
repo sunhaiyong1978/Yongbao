@@ -1,0 +1,50 @@
+From 2aeb61bd19eb25041d8087a568f065d47bddc187 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 4 Sep 2024 01:37:55 +0000
+Subject: [PATCH] ssr 0.4.4 fix for ffmpeg 7.
+
+---
+ src/AV/Output/AudioEncoder.cpp | 6 +++---
+ src/AV/Output/Synchronizer.cpp | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/AV/Output/AudioEncoder.cpp b/src/AV/Output/AudioEncoder.cpp
+index 34d015c..814456d 100644
+--- a/src/AV/Output/AudioEncoder.cpp
++++ b/src/AV/Output/AudioEncoder.cpp
+@@ -69,7 +69,7 @@ AVSampleFormat AudioEncoder::GetSampleFormat() {
+ }
+ 
+ unsigned int AudioEncoder::GetChannels() {
+-	return GetCodecContext()->channels;
++	return GetCodecContext()->ch_layout.nb_channels;
+ }
+ 
+ unsigned int AudioEncoder::GetSampleRate() {
+@@ -106,8 +106,8 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
+ 	}
+ 
+ 	codec_context->bit_rate = bit_rate;
+-	codec_context->channels = channels;
+-	codec_context->channel_layout = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
++	codec_context->ch_layout.nb_channels = channels;
++	codec_context->ch_layout.u.mask = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
+ 	codec_context->sample_rate = sample_rate;
+ 	codec_context->time_base.num = 1;
+ 	codec_context->time_base.den = sample_rate;
+diff --git a/src/AV/Output/Synchronizer.cpp b/src/AV/Output/Synchronizer.cpp
+index b109dc6..0faa28d 100644
+--- a/src/AV/Output/Synchronizer.cpp
++++ b/src/AV/Output/Synchronizer.cpp
+@@ -180,7 +180,7 @@ static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, u
+ 	frame->GetFrame()->nb_samples = samples;
+ #endif
+ #if SSR_USE_AVFRAME_CHANNELS
+-	frame->GetFrame()->channels = channels;
++	frame->GetFrame()->ch_layout.nb_channels = channels;
+ #endif
+ #if SSR_USE_AVFRAME_SAMPLE_RATE
+ 	frame->GetFrame()->sample_rate = sample_rate;
+-- 
+2.31.1
+

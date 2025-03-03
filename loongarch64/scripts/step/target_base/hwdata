@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=hwdata
-export PACKAGE_VERSION=0.391
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/hwdata/0.391/
-rm -rf ${BUILD_DIRECTORY}/hwdata-0.391
-tar xvf ${DOWNLOADDIR}/hwdata-0.391.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/hwdata-0.391
+export PACKAGE_VERSION=0.392
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/hwdata/0.392/
+rm -rf ${BUILD_DIRECTORY}/hwdata-0.392
+tar xvf ${DOWNLOADDIR}/hwdata-0.392.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/hwdata-0.392
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -17,10 +17,10 @@ pushd ${BUILD_DIRECTORY}/hwdata-0.391
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} 
+	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/hwdata-0.391
+rm -rf ${BUILD_DIRECTORY}/hwdata-0.392

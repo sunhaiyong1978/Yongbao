@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/flatpak-1.16.0
         
         mkdir cross-build
         pushd cross-build
-                meson ${MESON_CONFIG} -Dseccomp=disabled -Dtests=false -Dwayland_security_context=disabled \
+                meson ${MESON_CONFIG} -Dseccomp=disabled -Dtests=false -Dwayland_security_context=disabled -Dsystem_fusermount=/bin/fusermount3 \
                       ..
                 sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
                 eval ${NINJA_AND_INSTALL}

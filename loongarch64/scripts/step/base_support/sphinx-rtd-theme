@@ -3,15 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=sphinx-rtd-theme
-export PACKAGE_VERSION=2.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sphinx-rtd-theme/2.0.0/
-rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-2.0.0
-tar xvf ${DOWNLOADDIR}/sphinx_rtd_theme-2.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sphinx_rtd_theme-2.0.0
-	patch -Np1 -i ${SYSDIR}/files/base_support/sphinx-rtd-theme/2.0.0/patches/0001-sphinx_rtd_theme-2.0.0-fix-docutils-require-version.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/sphinx-rtd-theme/2.0.0/patches/0001-sphinx_rtd_theme-fix-for-sphinx-require-version.patch 
-	 
-	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user sphinx-rtd-theme --root=${SYSROOT_DIR} --prefix=/usr
+export PACKAGE_VERSION=3.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sphinx-rtd-theme/3.0.2/
+rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-3.0.2
+tar xvf ${DOWNLOADDIR}/sphinx_rtd_theme-3.0.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sphinx_rtd_theme-3.0.2
+	
+	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user sphinx-rtd-theme --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-2.0.0
+rm -rf ${BUILD_DIRECTORY}/sphinx_rtd_theme-3.0.2

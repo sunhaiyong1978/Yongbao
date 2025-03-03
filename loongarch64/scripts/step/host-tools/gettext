@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/gettext-0.23.1
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --disable-shared
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --disable-shared
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/gettext-0.23.1

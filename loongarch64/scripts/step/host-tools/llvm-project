@@ -3,20 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=19.1.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/llvm-project/19.1.6/
+export PACKAGE_VERSION=19.1.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/llvm-project/19.1.7/
 export CROSS_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_TARGET})" "x86_64-unknown-linux-gnu")
 export CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "loongarch64-unknown-linux-gnu")
 export CROSS_HOST_RUNTIME_SYSROOT_DIR=$(archname_to_anyparm "$(get_user_set_env host "x86_64")" "RUNTIME_SYSROOT_DIR" "/usr/lib/x86_64/sys-root")
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
-tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.7.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
 
 pushd llvm
     mkdir -p host-build
     pushd host-build
-	export PATH=${CROSSTOOLS_DIR}/build-tools/bin:${CROSSTOOLS_DIR}/bin:/usr/bin:/usr/sbin
-	export LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/build-tools/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/build-tools/lib64"
+	export LDFLAGS="-Wl,-rpath-link=${HOST_TOOLS_DIR}/lib64 -Wl,-rpath=${HOST_TOOLS_DIR}/lib64"
         export PKG_CONFIG_SYSROOT_DIR=""
 	export PKG_CONFIG_PATH=""
         cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR}/host-llvm-project \
@@ -43,6 +42,6 @@ pushd llvm
         ninja
         ninja install
 popd
-cp -a ${CROSSTOOLS_DIR}/bin/bindgen ${CROSSTOOLS_DIR}/host-llvm-project/bin/
+cp -a ${HOST_TOOLS_DIR}/bin/bindgen ${CROSSTOOLS_DIR}/host-llvm-project/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src

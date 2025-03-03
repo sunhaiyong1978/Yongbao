@@ -9,6 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/libaio-0.3.113
 tar xvf ${DOWNLOADDIR}/libaio_0.3.113.orig.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libaio-0.3.113
     make -j${JOBS} CC="${CROSS_TARGET}-gcc"
-    make DESTDIR=${SYSROOT_DIR} libdir=/usr/lib64 install
+    make DESTDIR=${SYSROOT_DIR} libdir=/usr/lib${LIB_SUFF} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/libaio-0.3.113

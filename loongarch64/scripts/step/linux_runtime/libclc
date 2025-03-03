@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libclc
-export PACKAGE_VERSION=19.1.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libclc/19.1.6/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
-tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+export PACKAGE_VERSION=19.1.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libclc/19.1.7/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.7.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
     pushd libclc
 	sed -i "s@COMMAND \${prepare_builtins_exe}@COMMAND qemu-${QEMU_ARCH} \${prepare_builtins_exe}@g" CMakeLists.txt
         mkdir cross-build
@@ -33,7 +33,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
                   -DCMAKE_C_FLAGS="-DNDEBUG ${CFLAGS} -target ${LINUX_HOST}" -DCMAKE_CXX_FLAGS="-DNDEBUG ${CXXFLAGS} -target ${LINUX_HOST}" \
                   -DLLVM_ENABLE_RTTI:BOOL=ON \
                   -DLLVM_ENABLE_ZLIB:BOOL=ON \
-                  -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+                  -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
                   -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
                   -DLLVM_USE_SANITIZER:BOOL=ON \
                   -DCMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
@@ -45,4 +45,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
         popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src

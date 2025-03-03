@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=freerdp
-export PACKAGE_VERSION=3.10.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/freerdp/3.10.2/
-rm -rf ${BUILD_DIRECTORY}/freerdp-3.10.2
-tar xvf ${DOWNLOADDIR}/freerdp-3.10.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/freerdp-3.10.2
+export PACKAGE_VERSION=3.10.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/freerdp/3.10.3/
+rm -rf ${BUILD_DIRECTORY}/freerdp-3.10.3
+tar xvf ${DOWNLOADDIR}/freerdp-3.10.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/freerdp-3.10.3
         
         mkdir cross-build
         pushd cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/freerdp-3.10.2
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/freerdp-3.10.2
+rm -rf ${BUILD_DIRECTORY}/freerdp-3.10.3

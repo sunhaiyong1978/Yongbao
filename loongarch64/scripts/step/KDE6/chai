@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/chai-1.1.2
         
 	rm chai/python2.py
 	rm tests/comparator_py2.py
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py build
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
 popd 
 rm -rf ${BUILD_DIRECTORY}/chai-1.1.2

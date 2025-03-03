@@ -3,18 +3,18 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=libxkbcommon
-export PACKAGE_VERSION=xkbcommon-1.7.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxkbcommon/xkbcommon-1.7.0/
-rm -rf ${BUILD_DIRECTORY}/libxkbcommon-xkbcommon-1.7.0
-tar xvf ${DOWNLOADDIR}/libxkbcommon-xkbcommon-1.7.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxkbcommon-xkbcommon-1.7.0
+export PACKAGE_VERSION=xkbcommon-1.8.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxkbcommon/xkbcommon-1.8.0/
+rm -rf ${BUILD_DIRECTORY}/libxkbcommon-xkbcommon-1.8.0
+tar xvf ${DOWNLOADDIR}/libxkbcommon-xkbcommon-1.8.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxkbcommon-xkbcommon-1.8.0
     
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Denable-wayland=false -Denable-bash-completion=false \
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} -Denable-wayland=false -Denable-bash-completion=false \
               --buildtype=release ..
         ninja
         ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxkbcommon-xkbcommon-1.7.0
+rm -rf ${BUILD_DIRECTORY}/libxkbcommon-xkbcommon-1.8.0

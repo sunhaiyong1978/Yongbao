@@ -5,7 +5,6 @@ export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=libxml2
 export PACKAGE_VERSION=2.13.5
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxml2/2.13.5/
-
 rm -rf ${BUILD_DIRECTORY}/libxml2-2.13.5
 tar xvf ${DOWNLOADDIR}/libxml2-2.13.5.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libxml2-2.13.5
@@ -17,9 +16,7 @@ pushd ${BUILD_DIRECTORY}/libxml2-2.13.5
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        PKG_CONFIG_PATH=${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/pkgconfig ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --with-history --with-icu --with-python=${CROSSTOOLS_DIR}/bin/python3 PYTHON=python3
+        ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-history --with-icu --with-python=${PREFIX}/bin/python3 PYTHON=python3
         eval ${MAKE_AND_INSTALL}
-	mkdir -p ${CROSSTOOLS_DIR}/host-tools/bin/
-	mv ${CROSSTOOLS_DIR}/bin/xml2-config ${CROSSTOOLS_DIR}/host-tools/bin/
 popd 
 rm -rf ${BUILD_DIRECTORY}/libxml2-2.13.5

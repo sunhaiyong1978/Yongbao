@@ -13,20 +13,13 @@ pushd ${BUILD_DIRECTORY}/sgml-common-0.6.3
     autoreconf -ifv
     ./configure ${COMMON_CONFIG}
     make -j${JOBS}
-    if [ -f ${CROSSTOOLS_DIR}/bin/install-catalog ]; then
-	mv ${CROSSTOOLS_DIR}/bin/install-catalog{,.bak}
-    fi
     make install
 popd 
 rm -rf ${BUILD_DIRECTORY}/sgml-common-0.6.3
-mv ${CROSSTOOLS_DIR}/bin/install-catalog ${CROSSTOOLS_DIR}/host-tools/bin/
 
-sed -i "s@ /etc@ ${CROSSTOOLS_DIR}/etc@g" ${CROSSTOOLS_DIR}/host-tools/bin/install-catalog
-${CROSSTOOLS_DIR}/host-tools/bin/install-catalog --add ${CROSSTOOLS_DIR}/etc/sgml/sgml-ent.cat \
-    ${CROSSTOOLS_DIR}/share/sgml/sgml-iso-entities-8879.1986/catalog
-${CROSSTOOLS_DIR}/host-tools/bin/install-catalog --add ${CROSSTOOLS_DIR}/etc/sgml/sgml-docbook.cat \
-    ${CROSSTOOLS_DIR}/etc/sgml/sgml-ent.cat
 
-if [ -f ${CROSSTOOLS_DIR}/bin/install-catalog.bak ]; then
-	mv ${CROSSTOOLS_DIR}/bin/install-catalog{.bak,}
-fi
+sed -i "s@ /etc@ ${HOST_TOOLS_DIR}/etc@g" ${HOST_TOOLS_DIR}/bin/install-catalog
+${HOST_TOOLS_DIR}/bin/install-catalog --add ${HOST_TOOLS_DIR}/etc/sgml/sgml-ent.cat \
+    ${HOST_TOOLS_DIR}/share/sgml/sgml-iso-entities-8879.1986/catalog
+${HOST_TOOLS_DIR}/bin/install-catalog --add ${HOST_TOOLS_DIR}/etc/sgml/sgml-docbook.cat \
+    ${HOST_TOOLS_DIR}/etc/sgml/sgml-ent.cat

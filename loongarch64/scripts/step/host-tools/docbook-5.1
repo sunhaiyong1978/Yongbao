@@ -5,127 +5,127 @@ export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=docbook-5.1
 export PACKAGE_VERSION=docbook-v5.1-os
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/docbook-5.1/docbook-v5.1-os/
-export PATH=${CROSSTOOLS_DIR}/host-tools/bin:${PATH}
-install -v -d -m755 ${CROSSTOOLS_DIR}/etc/xml
+export PATH=${HOST_TOOLS_DIR}/bin:${PATH}
+install -v -d -m755 ${PREFIX}/etc/xml
 
 rm -rf ${BUILD_DIRECTORY}/docbook-5.1
 mkdir -pv ${BUILD_DIRECTORY}/docbook-5.1
 pushd ${BUILD_DIRECTORY}/docbook-5.1
     unzip ${DOWNLOADDIR}/docbook-v5.1-os.zip
-    install -vdm755 ${CROSSTOOLS_DIR}/share/xml/docbook/schema/{rng,sch}/5.1
-    install -m644   schemas/rng/* ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1
-    install -m644   schemas/sch/* ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.1
-    install -m755   tools/db4-entities.pl ${CROSSTOOLS_DIR}/bin
-    install -vdm755 ${CROSSTOOLS_DIR}/share/xml/docbook/stylesheet/docbook5
+    install -vdm755 ${PREFIX}/share/xml/docbook/schema/{rng,sch}/5.1
+    install -m644   schemas/rng/* ${PREFIX}/share/xml/docbook/schema/rng/5.1
+    install -m644   schemas/sch/* ${PREFIX}/share/xml/docbook/schema/sch/5.1
+    install -m755   tools/db4-entities.pl ${PREFIX}/bin
+    install -vdm755 ${PREFIX}/share/xml/docbook/stylesheet/docbook5
     install -m644   tools/db4-upgrade.xsl \
-                ${CROSSTOOLS_DIR}/share/xml/docbook/stylesheet/docbook5
+                ${PREFIX}/share/xml/docbook/stylesheet/docbook5
 
-    if [ ! -e ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1 ]; then
-        xmlcatalog --noout --create ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+    if [ ! -e ${PREFIX}/etc/xml/docbook-5.1 ]; then
+        xmlcatalog --noout --create ${PREFIX}/etc/xml/docbook-5.1
     fi
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/rng/docbook.rng" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbook.rng" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbook.rng" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/rng/docbook.rng" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbook.rng" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbook.rng" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/rng/docbookxi.rng" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbookxi.rng" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbookxi.rng" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/rng/docbookxi.rng" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbookxi.rng" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbookxi.rng" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/rnc/docbook.rnc" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbook.rnc" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbook.rnc" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/rng/docbook.rnc" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbook.rnc" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbook.rnc" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/rnc/docbookxi.rnc" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbookxi.rnc" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbookxi.rnc" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/rng/docbookxi.rnc" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/docbookxi.rnc" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/docbookxi.rnc" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/sch/docbook.sch" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.1/docbook.sch" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/sch/5.1/docbook.sch" \
+        ${PREFIX}/etc/xml/docbook-5.1
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/sch/docbook.sch" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.1/docbook.sch" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook-5.1
+        "file:///${PREFIX}/share/xml/docbook/schema/sch/5.1/docbook.sch" \
+        ${PREFIX}/etc/xml/docbook-5.1
 
 
-    xmlcatalog --noout --create ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+    xmlcatalog --noout --create ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/schemas/rng/docbook.schemas/rng" \
-        "docbook.schemas/rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbook.schemas/rng" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/schemas/rng/docbook.schemas/rng" \
-        "docbook.schemas/rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbook.schemas/rng" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/schemas/rng/docbookxi.schemas/rng" \
-        "docbookxi.schemas/rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbookxi.schemas/rng" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/schemas/rng/docbookxi.schemas/rng" \
-        "docbookxi.schemas/rng" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbookxi.schemas/rng" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/schemas/rng/docbook.rnc" \
-        "docbook.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbook.rnc" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/schemas/rng/docbook.rnc" \
-        "docbook.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbook.rnc" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/schemas/rng/docbookxi.rnc" \
-        "docbookxi.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbookxi.rnc" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/schemas/rng/docbookxi.rnc" \
-        "docbookxi.rnc" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml
+        "docbookxi.rnc" ${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml
 
-    xmlcatalog --noout --create ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.1/catalog.xml
+    xmlcatalog --noout --create ${PREFIX}/share/xml/docbook/schema/sch/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://docbook.org/xml/5.1/schemas/sch/docbook.schemas/sch" \
-        "docbook.schemas/sch" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.1/catalog.xml
+        "docbook.schemas/sch" ${PREFIX}/share/xml/docbook/schema/sch/5.1/catalog.xml
     xmlcatalog --noout --add "uri" \
         "http://www.oasis-open.org/docbook/xml/5.1/schemas/sch/docbook.schemas/sch" \
-        "docbook.schemas/sch" ${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.1/catalog.xml
+        "docbook.schemas/sch" ${PREFIX}/share/xml/docbook/schema/sch/5.1/catalog.xml
 
 
-    if [ ! -e ${CROSSTOOLS_DIR}/etc/xml/catalog ]; then
-        xmlcatalog --noout --create ${CROSSTOOLS_DIR}/etc/xml/catalog
+    if [ ! -e ${PREFIX}/etc/xml/catalog ]; then
+        xmlcatalog --noout --create ${PREFIX}/etc/xml/catalog
     fi
     xmlcatalog --noout --add "delegatePublic" \
         "-//OASIS//DTD DocBook XML 5.1//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.1/catalog.xml" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog
+        "file:///${PREFIX}/share/xml/docbook/schema/dtd/5.1/catalog.xml" \
+        ${PREFIX}/etc/xml/catalog
     xmlcatalog --noout --add "delegateSystem" \
         "http://docbook.org/xml/5.1/dtd/" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.1/catalog.xml" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog
+        "file:///${PREFIX}/share/xml/docbook/schema/dtd/5.1/catalog.xml" \
+        ${PREFIX}/etc/xml/catalog
     xmlcatalog --noout --add "delegateURI" \
         "http://docbook.org/xml/5.1/dtd/" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/dtd/5.1/catalog.xml" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog
+        "file:///${PREFIX}/share/xml/docbook/schema/dtd/5.1/catalog.xml" \
+        ${PREFIX}/etc/xml/catalog
     xmlcatalog --noout --add "delegateURI" \
         "http://docbook.org/xml/5.1/rng/"  \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/rng/5.1/catalog.xml" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog
+        "file:///${PREFIX}/share/xml/docbook/schema/rng/5.1/catalog.xml" \
+        ${PREFIX}/etc/xml/catalog
     xmlcatalog --noout --add "delegateURI" \
         "http://docbook.org/xml/5.1/sch/"  \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/sch/5.1/catalog.xml" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog
+        "file:///${PREFIX}/share/xml/docbook/schema/sch/5.1/catalog.xml" \
+        ${PREFIX}/etc/xml/catalog
     xmlcatalog --noout --add "delegateURI" \
         "http://docbook.org/xml/5.1/xsd/"  \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/schema/xsd/5.1/catalog.xml" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog
+        "file:///${PREFIX}/share/xml/docbook/schema/xsd/5.1/catalog.xml" \
+        ${PREFIX}/etc/xml/catalog
 popd
 rm -rf ${BUILD_DIRECTORY}/docbook-5.1

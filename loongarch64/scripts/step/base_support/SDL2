@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=SDL2
-export PACKAGE_VERSION=2.30.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SDL2/2.30.11/
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.11
-tar xvf ${DOWNLOADDIR}/SDL2-2.30.11.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SDL2-2.30.11
+export PACKAGE_VERSION=2.30.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SDL2/2.30.12/
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.12
+tar xvf ${DOWNLOADDIR}/SDL2-2.30.12.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SDL2-2.30.12
         
         mkdir cross-build
         pushd cross-build
@@ -41,7 +41,7 @@ pushd ${BUILD_DIRECTORY}/SDL2-2.30.11
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.11
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.30.12
 
 
 

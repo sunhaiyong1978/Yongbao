@@ -1,0 +1,32 @@
+From b334e36bc505bd92dd931af9513e33bf5135cfbf Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 20 Feb 2025 09:11:11 +0000
+Subject: [PATCH] ollama force use gcc.
+
+---
+ llama/llama.go | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/llama/llama.go b/llama/llama.go
+index a20f235..f0111c6 100644
+--- a/llama/llama.go
++++ b/llama/llama.go
+@@ -60,14 +60,7 @@ func BackendInit() {
+ 
+ func PrintSystemInfo() string {
+ 	var compiler string
+-	switch C.get_compiler() {
+-	case C.COMP_UNKNOWN:
+-		compiler = "cgo(unknown_compiler)"
+-	case C.COMP_GCC:
+-		compiler = "cgo(gcc)"
+-	case C.COMP_CLANG:
+-		compiler = "cgo(clang)"
+-	}
++	compiler = "cgo(gcc)"
+ 	return C.GoString(C.llama_print_system_info()) + compiler
+ }
+ 
+-- 
+2.31.1
+

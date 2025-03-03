@@ -3,29 +3,29 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=glibc
-export PACKAGE_VERSION=2.40
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.40/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.40
-tar xvf ${DOWNLOADDIR}/glibc-2.40.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.40
-    patch -Np1 -i ${SYSDIR}/files/target_base/glibc/2.40/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
+export PACKAGE_VERSION=2.41
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.41/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.41
+tar xvf ${DOWNLOADDIR}/glibc-2.41.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.41
+    patch -Np1 -i ${SYSDIR}/files/target_base/glibc/2.41/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
 	 
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
-    sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
+    sed -i "s@5.19.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
     mkdir -p build-64
     pushd build-64
         BUILD_CC="gcc" CC="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-gcc -mabi=${MABI} ${CFLAGS}" \
         CXX="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g++ -mabi=${MABI} ${CXXFLAGS}" \
         AS="${CROSS_TARGET}-as" AR="${CROSS_TARGET}-ar" RANLIB="${CROSS_TARGET}-ranlib" \
         ../configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
-	                 --libdir=/usr/lib64 --libexecdir=/usr/lib64/glibc \
+	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
 	                 --with-binutils=${CROSSTOOLS_DIR}/bin \
 	                 --with-headers=${SYSROOT_DIR}/usr/include \
 	                 --enable-stack-protector=strong --enable-add-ons \
-	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib64 \
+	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib${LIB_SUFF} \
 	                 --enable-kernel=4.15
 		make -j${JOBS}
 		make DESTDIR=${SYSROOT_DIR} install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.40
+rm -rf ${BUILD_DIRECTORY}/glibc-2.41

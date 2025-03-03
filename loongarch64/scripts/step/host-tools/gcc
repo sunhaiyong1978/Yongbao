@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 	mkdir -pv build
 	pushd build
 		CC="/bin/gcc" CXX="/bin/g++" \
-		../configure --prefix=${CROSSTOOLS_DIR}/build-tools \
+		../configure --prefix=${PREFIX} \
 		             --enable-__cxa_atexit --enable-threads=posix \
 		             --with-system-zlib --enable-libstdcxx-time \
 		             --enable-checking=release \
@@ -25,8 +25,8 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 		             --enable-languages=c,c++,ada
 		make -j${JOBS}
 		make install-strip
-		ln -sfv gcc ${CROSSTOOLS_DIR}/build-tools/bin/cc
+		ln -sfv gcc ${PREFIX}/bin/cc
 	popd
-	rm -fv ${CROSSTOOLS_DIR}/build-tools/bin/$(${CROSSTOOLS_DIR}/build-tools/bin/gcc -dumpmachine)-*
+	rm -fv ${PREFIX}/bin/$(${PREFIX}/bin/gcc -dumpmachine)-*
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0

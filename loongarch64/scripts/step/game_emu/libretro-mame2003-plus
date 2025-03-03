@@ -1,0 +1,15 @@
+source env/game_emu/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=game_emu
+export STEP_PACKAGENAME=libretro-mame2003-plus
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/libretro-mame2003-plus/git-default/
+rm -rf ${BUILD_DIRECTORY}/libretro-mame2003-plus-git-default_git
+tar xvf ${DOWNLOADDIR}/libretro-mame2003-plus-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libretro-mame2003-plus-git-default_git
+	sed -i "s@ uname @ cross-uname @g" Makefile{,.common}
+	make -j${JOBS} CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ PTR64=1
+	cp -a mame2003_plus_libretro.so ${SYSROOT_DIR}/usr/share/retroarch/cores/
+popd 
+rm -rf ${BUILD_DIRECTORY}/libretro-mame2003-plus-git-default_git

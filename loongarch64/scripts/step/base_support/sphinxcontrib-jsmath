@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-jsmath-1.0.1
 tar xvf ${DOWNLOADDIR}/sphinxcontrib-jsmath-1.0.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/sphinxcontrib-jsmath-1.0.1
 	
-	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user sphinxcontrib-jsmath --root=${SYSROOT_DIR} --prefix=/usr
+	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user sphinxcontrib-jsmath --root=${SYSROOT_DIR} --prefix=/usr
 popd 
 rm -rf ${BUILD_DIRECTORY}/sphinxcontrib-jsmath-1.0.1

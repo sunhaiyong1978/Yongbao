@@ -15,6 +15,6 @@ pushd ${BUILD_DIRECTORY}/libgusb-0.4.9
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/libgusb-0.4.9

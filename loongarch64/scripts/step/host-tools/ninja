@@ -9,6 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/ninja-1.12.1
 tar xvf ${DOWNLOADDIR}/ninja-1.12.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ninja-1.12.1
 	python3 configure.py --bootstrap
-	install -vm755 ninja ${CROSSTOOLS_DIR}/bin/
+	install -vm755 ninja ${PREFIX}/bin/
 popd 
 rm -rf ${BUILD_DIRECTORY}/ninja-1.12.1

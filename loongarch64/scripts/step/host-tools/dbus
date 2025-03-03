@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/dbus-1.16.0
     
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Dsystemd=disabled \
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} -Dsystemd=disabled \
               --buildtype=release ..
         ninja
         ninja install

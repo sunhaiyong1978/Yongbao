@@ -1,0 +1,25 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=gobject-introspection
+export PACKAGE_VERSION=1.82.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gobject-introspection/1.82.0/
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.82.0
+tar xvf ${DOWNLOADDIR}/gobject-introspection-1.82.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gobject-introspection-1.82.0
+    
+    tar xvf ${RESOURCEDIR}/files/gobject-introspection-glib_git.tar.gz -C subprojects/
+    mv subprojects/gobject-introspection-glib_git subprojects/glib
+    tar xvf ${RESOURCEDIR}/files/gobject-introspection-gvdb_git.tar.gz -C subprojects/glib/subprojects/
+    rmdir subprojects/glib/subprojects/gvdb
+    mv subprojects/glib/subprojects/gobject-introspection-gvdb_git subprojects/glib/subprojects/gvdb
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} \
+              --buildtype=release ..
+	ninja
+        ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.82.0

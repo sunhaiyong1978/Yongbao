@@ -18,13 +18,13 @@ pushd ${BUILD_DIRECTORY}/libxml2-2.13.5
                 autoreconf -ifv
         fi
 	if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then
-	        ./configure ${COMMON_CONFIG} --with-history --with-icu --with-http --with-python=${CROSSTOOLS_DIR}/bin/python3 --with-python_install_dir=/usr/lib64/python$(get_package_version Python3)/site-packages PYTHON=python3
+	        ./configure ${COMMON_CONFIG} --with-history --with-icu --with-http --with-python=${CROSSTOOLS_DIR}/bin/python3 --with-python_install_dir=/usr/lib${LIB_SUFF}/python$(get_package_version Python3)/site-packages PYTHON=python3
 	else
 		./configure ${COMMON_CONFIG} --with-history --with-icu --with-http --with-python=no
 	fi
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+        rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 	cp -a ${SYSROOT_DIR}/usr/bin/xml2-config ${CROSSTOOLS_DIR}/bin/xml2-config
 popd 
 rm -rf ${BUILD_DIRECTORY}/libxml2-2.13.5

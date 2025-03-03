@@ -8,8 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libcap/2.73/
 rm -rf ${BUILD_DIRECTORY}/libcap-2.73
 tar xvf ${DOWNLOADDIR}/libcap-2.73.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libcap-2.73
-	make -j${JOBS} CROSS_COMPILE="${CROSS_TARGET}-" BUILD_CC="gcc" GOLANG=no PAM_CAP=no prefix=/usr lib=lib64
-	make CROSS_COMPILE="${CROSS_TARGET}-" BUILD_CC="gcc" GOLANG=no PAM_CAP=no prefix=/usr lib=lib64 \
+	make -j${JOBS} CROSS_COMPILE="${CROSS_TARGET}-" BUILD_CC="gcc" GOLANG=no PAM_CAP=no prefix=/usr lib=lib${LIB_SUFF}
+	make CROSS_COMPILE="${CROSS_TARGET}-" BUILD_CC="gcc" GOLANG=no PAM_CAP=no prefix=/usr lib=lib${LIB_SUFF} \
 		 DESTDIR=${SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/libcap-2.73

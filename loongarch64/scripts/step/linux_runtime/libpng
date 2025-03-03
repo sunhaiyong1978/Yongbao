@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libpng
-export PACKAGE_VERSION=1.6.45
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libpng/1.6.45/
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.45
-tar xvf ${DOWNLOADDIR}/libpng-1.6.45.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libpng-1.6.45
+export PACKAGE_VERSION=1.6.46
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libpng/1.6.46/
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.46
+tar xvf ${DOWNLOADDIR}/libpng-1.6.46.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libpng-1.6.46
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/libpng-1.6.45
         make DESTDIR=${LINUX_SYSROOT_DIR} install
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.45
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.46
 cp ${LINUX_SYSROOT_DIR}/usr/bin/libpng-config ${CROSS_TOOLS_PREFIX}/bin/${ARCH_NAME}-libpng-config
 sed -i \
 	-e "s@=\"/usr/lib${LIB_SUFF}@=\"${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}@g" \

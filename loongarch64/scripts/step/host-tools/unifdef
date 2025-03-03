@@ -10,6 +10,6 @@ tar xvf ${DOWNLOADDIR}/unifdef-2.12.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/unifdef-2.12
     make prefix="/usr"
     make prefix="/usr" DESTDIR=${PWD}/dest install
-    cp -av dest/usr/bin/* ${CROSSTOOLS_DIR}/bin/
+    cp -av dest/usr/bin/* ${PREFIX}/bin/
 popd 
 rm -rf ${BUILD_DIRECTORY}/unifdef-2.12

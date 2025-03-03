@@ -11,7 +11,7 @@ tar xvf ${DOWNLOADDIR}/grub-2.12.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/grub-2.12
         
 	touch grub-core/extra_deps.lst
-        PYTHON=${CROSSTOOLS_DIR}/bin/python3 ./configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} \
+        PYTHON=${HOST_TOOLS_DIR}/bin/python3 ./configure --prefix=${PREFIX} --build=${CROSS_HOST} \
                 --host=${CROSS_HOST} --target=${CROSS_TARGET} \
 		--program-transform-name=s,grub,${CROSS_TARGET}-grub, --with-platform=efi --with-utils=host --disable-werror
         eval ${MAKE_AND_INSTALL}

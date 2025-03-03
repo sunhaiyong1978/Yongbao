@@ -14,10 +14,10 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 	pushd tools-build
 		../configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} --host=${CROSS_HOST} \
 		             --target=${CROSS_TARGET} --disable-nls \
-		             --with-mpfr=${CROSSTOOLS_DIR} --with-gmp=${CROSSTOOLS_DIR} \
-		             --with-mpc=${CROSSTOOLS_DIR} \
-			     --with-mpfr-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --with-gmp-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
-                             --with-mpc-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
+		             --with-mpfr=${HOST_TOOLS_DIR} --with-gmp=${HOST_TOOLS_DIR} \
+		             --with-mpc=${HOST_TOOLS_DIR} \
+			     --with-mpfr-lib=${HOST_TOOLS_DIR}/lib${LIB_SUFF} --with-gmp-lib=${HOST_TOOLS_DIR}/lib${LIB_SUFF} \
+                             --with-mpc-lib=${HOST_TOOLS_DIR}/lib${LIB_SUFF} \
 		             --with-newlib --disable-shared --with-sysroot=${SYSROOT_DIR} \
 		             --disable-decimal-float --disable-libgomp --disable-libitm \
 		             --disable-libsanitizer --disable-libquadmath --disable-threads \

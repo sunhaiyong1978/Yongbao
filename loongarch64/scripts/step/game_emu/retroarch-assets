@@ -1,0 +1,13 @@
+source env/game_emu/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=game_emu
+export STEP_PACKAGENAME=retroarch-assets
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/retroarch-assets/git-default/
+rm -rf ${BUILD_DIRECTORY}/retroarch-assets-git-default_git
+tar xvf ${DOWNLOADDIR}/retroarch-assets-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/retroarch-assets-git-default_git
+	make INSTALLDIR=/usr/share/retroarch/assets DESTDIR=${SYSROOT_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/retroarch-assets-git-default_git

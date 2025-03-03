@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=libxcrypt
-export PACKAGE_VERSION=4.4.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/libxcrypt/4.4.37/
-rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.37
-tar xvf ${DOWNLOADDIR}/libxcrypt-4.4.37.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.37
-    patch -Np1 -i ${SYSDIR}/files/toolchain/libxcrypt/4.4.37/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
+export PACKAGE_VERSION=4.4.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/libxcrypt/4.4.38/
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.38
+tar xvf ${DOWNLOADDIR}/libxcrypt-4.4.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.38
+    patch -Np1 -i ${SYSDIR}/files/toolchain/libxcrypt/4.4.38/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
 	 
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.37
 
     make DESTDIR=${INSTALL_DIST_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.37
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.38

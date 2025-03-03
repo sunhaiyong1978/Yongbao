@@ -23,7 +23,7 @@ do
 done
 
 
-for bin_file in qmake moc uic rcc lrelease
+for bin_file in qmake moc uic rcc lrelease qmltyperegistrar qmlcachegen
 do
         if [ -f ${SYSROOT_DIR}/usr/bin/${bin_file} ]; then
                 mv ${SYSROOT_DIR}/usr/bin/${bin_file}{,.orig}

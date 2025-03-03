@@ -12,11 +12,9 @@ pushd ${BUILD_DIRECTORY}/waylandpp-1.0.0
 	 
     mkdir -p native-build
     pushd native-build
-        cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}  \
+        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX}  \
               -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SERVER=OFF -DBUILD_LIBRARIES=OFF ..
         eval ${MAKE_AND_INSTALL}
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.0
-mkdir -p ${CROSSTOOLS_DIR}/host-tools/bin/
-cp -a ${CROSSTOOLS_DIR}/bin/wayland-scanner++ ${CROSSTOOLS_DIR}/host-tools/bin/

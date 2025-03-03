@@ -23,12 +23,12 @@ pushd ${BUILD_DIRECTORY}/kconfigwidgets-5.116.0
 		      -DKI18N_PYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
 		      -DKDE_CLANG_FORMAT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/clang-format \
 	              -DPERL_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl \
-        	      -DRuby_EXECUTABLE=${CROSSTOOLS_DIR}/bin/ruby \
+        	      -DRuby_EXECUTABLE=${HOST_TOOLS_DIR}/bin/ruby \
 	              -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
 		      -DDOXYGEN_EXECUTABLE=/bin/doxygen \
 		      -DWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/bin/wayland-scanner \
 		      -DQtWaylandScanner_EXECUTABLE=${CROSSTOOLS_DIR}/qt5/bin/qtwaylandscanner \
-		      -DLIBXML2_XMLLINT_EXECUTABLE=${CROSSTOOLS_DIR}/bin/xmllint \
+		      -DLIBXML2_XMLLINT_EXECUTABLE=${HOST_TOOLS_DIR}/bin/xmllint \
 		      -DUPDATE_MIME_DATABASE_EXECUTABLE=${CROSSTOOLS_DIR}/bin/update-mime-database \
 		      -DGTK_UPDATE_ICON_CACHE_EXECUTABLE=${CROSSTOOLS_DIR}/bin/gtk-update-icon-cache \
 		      -DXwayland_EXECUTABLE=${CROSSTOOLS_DIR}/bin/Xwayland \

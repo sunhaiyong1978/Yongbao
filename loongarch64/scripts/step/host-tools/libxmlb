@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/libxmlb-0.3.21
     
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Dintrospection=false \
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} -Dintrospection=false \
               --buildtype=release ..
         ninja
         ninja install

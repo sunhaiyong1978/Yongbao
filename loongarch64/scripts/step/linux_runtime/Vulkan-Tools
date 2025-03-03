@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=Vulkan-Tools
-export PACKAGE_VERSION=1.4.304
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/Vulkan-Tools/1.4.304/
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.304
-tar xvf ${DOWNLOADDIR}/Vulkan-Tools-1.4.304.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.304
+export PACKAGE_VERSION=1.4.307
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/Vulkan-Tools/1.4.307/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.307
+tar xvf ${DOWNLOADDIR}/Vulkan-Tools-1.4.307.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.307
         
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER_EXECUTABLE wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER_EXECUTABLE  ${CROSS_TOOLS_PREFIX}/bin/wayland-scanner)@g" cube/CMakeLists.txt
         mkdir cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.304
         popd
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.304
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.307

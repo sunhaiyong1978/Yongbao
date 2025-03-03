@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/sip-4.19.25
 	 
     mkdir native-build
     pushd native-build
-        ${CROSSTOOLS_DIR}/bin/python3 ../configure.py
+        ${HOST_TOOLS_DIR}/bin/python3 ../configure.py
 	make -j${JOBS}
         make install
     popd

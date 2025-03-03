@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
     
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} -Dutils=true -Duseroot=false -Dudevrulesdir=${CROSSTOOLS_DIR}/lib/udev/rules.d -Dinitscriptdir=${CROSSTOOLS_DIR}/etc/init.d \
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} -Dutils=true -Duseroot=false -Dudevrulesdir=${PREFIX}/lib/udev/rules.d -Dinitscriptdir=${PREFIX}/etc/init.d \
               --buildtype=release ..
         ninja
         ninja install

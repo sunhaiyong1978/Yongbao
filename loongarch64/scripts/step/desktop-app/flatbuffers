@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=flatbuffers
-export PACKAGE_VERSION=24.12.23
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/flatbuffers/24.12.23/
-rm -rf ${BUILD_DIRECTORY}/flatbuffers-24.12.23
-tar xvf ${DOWNLOADDIR}/flatbuffers-24.12.23.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/flatbuffers-24.12.23
+export PACKAGE_VERSION=25.1.24
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/flatbuffers/25.1.24/
+rm -rf ${BUILD_DIRECTORY}/flatbuffers-25.1.24
+tar xvf ${DOWNLOADDIR}/flatbuffers-25.1.24.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/flatbuffers-25.1.24
         
 	sed -i "s@COMMAND \"\${FLATBUFFERS_FLATC_EXECUTABLE}\"@COMMAND qemu-${ARCH_NAME} \"\${FLATBUFFERS_FLATC_EXECUTABLE}\"@g" \
            CMakeLists.txt
@@ -40,4 +40,4 @@ pushd ${BUILD_DIRECTORY}/flatbuffers-24.12.23
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/flatbuffers-24.12.23
+rm -rf ${BUILD_DIRECTORY}/flatbuffers-25.1.24

@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0
 tar xvf ${DOWNLOADDIR}/gmp-6.3.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gmp-6.3.0
 	cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
+	export CFLAGS="${CFLAGS} -std=gnu11"
 	ABI=standard ./configure --build=${CROSS_HOST} --host=${CROSS_TARGET} \
                 --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --enable-cxx
 	make -j${JOBS}

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pygobject
-export PACKAGE_VERSION=3.50.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pygobject/3.50.0/
-rm -rf ${BUILD_DIRECTORY}/pygobject-3.50.0
-tar xvf ${DOWNLOADDIR}/pygobject-3.50.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pygobject-3.50.0
+export PACKAGE_VERSION=3.51.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pygobject/3.51.0/
+rm -rf ${BUILD_DIRECTORY}/pygobject-3.51.0
+tar xvf ${DOWNLOADDIR}/pygobject-3.51.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pygobject-3.51.0
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} -Dtests=false ..
@@ -15,4 +15,4 @@ pushd ${BUILD_DIRECTORY}/pygobject-3.50.0
         DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/pygobject-3.50.0
+rm -rf ${BUILD_DIRECTORY}/pygobject-3.51.0

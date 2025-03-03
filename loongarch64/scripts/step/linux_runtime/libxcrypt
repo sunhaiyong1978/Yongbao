@@ -4,12 +4,12 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libxcrypt
-export PACKAGE_VERSION=4.4.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libxcrypt/4.4.37/
-rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.37
-tar xvf ${DOWNLOADDIR}/libxcrypt-4.4.37.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.37
-	patch -Np1 -i ${SYSDIR}/files/linux_runtime/libxcrypt/4.4.37/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
+export PACKAGE_VERSION=4.4.38
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libxcrypt/4.4.38/
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.38
+tar xvf ${DOWNLOADDIR}/libxcrypt-4.4.38.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.38
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/libxcrypt/4.4.38/patches/0001-fix-configure-error-under-loongarch64-architecture.patch 
 	 
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.37
         make DESTDIR=${LINUX_SYSROOT_DIR} install
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.37
+rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.4.38

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=llvm_runtimes
-export PACKAGE_VERSION=19.1.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm_runtimes/19.1.6/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
-tar xvf ${DOWNLOADDIR}/llvm-project-19.1.6.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+export PACKAGE_VERSION=19.1.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm_runtimes/19.1.7/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
+tar xvf ${DOWNLOADDIR}/llvm-project-19.1.7.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-19.1.7.src
     pushd compiler-rt
         mkdir cross-build
         pushd cross-build
@@ -20,7 +20,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
                   -DCMAKE_C_FLAGS="-DNDEBUG -target ${CROSS_TARGET}" \
 		  -DCMAKE_CXX_FLAGS="-DNDEBUG -target ${CROSS_TARGET}" \
 		  -DCMAKE_ASM_FLAGS="-target ${CROSS_TARGET}" \
-                  -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+                  -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
 		  -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
                   -DCMAKE_SYSROOT=${SYSROOT_DIR} \
                   -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
@@ -60,7 +60,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
 		  -DCMAKE_ASM_FLAGS="-target ${CROSS_TARGET}" \
                   -DLLVM_ENABLE_RTTI:BOOL=ON \
                   -DLLVM_ENABLE_ZLIB:BOOL=ON \
-                  -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+                  -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
                   -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
                   -DLLVM_USE_SANITIZER:BOOL=ON \
                   -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
@@ -93,7 +93,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
 		  -DCMAKE_C_FLAGS="-DNDEBUG -target ${CROSS_TARGET}" \
 		  -DCMAKE_CXX_FLAGS="-DNDEBUG -target ${CROSS_TARGET}" \
 		  -DCMAKE_ASM_FLAGS="-target ${CROSS_TARGET}" \
-		  -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+		  -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
 		  -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
 		  -DPERL_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl \
 		  -DLIBOMPTARGET_NVPTX_ARCH=${CROSSTOOLS_DIR}/bin/nvptx-arch \
@@ -120,7 +120,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
 		  -DCMAKE_CXX_FLAGS="-DNDEBUG -target ${CROSS_TARGET}" \
 		  -DCMAKE_ASM_FLAGS="-target ${CROSS_TARGET}" \
 		  -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;pstl;libcxx" \
-                  -DCMAKE_MAKE_PROGRAM:PATH=${CROSSTOOLS_DIR}/bin/ninja \
+                  -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
 		  -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
                   -DCMAKE_SYSROOT=${SYSROOT_DIR} \
                   -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
@@ -130,4 +130,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
         popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.6.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-19.1.7.src

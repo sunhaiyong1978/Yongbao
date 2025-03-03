@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libime
-export PACKAGE_VERSION=1.1.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libime/1.1.9/
-rm -rf ${BUILD_DIRECTORY}/libime-1.1.9
-tar xvf ${DOWNLOADDIR}/libime-1.1.9.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libime-1.1.9
+export PACKAGE_VERSION=1.1.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libime/1.1.10/
+rm -rf ${BUILD_DIRECTORY}/libime-1.1.10
+tar xvf ${DOWNLOADDIR}/libime-1.1.10.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libime-1.1.10
 	tar xvf ${RESOURCEDIR}/files/libime-kenlm_git.tar.gz -C src/libime/core/kenlm/ --strip-components=1
-	cp ${RESOURCEDIR}/files/dict-20240416.tar.zst data/
+	cp ${RESOURCEDIR}/files/dict-20241001.tar.zst data/
 	cp ${RESOURCEDIR}/files/table-20240108.tar.gz data/
-	cp ${RESOURCEDIR}/files/lm_sc.arpa-20241001.tar.zst data/
+	cp ${RESOURCEDIR}/files/lm_sc.arpa-20250113.tar.zst data/
         
         mkdir cross-build
         pushd cross-build
@@ -45,4 +45,4 @@ pushd ${BUILD_DIRECTORY}/libime-1.1.9
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libime-1.1.9
+rm -rf ${BUILD_DIRECTORY}/libime-1.1.10

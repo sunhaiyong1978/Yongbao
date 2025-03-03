@@ -19,7 +19,6 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0008-UniVT-Support-displaying-UTF-8-text-for-180-degree-r.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0009-UniVT-Support-displaying-UTF-8-text-for-270-degree-r.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-UniVT-Add-Chinese-fonts-support-in-console.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-linux-6.11-revert-amggpu-patch.patch 
 	 
 	sed -i "s@mabi=lp64s@& -mcmodel=normal@g" arch/loongarch/Makefile
 	make mrproper

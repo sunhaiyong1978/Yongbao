@@ -3,25 +3,26 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=thunderbird
-export PACKAGE_VERSION=128.6.0esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/128.6.0esr/
-rm -rf ${BUILD_DIRECTORY}/thunderbird-128.6.0
-tar xvf ${DOWNLOADDIR}/thunderbird-128.6.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/thunderbird-128.6.0
+export PACKAGE_VERSION=128.7.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/128.7.0esr/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-128.7.0
+tar xvf ${DOWNLOADDIR}/thunderbird-128.7.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-128.7.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
         mv comm-l10n-*/* ./
     popd
 
-    rm -rf third_party/python/pathspec/*
-    rm -rf third_party/python/setuptools/*
-    rm -rf third_party/python/pip/*
-    rm -rf third_party/python/Jinja2/*
+    rm -rf third_party/python/packaging/*
+    rm -rf third_party/python/typing_extensions/*
+    cp -a ${SYSROOT_DIR}/usr/lib/python$(get_package_version Python3)/site-packages/packaging third_party/python/packaging/
+    cp -a ${SYSROOT_DIR}/usr/lib/python$(get_package_version Python3)/site-packages/typing_extensions* third_party/python/typing_extensions/
 
-    sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@12@g" mach
+    sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@13@g" mach
 
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/128.6.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/128.7.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/128.7.0esr/patches/0001-firefox-128.6-fix-for-glean_parser-16.2.0-build-erro.patch 
 	 
     find third_party/rust/ -name .cargo-checksum.json \
          -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
@@ -50,7 +51,6 @@ ac_add_options --enable-optimize=-O2
 ac_add_options --enable-official-branding
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
-ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
 ac_add_options --without-wasm-sandboxed-libraries
 ac_add_options --with-system-webp
@@ -105,4 +105,4 @@ ln -sfv /usr/lib64/thunderbird/chrome/icons/default/default256.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/thunderbird-128.6.0
+rm -rf ${BUILD_DIRECTORY}/thunderbird-128.7.0

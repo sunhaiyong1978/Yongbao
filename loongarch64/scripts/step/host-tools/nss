@@ -12,35 +12,35 @@ patch -Np1 -i ${SYSDIR}/files/host-tools/nss/3.107/patches/0001-nss-3.97-fix-mis
 	 
 pushd nss
     make -j${JOBS} BUILD_OPT=1 USE_64=1 USE_SYSTEM_ZLIB=1 NSS_USE_SYSTEM_SQLITE=1 NSS_ENABLE_WERROR=0 \
-		NSPR_INCLUDE_DIR=${CROSSTOOLS_DIR}/include/nspr NSPR_LIB_DIR=${CROSSTOOLS_DIR}/lib \
-		SQLITE_INCLUDE_DIR=${CROSSTOOLS_DIR}/include SQLITE_LIB_DIR=${CROSSTOOLS_DIR}/lib64 \
+		NSPR_INCLUDE_DIR=${PREFIX}/include/nspr NSPR_LIB_DIR=${PREFIX}/lib64 \
+		SQLITE_INCLUDE_DIR=${PREFIX}/include SQLITE_LIB_DIR=${PREFIX}/lib64 \
 		 NSS_DISABLE_GTESTS=1
 
-    cat pkg/pkg-config/nss-config.in | sed -e "s,@prefix@,${CROSSTOOLS_DIR},g" \
+    cat pkg/pkg-config/nss-config.in | sed -e "s,@prefix@,${PREFIX},g" \
         -e "s,@MOD_MAJOR_VERSION@,$(cat lib/util/nssutil.h \
             | grep "#define.*NSSUTIL_VMAJOR" | awk '{print $3}'),g" \
         -e "s,@MOD_MINOR_VERSION@,$(cat lib/util/nssutil.h \
             | grep "#define.*NSSUTIL_VMINOR" | awk '{print $3}'),g" \
         -e "s,@MOD_PATCH_VERSION@,$(cat lib/util/nssutil.h \
             | grep "#define.*NSSUTIL_VPATCH" | awk '{print $3}'),g" \
-        > ${CROSSTOOLS_DIR}/bin/nss-config
+        > ${PREFIX}/bin/nss-config
 
-    cat pkg/pkg-config/nss.pc.in | sed -e "s,%prefix%,${CROSSTOOLS_DIR},g" \
-        -e 's,%exec_prefix%,${prefix},g' -e "s,%libdir%,${CROSSTOOLS_DIR}/lib64,g" \
+    cat pkg/pkg-config/nss.pc.in | sed -e "s,%prefix%,${PREFIX},g" \
+        -e 's,%exec_prefix%,${prefix},g' -e "s,%libdir%,${PREFIX}/lib64,g" \
         -e 's,%includedir%,${prefix}/include/nss,g' \
         -e "s,%NSS_VERSION%,$(cat lib/util/nssutil.h \
             | grep "#define.*NSSUTIL_VERSION" | awk '{print $3}'),g" \
-        -e "s,%NSPR_VERSION%,$(cat ${CROSSTOOLS_DIR}/include/nspr/prinit.h \
+        -e "s,%NSPR_VERSION%,$(cat ${PREFIX}/include/nspr/prinit.h \
             | grep "#define.*PR_VERSION" | awk '{print $3}'),g" \
-        > ${CROSSTOOLS_DIR}/lib64/pkgconfig/nss.pc
+        > ${PREFIX}/lib64/pkgconfig/nss.pc
 popd
 pushd dist
-    install -v -m755 Linux*/lib/*.so ${CROSSTOOLS_DIR}/lib64
-    install -v -m644 Linux*/lib/libcrmf.a ${CROSSTOOLS_DIR}/lib64
-    install -v -m755 -d ${CROSSTOOLS_DIR}/include/nss
-    cp -v -RL {public,private}/nss/* ${CROSSTOOLS_DIR}/include/nss
-    chmod -v 644 ${CROSSTOOLS_DIR}/include/nss/*
-    install -v -m755 Linux*/bin/{certutil,pk12util} ${CROSSTOOLS_DIR}/bin
+    install -v -m755 Linux*/lib/*.so ${PREFIX}/lib64
+    install -v -m644 Linux*/lib/libcrmf.a ${PREFIX}/lib64
+    install -v -m755 -d ${PREFIX}/include/nss
+    cp -v -RL {public,private}/nss/* ${PREFIX}/include/nss
+    chmod -v 644 ${PREFIX}/include/nss/*
+    install -v -m755 Linux*/bin/{certutil,pk12util} ${PREFIX}/bin
 popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/nss-3.107

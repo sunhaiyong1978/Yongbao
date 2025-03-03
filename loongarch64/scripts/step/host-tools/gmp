@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/gmp-6.3.0
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-	CXXFLAGS="${CXXFLAGS} ${LDFLAGS}" ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --enable-cxx
+	CXXFLAGS="${CXXFLAGS} ${LDFLAGS}" ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --enable-cxx
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0

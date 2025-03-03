@@ -14,7 +14,7 @@ pushd ${BUILD_DIRECTORY}/grub-2.12
 	touch grub-core/extra_deps.lst
 	mkdir cross-build
 	pushd cross-build
-		PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 ../configure ${COMMON_CONFIG} -with-platform=efi \
+		PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 ../configure ${COMMON_CONFIG} --with-platform=efi \
 		             --with-utils=host --disable-werror \
 			     --with-dejavufont=${SYSROOT_DIR}/usr/share/fonts/DejaVu/DejaVuSansMono.ttf \
 			     --with-unifont=${PWD}/../unifont.pcf.gz

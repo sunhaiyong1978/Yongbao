@@ -12,13 +12,13 @@ pushd ${BUILD_DIRECTORY}/expect5.45.4
 	 
 	autoreconf -ifv
 	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -Wno-incompatible-pointer-types" \
-	./configure --prefix=/usr --libdir=/usr/lib64 \
+	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} \
 	            --build=${CROSS_HOST} --host=${CROSS_TARGET} \
-	            --with-tcl=${SYSROOT_DIR}/usr/lib64 \
+	            --with-tcl=${SYSROOT_DIR}/usr/lib${LIB_SUFF} \
 		    --with-tclinclude=${SYSROOT_DIR}/usr/include \
 	            --enable-shared
 	make -j${JOBS}
 	make TCLSH_PROG=/usr/bin/tclsh DESTDIR=${SYSROOT_DIR} install
-	ln -svf expect5.45.4/libexpect5.45.4.so ${SYSROOT_DIR}/usr/lib64
+	ln -svf expect5.45.4/libexpect5.45.4.so ${SYSROOT_DIR}/usr/lib${LIB_SUFF}
 popd 
 rm -rf ${BUILD_DIRECTORY}/expect5.45.4

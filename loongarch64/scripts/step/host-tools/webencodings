@@ -1,0 +1,15 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=webencodings
+export PACKAGE_VERSION=0.5.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/webencodings/0.5.1/
+rm -rf ${BUILD_DIRECTORY}/webencodings-0.5.1
+tar xvf ${DOWNLOADDIR}/webencodings-0.5.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webencodings-0.5.1
+	
+	${HOST_TOOLS_DIR}/bin/python3 setup.py build
+        ${HOST_TOOLS_DIR}/bin/python3 setup.py install
+popd 
+rm -rf ${BUILD_DIRECTORY}/webencodings-0.5.1

@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/openssl-3.4.0.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/openssl-3.4.0
 	CC="${CROSS_TARGET}-gcc" \
 	./Configure --prefix=/usr --openssldir=/etc/ssl \
-				--libdir=lib64 shared zlib linux-generic64
+				--libdir=lib${LIB_SUFF} shared zlib linux64-loongarch64
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/openssl-3.4.0

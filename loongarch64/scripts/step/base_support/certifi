@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=certifi
-export PACKAGE_VERSION=2024.12.14
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/certifi/2024.12.14/
-rm -rf ${BUILD_DIRECTORY}/python-certifi-2024.12.14
-tar xvf ${DOWNLOADDIR}/python-certifi-2024.12.14.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/python-certifi-2024.12.14
+export PACKAGE_VERSION=2025.01.31
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/certifi/2025.01.31/
+rm -rf ${BUILD_DIRECTORY}/python-certifi-2025.01.31
+tar xvf ${DOWNLOADDIR}/python-certifi-2025.01.31.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/python-certifi-2025.01.31
 	
-	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py build
-        _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${CROSSTOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py build
+        _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/python-certifi-2024.12.14
+rm -rf ${BUILD_DIRECTORY}/python-certifi-2025.01.31

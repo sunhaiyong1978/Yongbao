@@ -3,22 +3,25 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=firefox
-export PACKAGE_VERSION=128.6.0esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/128.6.0esr/
-rm -rf ${BUILD_DIRECTORY}/firefox-128.6.0
-tar xvf ${DOWNLOADDIR}/firefox-128.6.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-128.6.0
+export PACKAGE_VERSION=128.7.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/128.7.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-128.7.0
+tar xvf ${DOWNLOADDIR}/firefox-128.7.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-128.7.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
         mv zh-CN* zh-CN
     popd
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.6.0esr/patches/0001-firefox-125-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.6.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.6.0esr/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
+    rm -rf third_party/python/packaging/*
+    rm -rf third_party/python/typing_extensions/*
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.7.0esr/patches/0001-firefox-125-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.7.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.7.0esr/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.7.0esr/patches/0001-firefox-128.6-fix-for-glean_parser-16.2.0-build-erro.patch 
 	 
 
-    sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@12@g" mach
+    sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@13@g" mach
 
     sed -i "/define PNG_LOONGARCH_LSX_OPT/s@ 1@ 0@g" media/libpng/pngpriv.h
 
@@ -89,4 +92,4 @@ EOF
 ln -sfv /usr/lib64/firefox/browser/chrome/icons/default/default128.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/firefox.png
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-128.6.0
+rm -rf ${BUILD_DIRECTORY}/firefox-128.7.0

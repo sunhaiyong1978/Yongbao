@@ -9,6 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/rust-bindgen-0.71.1
 tar xvf ${DOWNLOADDIR}/rust-bindgen-0.71.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/rust-bindgen-0.71.1
 	cargo build --release
-	install -Dm755 target/release/bindgen ${CROSSTOOLS_DIR}/bin/
+	install -Dm755 target/release/bindgen ${PREFIX}/bin/
 popd 
 rm -rf ${BUILD_DIRECTORY}/rust-bindgen-0.71.1

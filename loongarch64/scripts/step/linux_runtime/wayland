@@ -9,7 +9,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/wayland/1.23.0/
 rm -rf ${BUILD_DIRECTORY}/wayland-1.23.0
 tar xvf ${DOWNLOADDIR}/wayland-1.23.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/wayland-1.23.0
-    sed -i "/wayland_scanner_for_build =/s@find\(.*\)\$@'${CROSSTOOLS_DIR}/host-tools/bin/wayland-scanner'@g" src/meson.build
+    sed -i "/wayland_scanner_for_build =/s@find\(.*\)\$@'${HOST_TOOLS_DIR}/bin/wayland-scanner'@g" src/meson.build
     sed -i -e "/scanner_dep = dependency('wayland-scanner'/d" src/meson.build
     mkdir cross-build
     pushd cross-build

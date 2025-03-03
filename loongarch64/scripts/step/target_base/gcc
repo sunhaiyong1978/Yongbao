@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv cross-build
 	pushd cross-build
-		../configure --prefix=/usr --libdir=/usr/lib64 --build=${CROSS_HOST} \
+		../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
 		             --host=${CROSS_TARGET} --target=${CROSS_TARGET} \
 		             --enable-__cxa_atexit --enable-threads=posix \
 		             --with-system-zlib --enable-libstdcxx-time \

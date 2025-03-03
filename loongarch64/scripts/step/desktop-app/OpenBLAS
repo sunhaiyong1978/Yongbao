@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=OpenBLAS
-export PACKAGE_VERSION=0.3.28
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenBLAS/0.3.28/
-rm -rf ${BUILD_DIRECTORY}/OpenBLAS-0.3.28
-tar xvf ${DOWNLOADDIR}/OpenBLAS-0.3.28.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OpenBLAS-0.3.28
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/OpenBLAS/0.3.28/patches/0001-OpenBLAS-0.3.28-fix-cross-build-for-loongarch64.patch 
-	 
+export PACKAGE_VERSION=0.3.29
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenBLAS/0.3.29/
+rm -rf ${BUILD_DIRECTORY}/OpenBLAS-0.3.29
+tar xvf ${DOWNLOADDIR}/OpenBLAS-0.3.29.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenBLAS-0.3.29
+        
 	mkdir cross-build
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
@@ -34,9 +33,9 @@ pushd ${BUILD_DIRECTORY}/OpenBLAS-0.3.28
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
-		      -DTARGET=LOONGSON3R5 -DDYNAMIC_ARCH=LOONGARCH64 -DC_LAPACK=ON -DCMAKE_Fortran_COMPILER=${CROSS_TARGET}-gfortran -Wno-dev ..
+		      -DTARGET=LA464 -DDYNAMIC_ARCH=LOONGARCH64 -DC_LAPACK=ON -DCMAKE_Fortran_COMPILER=${CROSS_TARGET}-gfortran -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OpenBLAS-0.3.28
+rm -rf ${BUILD_DIRECTORY}/OpenBLAS-0.3.29

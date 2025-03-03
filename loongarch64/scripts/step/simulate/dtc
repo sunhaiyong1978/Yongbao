@@ -9,6 +9,6 @@ rm -rf ${BUILD_DIRECTORY}/dtc-1.7.2
 tar xvf ${DOWNLOADDIR}/dtc-1.7.2.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dtc-1.7.2
 	PYTHON=${CROSS_TARGET}-python3 make PREFIX=/usr LIBDIR=/usr/lib64 CC=${CROSS_TARGET}-gcc -j${JOBS}
-	PYTHON=${CROSS_TARGET}-python3 make PREFIX=/usr LIBDIR=/usr/lib64 DESTDIR=${PWD}/dest install
+	PYTHON=${CROSS_TARGET}-python3 make PREFIX=/usr LIBDIR=/usr/lib64 DESTDIR=${SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/dtc-1.7.2

@@ -1,0 +1,12 @@
+diff -Nurp ../../build.220624/test/RetroCore/libretro-super-Latest/libretro-mame2010/src/osd/retro/osinline.h libretro-super-Latest/libretro-mame2010/src/osd/retro/osinline.h
+--- ../../build.220624/test/RetroCore/libretro-super-Latest/libretro-mame2010/src/osd/retro/osinline.h	2022-06-23 09:36:12.611705626 +0000
++++ libretro-super-Latest/libretro-mame2010/src/osd/retro/osinline.h	2022-06-28 06:12:26.610067963 +0000
+@@ -35,7 +35,7 @@ empty
+ 
+ #endif
+ 
+-#if defined(__aarch64__) || defined(_M_ARM64) || defined(__arm__) || defined(_M_ARM)
++#if defined(__aarch64__) || defined(_M_ARM64) || defined(__arm__) || defined(_M_ARM) || defined(__loongarch64)
+ #ifndef YieldProcessor
+ #define YieldProcessor() do {} while (0)
+ #define osd_yield_processor() YieldProcessor()

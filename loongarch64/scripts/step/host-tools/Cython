@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=Cython
-export PACKAGE_VERSION=3.0.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Cython/3.0.11/
-rm -rf ${BUILD_DIRECTORY}/cython-3.0.11
-tar xvf ${DOWNLOADDIR}/cython-3.0.11.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cython-3.0.11
+export PACKAGE_VERSION=3.0.11-1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Cython/3.0.11-1/
+rm -rf ${BUILD_DIRECTORY}/cython-3.0.11-1
+tar xvf ${DOWNLOADDIR}/cython-3.0.11-1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cython-3.0.11-1
 	
-	${CROSSTOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
-        ${CROSSTOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user cython
+	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user cython
 popd 
-rm -rf ${BUILD_DIRECTORY}/cython-3.0.11
+rm -rf ${BUILD_DIRECTORY}/cython-3.0.11-1

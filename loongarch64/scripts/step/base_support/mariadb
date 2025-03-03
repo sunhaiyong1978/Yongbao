@@ -59,7 +59,7 @@ pushd ${BUILD_DIRECTORY}/mariadb-11.8.0
                       -DWITH_EMBEDDED_SERVER=ON \
                       -DSKIP_TESTS=ON \
                       -DTOKUDB_OK=0 \
-                       -Wno-dev ..
+                      -DENABLE_DTRACE=OFF -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

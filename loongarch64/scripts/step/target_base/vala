@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/vala-0.56.17
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-valadoc
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-valadoc --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

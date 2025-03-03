@@ -13,10 +13,10 @@ pushd ${BUILD_DIRECTORY}/libjpeg-turbo-3.0.1
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
-		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIB_SUFF} \
        		      -DCMAKE_INSTALL_PREFIX=/usr -DWITH_JPEG8=ON -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+        rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/libjpeg-turbo-3.0.1

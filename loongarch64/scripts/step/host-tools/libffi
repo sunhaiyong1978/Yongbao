@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=libffi
-export PACKAGE_VERSION=3.4.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libffi/3.4.6/
-rm -rf ${BUILD_DIRECTORY}/libffi-3.4.6
-tar xvf ${DOWNLOADDIR}/libffi-3.4.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libffi-3.4.6
+export PACKAGE_VERSION=3.4.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libffi/3.4.7/
+rm -rf ${BUILD_DIRECTORY}/libffi-3.4.7
+tar xvf ${DOWNLOADDIR}/libffi-3.4.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libffi-3.4.7
         
         for config_i in $(find -name "config.sub")
         do
@@ -16,8 +16,8 @@ pushd ${BUILD_DIRECTORY}/libffi-3.4.6
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        ./configure --prefix=${CROSSTOOLS_DIR} --libdir=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --disable-static --with-gcc-arch=native
+        ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --disable-static --with-gcc-arch=native
         make -j${JOBS} all
 	make install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libffi-3.4.6
+rm -rf ${BUILD_DIRECTORY}/libffi-3.4.7

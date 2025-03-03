@@ -3,19 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=libvirt
-export PACKAGE_VERSION=10.10.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/libvirt/10.10.0/
-rm -rf ${BUILD_DIRECTORY}/libvirt-10.10.0
-tar xvf ${DOWNLOADDIR}/libvirt-10.10.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libvirt-10.10.0
-        patch -Np1 -i ${SYSDIR}/files/simulate/libvirt/10.10.0/patches/0002-libvirt-9.8.0-add-loongarch64-support-files.patch 
+export PACKAGE_VERSION=11.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/libvirt/11.0.0/
+rm -rf ${BUILD_DIRECTORY}/libvirt-11.0.0
+tar xvf ${DOWNLOADDIR}/libvirt-11.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libvirt-11.0.0
+        patch -Np1 -i ${SYSDIR}/files/simulate/libvirt/11.0.0/patches/0002-libvirt-9.8.0-add-loongarch64-support-files.patch 
 	 
         mkdir cross-build
         pushd cross-build
-                meson ${MESON_CONFIG} -Drunstatedir=/run -Dinit_script=systemd -Ddriver_qemu=enabled -Ddriver_lxc=enabled -Dfuse=enabled -Dstorage_iscsi_direct=enabled -Dlibiscsi=enabled -Dlibssh2=enabled -Dpolkit=enabled -Dsasl=enabled -Ddriver_libvirtd=enabled -Ddriver_remote=enabled -Ddriver_network=enabled -Dstorage_fs=enabled -Dstorage_disk=enabled -Dnls=enabled -Dudev=enabled -Dlibpcap=enabled -Dlibnl=enabled -Dnss=enabled -Dqemu_user=qemu -Dqemu_group=qemu -Dqemu_datadir=/usr/share/qemu \
+                meson ${MESON_CONFIG} -Drunstatedir=/run -Dinit_script=systemd -Ddriver_qemu=enabled -Ddriver_lxc=enabled -Dfuse=enabled -Dstorage_iscsi_direct=enabled -Dlibiscsi=enabled -Dlibssh2=enabled -Dpolkit=enabled -Dsasl=enabled -Ddriver_libvirtd=enabled -Ddriver_remote=enabled -Ddriver_network=enabled -Dstorage_fs=enabled -Dstorage_disk=enabled -Dnls=enabled -Dudev=enabled -Dlibpcap=enabled -Dlibnl=enabled -Dnss=enabled -Dqemu_user=qemu -Dqemu_group=qemu -Dqemu_datadir=/usr/share/qemu -Ddtrace=disabled \
                       ..
                 eval ${NINJA_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libvirt-10.10.0
+rm -rf ${BUILD_DIRECTORY}/libvirt-11.0.0

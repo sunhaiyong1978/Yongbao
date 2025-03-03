@@ -12,10 +12,10 @@ pushd ${BUILD_DIRECTORY}/boost_1_87_0
     sed -i "/using gcc/s@using gcc@& : ${ARCH_NAME} : ${CROSS_TARGET}-gcc@g" project-config.jam
     sed -i "s@mips @mips1 @g" libs/log/build/log-arch-config.jam
     sed -i '/#include.*phoenix.*tuple.hpp.*/d' boost/phoenix/stl.hpp
-    LD_LIBRARY_PATH="${CROSSTOOLS_DIR}/build-tools/lib64:${CROSSTOOLS_DIR}/lib64:/usr/lib64:/usr/lib" \
+    LD_LIBRARY_PATH="${HOST_TOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/lib64:/usr/lib64:/usr/lib" \
     ./b2 stage threading=multi link=shared address-model=64 toolset=gcc-${ARCH_NAME} linkflags="-lstdc++"
     rm -rf ${SYSROOT_DIR}/usr/lib/cmake/[Bb]oost*
-    LD_LIBRARY_PATH="${CROSSTOOLS_DIR}/build-tools/lib64:${CROSSTOOLS_DIR}/lib64:/usr/lib64:/usr/lib" \
+    LD_LIBRARY_PATH="${HOST_TOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/lib64:/usr/lib64:/usr/lib" \
     ./b2 install --prefix=${SYSROOT_DIR}/usr --libdir=${SYSROOT_DIR}/usr/lib64 \
              threading=multi link=shared address-model=64 toolset=gcc-${ARCH_NAME} linkflags="-lstdc++"
 popd 

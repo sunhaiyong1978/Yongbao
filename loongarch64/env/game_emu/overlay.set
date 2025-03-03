@@ -1,0 +1,3 @@
+overlay_dir=game_emu
+parent_dirs=sysroot
+temp_fix=1

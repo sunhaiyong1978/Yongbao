@@ -16,14 +16,14 @@ pushd ${BUILD_DIRECTORY}/elfutils-0.192
         done
         autoreconf -ifv
 
-	sed -i.orig "s@GENDIS_ENV) \./i386_gendis@GENDIS_ENV) qemu-${ARCH_NAME} \./i386_gendis@g" libcpu/Makefile.am
+	sed -i.orig "s@GENDIS_ENV) \./i386_gendis@GENDIS_ENV) qemu-${QEMU_ARCH} \./i386_gendis@g" libcpu/Makefile.am
 
 	./configure ${COMMON_CONFIG} --disable-debuginfod --enable-libdebuginfod=dummy --enable-maintainer-mode \
 				ac_cv_null_dereference=no
 	eval ${MAKE_AND_INSTALL}
 
 echo '#!/bin/bash -e
-qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/eu-readelf "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
+qemu-${QEMU_ARCH} ${SYSROOT_DIR}/usr/bin/eu-readelf "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-eu-readelf
 popd 
 rm -rf ${BUILD_DIRECTORY}/elfutils-0.192

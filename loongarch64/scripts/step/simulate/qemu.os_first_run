@@ -1,0 +1,2 @@
+chgrp kvm  /usr/libexec/qemu-bridge-helper
+chmod 4750 /usr/libexec/qemu-bridge-helper

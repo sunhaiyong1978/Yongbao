@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-binutils
-export PACKAGE_VERSION=2.43.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.43.1/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1
-tar xvf ${DOWNLOADDIR}/binutils-2.43.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.43.1
+export PACKAGE_VERSION=2.44
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.44/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.44
+tar xvf ${DOWNLOADDIR}/binutils-2.44.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.44
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -36,4 +36,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.43.1
         make DESTDIR=${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/binutils install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1
+rm -rf ${BUILD_DIRECTORY}/binutils-2.44

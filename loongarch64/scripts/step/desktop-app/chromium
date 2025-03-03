@@ -3,29 +3,30 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=chromium
-export PACKAGE_VERSION=131.0.6778.264
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/chromium/131.0.6778.264/
-rm -rf ${BUILD_DIRECTORY}/chromium-131.0.6778.264
-tar xvf ${DOWNLOADDIR}/chromium-131.0.6778.264.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/chromium-131.0.6778.264
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0001-Chromium-126-third_party-crashpad-add-loongarch64-su.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0002-Chromium-126-sandbox-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0003-Chromium-126-components-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0004-Chromium-126-third_party-boringssl-add-loongarch64-s.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0005-Chromium-126-base-system-sys_info-add-loongarch64-su.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0006-Chormium-128-get-pagesize-support-for-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0007-Chromium-126-build-config-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0008-Chromium-126-clang-config-add-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0009-Chromium-131-rust-config-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0010-Chromium-126-fix-atspi2-version.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0011-Chromium-127-build-ffmpeg-scripts-add-loongarch64-su.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/chromium-124-qt6.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0001-chromium-128-add-mlsx-and-mlasx-for-clang-build.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0002-chromium-128-use-lsx-and-lasx-for-libyuv.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0003-chromium-128-fix-libpng-lsx-define-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0001-chromium-130-skia-fix-for-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0001-chromium-128-third_party-libpng-fix-for-loongarch64-.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/131.0.6778.264/patches/0001-chromium-130-fix-pthread_stack-for-loongarch64.patch 
+export PACKAGE_VERSION=133.0.6943.53
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/chromium/133.0.6943.53/
+rm -rf ${BUILD_DIRECTORY}/chromium-133.0.6943.53
+tar xvf ${DOWNLOADDIR}/chromium-133.0.6943.53.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/chromium-133.0.6943.53
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0001-Chromium-126-third_party-crashpad-add-loongarch64-su.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0002-Chromium-126-sandbox-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0003-Chromium-126-components-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0004-Chromium-126-third_party-boringssl-add-loongarch64-s.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0005-Chromium-126-base-system-sys_info-add-loongarch64-su.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0006-Chormium-133-get-pagesize-support-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0007-Chromium-126-build-config-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0008-Chromium-126-clang-config-add-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0009-Chromium-131-rust-config-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0010-Chromium-126-fix-atspi2-version.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0011-Chromium-127-build-ffmpeg-scripts-add-loongarch64-su.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/chromium-124-qt6.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0001-chromium-128-add-mlsx-and-mlasx-for-clang-build.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0002-chromium-128-use-lsx-and-lasx-for-libyuv.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0003-chromium-128-fix-libpng-lsx-define-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0001-chromium-130-skia-fix-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0001-chromium-128-third_party-libpng-fix-for-loongarch64-.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0001-chromium-130-fix-pthread_stack-for-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/133.0.6943.53/patches/0001-Chromium-133-fix-build-error-for-pipewire-1.3.x.patch 
 	 
 	sed -i "s@llvm-10.0@llvm-16.0@g" third_party/swiftshader/src/Reactor/BUILD.gn
 	${CROSSTOOLS_DIR}/qt6/libexec/moc ui/qt/qt_shim.h > ui/qt/qt6_shim_moc.cc
@@ -152,15 +153,15 @@ ${CROSS_TARGET}-strip ${CHROMIUM_DIST_DIR}/lib64/chromium/*.so*
 ${CROSS_TARGET}-strip ${CHROMIUM_DIST_DIR}/lib64/chromium/{chrome_crashpad_handler,chromium-browser}
 
 pushd ${CHROMIUM_DIST_DIR}/../
-	tar -cJf chromium-131.0.6778.264-linux-${ARCH_NAME}.tar.xz chromium
+	tar -cJf chromium-133.0.6943.53-linux-${ARCH_NAME}.tar.xz chromium
 	mkdir -p ${SYSROOT_DIR}/opt/
-	tar xvf chromium-131.0.6778.264-linux-${ARCH_NAME}.tar.xz \
+	tar xvf chromium-133.0.6943.53-linux-${ARCH_NAME}.tar.xz \
 		-C ${SYSROOT_DIR}/opt/
 
 	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/
-	cp -av chromium-131.0.6778.264-linux-${ARCH_NAME}.tar.xz ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/
+	cp -av chromium-133.0.6943.53-linux-${ARCH_NAME}.tar.xz ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/
 	info_pool "生成了可发布的Chromium浏览器压缩包文件：\
-	$(ls ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/chromium-131.0.6778.264-linux-${ARCH_NAME}.tar.xz)"
+	$(ls ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/chromium-133.0.6943.53-linux-${ARCH_NAME}.tar.xz)"
 popd
 
 ln -sfv /opt/chromium/bin/chromium-browser ${SYSROOT_DIR}/usr/bin/
@@ -180,4 +181,4 @@ mkdir -p ${SYSROOT_DIR}/usr/share/applications/
 cp ${RESOURCEDIR}/chromium-browser.desktop ${SYSROOT_DIR}/usr/share/applications/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/chromium-131.0.6778.264
+rm -rf ${BUILD_DIRECTORY}/chromium-133.0.6943.53

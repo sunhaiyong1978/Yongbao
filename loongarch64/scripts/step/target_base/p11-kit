@@ -29,8 +29,8 @@ EOF
         popd
 	ln -sfv ${SYSROOT_DIR}/usr/libexec/p11-kit/trust-extract-compat \
         	${SYSROOT_DIR}/usr/bin/update-ca-certificates
-	ln -sfv ./pkcs11/p11-kit-trust.so ${SYSROOT_DIR}/usr/lib64/libnssckbi.so
+	ln -sfv ./pkcs11/p11-kit-trust.so ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libnssckbi.so
 
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+        rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/p11-kit-0.25.5

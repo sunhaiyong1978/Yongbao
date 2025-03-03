@@ -3,20 +3,20 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=binutils
-export PACKAGE_VERSION=2.43.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/binutils/2.43.1/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1
-tar xvf ${DOWNLOADDIR}/binutils-2.43.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.43.1
+export PACKAGE_VERSION=2.44
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/binutils/2.44/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.44
+tar xvf ${DOWNLOADDIR}/binutils-2.44.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.44
         
         rm -rf gdb* libdecnumber readline sim
         mkdir -pv build
         pushd build
 		export PATH=/usr/bin
-                ../configure --prefix=${CROSSTOOLS_DIR}/build-tools --enable-shared --disable-werror \
+                ../configure --prefix=${PREFIX} --enable-shared --disable-werror \
                              --with-system-zlib --enable-64-bit-bfd
                 make -j${JOBS}
                 make install
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.43.1
+rm -rf ${BUILD_DIRECTORY}/binutils-2.44

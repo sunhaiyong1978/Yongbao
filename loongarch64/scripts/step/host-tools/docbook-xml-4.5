@@ -5,107 +5,107 @@ export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=docbook-xml-4.5
 export PACKAGE_VERSION=zip
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/docbook-xml-4.5/zip/
-export PATH=${CROSSTOOLS_DIR}/host-tools/bin:${PATH}
-install -v -d -m755 ${CROSSTOOLS_DIR}/etc/xml
+export PATH=${HOST_TOOLS_DIR}/bin:${PATH}
+install -v -d -m755 ${PREFIX}/etc/xml
 rm -rf ${BUILD_DIRECTORY}/docbook-xml-4.5
 mkdir -pv ${BUILD_DIRECTORY}/docbook-xml-4.5
 pushd ${BUILD_DIRECTORY}/docbook-xml-4.5
     unzip ${DOWNLOADDIR}/docbook-xml-4.5.zip
-    install -v -d -m755 ${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5
+    install -v -d -m755 ${PREFIX}/share/xml/docbook/xml-dtd-4.5
     cp -v -af docbook.cat *.dtd ent/ *.mod \
-         ${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5
-    if [ ! -e ${CROSSTOOLS_DIR}/etc/xml/docbook ]; then
-        xmlcatalog --noout --create ${CROSSTOOLS_DIR}/etc/xml/docbook
+         ${PREFIX}/share/xml/docbook/xml-dtd-4.5
+    if [ ! -e ${PREFIX}/etc/xml/docbook ]; then
+        xmlcatalog --noout --create ${PREFIX}/etc/xml/docbook
     fi
     xmlcatalog --noout --add "public" \
         "-//OASIS//DTD DocBook XML V4.5//EN" \
         "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//DTD DocBook XML CALS Table Model V4.5//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/calstblx.dtd" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/calstblx.dtd" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//DTD XML Exchange Table Model 19990315//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/soextblx.dtd" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/soextblx.dtd" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//ELEMENTS DocBook XML Information Pool V4.5//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/dbpoolx.mod" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/dbpoolx.mod" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//ELEMENTS DocBook XML Document Hierarchy V4.5//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/dbhierx.mod" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/dbhierx.mod" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//ELEMENTS DocBook XML HTML Tables V4.5//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/htmltblx.mod" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/htmltblx.mod" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//ENTITIES DocBook XML Notations V4.5//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/dbnotnx.mod" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/dbnotnx.mod" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//ENTITIES DocBook XML Character Entities V4.5//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/dbcentx.mod" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/dbcentx.mod" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "public" \
         "-//OASIS//ENTITIES DocBook XML Additional General Entities V4.5//EN" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5/dbgenent.mod" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5/dbgenent.mod" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "rewriteSystem" \
         "http://www.oasis-open.org/docbook/xml/4.5" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5" \
+        ${PREFIX}/etc/xml/docbook
     xmlcatalog --noout --add "rewriteURI" \
         "http://www.oasis-open.org/docbook/xml/4.5" \
-        "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5" \
-        ${CROSSTOOLS_DIR}/etc/xml/docbook
+        "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5" \
+        ${PREFIX}/etc/xml/docbook
 
-    if [ ! -e ${CROSSTOOLS_DIR}/etc/xml/catalog ]; then
-        xmlcatalog --noout --create ${CROSSTOOLS_DIR}/etc/xml/catalog
+    if [ ! -e ${PREFIX}/etc/xml/catalog ]; then
+        xmlcatalog --noout --create ${PREFIX}/etc/xml/catalog
     fi
     xmlcatalog --noout --add "delegatePublic" \
         "-//OASIS//ENTITIES DocBook XML" \
-        "file:///${CROSSTOOLS_DIR}/etc/xml/docbook" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog &&
+        "file:///${PREFIX}/etc/xml/docbook" \
+        ${PREFIX}/etc/xml/catalog &&
     xmlcatalog --noout --add "delegatePublic" \
         "-//OASIS//DTD DocBook XML" \
-        "file:///${CROSSTOOLS_DIR}/etc/xml/docbook" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog &&
+        "file:///${PREFIX}/etc/xml/docbook" \
+        ${PREFIX}/etc/xml/catalog &&
     xmlcatalog --noout --add "delegateSystem" \
         "http://www.oasis-open.org/docbook/" \
-        "file:///${CROSSTOOLS_DIR}/etc/xml/docbook" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog &&
+        "file:///${PREFIX}/etc/xml/docbook" \
+        ${PREFIX}/etc/xml/catalog &&
     xmlcatalog --noout --add "delegateURI" \
         "http://www.oasis-open.org/docbook/" \
-        "file:///${CROSSTOOLS_DIR}/etc/xml/docbook" \
-        ${CROSSTOOLS_DIR}/etc/xml/catalog
+        "file:///${PREFIX}/etc/xml/docbook" \
+        ${PREFIX}/etc/xml/catalog
 
     for DTDVERSION in 4.1.2 4.2 4.3 4.4
     do
         xmlcatalog --noout --add "public" \
             "-//OASIS//DTD DocBook XML V$DTDVERSION//EN" \
             "http://www.oasis-open.org/docbook/xml/$DTDVERSION/docbookx.dtd" \
-            ${CROSSTOOLS_DIR}/etc/xml/docbook
+            ${PREFIX}/etc/xml/docbook
         xmlcatalog --noout --add "rewriteSystem" \
             "http://www.oasis-open.org/docbook/xml/$DTDVERSION" \
-            "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5" \
-            ${CROSSTOOLS_DIR}/etc/xml/docbook
+            "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5" \
+            ${PREFIX}/etc/xml/docbook
         xmlcatalog --noout --add "rewriteURI" \
             "http://www.oasis-open.org/docbook/xml/$DTDVERSION" \
-            "file:///${CROSSTOOLS_DIR}/share/xml/docbook/xml-dtd-4.5" \
-            ${CROSSTOOLS_DIR}/etc/xml/docbook
+            "file:///${PREFIX}/share/xml/docbook/xml-dtd-4.5" \
+            ${PREFIX}/etc/xml/docbook
         xmlcatalog --noout --add "delegateSystem" \
             "http://www.oasis-open.org/docbook/xml/$DTDVERSION/" \
-            "file:///${CROSSTOOLS_DIR}/etc/xml/docbook" \
-            ${CROSSTOOLS_DIR}/etc/xml/catalog
+            "file:///${PREFIX}/etc/xml/docbook" \
+            ${PREFIX}/etc/xml/catalog
         xmlcatalog --noout --add "delegateURI" \
             "http://www.oasis-open.org/docbook/xml/$DTDVERSION/" \
-            "file:///${CROSSTOOLS_DIR}/etc/xml/docbook" \
-            ${CROSSTOOLS_DIR}/etc/xml/catalog
+            "file:///${PREFIX}/etc/xml/docbook" \
+            ${PREFIX}/etc/xml/catalog
     done
 popd    
-ln -sf ../../xml/docbook/xml-dtd-4.5 ${CROSSTOOLS_DIR}/share/sgml/docbook/
+ln -sf ../../xml/docbook/xml-dtd-4.5 ${PREFIX}/share/sgml/docbook/
 
 rm -rf ${BUILD_DIRECTORY}/docbook-xml-4.5

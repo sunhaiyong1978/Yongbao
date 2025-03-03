@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/links-2.30
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	CC="${CROSS_TARGET}-gcc -Wno-implicit-int" ./configure ${COMMON_CONFIG} 
+	CC="${CROSS_TARGET}-gcc -Wno-implicit-int" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

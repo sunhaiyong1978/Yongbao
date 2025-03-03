@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/libgpg-error-1.51
     cp -a -f $(automake --print-libdir)/config.{sub,guess} build-aux/
     ./configure ${COMMON_CONFIG} --enable-install-gpg-error-config
     eval ${MAKE_AND_INSTALL}
-    rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+    rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
     cp -av ${SYSROOT_DIR}/bin/gpgrt-config  ${CROSSTOOLS_DIR}/bin/
     cp -av ${SYSROOT_DIR}/bin/gpg-error-config  ${CROSSTOOLS_DIR}/bin/
 popd 

@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/guile-3.0.10
                 autoreconf -ifv
         fi
         ./configure ${COMMON_CONFIG} --with-libgmp-prefix=${SYSROOT_DIR}/usr/lib${LIB_SUFF} --with-libunistring-prefix=${SYSROOT_DIR}/usr/lib${LIB_SUFF}
-	sed -i.orig "s@\$(CC_FOR_BUILD)@cc -fPIE -I${CROSSTOOLS_DIR}/include/guile/3.0/@g" libguile/Makefile
+	sed -i.orig "s@\$(CC_FOR_BUILD)@cc -fPIE -I${HOST_TOOLS_DIR}/include/guile/3.0/@g" libguile/Makefile
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

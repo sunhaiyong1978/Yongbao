@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/sip-4.19.25
 	 
     mkdir cross-build
     pushd cross-build
-        ${CROSSTOOLS_DIR}/bin/python3 \
+        ${HOST_TOOLS_DIR}/bin/python3 \
         ../configure.py --platform=linux-loongarch64-gnu-g++ \
                      --sysroot=${SYSROOT_DIR}/usr
 	make -j${JOBS}
