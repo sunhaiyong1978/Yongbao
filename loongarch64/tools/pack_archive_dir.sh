@@ -109,6 +109,8 @@ if [ -d ${ARCHIVE_DIR} ]; then
 			if [ ! -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs ] || [ "x${FORCE_CREATE}" == "xTRUE" ]; then
 				rm -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs
 				${MKSQUASHFS} ${ARCHIVE_DIR} ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs -all-root -comp xz
+				echo ""
+				echo "${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs 文件创建完成。"
 			else
 				echo "${NEW_TARGET_SYSDIR}/dist/os/squashfs/${ARCHIVE_OS_NAME}/${ARCHIVE_OS_VERSION}/${ARCHIVE_STEP_NAME}.${ARCHIVE_ARCH_NAME}.squashfs 文件已创建。"
 			fi
@@ -119,6 +121,8 @@ if [ -d ${ARCHIVE_DIR} ]; then
 			if [ ! -f ${NEW_TARGET_SYSDIR}/dist/os/tar/${ARCHIVE_ARCH_NAME}-${ARCHIVE_OS_NAME}-${ARCHIVE_OS_VERSION}-${ARCHIVE_STEP_NAME}.tar.xz ] || [ "x${FORCE_CREATE}" == "xTRUE" ]; then
 				rm -f ${NEW_TARGET_SYSDIR}/dist/os/tar/${ARCHIVE_ARCH_NAME}-${ARCHIVE_OS_NAME}-${ARCHIVE_OS_VERSION}-${ARCHIVE_STEP_NAME}.tar.xz
 				tar --checkpoint=200 --checkpoint-action=dot --xattrs-include='*' --owner=root --group=root -caf ${NEW_TARGET_SYSDIR}/dist/os/tar/${ARCHIVE_ARCH_NAME}-${ARCHIVE_OS_NAME}-${ARCHIVE_OS_VERSION}-${ARCHIVE_STEP_NAME}.tar.xz *
+				echo ""
+				echo "${NEW_TARGET_SYSDIR}/dist/os/tar/${ARCHIVE_ARCH_NAME}-${ARCHIVE_OS_NAME}-${ARCHIVE_OS_VERSION}-${ARCHIVE_STEP_NAME}.tar.xz 文件创建完成。"
 			else
 				echo "${NEW_TARGET_SYSDIR}/dist/os/tar/${ARCHIVE_ARCH_NAME}-${ARCHIVE_OS_NAME}-${ARCHIVE_OS_VERSION}-${ARCHIVE_STEP_NAME}.tar.xz 文件已创建。"
 			fi

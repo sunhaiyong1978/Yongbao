@@ -35,8 +35,10 @@ declare BUILD_PACKAGE_CHECK=0
 declare USE_PROXY_DOWNLOAD=""
 declare WORLD_PARM=""
 declare USE_PREV_INDEX_FILE=0
+declare SET_CROSSTOOLS_DIR=""
+declare CROSSTOOLS_DIR_EXT=""
 
-while getopts 'fao:rgsde:xi:S:O:tpwch' OPT; do
+while getopts 'fao:rgsde:xi:S:O:C:tpwch' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -74,6 +76,9 @@ while getopts 'fao:rgsde:xi:S:O:tpwch' OPT; do
 	    ;;
 	O)
 	    SET_PARENT_DIR=$OPTARG
+	    ;;
+	C)
+	    SET_CROSSTOOLS_DIR=$OPTARG
 	    ;;
 	t)
 	    BUILD_PACKAGE_CHECK=1
@@ -119,6 +124,7 @@ while getopts 'fao:rgsde:xi:S:O:tpwch' OPT; do
             echo "    -i: 设置指定的步骤文件（.step）或步骤索引文件(.index)。"
             echo "    -S <目录名>: 构建过程中默认安装到sysroot目录中的文件将安装到指定目录中。"
             echo "    -O <目录名>: 构建过程中设置用于OverlayFS的目录，当需要指定多个目录时使用“,”符号进行分隔，特殊名称ORIG代表编译的软件包所在组设置的目录，目录优先级从后往前。"
+            echo "    -C <目录名>: 构建过程中设置Cross-Tools的目录，该目录中与cross-tools目录的同名命令具有优先执行权。(未支持）"
             echo "    -t: 对构建过程中编译的软件判断当构建目标架构与当前架构相同时进行编译测试过程（需要软件包脚本目录中存在 check 后缀名的测试定义文件）。"
 	    echo "    -p: 在构建过程中对需要下载软件包时使用proxy.set文件中的设置。"
 	    echo "    -w: 强制使用主线环境中的构建，不指定该参数将使用 current_branch 中指定的分支环境中进行构建，若不存在 current_branch 文件则默认使用主线环境构建。"
@@ -868,6 +874,17 @@ function overlay_umount
 	if [ "x$?" != "x0" ]; then
 		echo "卸载sysroot错误！"
 		echo "sudo umount -R ${NEW_TARGET_SYSDIR}/sysroot"
+		exit -2
+	fi
+	sync
+}
+
+function overlay_umount_cross_tools
+{
+	sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools
+	if [ "x$?" != "x0" ]; then
+		echo "卸载cross-tools错误！"
+		echo "sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools"
 		exit -2
 	fi
 	sync
@@ -1706,6 +1723,26 @@ mkdir -p ${NEW_TARGET_SYSDIR}/sysroot
 mkdir -p ${NEW_TARGET_SYSDIR}/files
 mkdir -p ${NEW_TARGET_SYSDIR}/build
 
+mkdir -p ${NEW_BASE_DIR}/downloads/files/step
+
+mkdir -p ${NEW_TARGET_SYSDIR}/cross-tools
+
+while mount | grep "on ${NEW_TARGET_SYSDIR}/cross-tools type " > /dev/null
+do
+	echo "卸载已挂载的目录 ${NEW_TARGET_SYSDIR}/cross-tools ..."
+	overlay_umount_cross_tools
+done
+
+
+SET_CROSSTOOLS_DIR=$(echo ${SET_CROSSTOOLS_DIR} | sed "s@[^[:alnum:]\|^\.\|^_\|^-]@@g")
+if [ "x${SET_CROSSTOOLS_DIR}" != "x" ] && [ "x${SET_CROSSTOOLS_DIR}" != "xcross-tools" ]; then
+	echo "设置了临时 cross-tools 目录，将使用 ${SET_CROSSTOOLS_DIR} 目录作为 cross-tools目录"
+	mkdir -p ${NEW_TARGET_SYSDIR}/${SET_CROSSTOOLS_DIR}
+	sudo mount --bind ${NEW_TARGET_SYSDIR}/${SET_CROSSTOOLS_DIR} ${NEW_TARGET_SYSDIR}/cross-tools
+	CROSSTOOLS_DIR_EXT="_${SET_CROSSTOOLS_DIR}"
+else
+	CROSSTOOLS_DIR_EXT=""
+fi
 
 # if [ -f ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE} ]; then
 # 	if [ "x$(cat ${NEW_TARGET_SYSDIR}/status/${INDEX_MD5SUM_FILE})" != "x0" ]; then
@@ -1932,15 +1969,15 @@ do
 #	echo "SET_OVERLAY_DIR: ${SET_OVERLAY_DIR}"
 #	echo "AUTO_SET_OVERLAY_DIR: ${AUTO_SET_OVERLAY_DIR}"
 
-	STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${PACKAGE_INDEX}"
+	STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}${CROSSTOOLS_DIR_EXT}_${PACKAGE_INDEX}"
 	if [ "x${SET_OVERLAY_DIR}" != "x" ] && [ "x{AUTO_SET_OVERLAY_DIR}" == "x0" ]; then
-		STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}_${PACKAGE_INDEX}"
+		STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}${CROSSTOOLS_DIR_EXT}_${PACKAGE_INDEX}"
 	else
 #		if [ "x${SET_OVERLAY_DIR}" != "x" ]; then
 #			STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}_${PACKAGE_INDEX}"
 #		fi
 		if [ "x${SET_OVERLAY_DIR}" != "x" ] && [ "x${AUTO_SET_OVERLAY_DIR}" != "x1" ]; then
-			STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}_${PACKAGE_INDEX}"
+			STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}${CROSSTOOLS_DIR_EXT}_${PACKAGE_INDEX}"
 		fi
 	fi
 
@@ -2129,7 +2166,32 @@ do
 
 	create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}" "${PACKAGE_INDEX}"
 
-	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+	if [ "x${STEP_STAGE}" == "xhost-tools" ] || [ "x${STEP_STAGE}" == "xcross-tools" ]; then
+		if [ "x${PACKAGE_NAME}" != "xfinal_run" ] && [ "x${PACKAGE_SET_STATUS_FILE}" == "x1" ] && [ "x${SINGLE_PACKAGE}" == "x0" ]; then
+			if [ -d ${NEW_TARGET_SYSDIR}/${STEP_STAGE} ]; then
+				mkdir -p ${NEW_TARGET_SYSDIR}/${STEP_STAGE}/Yongbao/status/
+				PACKAGE_INFO=$(cat ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.info)
+				if [ "x${PACKAGE_INFO}" != "x" ]; then
+					PACKAGE_INFO_VERSION="$(echo ${PACKAGE_INFO} | awk -F'|' '{ print $2 }' | sed "s@-default\$@@g")"
+					PACKAGE_INFO_NAME="$(echo ${PACKAGE_INFO} | awk -F'|' '{ print $3 }')"
+					if [ "x${OPT_SET_VERSION_INDEX}" != "x" ]; then
+						PACKAGE_INFO_NAME="${PACKAGE_INFO_NAME}.${OPT_SET_VERSION_INDEX}"
+					fi
+					if [ "x${PACKAGE_INFO_NAME}" != "x" ] && [ "x${PACKAGE_INFO_NAME}" != "xNULL" ]; then
+						if [ "x${PACKAGE_GIT_COMMIT}" == "x" ]; then
+							echo "${PACKAGE_INFO_VERSION}" > ${NEW_TARGET_SYSDIR}/${STEP_STAGE}/Yongbao/status/${PACKAGE_INFO_NAME}
+						else
+							if [ -f ${NEW_TARGET_SYSDIR}/common_files/${PACKAGE_INFO_NAME}.version ]; then
+								cat ${NEW_TARGET_SYSDIR}/common_files/${PACKAGE_INFO_NAME}.version > ${NEW_TARGET_SYSDIR}/${STEP_STAGE}/Yongbao/status/${PACKAGE_INFO_NAME}
+							else
+								echo "git_$(echo ${PACKAGE_GIT_COMMIT} | awk -F'=' '{ print $2 }' | cut -c 1-12)" > ${NEW_TARGET_SYSDIR}/${STEP_STAGE}/Yongbao/status/${PACKAGE_INFO_NAME}
+							fi
+						fi
+					fi
+				fi
+			fi
+		fi
+	elif [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
 		SAVEFILE_OVERLAY_NAME=""
 		if [ "x${SET_OVERLAY_DIR}" == "x" ]; then
 			SAVEFILE_OVERLAY_NAME=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
@@ -2200,3 +2262,11 @@ else
 fi
 echo "编译制作过程完成。" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log
+
+while mount | grep "on ${NEW_TARGET_SYSDIR}/cross-tools type " > /dev/null
+do
+	echo "卸载已挂载的目录 ${NEW_TARGET_SYSDIR}/cross-tools ..."
+	overlay_umount_cross_tools
+done
+
+

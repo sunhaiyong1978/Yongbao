@@ -298,6 +298,7 @@ echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 				fn_overlay_temp_fix_run "${1}"
 			fi
 			overlay_umount
+			overlay_umount_cross_tools
 			sync
 		fi
 	fi
@@ -404,6 +405,17 @@ function overlay_umount
 	sync
 }
 
+function overlay_umount_cross_tools
+{
+	sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools
+	if [ "x$?" != "x0" ]; then
+		echo "卸载cross-tools错误！"
+		echo "sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools"
+		exit -2
+	fi
+	sync
+}
+
 function set_build_env
 {
         declare -a SET_ENV
@@ -452,6 +464,11 @@ do
 	overlay_umount
 done
 
+while mount | grep "on ${NEW_TARGET_SYSDIR}/cross-tools type " > /dev/null
+do
+	echo "卸载已挂载的目录 ${NEW_TARGET_SYSDIR}/cross-tools ..."
+	overlay_umount_cross_tools
+done
 
 declare -a USE_SET_ENV
 declare USE_SET_ENV_COUNT=0
