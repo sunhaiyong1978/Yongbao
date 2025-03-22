@@ -407,13 +407,16 @@ function overlay_umount
 
 function overlay_umount_cross_tools
 {
-	sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools
-	if [ "x$?" != "x0" ]; then
-		echo "卸载cross-tools错误！"
-		echo "sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools"
-		exit -2
-	fi
-	sync
+	while mount | grep "on ${NEW_TARGET_SYSDIR}/cross-tools type " > /dev/null
+	do
+		sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools
+		if [ "x$?" != "x0" ]; then
+			echo "卸载cross-tools错误！"
+			echo "sudo umount -R ${NEW_TARGET_SYSDIR}/cross-tools"
+			exit -2
+		fi
+		sync
+	done
 }
 
 function set_build_env
