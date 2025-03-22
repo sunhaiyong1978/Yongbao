@@ -85,6 +85,7 @@
 %step/host-tools/typogrify|
 %step/host-tools/unifdef|
 %step/host-tools/xorriso|
+%step/host-tools/NULL|
 %step/host-tools/sphinxcontrib-applehelp|
 %step/host-tools/sphinx|
 %step/host-tools/docutils|
@@ -107,6 +108,8 @@
 %step/host-tools/sphinxcontrib-jsmath|
 %step/host-tools/sphinx-rtd-theme|
 %step/host-tools/sphinxcontrib-jquery|
+%step/host-tools/roman_numerals_py|
+%step/host-tools/NULL|
 %step/host-tools/gi-docgen|
 %step/host-tools/make|
 %step/host-tools/asciidoc-py|
@@ -115,7 +118,7 @@
 %step/host-tools/itstool|
 %step/host-tools/gettext|
 %step/host-tools/platformdirs|
-%step/host-tools/glean-parser|
+%step/host-tools/glean_parser|
 %step/host-tools/six|
 %step/host-tools/pyparsing|
 %step/host-tools/rpcsvc-proto|
@@ -370,6 +373,7 @@
 %step/target_base/json-glib|
 %step/target_base/libgusb|
 %step/target_base/libgudev|
+%step/target_base/lua|
 %step/target_base/NULL|g_opt
 %step/target_base/llvm-project|g_opt;!llvm_git
 %step/target_base/llvm_runtimes|g_opt;!llvm_git
@@ -485,7 +489,6 @@
 %step/base_support/tizonia-openmax-il|g_opt
 %step/base_support/lm-sensors|g_opt
 %step/base_support/libconfig|g_opt
-%step/base_support/lua|g_opt
 %step/base_support/SPIRV-LLVM-Translator|g_opt;!llvm_git
 %step/base_support/SPIRV-LLVM-Translator_git|g_opt;llvm_git
 %step/base_support/pycparser|g_opt
@@ -723,7 +726,7 @@
 %step/base_support/c-ini|g_opt
 %step/base_support/c-shquote|g_opt
 %step/base_support/dbus-broker|g_opt
-%step/base_support/libdbusmenu|g_opt
+%step/base_support/libdbusmenu|g_opt;f_base_support_libdbusmenu_bad
 %step/base_support/pyzy|g_opt
 %step/base_support/dmidecode|g_opt
 %step/base_support/ripgrep|g_opt
@@ -837,6 +840,7 @@
 %step/base_support/sphinxcontrib-serializinghtml|g_opt
 %step/base_support/sphinx-rtd-theme|g_opt
 %step/base_support/sphinxcontrib-jquery|g_opt
+%step/base_support/roman_numerals_py|g_opt
 %step/base_support/requests|g_opt
 %step/base_support/trove-classifiers|g_opt
 %step/base_support/pathspec|g_opt
@@ -933,7 +937,7 @@
 %step/base_support/asio|g_opt
 %step/base_support/pytest-runner|g_opt
 %step/base_support/platformdirs|g_opt
-%step/base_support/glean-parser|g_opt
+%step/base_support/glean_parser|g_opt
 %step/base_support/libvncserver|g_opt
 %step/base_support/Imath|g_opt
 %step/base_support/libdeflate|g_opt
@@ -994,6 +998,7 @@
 %step/base_support/cargo-c|g_opt
 %step/base_support/libsodium|g_opt
 %step/base_support/vte|g_opt
+%step/base_support/SDL3|g_opt
 %step/base_support/SDL_ttf|g_opt
 %step/base_support/create_files|g_opt
 %step/base_support/final_run|g_opt
@@ -1463,6 +1468,8 @@
 %step/desktop-app/glibmm|g_opt+desk-app;design
 %step/desktop-app/pangomm|g_opt+desk-app;design
 %step/desktop-app/gtkmm|g_opt+desk-app;design
+%step/desktop-app/tinycss2|g_opt+desk-app;design
+%step/desktop-app/cssselect|g_opt+desk-app;design
 %step/desktop-app/inkscape|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/babl|g_opt+desk-app;design
@@ -1492,11 +1499,14 @@
 %step/desktop-app/libgit2|g_opt+desk-app;design
 %step/desktop-app/ngspice|g_opt+desk-app;design
 %step/desktop-app/wxPython|g_opt+desk-app;design
+%step/cross-tools/unixODBC|g_opt+desk-app;design
 %step/desktop-app/unixODBC|g_opt+desk-app;design
+%step/desktop-app/nng|g_opt+desk-app;design
 %step/desktop-app/kicad|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;game
 %step/desktop-app/qqwing|g_opt+desk-app;game
+%step/desktop-app/blueprint-compiler|g_opt+desk-app;game
 %step/desktop-app/gnome-sudoku|g_opt+desk-app;game
 %step/desktop-app/NULL|g_opt+desk-app;game
 %step/desktop-app/NULL|g_opt+desk-app
@@ -2134,6 +2144,6 @@
 %step/unusual/qt6-qtbase|g_unusual_nobuild
 %step/unusual/gtk4|g_unusual_nobuild
 %step/benchmark/glmark2|benchmark
-%step/benchmark/CPU-X|benchmark
+%step/benchmark/CPU-X|benchmark;f_benchmark_CPU-X_bad
 %step/benchmark/vkmark|benchmark;%PARENT=ORIG,desk_app
 %step/benchmark/dist_sysroot|benchmark
