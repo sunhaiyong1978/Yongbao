@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.83.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/glib/2.83.3/
-rm -rf ${BUILD_DIRECTORY}/glib-2.83.3
-tar xvf ${DOWNLOADDIR}/glib-2.83.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.83.3
+export PACKAGE_VERSION=2.84.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/glib/2.84.0/
+rm -rf ${BUILD_DIRECTORY}/glib-2.84.0
+tar xvf ${DOWNLOADDIR}/glib-2.84.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.84.0
     
     mkdir -p native-build
     pushd native-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/glib-2.83.3
         ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.83.3
+rm -rf ${BUILD_DIRECTORY}/glib-2.84.0

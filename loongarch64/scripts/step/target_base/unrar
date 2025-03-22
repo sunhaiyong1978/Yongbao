@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=unrar
-export PACKAGE_VERSION=7.1.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/unrar/7.1.3/
+export PACKAGE_VERSION=7.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/unrar/7.1.5/
 rm -rf ${BUILD_DIRECTORY}/unrar
-tar xvf ${DOWNLOADDIR}/unrarsrc-7.1.3.tar.gz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/unrarsrc-7.1.5.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/unrar
 	sed -i "s@-march=native -O2@${CXXFLAGS}@g" makefile
 	make -j${JOBS} CXX="${CROSS_TARGET}-g++" STRIP=${CROSS_TARGET}-strip -f makefile

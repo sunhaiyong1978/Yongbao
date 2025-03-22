@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gnupg
-export PACKAGE_VERSION=2.5.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gnupg/2.5.3/
-rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.3
-tar xvf ${DOWNLOADDIR}/gnupg-2.5.3.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gnupg-2.5.3
+export PACKAGE_VERSION=2.5.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gnupg/2.5.5/
+rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.5
+tar xvf ${DOWNLOADDIR}/gnupg-2.5.5.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gnupg-2.5.5
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/gnupg-2.5.3
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.3
+rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.5

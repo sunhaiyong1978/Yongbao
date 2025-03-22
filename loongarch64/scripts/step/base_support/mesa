@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mesa
-export PACKAGE_VERSION=24.3.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/24.3.4/
-rm -rf ${BUILD_DIRECTORY}/mesa-24.3.4
-tar xvf ${DOWNLOADDIR}/mesa-24.3.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mesa-24.3.4
+export PACKAGE_VERSION=25.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mesa/25.0.1/
+rm -rf ${BUILD_DIRECTORY}/mesa-25.0.1
+tar xvf ${DOWNLOADDIR}/mesa-25.0.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa-25.0.1
     
     tar xf ${RESOURCEDIR}/files/mesa-DirectX-Headers_git.tar.gz -C subprojects/
     mv subprojects/{mesa-DirectX-Headers_git,DirectX-Headers-1.0}
@@ -21,9 +21,9 @@ pushd ${BUILD_DIRECTORY}/mesa-24.3.4
     mkdir cross-build
     pushd cross-build
         meson ${MESON_CONFIG} \
-              -Dgallium-drivers="radeonsi,r300,r600,nouveau,freedreno,swrast,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,lima,zink,d3d12,llvmpipe" \
+              -Dgallium-drivers="radeonsi,r300,r600,nouveau,freedreno,softpipe,v3d,vc4,etnaviv,tegra,svga,virgl,panfrost,lima,zink,d3d12,llvmpipe" \
               -Dplatforms=x11,wayland \
-              -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=true -Dosmesa=true -Dllvm-orcjit=true \
+              -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=enabled -Dosmesa=true -Dllvm-orcjit=true \
               -Dshared-glapi=enabled -Dgles2=enabled -Dgallium-vdpau=enabled -Dgallium-opencl=icd \
               -Dlibunwind=disabled -Dvulkan-drivers="amd,swrast,virtio" \
               -Dvideo-codecs="vc1dec,h264dec,h264enc,h265dec,h265enc,av1dec,av1enc,vp9dec" \
@@ -32,4 +32,4 @@ pushd ${BUILD_DIRECTORY}/mesa-24.3.4
         eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mesa-24.3.4
+rm -rf ${BUILD_DIRECTORY}/mesa-25.0.1

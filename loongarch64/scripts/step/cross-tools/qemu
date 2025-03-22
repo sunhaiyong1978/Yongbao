@@ -4,15 +4,14 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qemu
-export PACKAGE_VERSION=9.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu/9.2.0/
-rm -rf ${BUILD_DIRECTORY}/qemu-9.2.0
-tar xvf ${DOWNLOADDIR}/qemu-9.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-9.2.0
+export PACKAGE_VERSION=9.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qemu/9.2.2/
+rm -rf ${BUILD_DIRECTORY}/qemu-9.2.2
+tar xvf ${DOWNLOADDIR}/qemu-9.2.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-9.2.2
     sed -i "/HAVE_OPENAT2_H/d" meson.build
     mkdir -p build
     pushd build
-        CFLAGS="-Wno-error=unused-function" \
 	../configure --prefix=${PREFIX} \
 		     --target-list=${YONGBAO_TARGET_ARCH}-linux-user \
 		     --disable-docs
@@ -44,4 +43,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH} \"\$@\"" \
 > ${PREFIX}/bin/qemu-targetarch
 chmod +x ${PREFIX}/bin/qemu-targetarch
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-9.2.0
+rm -rf ${BUILD_DIRECTORY}/qemu-9.2.2

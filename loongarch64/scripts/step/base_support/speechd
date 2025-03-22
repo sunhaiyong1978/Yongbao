@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=speechd
-export PACKAGE_VERSION=0.11.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/speechd/0.11.5/
-rm -rf ${BUILD_DIRECTORY}/speechd-0.11.5
-tar xvf ${DOWNLOADDIR}/speechd-0.11.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/speechd-0.11.5
+export PACKAGE_VERSION=0.12.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/speechd/0.12.0/
+rm -rf ${BUILD_DIRECTORY}/speechd-0.12.0
+tar xvf ${DOWNLOADDIR}/speechd-0.12.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/speechd-0.12.0
         
         for config_i in $(find -name "config.sub")
         do
@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/speechd-0.11.5
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        ./configure ${COMMON_CONFIG} --with-systemdsystemunitdir=/usr/lib/systemd/system $(if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then echo PYTHON=python3; else echo --disable-python; fi) ac_cv_prog_HELP2MAN= --enable-malloc0returnsnull
+        ./configure ${COMMON_CONFIG} --with-systemdsystemunitdir=/usr/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd/user $(if [ -f ${SYSROOT_DIR}/usr/bin/python3 ]; then echo PYTHON=python3; else echo --disable-python; fi) ac_cv_prog_HELP2MAN= --enable-malloc0returnsnull
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 
@@ -24,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/speechd-0.11.5
 
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/speechd-0.11.5
+rm -rf ${BUILD_DIRECTORY}/speechd-0.12.0

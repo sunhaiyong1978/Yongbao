@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=cfitsio
-export PACKAGE_VERSION=4.5.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/cfitsio/4.5.0/
-rm -rf ${BUILD_DIRECTORY}/cfitsio-4.5.0
-tar xvf ${DOWNLOADDIR}/cfitsio-4.5.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cfitsio-4.5.0
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/cfitsio/4.5.0/patches/0001-fix-pkgconfig-file-install_dir.patch 
+export PACKAGE_VERSION=4.6.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/cfitsio/4.6.0/
+rm -rf ${BUILD_DIRECTORY}/cfitsio-4.6.0
+tar xvf ${DOWNLOADDIR}/cfitsio-4.6.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cfitsio-4.6.0
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/cfitsio/4.6.0/patches/0001-cfitsio-4.6.0-fix-lib-to-lib64.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/cfitsio-4.5.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/cfitsio-4.5.0
+rm -rf ${BUILD_DIRECTORY}/cfitsio-4.6.0

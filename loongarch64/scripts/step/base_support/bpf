@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=bpf
-export PACKAGE_VERSION=6.13.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/bpf/6.13.1/
-rm -rf ${BUILD_DIRECTORY}/linux-6.13.1
-tar xvf ${DOWNLOADDIR}/linux-6.13.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.13.1
+export PACKAGE_VERSION=6.13.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/bpf/6.13.7/
+rm -rf ${BUILD_DIRECTORY}/linux-6.13.7
+tar xvf ${DOWNLOADDIR}/linux-6.13.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.13.7
 	
 	pushd tools/bpf
 		sed -i "/\$(HOSTCC)/s@(LDFLAGS)@(HOST_LDFLAGS)@g" bpftool/Makefile
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/linux-6.13.1
 		cp -a bpftool/bpftool ${SYSROOT_DIR}/usr/bin/
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.13.1
+rm -rf ${BUILD_DIRECTORY}/linux-6.13.7

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=x264
-export PACKAGE_VERSION=20240812
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/x264/20240812/
-rm -rf ${BUILD_DIRECTORY}/x264-20240812
-tar xvf ${DOWNLOADDIR}/x264-20240812.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/x264-20240812
+export PACKAGE_VERSION=20250212
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/x264/20250212/
+rm -rf ${BUILD_DIRECTORY}/x264-20250212
+tar xvf ${DOWNLOADDIR}/x264-20250212.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/x264-20250212
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/x264-20240812
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/x264-20240812
+rm -rf ${BUILD_DIRECTORY}/x264-20250212

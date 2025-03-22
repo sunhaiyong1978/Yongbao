@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=gsettings-desktop-schemas
-export PACKAGE_VERSION=47.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/gsettings-desktop-schemas/47.1/
-rm -rf ${BUILD_DIRECTORY}/gsettings-desktop-schemas-47.1
-tar xvf ${DOWNLOADDIR}/gsettings-desktop-schemas-47.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gsettings-desktop-schemas-47.1
+export PACKAGE_VERSION=48.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/gsettings-desktop-schemas/48.0/
+rm -rf ${BUILD_DIRECTORY}/gsettings-desktop-schemas-48.0
+tar xvf ${DOWNLOADDIR}/gsettings-desktop-schemas-48.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gsettings-desktop-schemas-48.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/gsettings-desktop-schemas-47.1
 	popd
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gsettings-desktop-schemas-47.1
+rm -rf ${BUILD_DIRECTORY}/gsettings-desktop-schemas-48.0

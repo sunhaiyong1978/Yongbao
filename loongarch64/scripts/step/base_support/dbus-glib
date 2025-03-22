@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dbus-glib
-export PACKAGE_VERSION=0.112
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus-glib/0.112/
-rm -rf ${BUILD_DIRECTORY}/dbus-glib-0.112
-tar xvf ${DOWNLOADDIR}/dbus-glib-0.112.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dbus-glib-0.112
+export PACKAGE_VERSION=0.114
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dbus-glib/0.114/
+rm -rf ${BUILD_DIRECTORY}/dbus-glib-0.114
+tar xvf ${DOWNLOADDIR}/dbus-glib-0.114.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dbus-glib-0.114
         for config_i in $(find -name "config.sub")
         do
                 cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/dbus-glib-0.112
 	make -j${JOBS} DBUS_BINDING_TOOL=/bin/dbus-binding-tool
 	make DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/dbus-glib-0.112
+rm -rf ${BUILD_DIRECTORY}/dbus-glib-0.114

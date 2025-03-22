@@ -4,11 +4,11 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-cairo
-export PACKAGE_VERSION=1.18.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-cairo/1.18.2/
-rm -rf ${BUILD_DIRECTORY}/cairo-1.18.2
-tar xvf ${DOWNLOADDIR}/cairo-1.18.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cairo-1.18.2
+export PACKAGE_VERSION=1.18.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-cairo/1.18.4/
+rm -rf ${BUILD_DIRECTORY}/cairo-1.18.4
+tar xvf ${DOWNLOADDIR}/cairo-1.18.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cairo-1.18.4
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/cairo-1.18.2
         make DESTDIR=${MINGW_SYSROOT_DIR} install
         rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/cairo-1.18.2
+rm -rf ${BUILD_DIRECTORY}/cairo-1.18.4

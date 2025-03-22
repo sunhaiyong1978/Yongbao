@@ -44,7 +44,7 @@ pushd ${BUILD_DIRECTORY}/chromium-133.0.6943.53
 	fi
 
 	mkdir -p third_party/node/linux/node-linux-x64/bin/
-	cp -a ${CROSSTOOLS_DIR}/bin/node third_party/node/linux/node-linux-x64/bin/
+	cp -a ${HOST_TOOLS_DIR}/bin/node third_party/node/linux/node-linux-x64/bin/
 
 	HOST_LLVM_VERSION="$(${CROSSTOOLS_DIR}/host-llvm-project/bin/llvm-config --version)"
 	CLANG_MAIN_VERSION="$(echo ${HOST_LLVM_VERSION} | cut -d. -f1)"

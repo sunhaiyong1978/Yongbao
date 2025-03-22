@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=icu4c
-export PACKAGE_VERSION=75_1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/75_1/
+export PACKAGE_VERSION=77_1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/77_1/
 rm -rf ${BUILD_DIRECTORY}/icu
-tar xvf ${DOWNLOADDIR}/icu4c-75_1-src.tgz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/icu4c-77_1-src.tgz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/icu
     for config_i in $(find -name "config.sub")
     do
@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/icu
 
     touch LICENSE
     pushd source
-    CC=gcc CXX=g++ ./configure --prefix=${PREFIX}
+    CC=gcc CXX=g++ ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib64
     eval ${MAKE_AND_INSTALL}
     popd
 popd 

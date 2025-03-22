@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=rpds-py
-export PACKAGE_VERSION=0.22.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/rpds-py/0.22.3/
-rm -rf ${BUILD_DIRECTORY}/rpds_py-0.22.3
-tar xvf ${DOWNLOADDIR}/rpds_py-0.22.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rpds_py-0.22.3
+export PACKAGE_VERSION=0.23.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/rpds-py/0.23.1/
+rm -rf ${BUILD_DIRECTORY}/rpds_py-0.23.1
+tar xvf ${DOWNLOADDIR}/rpds_py-0.23.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rpds_py-0.23.1
         
 	mkdir -p .cargo
 	cp -a ${COMMON_DIR}/cargo-cross.conf .cargo/config
         PYO3_CROSS_PYTHON_VERSION=$(get_package_version Python3) _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user rpds-py --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/rpds_py-0.22.3
+rm -rf ${BUILD_DIRECTORY}/rpds_py-0.23.1

@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=vala
-export PACKAGE_VERSION=0.56.17
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/vala/0.56.17/
-rm -rf ${BUILD_DIRECTORY}/vala-0.56.17
-tar xvf ${DOWNLOADDIR}/vala-0.56.17.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vala-0.56.17
+export PACKAGE_VERSION=0.56.18
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/vala/0.56.18/
+rm -rf ${BUILD_DIRECTORY}/vala-0.56.18
+tar xvf ${DOWNLOADDIR}/vala-0.56.18.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vala-0.56.18
     ./configure --prefix=${PREFIX} --disable-valadoc
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/vala-0.56.17
+rm -rf ${BUILD_DIRECTORY}/vala-0.56.18

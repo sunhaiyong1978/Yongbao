@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=faac
-export PACKAGE_VERSION=1_30
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/faac/1_30/
-rm -rf ${BUILD_DIRECTORY}/faac-1_30
-tar xvf ${DOWNLOADDIR}/faac-1_30.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/faac-1_30
+export PACKAGE_VERSION=1.31.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/faac/1.31.1/
+rm -rf ${BUILD_DIRECTORY}/faac-faac-1.31.1
+tar xvf ${DOWNLOADDIR}/faac-1.31.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/faac-faac-1.31.1
     ./bootstrap
     ./configure $COMMON_CONFIG
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/faac-1_30
+rm -rf ${BUILD_DIRECTORY}/faac-faac-1.31.1

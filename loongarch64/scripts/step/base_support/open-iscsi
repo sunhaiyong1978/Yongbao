@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=open-iscsi
-export PACKAGE_VERSION=2.1.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/open-iscsi/2.1.10/
-rm -rf ${BUILD_DIRECTORY}/open-iscsi-2.1.10
-tar xvf ${DOWNLOADDIR}/open-iscsi-2.1.10.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/open-iscsi-2.1.10
+export PACKAGE_VERSION=2.1.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/open-iscsi/2.1.11/
+rm -rf ${BUILD_DIRECTORY}/open-iscsi-2.1.11
+tar xvf ${DOWNLOADDIR}/open-iscsi-2.1.11.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/open-iscsi-2.1.11
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/open-iscsi-2.1.10
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/open-iscsi-2.1.10
+rm -rf ${BUILD_DIRECTORY}/open-iscsi-2.1.11

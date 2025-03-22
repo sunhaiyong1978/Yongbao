@@ -88,3 +88,4 @@ if [ -f ${SYSROOT_DIR}/usr/sbin/ldconfig ]; then
 fi
 
 rm -f ${TEMP_DIRECTORY}/strip-foo
+set_step_to_dist

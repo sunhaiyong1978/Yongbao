@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gnutls
-export PACKAGE_VERSION=3.8.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gnutls/3.8.8/
-rm -rf ${BUILD_DIRECTORY}/gnutls-3.8.8
-tar xvf ${DOWNLOADDIR}/gnutls-3.8.8.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gnutls-3.8.8
+export PACKAGE_VERSION=3.8.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gnutls/3.8.9/
+rm -rf ${BUILD_DIRECTORY}/gnutls-3.8.9
+tar xvf ${DOWNLOADDIR}/gnutls-3.8.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gnutls-3.8.9
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/gnutls-3.8.8
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gnutls-3.8.8
+rm -rf ${BUILD_DIRECTORY}/gnutls-3.8.9

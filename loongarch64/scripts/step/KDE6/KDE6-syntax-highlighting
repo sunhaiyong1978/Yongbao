@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-syntax-highlighting
-export PACKAGE_VERSION=6.10.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-syntax-highlighting/6.10.0/
-rm -rf ${BUILD_DIRECTORY}/syntax-highlighting-6.10.0
-tar xvf ${DOWNLOADDIR}/syntax-highlighting-6.10.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/syntax-highlighting-6.10.0
-        patch -Np1 -i ${SYSDIR}/files/KDE6/KDE6-syntax-highlighting/6.10.0/patches/0001-syntax-highlighting-src-indexer-add-CMAKE_CXX_COMPILER-for-Yongbao-cross-build.patch 
+export PACKAGE_VERSION=6.12.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-syntax-highlighting/6.12.0/
+rm -rf ${BUILD_DIRECTORY}/syntax-highlighting-6.12.0
+tar xvf ${DOWNLOADDIR}/syntax-highlighting-6.12.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/syntax-highlighting-6.12.0
+        patch -Np1 -i ${SYSDIR}/files/KDE6/KDE6-syntax-highlighting/6.12.0/patches/0001-syntax-highlighting-src-indexer-add-CMAKE_CXX_COMPILER-for-Yongbao-cross-build.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -43,4 +43,4 @@ pushd ${BUILD_DIRECTORY}/syntax-highlighting-6.10.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/syntax-highlighting-6.10.0
+rm -rf ${BUILD_DIRECTORY}/syntax-highlighting-6.12.0

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=babl
-export PACKAGE_VERSION=0.1.110
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/babl/0.1.110/
-rm -rf ${BUILD_DIRECTORY}/babl-0.1.110
-tar xvf ${DOWNLOADDIR}/babl-0.1.110.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/babl-0.1.110
+export PACKAGE_VERSION=0.1.112
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/babl/0.1.112/
+rm -rf ${BUILD_DIRECTORY}/babl-0.1.112
+tar xvf ${DOWNLOADDIR}/babl-0.1.112.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/babl-0.1.112
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/babl-0.1.110
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/babl-0.1.110
+rm -rf ${BUILD_DIRECTORY}/babl-0.1.112

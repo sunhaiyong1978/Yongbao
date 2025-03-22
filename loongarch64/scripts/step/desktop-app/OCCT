@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=OCCT
-export PACKAGE_VERSION=V7_8_1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OCCT/V7_8_1/
-rm -rf ${BUILD_DIRECTORY}/OCCT-7_8_1
-tar xvf ${DOWNLOADDIR}/OCCT-V7_8_1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OCCT-7_8_1
+export PACKAGE_VERSION=V7_9_0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OCCT/V7_9_0/
+rm -rf ${BUILD_DIRECTORY}/OCCT-7_9_0
+tar xvf ${DOWNLOADDIR}/OCCT-V7_9_0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OCCT-7_9_0
         
         mkdir cross-build
         pushd cross-build
@@ -40,7 +40,7 @@ pushd ${BUILD_DIRECTORY}/OCCT-7_8_1
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OCCT-7_8_1
+rm -rf ${BUILD_DIRECTORY}/OCCT-7_9_0
 
 mkdir -pv ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/include
 ln -sfv ../../include/opencascade ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/include/opencascade

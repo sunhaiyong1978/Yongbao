@@ -25,7 +25,7 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 	cp -af ${RESOURCEDIR}/linux-config-6.x_${CONFIG_STR} ./.config
 	sed -i "/^CONFIG_LOCALVERSION/s@=\"\(.*\)\"@=\"_${CONFIG_STR}\"@g" .config
 	make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- olddefconfig
-	PKG_CONFIG_SYSROOT_DIR="" HOSTLDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64" \
+	PKG_CONFIG_SYSROOT_DIR="" HOSTLDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib64" \
 		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}-
 	PKG_CONFIG_SYSROOT_DIR="" \
 		make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- INSTALL_MOD_PATH=dest modules_install

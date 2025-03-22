@@ -3,21 +3,21 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=webkitgtk
-export PACKAGE_VERSION=2.47.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.47.3/
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.47.3
-tar xvf ${DOWNLOADDIR}/webkitgtk-2.47.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/webkitgtk-2.47.3
+export PACKAGE_VERSION=2.48.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.48.0/
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.48.0
+tar xvf ${DOWNLOADDIR}/webkitgtk-2.48.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webkitgtk-2.48.0
     
-#
-
     mkdir cross-build-6.0
     pushd cross-build-6.0
-        WK_USE_CCACHE=NO CC="${CROSS_TARGET}-gcc -fpermissive -mlasx -flax-vector-conversions" CXX="${CROSS_TARGET}-g++ -fpermissive -mlasx -flax-vector-conversions" \
-        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+        WK_USE_CCACHE=NO \
+        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
               -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
-              -DCMAKE_SYSROOT=${SYSROOT_DIR} \
-              -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
+	      -DCMAKE_C_COMPILER="${CROSS_TARGET}-gcc" \
+	      -DCMAKE_CXX_COMPILER="${CROSS_TARGET}-g++" \
+	      -DCMAKE_C_FLAGS="-mlasx -flax-vector-conversions" \
+	      -DCMAKE_CXX_FLAGS="-mlasx -flax-vector-conversions" \
               -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
               -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
               -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
@@ -40,6 +40,7 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.47.3
         sed -i "s@ /usr\(.*\)\(g-ir-compiler\|g-ir-scanner\)@ ${CROSSTOOLS_DIR}\1${CROSS_TARGET}-\2@g" build.ninja
         sed -i "s@${SYSROOT_DIR}/usr/bin/wayland-scanner@${CROSSTOOLS_DIR}/bin/wayland-scanner@g" build.ninja
 	sed -i "s@${SYSROOT_DIR}/usr/bin/gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+	sed -i "s@${HOST_TOOLS_DIR}/bin/gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
         sed -i "s@${SYSROOT_DIR}/usr/bin/glib-compile-resources@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources@g" build.ninja
         sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja                                                         
         sed -i -e "s@\(${CROSSTOOLS_DIR}/\)\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja                                                         
@@ -47,4 +48,4 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.47.3
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.47.3
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.48.0

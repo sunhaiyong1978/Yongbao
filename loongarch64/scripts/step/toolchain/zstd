@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=zstd
-export PACKAGE_VERSION=1.5.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zstd/1.5.6/
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6
-tar xvf ${DOWNLOADDIR}/zstd-1.5.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/zstd-1.5.6
+export PACKAGE_VERSION=1.5.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/zstd/1.5.7/
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.7
+tar xvf ${DOWNLOADDIR}/zstd-1.5.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zstd-1.5.7
     if [ "x$(get_user_set_env target)" == "x" ]; then
 	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
 	ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env host ${CROSS_TARGET})" "MABI" "")
@@ -45,4 +45,4 @@ pushd ${BUILD_DIRECTORY}/zstd-1.5.6
 			;;
 	esac
 popd 
-rm -rf ${BUILD_DIRECTORY}/zstd-1.5.6
+rm -rf ${BUILD_DIRECTORY}/zstd-1.5.7

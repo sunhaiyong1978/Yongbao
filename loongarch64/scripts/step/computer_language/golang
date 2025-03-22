@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=golang
-export PACKAGE_VERSION=1.23.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/golang/1.23.6/
+export PACKAGE_VERSION=1.24.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/golang/1.24.1/
 rm -rf ${BUILD_DIRECTORY}/go
-tar xvf ${DOWNLOADDIR}/go1.23.6.src.tar.gz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/go1.24.1.src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/go
     
     case "${ARCH_NAME}" in 
@@ -36,12 +36,12 @@ pushd ${BUILD_DIRECTORY}/go
     tar -czf ${TEMP_DIRECTORY}/golang-dist.tar.gz ${TAR_EXCLUDE} --exclude=.git* ./
     unset TAR_EXCLUDE
 
-    mkdir -p golang-$(echo "1.23.6" | sed "s@-default@@g")-${ARCH_NAME}
-    tar xf ${TEMP_DIRECTORY}/golang-dist.tar.gz -C golang-$(echo "1.23.6" | sed "s@-default@@g")-${ARCH_NAME}
-    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.23.6" | sed "s@-default@@g")/
-    tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.23.6" | sed "s@-default@@g")/golang-$(echo "1.23.6" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz golang-$(echo "1.23.6" | sed "s@-default@@g")-${ARCH_NAME}
+    mkdir -p golang-$(echo "1.24.1" | sed "s@-default@@g")-${ARCH_NAME}
+    tar xf ${TEMP_DIRECTORY}/golang-dist.tar.gz -C golang-$(echo "1.24.1" | sed "s@-default@@g")-${ARCH_NAME}
+    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.24.1" | sed "s@-default@@g")/
+    tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.24.1" | sed "s@-default@@g")/golang-$(echo "1.24.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz golang-$(echo "1.24.1" | sed "s@-default@@g")-${ARCH_NAME}
     rm ${TEMP_DIRECTORY}/golang-dist.tar.gz
 
-    info_pool "生成了可发布的 golang 压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.23.6" | sed "s@-default@@g")/golang-$(echo "1.23.6" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
+    info_pool "生成了可发布的 golang 压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/golang/$(echo "1.24.1" | sed "s@-default@@g")/golang-$(echo "1.24.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
 popd 
 rm -rf ${BUILD_DIRECTORY}/go

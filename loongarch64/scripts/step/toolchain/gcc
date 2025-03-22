@@ -21,6 +21,11 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
     else
 	COMPAT_TARGET="${CROSS_TARGET}"
     fi
+    if [ "x${ARCH_ABI}" == "x32" ]; then
+	WITH_ABI=""
+    else
+	WITH_ABI="--with-abi=${ARCH_ABI}"
+    fi
 
     
 
@@ -41,7 +46,7 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
                      --enable-default-pie \
 		     --enable-default-ssp \
 		     --disable-multilib --disable-libssp \
-                     --with-abi=${ARCH_ABI} \
+                     ${WITH_ABI} \
                      --enable-languages=c,c++
 	case "${CROSS_TARGET}" in
 		*-mingw*)

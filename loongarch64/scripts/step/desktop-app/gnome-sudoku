@@ -3,22 +3,23 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=gnome-sudoku
-export PACKAGE_VERSION=47.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gnome-sudoku/47.1.1/
-rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-47.1.1
-tar xvf ${DOWNLOADDIR}/gnome-sudoku-47.1.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gnome-sudoku-47.1.1
-	
-	mkdir cross-build
-	pushd cross-build
-		meson ${MESON_CONFIG}  \
+export PACKAGE_VERSION=48.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gnome-sudoku/48.0/
+rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-48.0
+tar xvf ${DOWNLOADDIR}/gnome-sudoku-48.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gnome-sudoku-48.0
+        
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} \
                       ..
-		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
-		sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
-		sed -i -e "s@\(${SYSDIR}/\)cross-tools/bin/vapigen@\1cross-tools/bin/${CROSS_TARGET}-vapigen@g" build.ninja
-		sed -i -e "s@command = valac@command = ${CROSS_TARGET}-valac@g" build.ninja
-		eval ${NINJA_AND_INSTALL}
-	popd
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+                sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+                sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\)@${CROSSTOOLS_DIR}/\2${CROSS_TARGET}-\3@g" build.ninja
+                sed -i -e "s@\(${SYSDIR}/\)cross-tools/bin/vapigen@\1cross-tools/bin/${CROSS_TARGET}-vapigen@g" build.ninja
+                sed -i -e "s@command = valac@command = ${CROSS_TARGET}-valac@g" build.ninja
+		sed -i "s@blueprint-compiler batch-compile @& --typelib-path ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/girepository-1.0/ @g" build.ninja
+                eval ${NINJA_AND_INSTALL}
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-47.1.1
+rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-48.0

@@ -1,2 +1,6 @@
 host=mingw64ucrt
+host=mingw64
+host=mingw32
 target=mingw64ucrt
+target=mingw64
+target=mingw32

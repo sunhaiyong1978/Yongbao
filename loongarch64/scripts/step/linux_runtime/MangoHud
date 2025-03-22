@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=MangoHud
-export PACKAGE_VERSION=0.7.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/MangoHud/0.7.2/
-rm -rf ${BUILD_DIRECTORY}/MangoHud-0.7.2
-tar xvf ${DOWNLOADDIR}/MangoHud-0.7.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/MangoHud-0.7.2
+export PACKAGE_VERSION=0.8.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/MangoHud/0.8.1/
+rm -rf ${BUILD_DIRECTORY}/MangoHud-0.8.1
+tar xvf ${DOWNLOADDIR}/MangoHud-0.8.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/MangoHud-0.8.1
         
 
         tar xvf ${RESOURCEDIR}/files/vulkan-headers-1.2.158.tar.gz -C subprojects/
@@ -30,4 +30,4 @@ pushd ${BUILD_DIRECTORY}/MangoHud-0.7.2
         popd
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/MangoHud-0.7.2
+rm -rf ${BUILD_DIRECTORY}/MangoHud-0.8.1

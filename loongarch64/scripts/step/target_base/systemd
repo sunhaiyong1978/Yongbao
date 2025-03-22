@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=257.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/systemd/257.2/
-rm -rf ${BUILD_DIRECTORY}/systemd-257.2
-tar xvf ${DOWNLOADDIR}/systemd-257.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-257.2
+export PACKAGE_VERSION=257.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/systemd/257.4/
+rm -rf ${BUILD_DIRECTORY}/systemd-257.4
+tar xvf ${DOWNLOADDIR}/systemd-257.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-257.4
 	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
@@ -32,6 +32,6 @@ pushd ${BUILD_DIRECTORY}/systemd-257.2
 	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/systemd-networkd-wait-online.service
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-257.2
+rm -rf ${BUILD_DIRECTORY}/systemd-257.4
 
 set_strip_step "/usr/lib/systemd" "0"

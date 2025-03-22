@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.83.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glib/2.83.3/
-rm -rf ${BUILD_DIRECTORY}/glib-2.83.3
-tar xvf ${DOWNLOADDIR}/glib-2.83.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.83.3
+export PACKAGE_VERSION=2.84.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glib/2.84.0/
+rm -rf ${BUILD_DIRECTORY}/glib-2.84.0
+tar xvf ${DOWNLOADDIR}/glib-2.84.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.84.0
         
         mkdir cross-build
         pushd cross-build
@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/glib-2.83.3
                 eval ${NINJA_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.83.3
+rm -rf ${BUILD_DIRECTORY}/glib-2.84.0
 echo "#!/bin/bash -e
 qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/glib-compile-resources \"\$@\"" > ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-glib-compile-resources
 chmod +x ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-glib-compile-resources

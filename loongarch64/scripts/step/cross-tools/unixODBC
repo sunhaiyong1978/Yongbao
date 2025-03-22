@@ -1,0 +1,17 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+source env/cross-tools/custom
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=unixODBC
+export PACKAGE_VERSION=2.3.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/unixODBC/2.3.12/
+rm -rf ${BUILD_DIRECTORY}/unixODBC-2.3.12
+tar xvf ${DOWNLOADDIR}/unixODBC-2.3.12.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/unixODBC-2.3.12
+        
+        ./configure --prefix=${SYSROOT_DIR} --libdir=${SYSROOT_DIR}/usr/lib${LIB_SUFF}
+	make -j${JOBS}
+	cp -a exe/odbc_config ${CROSSTOOLS_DIR}/bin/
+popd 
+rm -rf ${BUILD_DIRECTORY}/unixODBC-2.3.12

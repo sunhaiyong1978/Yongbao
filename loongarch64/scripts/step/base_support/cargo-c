@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=cargo-c
-export PACKAGE_VERSION=0.10.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/cargo-c/0.10.9/
-rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.9
-tar xvf ${DOWNLOADDIR}/cargo-c-0.10.9.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cargo-c-0.10.9
+export PACKAGE_VERSION=0.10.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/cargo-c/0.10.11/
+rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.11
+tar xvf ${DOWNLOADDIR}/cargo-c-0.10.11.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cargo-c-0.10.11
     TRIPLE_STR="$(echo ${CROSS_TARGET} | tr '[:lower:]' '[:upper:]' | tr '-' '_')_OPENSSL_DIR"
     export ${TRIPLE_STR}="${SYSROOT_DIR}/usr"
     PKG_CONFIG_SYSROOT_DIR= \
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/cargo-c-0.10.9
     cargo build --release --target ${CROSS_TARGET}
     install -Dm755 target/${CROSS_TARGET}/release/cargo-{capi,cbuild,cinstall,ctest} ${SYSROOT_DIR}/usr/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.9
+rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.11

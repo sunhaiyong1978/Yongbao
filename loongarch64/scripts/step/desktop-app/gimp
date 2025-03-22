@@ -3,28 +3,5 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=gimp
-export PACKAGE_VERSION=2.10.38
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gimp/2.10.38/
-rm -rf ${BUILD_DIRECTORY}/gimp-2.10.38
-tar xvf ${DOWNLOADDIR}/gimp-2.10.38.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gimp-2.10.38
-        
-        sed -i "/VAPIGEN_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
-        sed -i "/INTROSPECTION_MAKEFILE=/s@\$PKG_CONFIG @/bin/pkg-config @g" configure
-	sed -i -e "/^\t\$(libgimpmath)/a \\\t\$(libgimpmodule)\\t\\\\" -e "/^libgimpmath/a libgimpmodule = \$(top_builddir)/libgimpmodule/libgimpmodule-\$(GIMP_API_VERSION).la" $(grep -rl "^libgimpmath" $(find plug-ins -name "Makefile.in"))
-	sed -i -e "/^\t\$(libgimpcolor)/a \\\t\$(libgimpmath)\\t\\\\" -e "/^libgimpcolor/a libgimpmath = \$(top_builddir)/libgimpmath/libgimpmath-\$(GIMP_API_VERSION).la" plug-ins/file-raw/Makefile.in
-	sed -i "s@-I\$(includedir)@@g" $(find plug-ins -name "Makefile.in")
-        mkdir cross-build
-        pushd cross-build
-                CFLAGS="${CFLAGS} -fpermissive" CXXFLAGS="${CXXFLAGS} -fpermissive" \
-		../configure ${COMMON_CONFIG} --enable-introspection=yes \
-			     --disable-python HOST_GLIB_COMPILE_RESOURCES=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources
-                make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
-                     INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
-                     GLIB_COMPILE_RESOURCES=${CROSS_TARGET}-glib-compile-resources \
-                     VAPIGEN=${CROSS_TARGET}-vapigen
-                make VAPIGEN=${CROSS_TARGET}-vapigen DESTDIR=${SYSROOT_DIR} install
-        popd
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
-popd 
-rm -rf ${BUILD_DIRECTORY}/gimp-2.10.38
+export PACKAGE_VERSION=3.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gimp/3.0.0/

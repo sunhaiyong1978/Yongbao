@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=qemu
-export PACKAGE_VERSION=9.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/9.2.0/
-rm -rf ${BUILD_DIRECTORY}/qemu-9.2.0
-tar xvf ${DOWNLOADDIR}/qemu-9.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-9.2.0
-	patch -Np1 -i ${SYSDIR}/files/simulate/qemu/9.2.0/patches/0001-Revert-tcg-loongarch64-Set-vector-registers-call-clo.patch 
-	patch -Np1 -i ${SYSDIR}/files/simulate/qemu/9.2.0/patches/0001-qemu-9.2.0-fix-for-glibc-2.41.patch 
+export PACKAGE_VERSION=9.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/qemu/9.2.2/
+rm -rf ${BUILD_DIRECTORY}/qemu-9.2.2
+tar xvf ${DOWNLOADDIR}/qemu-9.2.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-9.2.2
+	patch -Np1 -i ${SYSDIR}/files/simulate/qemu/9.2.2/patches/0001-Revert-tcg-loongarch64-Set-vector-registers-call-clo.patch 
 	 
 	mkdir -p cross-build
 	pushd cross-build
@@ -31,7 +30,7 @@ pushd ${BUILD_DIRECTORY}/qemu-9.2.0
 	install -vdm 755 ${SYSROOT_DIR}/etc/qemu
 	echo "allow br0" > ${SYSROOT_DIR}/etc/qemu/bridge.conf
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-9.2.0
+rm -rf ${BUILD_DIRECTORY}/qemu-9.2.2
 
 mkdir -p ${SYSROOT_DIR}/etc/sysctl.d/
 cat > ${SYSROOT_DIR}/etc/sysctl.d/60-net-forward.conf << EOF

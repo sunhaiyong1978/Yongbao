@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-systemsettings
-export PACKAGE_VERSION=6.2.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-systemsettings/6.2.5/
-rm -rf ${BUILD_DIRECTORY}/systemsettings-6.2.5
-tar xvf ${DOWNLOADDIR}/systemsettings-6.2.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemsettings-6.2.5
+export PACKAGE_VERSION=6.3.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-systemsettings/6.3.3/
+rm -rf ${BUILD_DIRECTORY}/systemsettings-6.3.3
+tar xvf ${DOWNLOADDIR}/systemsettings-6.3.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemsettings-6.3.3
         
 	mkdir cross-build
 	pushd cross-build
@@ -41,4 +41,4 @@ pushd ${BUILD_DIRECTORY}/systemsettings-6.2.5
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemsettings-6.2.5
+rm -rf ${BUILD_DIRECTORY}/systemsettings-6.3.3
