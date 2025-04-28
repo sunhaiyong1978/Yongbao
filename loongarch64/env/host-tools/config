@@ -25,3 +25,4 @@ export PKG_CONFIG_PATH="${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/
 export LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib:${HOST_TOOLS_DIR}/lib64:/usr/lib:/usr/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib:${HOST_TOOLS_DIR}/lib64:/usr/lib:/usr/lib64"
 export MAKE_AND_INSTALL="make -j${JOBS} &&  make install"
 export LIB_SUFF=64
+export TARGET_LIB_SUFF=64
