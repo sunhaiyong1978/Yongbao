@@ -1,12 +1,18 @@
 00001  step/target_base/make_directory|
-00003  step/target_base/linux-header_git|linux_git
-00004  step/target_base/glibc|
+00001  step/cross-tools/pkgconf|
+00002  step/cross-tools/binutils|!binutils_git
+00004  step/cross-tools/gcc_nolibc|!gcc_git
+00003  step/target_base/linux-header|
+00004  step/unusual/compat-glibc|
 00006  step/target_base/libxcrypt|
+00006  step/cross-tools/gcc|!gcc_git
+00003  step/cross-tools/qemu|
 00010  step/target_base/gmp|
 00011  step/target_base/mpfr|
 00012  step/target_base/mpc|
 00013  step/target_base/zlib|
-00017  step/target_base/gcc|gcc
+00017  step/target_base/gcc|
+# 00004  step/unusual/libstdc++|
 00018  step/target_base/bzip2|
 00019  step/target_base/xz|
 00020  step/target_base/zstd|
