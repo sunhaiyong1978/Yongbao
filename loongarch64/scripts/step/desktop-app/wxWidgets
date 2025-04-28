@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxWidgets/3.2.7/
 rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.7
 tar xvf ${DOWNLOADDIR}/wxWidgets-3.2.7.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.7
-        
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/wxWidgets/3.2.7/patches/0001-wxWidgets-3.2.7-fix-host-PREFIX-for-cross-build.patch 
+	 
         for config_i in $(find -name "config.sub")
         do
                 cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -22,7 +23,7 @@ pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.7
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 
 	cp -f ${SYSROOT_DIR}/$(readlink ${SYSROOT_DIR}/usr/bin/wx-config) ${CROSSTOOLS_DIR}/bin/wx-config
-	sed -i.orig "/^libdir/s@\"/usr@\"\${prefix}@g" ${CROSSTOOLS_DIR}/bin/wx-config
+	sed -i.orig -e "/^libdir/s@\"/usr@\"\${prefix}@g" -e "/_target=/d" -e "/target=/d" ${CROSSTOOLS_DIR}/bin/wx-config
 	cp ${CROSSTOOLS_DIR}/bin/wx-config ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config
 	sed -i "/^prefix=/s@-/usr@-${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config
 

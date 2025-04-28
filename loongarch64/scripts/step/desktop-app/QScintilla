@@ -1,0 +1,28 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=QScintilla
+export PACKAGE_VERSION=2.14.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/QScintilla/2.14.1/
+rm -rf ${BUILD_DIRECTORY}/QScintilla_src-2.14.1
+tar xvf ${DOWNLOADDIR}/QScintilla_src-2.14.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/QScintilla_src-2.14.1
+pushd src
+	mkdir -pv cross-build-qt5
+	pushd cross-build-qt5
+		${SYSROOT_DIR}/usr/bin/qmake ..
+		make -j${JOBS}
+		make QINSTALL="${SYSROOT_DIR}/usr/bin/qmake -install qinstall" QINSTALL_PROGRAM="${SYSROOT_DIR}/usr/bin/qmake -install qinstall -exe" install
+	popd
+	mkdir -pv cross-build-qt6
+	pushd cross-build-qt6
+		${SYSROOT_DIR}/usr/lib64/qt6/bin/host-qmake ..
+		sed -i "s@${SYSROOT_DIR}${SYSROOT_DIR}@${SYSROOT_DIR}@g" Makefile
+		sed -i "s@${CROSSTOOLS_DIR}/qt6/libexec/moc@/usr/lib64/qt6/libexec/moc@g" Makefile
+		make CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ LINK=${CROSS_TARGET}-g++ -j${JOBS}
+		make CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ LINK=${CROSS_TARGET}-g++ install
+	popd
+popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/QScintilla_src-2.14.1

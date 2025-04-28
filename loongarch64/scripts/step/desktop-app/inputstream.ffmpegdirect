@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=inputstream.ffmpegdirect
-export PACKAGE_VERSION=22.1.0-Piers
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/inputstream.ffmpegdirect/22.1.0-Piers/
-rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.0-Piers
-tar xvf ${DOWNLOADDIR}/inputstream.ffmpegdirect-22.1.0-Piers.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.0-Piers
+export PACKAGE_VERSION=22.1.1-Piers
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/inputstream.ffmpegdirect/22.1.1-Piers/
+rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.1-Piers
+tar xvf ${DOWNLOADDIR}/inputstream.ffmpegdirect-22.1.1-Piers.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.1-Piers
         
 	mkdir cross-build
 	pushd cross-build
@@ -33,9 +33,10 @@ pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.0-Piers
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		      -DOVERRIDE_PATHS=1 -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.0-Piers
+rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.1-Piers

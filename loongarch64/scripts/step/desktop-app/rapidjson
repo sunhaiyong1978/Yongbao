@@ -33,6 +33,7 @@ pushd ${BUILD_DIRECTORY}/rapidjson-git-default_git
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		      -DRAPIDJSON_BUILD_DOC=OFF -DRAPIDJSON_BUILD_CXX11:BOOL=OFF -DLIB_INSTALL_DIR=/usr/lib64 -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd

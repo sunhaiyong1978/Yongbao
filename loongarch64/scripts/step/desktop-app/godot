@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=godot
-export PACKAGE_VERSION=4.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/godot/4.4/
-rm -rf ${BUILD_DIRECTORY}/godot-4.4-stable
-tar xvf ${DOWNLOADDIR}/godot-4.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/godot-4.4-stable
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/godot/4.4/patches/0002-godot-4.3-thirdparty-openxr-add-loongarch64-define.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/godot/4.4/patches/0003-godot-4.3-thirdparty-pcre2-add-loongarch64-define.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/godot/4.4/patches/0004-godot-4.3-thirdparty-libpng-remove-loongarch64-lsx-d.patch 
+export PACKAGE_VERSION=4.4.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/godot/4.4.1/
+rm -rf ${BUILD_DIRECTORY}/godot-4.4.1-stable
+tar xvf ${DOWNLOADDIR}/godot-4.4.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/godot-4.4.1-stable
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/godot/4.4.1/patches/0002-godot-4.3-thirdparty-openxr-add-loongarch64-define.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/godot/4.4.1/patches/0003-godot-4.3-thirdparty-pcre2-add-loongarch64-define.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/godot/4.4.1/patches/0004-godot-4.3-thirdparty-libpng-remove-loongarch64-lsx-d.patch 
 	 
     scons PREFIX=/usr LIBDIR=/usr/lib64 CC="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-gcc" CXX="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g++" \
 	  ccflags="${CFLAGS} -mlsx" \
@@ -36,4 +36,4 @@ pushd ${BUILD_DIRECTORY}/godot-4.4-stable
     cp -a misc/dist/linux/org.godotengine.Godot.desktop ${SYSROOT_DIR}/usr/share/applications/
     cp -a misc/dist/linux/org.godotengine.Godot.xml ${SYSROOT_DIR}/usr/share/dbus-1/interfaces/
 popd 
-rm -rf ${BUILD_DIRECTORY}/godot-4.4-stable
+rm -rf ${BUILD_DIRECTORY}/godot-4.4.1-stable

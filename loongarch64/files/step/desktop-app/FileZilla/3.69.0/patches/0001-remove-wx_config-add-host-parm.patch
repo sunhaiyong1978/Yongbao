@@ -1,0 +1,26 @@
+From 05b77cc00869f684b3fbc69d43f9479ee4fb6784 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 18 Apr 2025 08:01:38 +0000
+Subject: [PATCH] remove wx_config add host parm.
+
+---
+ configure | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/configure b/configure
+index d2a2ec9..7dee7b0 100755
+--- a/configure
++++ b/configure
+@@ -19663,9 +19663,6 @@ fi
+      wx_config_args="$wx_config_args --prefix=$wx_config_prefix"
+      WX_LOOKUP_PATH="$WX_LOOKUP_PATH:$wx_config_prefix/bin"
+   fi
+-  if test "$cross_compiling" = "yes"; then
+-     wx_config_args="$wx_config_args --host=$host_alias"
+-  fi
+ 
+     if test -x "$WX_CONFIG_NAME" ; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for wx-config" >&5
+-- 
+2.31.1
+

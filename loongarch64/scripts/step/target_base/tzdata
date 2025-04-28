@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=tzdata
-export PACKAGE_VERSION=2025a
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/tzdata/2025a/
+export PACKAGE_VERSION=2025b
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/tzdata/2025b/
 mkdir -p ${BUILD_DIRECTORY}/tzdata
-tar xvf ${DOWNLOADDIR}/tzdata2025a.tar.gz -C ${BUILD_DIRECTORY}/tzdata
+tar xvf ${DOWNLOADDIR}/tzdata2025b.tar.gz -C ${BUILD_DIRECTORY}/tzdata
 pushd ${BUILD_DIRECTORY}/tzdata
     ZONEINFO=${SYSROOT_DIR}/usr/share/zoneinfo
     mkdir -pv $ZONEINFO/{posix,right}

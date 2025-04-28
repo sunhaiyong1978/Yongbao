@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=257.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/257.4/
-rm -rf ${BUILD_DIRECTORY}/systemd-257.4
-tar xvf ${DOWNLOADDIR}/systemd-257.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-257.4
+export PACKAGE_VERSION=257.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/systemd/257.5/
+rm -rf ${BUILD_DIRECTORY}/systemd-257.5
+tar xvf ${DOWNLOADDIR}/systemd-257.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-257.5
 	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
@@ -53,6 +53,6 @@ password required    pam_deny.so
 EOF
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-257.4
+rm -rf ${BUILD_DIRECTORY}/systemd-257.5
 
 set_strip_step "/usr/lib/systemd" "0"

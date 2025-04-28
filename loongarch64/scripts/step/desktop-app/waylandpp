@@ -34,6 +34,7 @@ pushd ${BUILD_DIRECTORY}/waylandpp-1.0.0
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		      -DWAYLAND_SCANNERPP=${HOST_TOOLS_DIR}/bin/wayland-scanner++ -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd

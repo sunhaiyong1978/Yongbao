@@ -28,6 +28,7 @@ pushd ${BUILD_DIRECTORY}/sddm-0.21.0
 	      -DDBUS_CONFIG_FILENAME=sddm_org.freedesktop.DisplayManager.conf \
               -DCMAKE_INSTALL_PREFIX=/usr \
 	      -DBUILD_WITH_QT6=ON \
+	      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 	      ..
         eval ${MAKE_AND_INSTALL}
     popd

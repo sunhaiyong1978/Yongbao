@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=VTK
-export PACKAGE_VERSION=9.4.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/VTK/9.4.1/
-rm -rf ${BUILD_DIRECTORY}/VTK-9.4.1
-tar xvf ${DOWNLOADDIR}/VTK-9.4.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/VTK-9.4.1
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/VTK/9.4.1/patches/0001-VTK-9.3.0-ThirdParty-double-conversion-add-loongarch.patch 
+export PACKAGE_VERSION=9.4.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/VTK/9.4.2/
+rm -rf ${BUILD_DIRECTORY}/VTK-9.4.2
+tar xvf ${DOWNLOADDIR}/VTK-9.4.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/VTK-9.4.2
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/VTK/9.4.2/patches/0001-VTK-9.3.0-ThirdParty-double-conversion-add-loongarch.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/VTK-9.4.1
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/VTK-9.4.1
+rm -rf ${BUILD_DIRECTORY}/VTK-9.4.2

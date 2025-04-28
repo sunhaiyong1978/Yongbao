@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/gobject-introspection-1.84.0
     mv subprojects/glib/subprojects/gobject-introspection-gvdb_git subprojects/glib/subprojects/gvdb
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${HOST_TOOLS_DIR} --libdir=${HOST_TOOLS_DIR}/lib${LIB_SUFF} \
+        meson --prefix=${HOST_TOOLS_DIR} --libdir=${HOST_TOOLS_DIR}/lib64 \
               --buildtype=release ..
 	ninja
         ninja install

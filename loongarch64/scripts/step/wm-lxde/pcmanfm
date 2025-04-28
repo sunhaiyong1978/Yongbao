@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/pcmanfm-1.3.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} 
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} 
 	make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

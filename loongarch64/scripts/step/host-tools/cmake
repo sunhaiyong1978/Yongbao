@@ -3,19 +3,20 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=cmake
-export PACKAGE_VERSION=3.31.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/cmake/3.31.6/
-rm -rf ${BUILD_DIRECTORY}/cmake-3.31.6
-tar xvf ${DOWNLOADDIR}/cmake-3.31.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cmake-3.31.6
-    patch -Np1 -i ${SYSDIR}/files/host-tools/cmake/3.31.6/patches/cmake-3.22.3-add-loongarch64-to-checktypesize.patch 
+export PACKAGE_VERSION=4.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/cmake/4.0.1/
+rm -rf ${BUILD_DIRECTORY}/cmake-4.0.1
+tar xvf ${DOWNLOADDIR}/cmake-4.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cmake-4.0.1
+    patch -Np1 -i ${SYSDIR}/files/host-tools/cmake/4.0.1/patches/cmake-3.22.3-add-loongarch64-to-checktypesize.patch 
 	 
     mkdir -p native-build
     pushd native-build
 	CC="gcc" CXX="g++" \
         cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMake_TEST_Qt6=0 \
+	      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
               -DCMAKE_BUILD_TYPE=Release ..
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/cmake-3.31.6
+rm -rf ${BUILD_DIRECTORY}/cmake-4.0.1

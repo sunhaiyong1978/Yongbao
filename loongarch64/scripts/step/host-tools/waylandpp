@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/waylandpp-1.0.0
     mkdir -p native-build
     pushd native-build
         cmake -DCMAKE_INSTALL_PREFIX=${PREFIX}  \
-              -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SERVER=OFF -DBUILD_LIBRARIES=OFF ..
+              -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SERVER=OFF -DBUILD_LIBRARIES=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
         eval ${MAKE_AND_INSTALL}
     popd
 popd 

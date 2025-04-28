@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=setuptools_pre
-export PACKAGE_VERSION=77.0.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/setuptools_pre/77.0.1/
-rm -rf ${BUILD_DIRECTORY}/setuptools-77.0.1
-tar xvf ${DOWNLOADDIR}/setuptools-77.0.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/setuptools-77.0.1
+export PACKAGE_VERSION=79.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/setuptools_pre/79.0.1/
+rm -rf ${BUILD_DIRECTORY}/setuptools-79.0.1
+tar xvf ${DOWNLOADDIR}/setuptools-79.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/setuptools-79.0.1
 	${HOST_TOOLS_DIR}/bin/python3 setup.py build
 	${HOST_TOOLS_DIR}/bin/python3 setup.py install
 popd 
-rm -rf ${BUILD_DIRECTORY}/setuptools-77.0.1
+rm -rf ${BUILD_DIRECTORY}/setuptools-79.0.1

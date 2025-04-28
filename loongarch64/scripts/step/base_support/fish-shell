@@ -3,12 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fish-shell
-export PACKAGE_VERSION=4.0.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fish-shell/4.0.1/
-rm -rf ${BUILD_DIRECTORY}/fish-shell-4.0.1
-tar xvf ${DOWNLOADDIR}/fish-shell-4.0.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fish-shell-4.0.1
+export PACKAGE_VERSION=4.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fish-shell/4.0.2/
+rm -rf ${BUILD_DIRECTORY}/fish-shell-4.0.2
+tar xvf ${DOWNLOADDIR}/fish-shell-4.0.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fish-shell-4.0.2
         
+	mkdir temp-bin
+	pushd temp-bin
+	        echo "#!/bin/bash -e
+			qemu-loongarch64 ${PWD}/../cross-build/fish_indent \"\$@\"" \
+                	> fish_indent
+ 	       chmod +x fish_indent
+	popd
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc -Ccode-model=large" \
@@ -36,12 +43,13 @@ pushd ${BUILD_DIRECTORY}/fish-shell-4.0.1
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-		      -DCURSES_LIBRARY="-lncursesw" -DCURSES_TINFO="" -DBUILD_DOCS=OFF -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+		      -DCURSES_LIBRARY="-lncursesw" -DCURSES_TINFO="" -DBUILD_DOCS=ON -DCMAKE_INSTALL_SYSCONFDIR=/etc \
                       -DRust_CARGO_TARGET=${CROSS_TARGET} \
 		      -Wno-dev ..
+		export PATH=${PWD}/../temp-bin:${PATH}
 		export TARGET_CC="${CROSS_TARGET}-gcc"
 		eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fish-shell-4.0.1
+rm -rf ${BUILD_DIRECTORY}/fish-shell-4.0.2

@@ -36,7 +36,8 @@ pushd ${BUILD_DIRECTORY}/fftw-3.3.10
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-                       -Wno-dev ..
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+                      -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         mkdir cross-build_d
@@ -66,6 +67,7 @@ pushd ${BUILD_DIRECTORY}/fftw-3.3.10
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                       -DENABLE_FLOAT=ON -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
@@ -96,6 +98,7 @@ pushd ${BUILD_DIRECTORY}/fftw-3.3.10
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                       -DENABLE_LONG_DOUBLE=ON -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd

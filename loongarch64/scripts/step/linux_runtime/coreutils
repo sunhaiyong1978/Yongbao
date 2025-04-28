@@ -4,15 +4,15 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=coreutils
-export PACKAGE_VERSION=9.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/coreutils/9.6/
-rm -rf ${BUILD_DIRECTORY}/coreutils-9.6
-tar xvf ${DOWNLOADDIR}/coreutils-9.6.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/coreutils-9.6
+export PACKAGE_VERSION=9.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/coreutils/9.7/
+rm -rf ${BUILD_DIRECTORY}/coreutils-9.7
+tar xvf ${DOWNLOADDIR}/coreutils-9.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/coreutils-9.7
 	FORCE_UNSAFE_CONFIGURE=1 \
 	./configure --prefix=/usr  --build=${CROSS_HOST} --host=${LINUX_HOST} \
 				--enable-no-install-program=kill,uptime gl_cv_crc_pclmul=no
 	eval ${MAKE_AND_INSTALL}
 	mv -v ${LINUX_SYSROOT_DIR}/usr/bin/chroot ${LINUX_SYSROOT_DIR}/usr/sbin
 popd 
-rm -rf ${BUILD_DIRECTORY}/coreutils-9.6
+rm -rf ${BUILD_DIRECTORY}/coreutils-9.7

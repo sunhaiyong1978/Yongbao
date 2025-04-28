@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/vte-0.28.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --libexecdir=/usr/lib/vte --with-gtk=3.0
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --libexecdir=/usr/lib/vte --with-gtk=3.0
 	make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

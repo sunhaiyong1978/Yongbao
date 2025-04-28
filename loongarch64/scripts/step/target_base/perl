@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=perl
-export PACKAGE_VERSION=5.40.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/perl/5.40.1/
-rm -rf ${BUILD_DIRECTORY}/perl-5.40.1
-tar xvf ${DOWNLOADDIR}/perl-5.40.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/perl-5.40.1
+export PACKAGE_VERSION=5.40.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/perl/5.40.2/
+rm -rf ${BUILD_DIRECTORY}/perl-5.40.2
+tar xvf ${DOWNLOADDIR}/perl-5.40.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/perl-5.40.2
 	sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr \
 	             -Dprivlib=/usr/lib/perl5/5.4x/core_perl \
 	             -Darchlib=/usr/lib${LIB_SUFF}/perl5/5.4x/core_perl \
@@ -28,6 +28,6 @@ echo '#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/perl -I${SYSROOT_DIR}/usr/lib${LIB_SUFF}/perl5/5.4x/site_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.4x/site_perl -I${SYSROOT_DIR}/usr/lib${LIB_SUFF}/perl5/5.4x/vendor_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.4x/vendor_perl -I${SYSROOT_DIR}/usr/lib${LIB_SUFF}/perl5/5.4x/core_perl -I${SYSROOT_DIR}/usr/lib/perl5/5.4x/core_perl "$@"' > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl
 popd 
-rm -rf ${BUILD_DIRECTORY}/perl-5.40.1
+rm -rf ${BUILD_DIRECTORY}/perl-5.40.2
 
 set_strip_step "usr/lib${LIB_SUFF}/perl5" "0"

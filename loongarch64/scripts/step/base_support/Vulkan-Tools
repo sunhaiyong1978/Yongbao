@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=Vulkan-Tools
-export PACKAGE_VERSION=1.4.310
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Tools/1.4.310/
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.310
-tar xvf ${DOWNLOADDIR}/Vulkan-Tools-1.4.310.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.310
+export PACKAGE_VERSION=1.4.313
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Tools/1.4.313/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.313
+tar xvf ${DOWNLOADDIR}/Vulkan-Tools-1.4.313.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.313
         
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER_EXECUTABLE wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER_EXECUTABLE ${CROSSTOOLS_DIR}/bin/wayland-scanner)@g" cube/CMakeLists.txt
         mkdir cross-build
@@ -40,4 +40,4 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.310
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.310
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Tools-1.4.313

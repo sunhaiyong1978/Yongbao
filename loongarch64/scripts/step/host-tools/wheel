@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=wheel
-export PACKAGE_VERSION=0.45.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wheel/0.45.1/
-rm -rf ${BUILD_DIRECTORY}/wheel-0.45.1
-tar xvf ${DOWNLOADDIR}/wheel-0.45.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wheel-0.45.1
+export PACKAGE_VERSION=0.46.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/wheel/0.46.1/
+rm -rf ${BUILD_DIRECTORY}/wheel-0.46.1
+tar xvf ${DOWNLOADDIR}/wheel-0.46.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wheel-0.46.1
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user wheel
 popd 
-rm -rf ${BUILD_DIRECTORY}/wheel-0.45.1
+rm -rf ${BUILD_DIRECTORY}/wheel-0.46.1

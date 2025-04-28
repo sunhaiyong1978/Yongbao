@@ -1,0 +1,31 @@
+From deb2806f0a448aa6bee9e53960177957ba06a085 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 16 Apr 2025 02:06:16 +0000
+Subject: [PATCH] libosinfo fix for not define ATTRIBUTE_UNUSED.
+
+---
+ osinfo/osinfo_loader.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/osinfo/osinfo_loader.c b/osinfo/osinfo_loader.c
+index 0a9004a..2ef2ca0 100644
+--- a/osinfo/osinfo_loader.c
++++ b/osinfo/osinfo_loader.c
+@@ -35,6 +35,14 @@
+ #include "osinfo_device_driver_private.h"
+ #include "osinfo_resources_private.h"
+ 
++#ifndef ATTRIBUTE_UNUSED
++# if defined(__GNUC__) || defined(__clang__)
++#  define ATTRIBUTE_UNUSED __attribute__((unused))
++# else
++#  define ATTRIBUTE_UNUSED
++# endif
++#endif
++
+ #ifndef USB_IDS
+ # define USB_IDS PKG_DATA_DIR "/usb.ids"
+ #endif
+-- 
+2.31.1
+

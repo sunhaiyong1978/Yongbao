@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=grep
-export PACKAGE_VERSION=3.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/grep/3.11/
-rm -rf ${BUILD_DIRECTORY}/grep-3.11
-tar xvf ${DOWNLOADDIR}/grep-3.11.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/grep-3.11
+export PACKAGE_VERSION=3.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/grep/3.12/
+rm -rf ${BUILD_DIRECTORY}/grep-3.12
+tar xvf ${DOWNLOADDIR}/grep-3.12.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/grep-3.12
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/grep-3.11
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/grep-3.11
+rm -rf ${BUILD_DIRECTORY}/grep-3.12

@@ -11,7 +11,6 @@ pushd ${BUILD_DIRECTORY}/glibc-2.41
     patch -Np1 -i ${SYSDIR}/files/target_base/glibc/2.41/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
 	 
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
-    sed -i "s@5.19.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
     mkdir -p build-64
     pushd build-64
         BUILD_CC="gcc" CC="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-gcc -mabi=${MABI} ${CFLAGS}" \
@@ -22,8 +21,7 @@ pushd ${BUILD_DIRECTORY}/glibc-2.41
 	                 --with-binutils=${CROSSTOOLS_DIR}/bin \
 	                 --with-headers=${SYSROOT_DIR}/usr/include \
 	                 --enable-stack-protector=strong --enable-add-ons \
-	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib${LIB_SUFF} \
-	                 --enable-kernel=4.15
+	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib${LIB_SUFF}
 		make -j${JOBS}
 		make DESTDIR=${SYSROOT_DIR} install
     popd

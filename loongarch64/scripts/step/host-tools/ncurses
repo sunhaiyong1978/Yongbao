@@ -1,0 +1,22 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=ncurses
+export PACKAGE_VERSION=6.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ncurses/6.5/
+rm -rf ${BUILD_DIRECTORY}/ncurses-6.5
+tar xvf ${DOWNLOADDIR}/ncurses-6.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ncurses-6.5
+	
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --without-ada --with-shared --enable-pc-files --with-pkg-config-libdir=${PREFIX}/lib64/pkgconfig 
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/ncurses-6.5

@@ -16,6 +16,7 @@ pushd ${BUILD_DIRECTORY}/json-c-json-c-0.18-20240915
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIB_SUFF} \
 		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-${ARCH_NAME}.cmake \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
        		      -DCMAKE_INSTALL_PREFIX=/usr  -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd

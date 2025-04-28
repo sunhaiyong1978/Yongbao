@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/util-linux-2.41
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --without-systemd --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --with-bashcompletiondir=/usr/share/bash-completion/completions --with-tmpfilesdir=/usr/lib/tmpfiles.d --disable-asciidoc --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --without-systemd --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --with-bashcompletiondir=/usr/share/bash-completion/completions --with-tmpfilesdir=/usr/lib/tmpfiles.d --enable-malloc0returnsnull
 	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
 	run_step_package_check check
         make DESTDIR=${SYSROOT_DIR} install

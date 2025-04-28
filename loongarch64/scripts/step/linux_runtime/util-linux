@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/util-linux-2.41
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --with-systemdsystemunitdir=/usr/lib/systemd/system --with-tmpfilesdir=/usr/lib/tmpfiles.d --disable-asciidoc --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --with-systemdsystemunitdir=/usr/lib/systemd/system --with-tmpfilesdir=/usr/lib/tmpfiles.d --enable-malloc0returnsnull
 	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
         make DESTDIR=${LINUX_SYSROOT_DIR} install
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la

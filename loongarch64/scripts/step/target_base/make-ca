@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=make-ca
-export PACKAGE_VERSION=1.15
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/make-ca/1.15/
-rm -rf ${BUILD_DIRECTORY}/make-ca-1.15
-tar xvf ${DOWNLOADDIR}/make-ca-1.15.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/make-ca-1.15
+export PACKAGE_VERSION=1.16
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/make-ca/1.16/
+rm -rf ${BUILD_DIRECTORY}/make-ca-1.16
+tar xvf ${DOWNLOADDIR}/make-ca-1.16.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/make-ca-1.16
 	make DESTDIR=${SYSROOT_DIR} install
 	install -vdm755 ${SYSROOT_DIR}/etc/ssl/local
 	cp ${SYSROOT_DIR}/usr/sbin/make-ca ${CROSSTOOLS_DIR}/bin/
@@ -24,7 +24,7 @@ pushd ${BUILD_DIRECTORY}/make-ca-1.15
 	        > ${SYSROOT_DIR}/etc/ssl/local/CAcert_Class_3_root.pem
 	${CROSSTOOLS_DIR}/bin/make-ca --destdir ${SYSROOT_DIR} -r
 popd 
-rm -rf ${BUILD_DIRECTORY}/make-ca-1.15
+rm -rf ${BUILD_DIRECTORY}/make-ca-1.16
 
 mkdir -pv ${SYSROOT_DIR}/etc/profile.d &&
 cat > ${SYSROOT_DIR}/etc/profile.d/pythoncerts.sh << "EOF"

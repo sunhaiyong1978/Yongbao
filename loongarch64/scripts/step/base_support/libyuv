@@ -38,6 +38,7 @@ pushd ${BUILD_DIRECTORY}/libyuv-git-default_git
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
                       -DLIBYUV_DISABLE_LASX=OFF -DLIBYUV_DISABLE_LSX=OFF \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-polkit-kde-agent-1
-export PACKAGE_VERSION=6.3.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-polkit-kde-agent-1/6.3.3/
-rm -rf ${BUILD_DIRECTORY}/polkit-kde-agent-1-6.3.3
-tar xvf ${DOWNLOADDIR}/polkit-kde-agent-1-6.3.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/polkit-kde-agent-1-6.3.3
+export PACKAGE_VERSION=6.3.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-polkit-kde-agent-1/6.3.4/
+rm -rf ${BUILD_DIRECTORY}/polkit-kde-agent-1-6.3.4
+tar xvf ${DOWNLOADDIR}/polkit-kde-agent-1-6.3.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/polkit-kde-agent-1-6.3.4
         
 	mkdir cross-build
 	pushd cross-build
@@ -36,9 +36,10 @@ pushd ${BUILD_DIRECTORY}/polkit-kde-agent-1-6.3.3
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		       -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/polkit-kde-agent-1-6.3.3
+rm -rf ${BUILD_DIRECTORY}/polkit-kde-agent-1-6.3.4

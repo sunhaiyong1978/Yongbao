@@ -3,18 +3,21 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=kicad
-export PACKAGE_VERSION=8.0.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kicad/8.0.8/
-rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.8
-tar xvf ${DOWNLOADDIR}/kicad-8.0.8.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.8
+export PACKAGE_VERSION=9.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kicad/9.0.1/
+rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-9.0.1
+tar xvf ${DOWNLOADDIR}/kicad-9.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kicad-source-mirror-9.0.1
         
 	sed -i "s@COMMAND \${LEMON_EXE}@COMMAND qemu-${ARCH_NAME} \${LEMON_EXE}@g" cmake/BuildSteps/LemonParserGenerator.cmake
+	sed -i "/Wduplicated-branches/d" cmake/Warnings.cmake
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
+		      -DCMAKE_C_FLAGS="-Wno-duplicated-branches" \
+		      -DCMAKE_CXX_FLAGS="-Wno-duplicated-branches" \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
                       -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
                       -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
@@ -34,9 +37,11 @@ pushd ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.8
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-                      -DwxWidgets_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config -DwxUSE_GLCANVAS_EGL=ON -DKICAD_USE_EGL=ON -Wno-dev ..
+		      -DODBC_CONFIG=${CROSSTOOLS_DIR}/bin/odbc_config \
+		      -DProtobuf_PROTOC_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-protoc \
+                      -DwxWidgets_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wx-config -DwxUSE_GLCANVAS_EGL=ON -DKICAD_USE_EGL=ON -DKICAD_WX_PORT=qt -DKICAD_IPC_API=OFF -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-8.0.8
+rm -rf ${BUILD_DIRECTORY}/kicad-source-mirror-9.0.1

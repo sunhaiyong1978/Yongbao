@@ -31,6 +31,7 @@ pushd ${BUILD_DIRECTORY}/ffmpeg-6.1.2
                 --enable-libx264     \
                 --enable-libx265     \
                 --enable-openssl --enable-libpulse --enable-libdrm --enable-vulkan \
+		--disable-htmlpages \
                 --arch=${ARCH_NAME} --target-os=linux --cc=${LINUX_HOST}-gcc --host-cc=gcc
 	eval ${MAKE_AND_INSTALL}
 popd 

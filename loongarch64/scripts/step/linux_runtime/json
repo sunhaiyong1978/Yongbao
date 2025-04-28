@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=json
-export PACKAGE_VERSION=3.11.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/json/3.11.3/
-rm -rf ${BUILD_DIRECTORY}/json-3.11.3
-tar xvf ${DOWNLOADDIR}/json-3.11.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/json-3.11.3
+export PACKAGE_VERSION=3.12.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/json/3.12.0/
+rm -rf ${BUILD_DIRECTORY}/json-3.12.0
+tar xvf ${DOWNLOADDIR}/json-3.12.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/json-3.12.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -16,9 +16,10 @@ pushd ${BUILD_DIRECTORY}/json-3.11.3
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIB_SUFF} \
 		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-${ARCH_NAME}.cmake \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
        		      -DCMAKE_INSTALL_PREFIX=/usr -DJSON_BuildTests=OFF -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/json-3.11.3
+rm -rf ${BUILD_DIRECTORY}/json-3.12.0

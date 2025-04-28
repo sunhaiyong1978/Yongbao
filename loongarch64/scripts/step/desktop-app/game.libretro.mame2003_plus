@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=game.libretro.mame2003_plus
-export PACKAGE_VERSION=0.0.1.87-Omega
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/game.libretro.mame2003_plus/0.0.1.87-Omega/
-rm -rf ${BUILD_DIRECTORY}/game.libretro.mame2003_plus-0.0.1.87-Omega
-tar xvf ${DOWNLOADDIR}/game.libretro.mame2003_plus-0.0.1.87-Omega.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/game.libretro.mame2003_plus-0.0.1.87-Omega
+export PACKAGE_VERSION=0.0.1.88-Omega
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/game.libretro.mame2003_plus/0.0.1.88-Omega/
+rm -rf ${BUILD_DIRECTORY}/game.libretro.mame2003_plus-0.0.1.88-Omega
+tar xvf ${DOWNLOADDIR}/game.libretro.mame2003_plus-0.0.1.88-Omega.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/game.libretro.mame2003_plus-0.0.1.88-Omega
         
 	mkdir cross-build
 	pushd cross-build
@@ -33,9 +33,10 @@ pushd ${BUILD_DIRECTORY}/game.libretro.mame2003_plus-0.0.1.87-Omega
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		      -DOVERRIDE_PATHS=1 -DMAME2003_PLUS_LIB=${SYSROOT_DIR}/usr/share/retroarch/cores/mame2003_plus_libretro.so -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/game.libretro.mame2003_plus-0.0.1.87-Omega
+rm -rf ${BUILD_DIRECTORY}/game.libretro.mame2003_plus-0.0.1.88-Omega

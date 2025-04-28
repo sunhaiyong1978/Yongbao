@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=coreutils
-export PACKAGE_VERSION=9.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/coreutils/9.6/
-rm -rf ${BUILD_DIRECTORY}/coreutils-9.6
-tar xvf ${DOWNLOADDIR}/coreutils-9.6.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/coreutils-9.6
+export PACKAGE_VERSION=9.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/coreutils/9.7/
+rm -rf ${BUILD_DIRECTORY}/coreutils-9.7
+tar xvf ${DOWNLOADDIR}/coreutils-9.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/coreutils-9.7
 	FORCE_UNSAFE_CONFIGURE=1 \
 	./configure --prefix=/usr  --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 				--enable-no-install-program=kill,uptime
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/coreutils-9.6
 	qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/uname "$@"' > ${CROSSTOOLS_DIR}/bin/cross-uname
 	chmod +x ${CROSSTOOLS_DIR}/bin/cross-uname
 popd 
-rm -rf ${BUILD_DIRECTORY}/coreutils-9.6
+rm -rf ${BUILD_DIRECTORY}/coreutils-9.7

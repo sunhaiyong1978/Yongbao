@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=Python
-export PACKAGE_VERSION=3.13.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Python/3.13.2/
-rm -rf ${BUILD_DIRECTORY}/Python-3.13.2
-tar xvf ${DOWNLOADDIR}/Python-3.13.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.13.2
-	patch -Np1 -i ${SYSDIR}/files/target_base/Python/3.13.2/patches/0001-Python-3.13.1-fix-for-cross-build.patch 
+export PACKAGE_VERSION=3.13.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/Python/3.13.3/
+rm -rf ${BUILD_DIRECTORY}/Python-3.13.3
+tar xvf ${DOWNLOADDIR}/Python-3.13.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.13.3
+	patch -Np1 -i ${SYSDIR}/files/target_base/Python/3.13.3/patches/0001-Python-3.13.1-fix-for-cross-build.patch 
 	 
 cat > config.cache << "EOF"
     ac_cv_aligned_required=no
@@ -57,14 +57,17 @@ if [ "x${TARGET_PYTHON_EXT}" != "x" ]; then
 	TARGET_PYTHON_EXT="${TARGET_PYTHON_EXT:1}"
 fi
 
-cp ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/python$(get_package_version Python3)/_sysconfigdata__linux_${TARGET_PYTHON_EXT}.py ${HOST_TOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
+cp ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/python$(get_package_version Python3)/_sysconfigdata__linux_${TARGET_PYTHON_EXT}.py ${HOST_TOOLS_DIR}/lib${LIB_SUFF}/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
 
-sed -i "/'INCLUDEPY'/s@'/usr/include@'${SYSROOT_DIR}/usr/include@g" ${HOST_TOOLS_DIR}/lib64/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
+sed -i "/'INCLUDEPY'/s@'/usr/include@'${SYSROOT_DIR}/usr/include@g" ${HOST_TOOLS_DIR}/lib${LIB_SUFF}/python$(get_package_version Python3)/_sysconfigdata__linux_${CROSS_TARGET}.py
 
 sed -i -e "s@${SYSROOT_DIR}@@g" \
        -e "s@${CROSS_TARGET}-@@g" \
        ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/python$(get_package_version Python3)/_sysconfigdata__linux_${TARGET_PYTHON_EXT}.py
 
+cp ${SYSROOT_DIR}/usr/bin/python3-config ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3-config
+sed -i "/^prefix_real=/s@\$0@${SYSROOT_DIR}/usr/bin/python3@g" ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3-config
+
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.13.2
+rm -rf ${BUILD_DIRECTORY}/Python-3.13.3

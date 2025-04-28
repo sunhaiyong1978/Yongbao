@@ -1,0 +1,36 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=QScintilla
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/QScintilla//
+for bin_file in qmake moc uic rcc lrelease lupdate
+do
+        if [ -f ${SYSROOT_DIR}/usr/bin/${bin_file} ]; then
+                mv ${SYSROOT_DIR}/usr/bin/${bin_file}{,.orig}
+                echo "#!/bin/bash
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/${bin_file}.orig \"\$@\"" > ${SYSROOT_DIR}/usr/bin/${bin_file}
+                chmod +x ${SYSROOT_DIR}/usr/bin/${bin_file}
+        fi
+done
+
+for bin_file in qmake qmake6
+do
+        if [ -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/bin/${bin_file} ]; then
+                mv ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/bin/${bin_file}{,.orig}
+                echo "#!/bin/bash
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/bin/${bin_file}.orig \"\$@\"" > ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/bin/${bin_file}
+                chmod +x ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/bin/${bin_file}
+        fi
+done
+
+for bin_file in moc uic rcc lrelease lupdate
+do
+        if [ -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/libexec/${bin_file} ]; then
+                mv ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/libexec/${bin_file}{,.orig}
+                echo "#!/bin/bash
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/libexec/${bin_file}.orig \"\$@\"" > ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/libexec/${bin_file}
+                chmod +x ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/qt6/libexec/${bin_file}
+        fi
+done

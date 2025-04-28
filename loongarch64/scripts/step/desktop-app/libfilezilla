@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=libfilezilla
-export PACKAGE_VERSION=0.49.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libfilezilla/0.49.0/
-rm -rf ${BUILD_DIRECTORY}/libfilezilla-0.49.0
-tar xvf ${DOWNLOADDIR}/libfilezilla-0.49.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libfilezilla-0.49.0
+export PACKAGE_VERSION=0.50.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libfilezilla/0.50.0/
+rm -rf ${BUILD_DIRECTORY}/libfilezilla-0.50.0
+tar xvf ${DOWNLOADDIR}/libfilezilla-0.50.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libfilezilla-0.50.0
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/libfilezilla-0.49.0
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libfilezilla-0.49.0
+rm -rf ${BUILD_DIRECTORY}/libfilezilla-0.50.0

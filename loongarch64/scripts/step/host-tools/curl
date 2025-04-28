@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=curl
-export PACKAGE_VERSION=8.12.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/curl/8.12.1/
-rm -rf ${BUILD_DIRECTORY}/curl-8.12.1
-tar xvf ${DOWNLOADDIR}/curl-8.12.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/curl-8.12.1
+export PACKAGE_VERSION=8.13.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/curl/8.13.0/
+rm -rf ${BUILD_DIRECTORY}/curl-8.13.0
+tar xvf ${DOWNLOADDIR}/curl-8.13.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/curl-8.13.0
 	
         for config_i in $(find -name "config.sub")
         do
@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/curl-8.12.1
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-openssl
+	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-openssl --with-nghttp2
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/curl-8.12.1
+rm -rf ${BUILD_DIRECTORY}/curl-8.13.0

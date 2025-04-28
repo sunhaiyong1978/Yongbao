@@ -4,12 +4,12 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=SPIRV-LLVM-Translator
-export PACKAGE_VERSION=19.1.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/SPIRV-LLVM-Translator/19.1.4/
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-19.1.4
-tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-19.1.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-19.1.4
-	tar xvf ${DOWNLOADDIR}/SPIRV-Headers-$(get_package_version "SPIRV-Headers").tar.gz
+export PACKAGE_VERSION=20.1.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/SPIRV-LLVM-Translator/20.1.1/
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.1
+tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-20.1.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.1
+	tar xvf ${RESOURCEDIR}/files/SPIRV-LLVM-Translator-headers_git.tar.gz
         
         mkdir cross-build
         pushd cross-build
@@ -28,11 +28,11 @@ pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-19.1.4
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIB_SUFF} -DLIB_SUFFIX=${LIB_SUFF} \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=OFF -DCCACHE_ALLOWED=OFF \
-		      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${PWD}/../SPIRV-Headers-$(get_package_version "SPIRV-Headers") \
 		      -DLLVM_DIR:PATH=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake/llvm \
+		      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${PWD}/../SPIRV-LLVM-Translator-headers_git \
 		      -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-19.1.4
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.1

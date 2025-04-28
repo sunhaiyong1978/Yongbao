@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libfuse
-export PACKAGE_VERSION=fuse-3.16.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libfuse/fuse-3.16.2/
-rm -rf ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
-tar xvf ${DOWNLOADDIR}/libfuse-fuse-3.16.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
-        patch -Np1 -i ${SYSDIR}/files/base_support/libfuse/fuse-3.16.2/patches/0001-libfuse3-fix-for-cross-build.patch 
+export PACKAGE_VERSION=fuse-3.17.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libfuse/fuse-3.17.2/
+rm -rf ${BUILD_DIRECTORY}/libfuse-fuse-3.17.2
+tar xvf ${DOWNLOADDIR}/libfuse-fuse-3.17.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libfuse-fuse-3.17.2
+        patch -Np1 -i ${SYSDIR}/files/base_support/libfuse/fuse-3.17.2/patches/0001-libfuse3-fix-for-cross-build.patch 
 	 
         mkdir cross-build
         pushd cross-build
@@ -19,5 +19,5 @@ pushd ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libfuse-fuse-3.16.2
+rm -rf ${BUILD_DIRECTORY}/libfuse-fuse-3.17.2
 chmod +s ${SYSROOT_DIR}/usr/bin/fusermount3

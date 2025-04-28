@@ -4,14 +4,14 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.8.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.8.2/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.2
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.8.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.2
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.2/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.2/patches/0001-qt6-6.7.2-fix-for-gcc-15.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.2/patches/0004-qt6webengine-add-host-ldflags-for-cross-build.patch 
+export PACKAGE_VERSION=6.8.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.8.3/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.8.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.3/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.3/patches/0001-qt6-6.7.2-fix-for-gcc-15.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.3/patches/0004-qt6webengine-add-host-ldflags-for-cross-build.patch 
 	 
 
 	sed -i "/embree/d" qtquick3d/src/3rdparty/CMakeLists.txt
@@ -49,4 +49,4 @@ EOF
 		chmod +x ${CROSSTOOLS_DIR}/qt6/bin/gn
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.2
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3

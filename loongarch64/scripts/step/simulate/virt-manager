@@ -9,7 +9,13 @@ rm -rf ${BUILD_DIRECTORY}/virt-manager-git_git
 tar xvf ${DOWNLOADDIR}/virt-manager-git_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/virt-manager-git_git
 	
-	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py build
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG}  \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/virt-manager-git_git

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=setuptools
-export PACKAGE_VERSION=77.0.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/setuptools/77.0.1/
-rm -rf ${BUILD_DIRECTORY}/setuptools-77.0.1
-tar xvf ${DOWNLOADDIR}/setuptools-77.0.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/setuptools-77.0.1
+export PACKAGE_VERSION=79.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/setuptools/79.0.1/
+rm -rf ${BUILD_DIRECTORY}/setuptools-79.0.1
+tar xvf ${DOWNLOADDIR}/setuptools-79.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/setuptools-79.0.1
 	
-	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
-        _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user setuptools --root=${SYSROOT_DIR} --prefix=/usr
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user setuptools --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/setuptools-77.0.1
+rm -rf ${BUILD_DIRECTORY}/setuptools-79.0.1

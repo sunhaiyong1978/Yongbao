@@ -1,0 +1,19 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=readline
+export PACKAGE_VERSION=8.2.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/readline/8.2.13/
+rm -rf ${BUILD_DIRECTORY}/readline-8.2.13
+tar xvf ${DOWNLOADDIR}/readline-8.2.13.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/readline-8.2.13
+	sed -i '/MV.*old/d' Makefile.in
+	sed -i '/{OLDSUFF}/c:' support/shlib-install
+	cp -a -f $(automake --print-libdir)/config.{sub,guess} ./support/
+	./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib64 \
+				--disable-static --with-curses
+	make -j${JOBS} SHLIB_LIBS="-lncursesw"
+	make SHLIB_LIBS="-lncursesw" install
+popd 
+rm -rf ${BUILD_DIRECTORY}/readline-8.2.13

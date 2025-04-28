@@ -1,0 +1,28 @@
+From 1f224c9a34afac55e5c93a39b005b8c1b9137ef5 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 14 Apr 2025 09:26:32 +0000
+Subject: [PATCH] libreoffice 25.2.3.1 add gettextlib for fix link
+ libxsltfilter error.
+
+---
+ filter/Library_xsltfilter.mk | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/filter/Library_xsltfilter.mk b/filter/Library_xsltfilter.mk
+index 42f426c..b1d4a53 100644
+--- a/filter/Library_xsltfilter.mk
++++ b/filter/Library_xsltfilter.mk
+@@ -43,6 +43,10 @@ $(eval $(call gb_Library_use_externals,xsltfilter,\
+ 	libexslt \
+ ))
+ 
++$(eval $(call gb_Library_add_libs,xsltfilter,\
++    -lgettextlib \
++))
++
+ $(eval $(call gb_Library_add_exception_objects,xsltfilter,\
+ 	filter/source/xsltfilter/LibXSLTTransformer \
+ 	filter/source/xsltfilter/OleHandler \
+-- 
+2.31.1
+

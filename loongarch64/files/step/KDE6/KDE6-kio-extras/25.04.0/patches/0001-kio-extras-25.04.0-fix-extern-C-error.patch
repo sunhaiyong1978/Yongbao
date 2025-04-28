@@ -1,0 +1,24 @@
+From de24f29fbe311a20ccb5b1e7bf1b19ab3a9fe650 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 21 Apr 2025 07:09:47 +0000
+Subject: [PATCH] kio-extras 25.04.0 fix extern "C" error.
+
+---
+ kcms/proxy/wpad-detector/main.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kcms/proxy/wpad-detector/main.cpp b/kcms/proxy/wpad-detector/main.cpp
+index 7ad679c..9b1912a 100644
+--- a/kcms/proxy/wpad-detector/main.cpp
++++ b/kcms/proxy/wpad-detector/main.cpp
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+ // SPDX-FileCopyrightText: 2024 Harald Sitter <sitter@kde.org>
+ 
++#include <type_traits>
+ #include <libproxy/proxy.h>
+ 
+ #include <memory>
+-- 
+2.31.1
+

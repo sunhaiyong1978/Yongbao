@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=wine
-export PACKAGE_VERSION=10.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine/10.3/
-rm -rf ${BUILD_DIRECTORY}/wine-10.3
-tar xvf ${DOWNLOADDIR}/wine-10.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-10.3
+export PACKAGE_VERSION=10.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine/10.0/
+rm -rf ${BUILD_DIRECTORY}/wine-10.0
+tar xvf ${DOWNLOADDIR}/wine-10.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-10.0
 	git init
 	if [ -f ${RESOURCEDIR}/files/wine-staging.tar.gz ]; then
 		tar xvf ${RESOURCEDIR}/files/wine-staging.tar.gz
@@ -101,7 +101,7 @@ pushd ${BUILD_DIRECTORY}/wine-10.3
 	tar xf ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86_64.tar.xz -C ${SYSROOT_DIR}/opt/wine/share/wine/gecko/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-10.3
+rm -rf ${BUILD_DIRECTORY}/wine-10.0
 
 set_strip_step "/opt/wine/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
 set_strip_step "/opt/wine/lib/wine/i386-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS32_PREFIX}/bin/${LINUX32_HOST}-strip"

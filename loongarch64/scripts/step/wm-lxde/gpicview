@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/gpicview-0.2.5
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-gtk3
+	CFLAGS="${CFLAGS} -Wno-return-mismatch" ./configure ${COMMON_CONFIG}  --enable-gtk3
 	make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

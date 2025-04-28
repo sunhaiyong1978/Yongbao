@@ -1,0 +1,27 @@
+From 8035cca56493cf1ee081472e28f2709026bb1a87 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 9 Apr 2025 03:46:12 +0000
+Subject: [PATCH] wxWidgets 3.2.7 fix host PREFIX for cross build.
+
+---
+ configure | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index 0941baf..a1f75a0 100755
+--- a/configure
++++ b/configure
+@@ -3857,8 +3857,8 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
+ 
+ 
+ if test "$cross_compiling" != "no"; then
+-    HOST_PREFIX="${host_alias}-"
+-    HOST_SUFFIX="-$host_alias"
++    HOST_PREFIX=""
++    HOST_SUFFIX=""
+ else
+     HOST_PREFIX=
+     HOST_SUFFIX=
+-- 
+2.31.1
+

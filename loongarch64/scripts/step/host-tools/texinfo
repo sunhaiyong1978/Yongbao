@@ -1,0 +1,22 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=texinfo
+export PACKAGE_VERSION=7.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/texinfo/7.2/
+rm -rf ${BUILD_DIRECTORY}/texinfo-7.2
+tar xvf ${DOWNLOADDIR}/texinfo-7.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/texinfo-7.2
+	
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/texinfo-7.2

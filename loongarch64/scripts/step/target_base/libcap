@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libcap
-export PACKAGE_VERSION=2.75
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libcap/2.75/
-rm -rf ${BUILD_DIRECTORY}/libcap-2.75
-tar xvf ${DOWNLOADDIR}/libcap-2.75.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libcap-2.75
+export PACKAGE_VERSION=2.76
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libcap/2.76/
+rm -rf ${BUILD_DIRECTORY}/libcap-2.76
+tar xvf ${DOWNLOADDIR}/libcap-2.76.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libcap-2.76
 	make -j${JOBS} CROSS_COMPILE="${CROSS_TARGET}-" BUILD_CC="gcc" GOLANG=no PAM_CAP=no prefix=/usr lib=lib${LIB_SUFF}
 	make CROSS_COMPILE="${CROSS_TARGET}-" BUILD_CC="gcc" GOLANG=no PAM_CAP=no prefix=/usr lib=lib${LIB_SUFF} \
 		 DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libcap-2.75
+rm -rf ${BUILD_DIRECTORY}/libcap-2.76

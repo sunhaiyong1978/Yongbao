@@ -10,8 +10,8 @@ echo ":x86-emu:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x0
 echo ":x86_64-emu:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00:\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/x86_64-emu:" > ${SYSROOT_DIR}/etc/binfmt.d/qemu-x86_64.conf
 
 ln -sfv qemu-i386 ${SYSROOT_DIR}/usr/bin/x86-emu
-if [ -f ${SYSROOT_DIR}/usr/bin/lat-i386 ]; then
-	ln -sfv lat-i386 ${SYSROOT_DIR}/usr/bin/x86-emu
+if [ -f ${SYSROOT_DIR}/usr/bin/latx-i386 ]; then
+	ln -sfv latx-i386 ${SYSROOT_DIR}/usr/bin/x86-emu
 fi
 
 ln -sfv qemu-x86_64 ${SYSROOT_DIR}/usr/bin/x86_64-emu
@@ -19,8 +19,8 @@ if [ -f ${SYSROOT_DIR}/usr/bin/box64 ]; then
 	ln -sfv box64 ${SYSROOT_DIR}/usr/bin/x86_64-emu
 fi
 
-if [ -f ${SYSROOT_DIR}/usr/bin/lat-x86_64 ]; then
-	ln -sfv lat-x86_64 ${SYSROOT_DIR}/usr/bin/x86_64-emu
+if [ -f ${SYSROOT_DIR}/usr/bin/latx-x86_64 ]; then
+	ln -sfv latx-x86_64 ${SYSROOT_DIR}/usr/bin/x86_64-emu
 fi
 
 default_set_comment "x86_64-emu" "X86 64位二进制翻译" "/usr/bin/x86_64-emu"

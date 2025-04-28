@@ -3,26 +3,23 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.84.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.84.1/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.84.1-src
-tar xvf ${DOWNLOADDIR}/rustc-1.84.1-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.84.1-src
-    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.84.1/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
+export PACKAGE_VERSION=1.86.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.86.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.86.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.86.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.86.0-src
+    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.86.0/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
 	 
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
     PKG_CONFIG_SYSROOT_DIR="" \
-    ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} \
+    ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
                 --host=${CROSS_TARGET} --target=${CROSS_TARGET} \
                 --local-rust-root=${CROSSTOOLS_DIR} \
                 --enable-extended --enable-vendor --disable-docs --release-channel=stable \
 		--set=target.${CROSS_TARGET}.linker="${CROSS_TARGET}-gcc" \
 		--set=target.${CROSS_TARGET}.cc="${CROSS_TARGET}-gcc" \
 		--set=target.${CROSS_TARGET}.cxx="${CROSS_TARGET}-g++" \
-		--set=target.${CROSS_TARGET}.llvm-config="${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config" \
-		--set=target.$(echo ${CROSS_HOST} | sed 's@cross@unknown@g').llvm-config="${CROSSTOOLS_DIR}/bin/llvm-config" \
-		--set=target.$(echo ${CROSS_HOST} | sed 's@cross@unknown@g').linker="clang" \
                 --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler
     export CARGO_TARGET_$(echo ${CROSS_TARGET^^} | tr '-' '_')_RUSTFLAGS="$RUSTFLAGS -C link-args=-lz -C link-args=-lzstd -C link-args=-lLLVM -Ccode-model=large"
     PKG_CONFIG_SYSROOT_DIR="" \
@@ -35,4 +32,4 @@ pushd ${BUILD_DIRECTORY}/rustc-1.84.1-src
          $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          DESTDIR=${SYSROOT_DIR}/ install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.84.1-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.86.0-src

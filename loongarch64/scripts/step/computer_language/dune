@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=dune
-export PACKAGE_VERSION=3.17.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/dune/3.17.2/
-rm -rf ${BUILD_DIRECTORY}/dune-3.17.2
-tar xvf ${DOWNLOADDIR}/dune-3.17.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dune-3.17.2
-	patch -Np1 -i ${SYSDIR}/files/computer_language/dune/3.17.2/patches/0001-dune-fix-for-cross-build.patch 
+export PACKAGE_VERSION=3.18.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/dune/3.18.1/
+rm -rf ${BUILD_DIRECTORY}/dune-3.18.1
+tar xvf ${DOWNLOADDIR}/dune-3.18.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dune-3.18.1
+	patch -Np1 -i ${SYSDIR}/files/computer_language/dune/3.18.1/patches/0001-dune-fix-for-cross-build.patch 
 	 
 	PATH=${CROSSTOOLS_DIR}/ocaml-cross/bin:${PATH}
 	dune build -p ordering,stdune,xdg,dyn,dune-rpc,chrome-trace,dune-build-info,ocamlc-loc,dune-private-libs,dune-site,dune-action-plugin,dune-glob,dune
 	dune install --prefix /usr --docdir /usr/share/doc --destdir ${SYSROOT_DIR} dune
 popd 
-rm -rf ${BUILD_DIRECTORY}/dune-3.17.2
+rm -rf ${BUILD_DIRECTORY}/dune-3.18.1

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kinfocenter
-export PACKAGE_VERSION=6.3.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kinfocenter/6.3.3/
-rm -rf ${BUILD_DIRECTORY}/kinfocenter-6.3.3
-tar xvf ${DOWNLOADDIR}/kinfocenter-6.3.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kinfocenter-6.3.3
+export PACKAGE_VERSION=6.3.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kinfocenter/6.3.4/
+rm -rf ${BUILD_DIRECTORY}/kinfocenter-6.3.4
+tar xvf ${DOWNLOADDIR}/kinfocenter-6.3.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kinfocenter-6.3.4
         
 	sed -i "s,@QtBinariesDir@,/usr/bin,g" kcms/kwinsupportinfo/kcm_kwinsupportinfo.json.in
         mkdir cross-build
@@ -39,4 +39,4 @@ pushd ${BUILD_DIRECTORY}/kinfocenter-6.3.3
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kinfocenter-6.3.3
+rm -rf ${BUILD_DIRECTORY}/kinfocenter-6.3.4

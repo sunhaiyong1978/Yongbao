@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libtheora
-export PACKAGE_VERSION=1.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libtheora/1.1.1/
-rm -rf ${BUILD_DIRECTORY}/libtheora-1.1.1
-tar xvf ${DOWNLOADDIR}/libtheora-1.1.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libtheora-1.1.1
+export PACKAGE_VERSION=1.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libtheora/1.2.0/
+rm -rf ${BUILD_DIRECTORY}/libtheora-1.2.0
+tar xvf ${DOWNLOADDIR}/libtheora-1.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libtheora-1.2.0
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libtheora-1.1.1
     ./configure ${COMMON_CONFIG}
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libtheora-1.1.1
+rm -rf ${BUILD_DIRECTORY}/libtheora-1.2.0

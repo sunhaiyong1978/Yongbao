@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=console-setup
-export PACKAGE_VERSION=1.235
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/console-setup/1.235/
-rm -rf ${BUILD_DIRECTORY}/console-setup-1.235
-tar xvf ${DOWNLOADDIR}/console-setup-1.235.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/console-setup-1.235
+export PACKAGE_VERSION=1.236
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/console-setup/1.236/
+rm -rf ${BUILD_DIRECTORY}/console-setup-1.236
+tar xvf ${DOWNLOADDIR}/console-setup-1.236.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/console-setup-1.236
 	cp -av Fonts/bdf2psf ${CROSSTOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/console-setup-1.235
+rm -rf ${BUILD_DIRECTORY}/console-setup-1.236

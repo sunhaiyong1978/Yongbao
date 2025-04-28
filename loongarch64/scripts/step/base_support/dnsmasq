@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=dnsmasq
-export PACKAGE_VERSION=2.90
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dnsmasq/2.90/
-rm -rf ${BUILD_DIRECTORY}/dnsmasq-2.90
-tar xvf ${DOWNLOADDIR}/dnsmasq-2.90.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/dnsmasq-2.90
+export PACKAGE_VERSION=2.91
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/dnsmasq/2.91/
+rm -rf ${BUILD_DIRECTORY}/dnsmasq-2.91
+tar xvf ${DOWNLOADDIR}/dnsmasq-2.91.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/dnsmasq-2.91
 	make -j${JOBS} CC=${CROSS_TARGET}-gcc PREFIX=/usr
 	make CC=${CROSS_TARGET}-gcc PREFIX=/usr DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/dnsmasq-2.90
+rm -rf ${BUILD_DIRECTORY}/dnsmasq-2.91

@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mariadb
-export PACKAGE_VERSION=11.8.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mariadb/11.8.1/
-rm -rf ${BUILD_DIRECTORY}/mariadb-11.8.1
-tar xvf ${DOWNLOADDIR}/mariadb-11.8.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mariadb-11.8.1
-        patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/11.8.1/patches/0001-mariadb-fix-for-gcc13.patch 
+export PACKAGE_VERSION=12.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mariadb/12.0.0/
+rm -rf ${BUILD_DIRECTORY}/mariadb-12.0.0
+tar xvf ${DOWNLOADDIR}/mariadb-12.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mariadb-12.0.0
+        patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/12.0.0/patches/0001-mariadb-fix-for-gcc13.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/mariadb/12.0.0/patches/0001-Fix-build-error-for-libxml2-2.14.patch 
 	 
 	sed -i "s@COMMAND factorial@COMMAND qemu-loongarch64 factorial@g" dbug/CMakeLists.txt
 	sed -i "s@COMMAND comp_err@COMMAND qemu-loongarch64 comp_err@g" extra/CMakeLists.txt
@@ -21,7 +22,7 @@ pushd ${BUILD_DIRECTORY}/mariadb-11.8.1
 		mkdir -p extra/libfmt/src/
 		mv ${RESOURCEDIR}/files/libfmt.zip extra/libfmt/src/fmt-11.0.2.zip
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-		CXXFLAGS="${CXXFLAGS} -fpermissive" CFLAGS="${CFLAGS} -fpermissive" \
+		CXXFLAGS="${CXXFLAGS} -fpermissive -DBASE_BUFFER_SIZE" CFLAGS="${CFLAGS} -fpermissive -DBASE_BUFFER_SIZE" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-loongarch64 \
                       -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
                       -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
@@ -59,9 +60,10 @@ pushd ${BUILD_DIRECTORY}/mariadb-11.8.1
                       -DWITH_EMBEDDED_SERVER=ON \
                       -DSKIP_TESTS=ON \
                       -DTOKUDB_OK=0 \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                       -DENABLE_DTRACE=OFF -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mariadb-11.8.1
+rm -rf ${BUILD_DIRECTORY}/mariadb-12.0.0

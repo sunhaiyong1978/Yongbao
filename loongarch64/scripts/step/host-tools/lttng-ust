@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=lttng-ust
-export PACKAGE_VERSION=2.13.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/lttng-ust/2.13.8/
-rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.13.8
-tar xvf ${DOWNLOADDIR}/lttng-ust-2.13.8.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/lttng-ust-2.13.8
+export PACKAGE_VERSION=2.13.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/lttng-ust/2.13.9/
+rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.13.9
+tar xvf ${DOWNLOADDIR}/lttng-ust-2.13.9.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lttng-ust-2.13.9
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/lttng-ust-2.13.8
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --disable-numa --disable-examples
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.13.8
+rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.13.9

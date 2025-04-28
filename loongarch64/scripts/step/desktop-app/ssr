@@ -20,6 +20,7 @@ pushd ${BUILD_DIRECTORY}/ssr-0.4.4
               -DCMAKE_FIND_ROOT_PATH=${SYSROOT_DIR}/usr \
               -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
               -DWITH_QT5=TRUE \
+	      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
               ..
 	eval ${MAKE_AND_INSTALL}
     popd
