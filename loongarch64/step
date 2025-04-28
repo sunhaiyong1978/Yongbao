@@ -64,6 +64,10 @@
 %step/host-tools/wayland|
 %step/host-tools/cmake|
 %step/host-tools/libgcrypt|f_host-tools_libgcrypt_bad
+%step/host-tools/ncurses|
+%step/host-tools/readline|
+%step/host-tools/gettext|
+%step/host-tools/libxml2|
 %step/host-tools/libxslt|
 %step/host-tools/Cython|
 %step/host-tools/glslang|
@@ -114,9 +118,7 @@
 %step/host-tools/make|
 %step/host-tools/asciidoc-py|
 %step/host-tools/asciidoctor|
-%step/host-tools/libxml2|
 %step/host-tools/itstool|
-%step/host-tools/gettext|
 %step/host-tools/platformdirs|
 %step/host-tools/glean_parser|
 %step/host-tools/six|
@@ -155,6 +157,7 @@
 %step/host-tools/docbook-5.1|
 %step/host-tools/openssl|f_opt
 %step/host-tools/libpsl|f_opt
+%step/host-tools/nghttp2|f_opt
 %step/host-tools/curl|f_opt
 %step/host-tools/libxmlb|f_opt
 %step/host-tools/appstream|f_opt;f_host-tools_appstream_bad
@@ -199,6 +202,8 @@
 %step/host-tools/html5lib-python|
 %step/host-tools/pycparser|
 %step/host-tools/NULL|
+%step/host-tools/texinfo|
+%step/host-tools/NULL|
 %step/cross-tools/NULL|
 %step/cross-tools/grub|
 %step/cross-tools/qemu|!qemu_git
@@ -206,6 +211,7 @@
 %step/cross-tools/fpc|f_opt+fpc
 %step/cross-tools/gdb|
 %step/cross-tools/qtchooser|
+%step/cross-tools/help2man|
 %step/cross-tools/NULL|
 %step/host-tools/ocaml|f_opt+ocaml
 %step/host-tools/dune|f_opt+ocaml
@@ -395,6 +401,7 @@
 %step/target_base/nftables|
 %step/target_base/python-nftables|
 %step/target_base/firewalld|
+%step/target_base/help2man|
 %step/target_base/dist_sysroot|
 %step/target_base/final_run|
 %step/host-tools/cargo-c|f_opt
@@ -1000,6 +1007,7 @@
 %step/base_support/vte|g_opt
 %step/base_support/SDL3|g_opt
 %step/base_support/SDL_ttf|g_opt
+%step/base_support/libva-utils|g_opt
 %step/base_support/create_files|g_opt
 %step/base_support/final_run|g_opt
 %step/target_base/blfs-systemd-units|
@@ -1430,6 +1438,7 @@
 %step/desktop-app/NULL|g_opt+desk-app;science
 %step/desktop-app/OpenBLAS|g_opt+desk-app;science
 %step/desktop-app/NULL|g_opt+desk-app;science
+%step/desktop-app/QScintilla|g_opt+desk-app;science
 %step/desktop-app/octave|g_opt+desk-app;science
 %step/desktop-app/NULL|g_opt+desk-app;science
 %step/desktop-app/libev|g_opt+desk-app;science
@@ -1488,6 +1497,9 @@
 %step/desktop-app/pivy|g_opt+desk-app;design
 %step/desktop-app/matplotlib|g_opt+desk-app;design
 %step/desktop-app/GSL|g_opt+desk-app;design
+%step/desktop-app/pcl|g_opt+desk-app;design
+%step/desktop-app/hdf5|g_opt+desk-app;design
+%step/desktop-app/med|g_opt+desk-app;design
 %step/desktop-app/FreeCAD|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/godot|g_opt+desk-app;design
@@ -2041,13 +2053,14 @@
 %step/simulate/dxvk|emu;wine64;%target=x86_64;%PARENT=ORIG,x86_64_runtime,mingw_sysroot
 %step/simulate/dxvk|emu;wine;%target=i686;%PARENT=ORIG,i686_runtime,mingw_sysroot
 %step/simulate/NULL|emu
+%step/simulate/NULL|emu
+%step/simulate/NULL|emu
 %step/simulate/set-default-emu|emu;none_status
 %step/simulate/final_run|emu
 %step/simulate/NULL|emu;%OVERLAY=wine-collection
 %step/simulate/wine7|emu;%OVERLAY=wine-collection;wine7;%VERSION=;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime
 %step/simulate/wine7|emu;%OVERLAY=wine-collection;wine7;%VERSION=v7.21;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime;f_simulate_wine7_bad
 %step/simulate/wine8|emu;%OVERLAY=wine-collection;wine8;%VERSION=v8.0;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime,mingw_sysroot
-%step/simulate/wine-tkg-ntsync|emu;%OVERLAY=wine-collection;wine-ntsync;%VERSION=git;%target=x86_64;%PARENT=ORIG,x86_64_runtime,i686_runtime,mingw_sysroot
 %step/simulate/dist_sysroot|emu;%OVERLAY=wine-collection
 %step/toolchain/NULL|g_opt+host-dist
 %step/toolchain/binutils|g_opt+host-dist;!host_compat;%host=?;!binutils_git
