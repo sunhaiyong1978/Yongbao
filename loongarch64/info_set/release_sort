@@ -4,6 +4,7 @@ sddm
 lightdm
 KDE6
 KDE5
+lxde
 desk_app
 bin-pkg
 game_emu
