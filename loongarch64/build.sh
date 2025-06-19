@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# echo $(realpath "$0")
+# if [ -f $(dirname $(realpath "$0"))/ZZ.version ]; then
+# 	if [ "x$(cat $(dirname $(realpath "$0"))/ZZ.version)" == "x1.0" ]; then
+# 		if [ -f $(dirname $(realpath "$0"))/build.sh.v1.0 ]; then
+# 			echo "切换到 $(dirname $(realpath "$0"))/build.sh.v1.0 执行任务。"
+# 			$(dirname $(realpath "$0"))/build.sh.v1.0 $@
+# 			exit $?
+# 		else
+# 			echo "错误：没有对应的执行命令 build.sh.v1.0 ，无法继续执行。"
+# 			exit 254
+# 		fi
+# 	fi
+# fi
+
 declare FULL_COMMAND="$0 $@"
 BASE_DIR="${PWD}"
 
@@ -7,7 +21,7 @@ declare RELEASE_BUILD_MODE=0
 declare NEW_BASE_DIR="${PWD}"
 declare NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
 
-
+declare ARCH_NAME="loongarch64"
 
 declare FORCE_BUILD=0
 declare FORCE_ALL_BUILD=0
@@ -160,6 +174,7 @@ if [ "x${WORLD_PARM}" == "x" ]; then
 		RELEASE_BUILD_MODE=0
 	fi
 fi
+SOURCE_STEP_FILE="${NEW_BASE_DIR}/step"
 
 
 export BUILD_PACKAGE_CHECK=${BUILD_PACKAGE_CHECK}
@@ -253,23 +268,72 @@ function get_all_set_env_expr
 			*)
 				;;
 		esac
+		FINAL_ENV_VALUE=""
 		GET_ENV_VALUE=""
 		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
 		if [ "x${GET_ENV_VALUE}" != "x" ] || [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
 			if [ "x${GET_ENV_VALUE}" != "x" ]; then
-		                USE_ENV[${USE_ENV_COUNT}]="${i}=${GET_ENV_VALUE}"
+# 		                USE_ENV[${USE_ENV_COUNT}]="${i}=${GET_ENV_VALUE}"
+				FINAL_ENV_VALUE="${GET_ENV_VALUE}"
 			fi
 			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
 				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
-					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
-						USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}"
-#					else
-#						USE_ENV[${USE_ENV_COUNT}]="${i}=${GET_ENV_VALUE}"
+# 					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
+# 						USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}"
+# 					fi
+					if [ "x${GET_ENV_VALUE}" == "x" ]; then
+						FINAL_ENV_VALUE="${DEFAULT_ENV[${TEMP_COUNT}]:1}"
 					fi
 				else
-					USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]}"
+# 					USE_ENV[${USE_ENV_COUNT}]="${i}=${DEFAULT_ENV[${TEMP_COUNT}]}"
+					FINAL_ENV_VALUE="${DEFAULT_ENV[${TEMP_COUNT}]}"
 				fi
+			else
+				FINAL_ENV_VALUE=""
 			fi
+			case "x${FINAL_ENV_VALUE}" in
+				"xHOST_ARCH")
+					FINAL_ENV_VALUE="$(uname -m)"
+					;;
+				"xTARGET_ARCH")
+					FINAL_ENV_VALUE="${ARCH_NAME}"
+					;;
+				"x")
+					case "x${i}" in
+						xhost)
+							FINAL_ENV_VALUE="$(uname -m)"
+							;;
+						xtarget)
+							FINAL_ENV_VALUE="${ARCH_NAME}"
+							;;
+						xvendor)
+							FINAL_ENV_VALUE="unknown"
+							;;
+						*)
+							;;
+					esac
+					;;
+				*)
+					;;
+			esac
+			USE_ENV[${USE_ENV_COUNT}]="${i}=${FINAL_ENV_VALUE}"
+        		((USE_ENV_COUNT++))
+		else
+			case "x${i}" in
+				xhost)
+ 					FINAL_ENV_VALUE="$(uname -m)"
+					;;
+				xtarget)
+					FINAL_ENV_VALUE="${ARCH_NAME}"
+					;;
+				xvendor)
+					FINAL_ENV_VALUE="unknown"
+					;;
+				*)
+					FINAL_ENV_VALUE=""
+					;;
+			esac
+			USE_ENV[${USE_ENV_COUNT}]="${i}=${FINAL_ENV_VALUE}"
         		((USE_ENV_COUNT++))
 		fi
         	((TEMP_COUNT++))
@@ -285,10 +349,39 @@ function test_filter_str
 	declare RET_STR="0"
 	declare GET_ENV_VALUE=""
 	TEST_KEY=$(echo ${TEST_STR} | awk -F'=' '{ print $1 }')
+	TEST_VALUE=$(echo "${TEST_STR}" | awk -F'=' '{ print $2 }')
+	if [ "x${TEST_VALUE:0:1}" == "x?" ]; then
+		TEST_VALUE_OPT=1
+	else
+		TEST_VALUE_OPT=0
+	fi
 	TEST_VALUE=$(echo "${TEST_STR}" | awk -F'=' '{ print $2 }' | sed "s@\&@,@g" | sed "s@^\?@@g")
+	case "x${TEST_VALUE}" in
+		"xHOST_ARCH")
+			TEST_VALUE=$(uname -m)
+			;;
+		"xTARGET_ARCH")
+			TEST_VALUE=${ARCH_NAME}
+			;;
+		"*")
+			;;
+	esac
 	FILTER_STR="$(cat ${FILTER_FILE} | grep "^${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
 
 	GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
+
+	if [ "x${TEST_VALUE}" == "x" ] && [ "x${GET_ENV_VALUE}" == "x" ]; then
+		case "x${TEST_KEY}" in
+			"xhost")
+				TEST_VALUE=$(uname -m)
+				;;
+			"xtarget")
+				TEST_VALUE=${ARCH_NAME}
+				;;
+			*)
+				;;
+		esac
+	fi
 
 #	if [ "x${TEST_VALUE}" == "x" ] && [ "x${GET_ENV_VALUE}" == "x" ]; then
 #		echo "0"
@@ -300,27 +393,54 @@ function test_filter_str
 #			echo "GET_ENV_VALUE=${GET_ENV_VALUE}  TEST_VALUE=${TEST_VALUE} i=${i:1}"
 			case "x${i:0:1}" in
 				"x!")
-					if [ "x${i:1}" == "x${TEST_VALUE}" ]; then
-						echo "1"
-						return;
-					fi
 					if [ "x${i:1}" == "x${GET_ENV_VALUE}" ]; then
 						echo "1"
 						return;
 					fi
+					if [ "x${i:1}" == "x${TEST_VALUE}" ]; then
+						echo "x${i:1}  test x${TEST_VALUE}" >> /tmp/a.log
+						echo "1"
+						return;
+					fi
+					RET_STR="0"
 					;;
 				*)
-					if [ "x${i}" == "x${TEST_VALUE}" ]; then
-						RET_STR="0"
-						break;
+					if [ "x${TEST_VALUE_OPT}" == "x1" ]; then
+						if [ "x${GET_ENV_VALUE}" != "x" ]; then
+							if [ "x${i}" == "x${GET_ENV_VALUE}" ]; then
+								RET_STR="0"
+								break;
+							else
+								RET_STR="1"
+							fi
+						else
+							if [ "x${i}" == "x${TEST_VALUE}" ]; then
+								RET_STR="0"
+								break;
+							else
+								RET_STR="1"
+							fi
+						fi
 					else
-						if [ "x${i}" == "x${GET_ENV_VALUE}" ]; then
+						if [ "x${i}" == "x${TEST_VALUE}" ]; then
 							RET_STR="0"
 							break;
 						else
 							RET_STR="1"
 						fi
 					fi
+
+# 					if [ "x${i}" == "x${TEST_VALUE}" ]; then
+# 						RET_STR="0"
+# 						break;
+# 					else
+# 						if [ "x${i}" == "x${GET_ENV_VALUE}" ]; then
+# 							RET_STR="0"
+# 							break;
+# 						else
+# 							RET_STR="1"
+# 						fi
+# 					fi
 					;;
 			esac
 		done
@@ -474,21 +594,54 @@ function get_all_can_set_env_str
 
         for i in ${SET_ENV[*]}
         do
+		FINAL_ENV_VALUE=""
 		GET_ENV_VALUE=""
 		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
 		if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
 			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
 				if [ "x${GET_ENV_VALUE}" != "x" ]; then
-			                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
-					echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+# 			                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
+# 					echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+					FINAL_ENV_VALUE="${GET_ENV_VALUE}"
 				else
-					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
-					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+# 					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
+# 					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+					FINAL_ENV_VALUE="${DEFAULT_ENV[${TEMP_COUNT}]:1}"
 				fi
 			else
-				USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
-				echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+# 				USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
+# 				echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+				FINAL_ENV_VALUE="${DEFAULT_ENV[${TEMP_COUNT}]}"
 			fi
+		fi
+		case "x${FINAL_ENV_VALUE}" in
+			xHOST_ARCH)
+				FINAL_ENV_VALUE="$(uname -m)"
+				;;
+			xTARGET_ARCH)
+				FINAL_ENV_VALUE="${ARCH_NAME}"
+				;;
+			x)
+				case "x${i}" in
+					xhost)
+						FINAL_ENV_VALUE="$(uname -m)"
+						;;
+					xtarget)
+						FINAL_ENV_VALUE="${ARCH_NAME}"
+						;;
+					xvendor)
+						FINAL_ENV_VALUE="unknown"
+						;;
+					*)
+						;;
+				esac
+				;;
+			*)
+				;;
+		esac
+		if [ "x${FINAL_ENV_VALUE}" != "x" ]; then
+			USE_ENV[${USE_ENV_COUNT}]="${FINAL_ENV_VALUE}"
+			echo "export YONGBAO_SET_ENV_${i}=${FINAL_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
 		fi
         	((USE_ENV_COUNT++))
         	((TEMP_COUNT++))
@@ -537,6 +690,15 @@ function get_can_set_status_file
 	echo "1"
 }
 
+function format_package_env_to_string
+{
+	# echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+	if [ -f ${NEW_TARGET_SYSDIR}/package_env.conf ]; then
+		echo "$(grep "^export YONGBAO_SET_ENV_" ${NEW_TARGET_SYSDIR}/package_env.conf | sed "s/export YONGBAO_SET_ENV_//g" | sed -z "s@\n@,@g" | sed "s@,\$@@g")"
+	else
+		echo ""
+	fi
+}
 
 function create_date_suff
 {
@@ -619,7 +781,11 @@ function overlay_mount
 
 #	LOWERDIR_LIST="${NEW_TARGET_SYSDIR}/overlaydir/.lowerdir"
 	LOWERDIR_LIST=""
-	OVERLAY_DIR=$(get_overlay_dirname ${2})
+	if [ -f ${2} ]; then
+		OVERLAY_DIR=$(get_overlay_dirname ${2})
+	else
+		OVERLAY_DIR=""
+	fi
 
 
 #	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
@@ -647,7 +813,11 @@ function overlay_mount
 
 # echo "Parent Dir: ${SET_PARENT_DIR}"
 
-	OVERLAY_PARENT_LIST=$(cat ${2} | grep "parent_dirs=" | head -n1 | gawk -F'=' '{ print $2 }')
+	if [ -f ${2} ]; then
+		OVERLAY_PARENT_LIST=$(cat ${2} | grep "parent_dirs=" | head -n1 | gawk -F'=' '{ print $2 }')
+	else
+		OVERLAY_PARENT_LIST=""
+	fi
 	if [ "x${OVERLAY_PARENT_LIST}" != "x" ]; then
 		for i in ${OVERLAY_PARENT_LIST}
 		do
@@ -1609,7 +1779,7 @@ function cp_file_and_sources
 
 function start_download_source
 {
-	echo -n -e "\r下载 ${1} 所需的源码包及资源文件..."
+	echo -n -e "\033[2K\r下载 ${1} 所需的源码包及资源文件..."
 	for down_retry in 1 2 3
 	do
 		tools/get_all_package_url.sh ${WORLD_PARM} -a ${USE_PROXY_DOWNLOAD} -s ${1} > /dev/null
@@ -1626,7 +1796,7 @@ function start_download_source
 
 function start_download_source_for_version_index
 {
-	echo -n -e "\r下载 ${1} 所需的源码包及资源文件..."
+	echo -n -e "\033[2K\r下载 ${1} 所需的源码包及资源文件..."
 	for down_retry in 1 2 3
 	do
 		if [ "x${2}" != "x" ]; then
@@ -1912,7 +2082,7 @@ do
 	PACKAGE_GIT_COMMIT=""
 
 	if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter ]; then
-#		test_filter_form_opt "${PACKAGE_ALL_OPT}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter"
+# 		test_filter_form_opt "${PACKAGE_ALL_OPT}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter"
 		if [ "x$(test_filter_form_opt "${PACKAGE_ALL_OPT}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter" )" != "x0" ]; then
 			if [ "x$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" == "x" ]; then
 				echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包当前设置不符合制作条件。\e[0m"
@@ -2118,6 +2288,8 @@ do
 		tools/show_package_script.sh ${WORLD_PARM} ${SCRIPT_FILE}
 		echo "${SCRIPT_FILE}制作错误!"
 		echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"
+		REBUILD_ENV=$(format_package_env_to_string)
+		echo "进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} "
 		exit 1
 	fi
 
