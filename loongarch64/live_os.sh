@@ -7,7 +7,7 @@ declare KERNEL_ONLY=FALSE
 declare DISTRO_LABEL=""
 declare WORLD_PARM=""
 
-while getopts 'ukwl:' OPT; do
+while getopts 'ukwl:h' OPT; do
     case $OPT in
         u)
             UPDATE_MODE=TRUE
@@ -25,8 +25,13 @@ while getopts 'ukwl:' OPT; do
 	    WORLD_PARM="-w"
 	    echo "强制指定使用主线环境中进行构建。"
 	    ;;
-        ?)
+        h|?)
             echo "用法: `basename $0` [选项]"
+	    echo "选项："
+	    echo "w: 强制使用主线构建部分。"
+	    echo "l: 指定发行版的名称字串。"
+	    echo "u: 使用更新模式。"
+	    echo "k: 仅导出内核及启动相关部分。"
             exit 0
             ;;
     esac
