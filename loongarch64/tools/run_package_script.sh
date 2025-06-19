@@ -71,7 +71,9 @@ fi
 echo -n "正在执行${3}..."
 TMP_RUN="$(replace_arch_parm "$(cat ${PACKAGE_FILE})")"
 echo "${TMP_RUN}" > ${NEW_TARGET_SYSDIR}/temp/TEMP-run.sh
+pushd ${NEW_BASE_DIR} > /dev/null
 bash -e -x ${NEW_TARGET_SYSDIR}/temp/TEMP-run.sh
+popd
 #bash -e -x ${PACKAGE_FILE}
 if [ "x$?" == "x0" ]; then
 	echo "完成。"

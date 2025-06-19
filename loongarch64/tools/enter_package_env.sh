@@ -155,7 +155,11 @@ function overlay_mount
 
 #	LOWERDIR_LIST="${NEW_TARGET_SYSDIR}/overlaydir/.lowerdir"
 	LOWERDIR_LIST=""
-	OVERLAY_DIR=$(get_overlay_dirname ${2})
+	if [ -f ${2} ]; then
+		OVERLAY_DIR=$(get_overlay_dirname ${2})
+	else
+		OVERLAY_DIR=""
+	fi
 
 
 # 	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
@@ -182,7 +186,11 @@ echo "SET_OVERLAY_DIR: ${SET_OVERLAY_DIR}"
 
 echo "SET_PARENT_DIR: ${SET_PARENT_DIR}"
 
-	OVERLAY_PARENT_LIST=$(cat ${2} | grep "parent_dirs=" | head -n1 | gawk -F'=' '{ print $2 }')
+	if [ -f ${2} ]; then
+		OVERLAY_PARENT_LIST=$(cat ${2} | grep "parent_dirs=" | head -n1 | gawk -F'=' '{ print $2 }')
+	else
+		OVERLAY_PARENT_LIST=""
+	fi
 	if [ "x${OVERLAY_PARENT_LIST}" != "x" ]; then
 		for i in ${OVERLAY_PARENT_LIST}
 		do
@@ -516,7 +524,7 @@ fi
 
 
 declare STEP_OVERLAY_TEMP_FIX=0
-if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ] || [ "x${SET_PARENT_DIR}" != "x" ]; then
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
 		if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
 			STEP_OVERLAY_TEMP_FIX="$(cat ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set | grep "temp_fix=" | tail -n1 | awk -F'=' '{ print $2 }')"
@@ -532,6 +540,17 @@ if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
 	else
 		overlay_mount ${STEP_STAGE} ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set "2"
 	fi
+# else
+#	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
+#		if [ "x${STEP_PACKAGE}" != "x" ]; then
+#			if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${STEP_PACKAGE}.tempfix ]; then
+#				STEP_OVERLAY_TEMP_FIX=1
+#			fi
+#		fi
+#		overlay_mount ${STEP_STAGE} ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set "${STEP_OVERLAY_TEMP_FIX}"
+#	else
+#		overlay_mount ${STEP_STAGE} ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set "2"
+#	fi
 fi
 
 
@@ -550,6 +569,7 @@ if [ "x${STEP_PACKAGE}" != "x" ]; then
 	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/config
 	source ${NEW_BASE_DIR}/env/distro.info
 	source ${NEW_BASE_DIR}/env/function.sh
+	source ${NEW_TARGET_SYSDIR}/set_env.conf
 if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom ]; then
 	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom
 fi
@@ -561,6 +581,7 @@ else
 	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/config
 	source ${NEW_BASE_DIR}/env/distro.info
 	source ${NEW_BASE_DIR}/env/function.sh
+	source ${NEW_TARGET_SYSDIR}/set_env.conf
 if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom ]; then
 	source ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom
 fi
@@ -587,7 +608,11 @@ fi
 if [ "x${USE_SET_ENV_COUNT}" != "x0" ]; then
 echo ""
 echo -e "\e[33m当前设置的调试环境中定义了转换变量，该变量的使用可能会需要用到一些自定义命令，这些命令定义在 ${BASE_DIR}/env/function.sh 中，请使用以下命令使得这些自定义命令得以生效。\e[0m"
-echo -e "\e[32msource ${BASE_DIR}/env/function.sh\e[0m"
+echo -e "\e[32msource ${NEW_BASE_DIR}/env/function.sh\e[0m"
+echo -e "\e[32msource ${NEW_TARGET_SYSDIR}/set_env.conf\e[0m"
+if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom ]; then
+	echo -e "\e[32msource ${NEW_BASE_DIR}/env/${STEP_STAGE}/custom\e[0m"
+fi
 echo ""
 fi
 
