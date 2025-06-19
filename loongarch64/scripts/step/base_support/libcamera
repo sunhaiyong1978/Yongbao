@@ -8,11 +8,10 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libcamera/git-default
 rm -rf ${BUILD_DIRECTORY}/libcamera-git-default_git
 tar xvf ${DOWNLOADDIR}/libcamera-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libcamera-git-default_git
-	patch -Np1 -i ${SYSDIR}/files/base_support/libcamera/git-default/patches/0001-libcamera-fix-for-python-3.12.patch 
-	 
+	
 	mkdir cross-build
 	pushd cross-build
-		 meson ${MESON_CONFIG}  \
+		CXXFLAGS="${CXXFLAGS} -Wno-error=cpp" meson ${MESON_CONFIG} -Ddocumentation=disabled \
                       ..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}

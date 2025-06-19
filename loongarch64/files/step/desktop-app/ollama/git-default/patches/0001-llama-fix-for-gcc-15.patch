@@ -1,0 +1,24 @@
+From 51e690ece877b291782d8e8ea97fc642562fc8ec Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 5 May 2025 11:16:53 +0000
+Subject: [PATCH] llama fix for gcc 15.
+
+---
+ llama/llama.cpp/src/llama-mmap.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/llama/llama.cpp/src/llama-mmap.h b/llama/llama.cpp/src/llama-mmap.h
+index 6bcddee..a820582 100644
+--- a/llama/llama.cpp/src/llama-mmap.h
++++ b/llama/llama.cpp/src/llama-mmap.h
+@@ -2,6 +2,7 @@
+ 
+ #include <memory>
+ #include <vector>
++#include <cstdint>
+ 
+ struct llama_file;
+ struct llama_mmap;
+-- 
+2.31.1
+

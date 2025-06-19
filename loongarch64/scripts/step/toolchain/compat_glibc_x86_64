@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=compat_glibc_x86_64
-export PACKAGE_VERSION=2.35
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/compat_glibc_x86_64/2.35/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.35
-tar xvf ${DOWNLOADDIR}/glibc-2.35.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.35
+export PACKAGE_VERSION=2.28
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/compat_glibc_x86_64/2.28/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.28
+tar xvf ${DOWNLOADDIR}/glibc-2.28.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.28
     
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
@@ -20,27 +20,28 @@ pushd ${BUILD_DIRECTORY}/glibc-2.35
 
     COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
 
-    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
+    TARGET_CROSSTOOLCHAIN_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools"
+    PATH=${TARGET_CROSSTOOLCHAIN_DIR}/bin:${PATH}
 
     mkdir -p build
     pushd build
         BUILD_CC="gcc" \
-	CC="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
-        CXX="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
+	CC="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
+	CXX="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
         AS="${COMPAT_TARGET}-as" AR="${COMPAT_TARGET}-ar" RANLIB="${COMPAT_TARGET}-ranlib" \
         ../configure --prefix=/usr --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
-	                 --with-binutils=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin \
-	                 --with-headers=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target/usr/include \
+	                 --with-binutils=${TARGET_CROSSTOOLCHAIN_DIR}/bin \
+	                 --with-headers=${TARGET_CROSSTOOLCHAIN_DIR}/target/usr/include \
 	                 --enable-stack-protector=strong --enable-add-ons \
 	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib${LIB_SUFF} \
 	                 --enable-kernel=4.15
 	make -j${JOBS}
 
-	mkdir -pv ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target/usr/lib{,64}
+	mkdir -pv ${TARGET_CROSSTOOLCHAIN_DIR}/target/usr/lib{,64}
 
-        INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target"
+	INSTALL_DIST_DIR="${TARGET_CROSSTOOLCHAIN_DIR}/target"
 	make DESTDIR=${INSTALL_DIST_DIR} install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.35
+rm -rf ${BUILD_DIRECTORY}/glibc-2.28

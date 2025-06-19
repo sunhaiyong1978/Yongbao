@@ -19,7 +19,9 @@ pushd ${BUILD_DIRECTORY}/bzip2-1.0.8
 	cp -v bzip2-shared ${LINUX_SYSROOT_DIR}/bin/bzip2
 	cp -av libbz2.so* ${LINUX_SYSROOT_DIR}/lib${LIB_SUFF}
 	if [ "x${LIB_SUFF}" != "x" ]; then
-		mv ${LINUX_SYSROOT_DIR}/usr/lib/libbz2.a ${LINUX_SYSROOT_DIR}/lib${LIB_SUFF}/
+		if [ "x${ARCH_NAME}" != "xaarch64" ]; then
+			mv ${LINUX_SYSROOT_DIR}/usr/lib/libbz2.a ${LINUX_SYSROOT_DIR}/lib${LIB_SUFF}/
+		fi
 	fi
 	ln -sfv ../../lib${LIB_SUFF}/libbz2.so.1.0 ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/libbz2.so
 	ln -sfv bzip2 ${LINUX_SYSROOT_DIR}/bin/bunzip2

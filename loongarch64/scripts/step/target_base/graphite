@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/graphite/1.3.14/
 rm -rf ${BUILD_DIRECTORY}/graphite-1.3.14
 tar xvf ${DOWNLOADDIR}/graphite-1.3.14.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/graphite-1.3.14
+    patch -Np1 -i ${SYSDIR}/files/target_base/graphite/1.3.14/patches/0001-graphite-1.3.14-fix-for-gcc-15.patch 
+	 
     sed -i "/mfpmath/d" src/CMakeLists.txt
     mkdir cross-build
     pushd cross-build

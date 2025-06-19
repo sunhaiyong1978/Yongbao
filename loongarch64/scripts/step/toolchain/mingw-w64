@@ -18,11 +18,7 @@ pushd ${BUILD_DIRECTORY}/mingw-w64-v12.0.0
 
 	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/bin:${PATH}
 
-	if [ "x$(get_user_set_env compat)" == "x1" ]; then
-		INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}-compat/cross-tools/target"
-	else
 		INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${MINGW_HOST}/cross-tools/target"
-	fi
 
 	pushd mingw-w64-headers
 		mkdir -p build

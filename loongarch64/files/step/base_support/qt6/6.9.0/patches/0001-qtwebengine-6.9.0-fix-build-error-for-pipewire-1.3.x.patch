@@ -1,0 +1,34 @@
+From b9a40fe3f1ef6907e1e3cfeed93598c75205d962 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 16 May 2025 02:19:40 +0000
+Subject: [PATCH] qtwebengine 6.9.0 fix build error for pipewire 1.3.x
+
+---
+ .../webrtc/modules/video_capture/linux/pipewire_session.cc    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/pipewire_session.cc b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/pipewire_session.cc
+index e9f7f765a5..8858fab0b0 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/pipewire_session.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/pipewire_session.cc
+@@ -85,7 +85,7 @@ PipeWireNode::PipeWireNode(PipeWireSession* session,
+       .param = OnNodeParam,
+   };
+ 
+-  pw_node_add_listener(proxy_, &node_listener_, &node_events, this);
++  pw_node_add_listener((pw_node *)proxy_, &node_listener_, &node_events, this);
+ }
+ 
+ // static
+@@ -117,7 +117,7 @@ void PipeWireNode::OnNodeInfo(void* data, const pw_node_info* info) {
+       uint32_t id = info->params[i].id;
+       if (id == SPA_PARAM_EnumFormat &&
+           info->params[i].flags & SPA_PARAM_INFO_READ) {
+-        pw_node_enum_params(that->proxy_, 0, id, 0, UINT32_MAX, nullptr);
++        pw_node_enum_params((pw_node *)that->proxy_, 0, id, 0, UINT32_MAX, nullptr);
+         break;
+       }
+     }
+-- 
+2.31.1
+

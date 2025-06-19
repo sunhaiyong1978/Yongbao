@@ -4,15 +4,15 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt5
-export PACKAGE_VERSION=5.15.16
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt5/5.15.16/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.16
-tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.16.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.16
-    patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.16/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.16/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.16/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.16/patches/qtlocation-fix-rapidjson-build.patch -d qtlocation 
+export PACKAGE_VERSION=5.15.17
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt5/5.15.17/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.17
+tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.17.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.17
+    patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.17/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.17/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.17/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt5/5.15.17/patches/qtlocation-fix-rapidjson-build.patch -d qtlocation 
 	 
     sed -i "s@defined(__aarch64__)@& || defined(__loongarch__)@g" qtbase/src/3rdparty/forkfd/forkfd_linux.c
     mkdir host-build
@@ -22,14 +22,13 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.16
                 -openssl-linked -system-harfbuzz -system-sqlite \
                 -nomake examples \
                 -journald \
-		-rpath -R "${CROSSTOOLS_DIR}/lib${LIB_SUFF}" -R "${HOST_TOOLS_DIR}/lib${LIB_SUFF}" -R "${HOST_TOOLS_DIR}/lib" -R "\\\${ORIGIN}/../lib${LIB_SUFF}" -R "${CROSSTOOLS_DIR}/lib" \
 		ICU_PREFIX=${CROSSTOOLS_DIR} ICU_LIBS="-licui18n -licuuc -licudata" \
                 -skip qtwebengine
         make -j${JOBS}
         make install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.16
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.17
 
 echo "#!/bin/bash -e
 if [ \"x\${1:0:1}\" == \"xQ\" ]; then

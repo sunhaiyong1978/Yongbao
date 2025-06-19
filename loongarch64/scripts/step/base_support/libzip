@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libzip
-export PACKAGE_VERSION=1.11.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libzip/1.11.3/
-rm -rf ${BUILD_DIRECTORY}/libzip-1.11.3
-tar xvf ${DOWNLOADDIR}/libzip-1.11.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libzip-1.11.3
+export PACKAGE_VERSION=1.11.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libzip/1.11.4/
+rm -rf ${BUILD_DIRECTORY}/libzip-1.11.4
+tar xvf ${DOWNLOADDIR}/libzip-1.11.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libzip-1.11.4
         
 	mkdir cross-build
 	pushd cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/libzip-1.11.3
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libzip-1.11.3
+rm -rf ${BUILD_DIRECTORY}/libzip-1.11.4

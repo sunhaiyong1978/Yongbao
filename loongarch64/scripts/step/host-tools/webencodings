@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/webencodings-0.5.1
 tar xvf ${DOWNLOADDIR}/webencodings-0.5.1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/webencodings-0.5.1
 	
-	${HOST_TOOLS_DIR}/bin/python3 setup.py build
-        ${HOST_TOOLS_DIR}/bin/python3 setup.py install
+	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user webencodings
 popd 
 rm -rf ${BUILD_DIRECTORY}/webencodings-0.5.1

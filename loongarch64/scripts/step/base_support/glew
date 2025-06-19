@@ -15,8 +15,7 @@ pushd ${BUILD_DIRECTORY}/glew-2.2.0
 
     sed -i "s@ -s @ @g" Makefile
     make -j${JOBS} CC="${CROSS_TARGET}-gcc" LD="${CROSS_TARGET}-gcc" \
-         STRIP="${CROSS_TARGET}-strip" \
-         CFLAGS.EXTRA="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib64"
+         STRIP="${CROSS_TARGET}-strip"
     make PKGDIR=/usr/lib64/pkgconfig DESTDIR=${SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/glew-2.2.0

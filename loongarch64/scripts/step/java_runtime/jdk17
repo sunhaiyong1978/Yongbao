@@ -9,12 +9,11 @@ rm -rf ${BUILD_DIRECTORY}/jdk17-17u_git
 tar xvf ${DOWNLOADDIR}/jdk17-17u_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/jdk17-17u_git
     sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
-    LDFLAGS="" CC="${CROSS_TARGET}-gcc" BUILD_SYSROOT_LDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/build-tools/lib64" \
+    LDFLAGS="" CC="${CROSS_TARGET}-gcc" \
     sh ./configure --prefix=/usr --host=${CROSS_TARGET} \
                 --with-zlib=system --with-libpng=system --enable-unlimited-crypto \
                 --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \
                 --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon" \
-                --with-extra-ldflags="-Wl,-rpath-link=${SYSROOT_DIR}/usr/lib64" \
                 --with-stdc++lib=dynamic \
                 --with-boot-jdk=${CROSSTOOLS_DIR}/jdk17-bootstrap \
                 --disable-warnings-as-errors

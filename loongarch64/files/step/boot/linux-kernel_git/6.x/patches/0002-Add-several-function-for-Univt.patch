@@ -1,6 +1,6 @@
-From 06e9158fb78859db14d1212e02412da2cfcf299e Mon Sep 17 00:00:00 2001
+From 6eec10e920cebb6ca8b3274d670df02ba29176b7 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Tue, 26 Mar 2024 12:19:47 +0000
+Date: Mon, 9 Jun 2025 01:47:33 +0000
 Subject: [PATCH 2/9] Add several function for Univt.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -14,10 +14,10 @@ Provide several essential functions for Univt.
  2 files changed, 21 insertions(+)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 13e199013..ab0223ca5 100644
+index 62d62bb36..f97db7243 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -294,6 +294,13 @@ static inline u16 *screenpos(const struct vc_data *vc, unsigned int offset,
+@@ -293,6 +293,13 @@ static inline u16 *screenpos(const struct vc_data *vc, unsigned int offset,
  	return (u16 *)(origin + offset);
  }
  
@@ -32,7 +32,7 @@ index 13e199013..ab0223ca5 100644
  {
  	if (vc->vc_sw->con_putc)
 diff --git a/drivers/video/fbdev/core/bitblit.c b/drivers/video/fbdev/core/bitblit.c
-index 3ff1b2a86..4ecacec7a 100644
+index f9475c14f..147063bd7 100644
 --- a/drivers/video/fbdev/core/bitblit.c
 +++ b/drivers/video/fbdev/core/bitblit.c
 @@ -43,6 +43,20 @@ static void update_attr(u8 *dst, u8 *src, int attribute,

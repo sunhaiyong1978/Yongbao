@@ -20,10 +20,22 @@ pushd ${BUILD_DIRECTORY}/zlib-1.3.1
     LIB_SUFF=$(archbit_to_lib_suff "${CROSS_ARCH_BIT}")
     INSTALL_PREFIX_DIR=$(archname_to_anyparm "${CROSS_TARGET}" "PREFIX_DIR" "/usr")
 
-    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+    TARGET_VENDOR=$(get_user_set_env vendor "unknown")
+
+    if [ "x$(get_user_set_env compat)" == "x1" ] || [ "x$(get_user_set_env target_compat)" == "x1" ]; then
 	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
     else
-	COMPAT_TARGET="${CROSS_TARGET}"
+	case "x${TARGET_VENDOR}" in
+		"xunknown")
+			COMPAT_TARGET="${CROSS_TARGET}"
+			;;
+		"xNULL")
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@-unknown-@-@g")"
+			;;
+		*)
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+			;;
+	esac
     fi
 
 

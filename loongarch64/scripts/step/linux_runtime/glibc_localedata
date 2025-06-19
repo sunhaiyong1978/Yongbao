@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/glibc-2.41
         pushd build-locale
 		export LDFLAGS=""
 		export CFLAGS=""
+		CC="/bin/gcc" CXX="/bin/g++" \
                 ../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
                          --enable-stack-protector=strong --enable-add-ons \
                          --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF}

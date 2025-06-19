@@ -11,9 +11,12 @@ pushd ${BUILD_DIRECTORY}/box64-git-default_git
         
         mkdir cross-build
         pushd cross-build
-                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+                CC="clang" CXX="clang" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
+		      -DCMAKE_C_FLAGS="${CFLAGS} -target ${CROSS_TARGET}" \
+		      -DCMAKE_CXX_FLAGS="${CXXFLAGS} -target ${CROSS_TARGET}" \
+		      -DCMAKE_ASM_FLAGS="-target ${CROSS_TARGET}" \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
                       -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
                       -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \

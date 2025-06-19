@@ -1,6 +1,6 @@
-From cb50d4096638c1a050ad4e623e07820313ed3d20 Mon Sep 17 00:00:00 2001
+From 0e86e07e06558b1c2dc7bbab0cdf44a807474fbb Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Tue, 26 Mar 2024 12:19:13 +0000
+Date: Mon, 9 Jun 2025 01:45:40 +0000
 Subject: [PATCH 1/9] double tty VT screenbuf for univt.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -12,10 +12,10 @@ Content-Transfer-Encoding: 8bit
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 9b5b98dfc..13e199013 100644
+index ed39d9cb4..62d62bb36 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -1081,7 +1081,7 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
+@@ -1089,7 +1089,7 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
  	    vc->vc_screenbuf_size > KMALLOC_MAX_SIZE || !vc->vc_screenbuf_size)
  		goto err_free;
  	err = -ENOMEM;
@@ -24,7 +24,7 @@ index 9b5b98dfc..13e199013 100644
  	if (!vc->vc_screenbuf)
  		goto err_free;
  
-@@ -1171,7 +1171,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+@@ -1179,7 +1179,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
  
  	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
  		return -EINVAL;
@@ -33,7 +33,7 @@ index 9b5b98dfc..13e199013 100644
  	if (!newscreen)
  		return -ENOMEM;
  
-@@ -3653,7 +3653,7 @@ static int __init con_init(void)
+@@ -3744,7 +3744,7 @@ static int __init con_init(void)
  		tty_port_init(&vc->port);
  		visual_init(vc, currcons, true);
  		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */

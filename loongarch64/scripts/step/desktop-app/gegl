@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=gegl
-export PACKAGE_VERSION=0.4.58
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gegl/0.4.58/
-rm -rf ${BUILD_DIRECTORY}/gegl-0.4.58
-tar xvf ${DOWNLOADDIR}/gegl-0.4.58.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gegl-0.4.58
+export PACKAGE_VERSION=0.4.62
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gegl/0.4.62/
+rm -rf ${BUILD_DIRECTORY}/gegl-0.4.62
+tar xvf ${DOWNLOADDIR}/gegl-0.4.62.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gegl-0.4.62
         
         mkdir cross-build
         pushd cross-build
@@ -18,7 +18,7 @@ pushd ${BUILD_DIRECTORY}/gegl-0.4.58
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gegl-0.4.58
+rm -rf ${BUILD_DIRECTORY}/gegl-0.4.62
 
 echo "#!/bin/bash -e
 qemu-${ARCH_NAME} -E GEGL_PATH=${SYSROOT_DIR}/usr/lib64/gegl-0.4 ${SYSROOT_DIR}/usr/bin/gegl \"\$@\"" > ${CROSSTOOLS_DIR}/bin/gegl

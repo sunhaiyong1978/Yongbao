@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=m4
-export PACKAGE_VERSION=1.4.19
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/m4/1.4.19/
-rm -rf ${BUILD_DIRECTORY}/m4-1.4.19
-tar xvf ${DOWNLOADDIR}/m4-1.4.19.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/m4-1.4.19
-	patch -Np1 -i ${SYSDIR}/files/host-tools/m4/1.4.19/patches/stack-direction-add-loongarch.patch 
-	 
+export PACKAGE_VERSION=1.4.20
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/m4/1.4.20/
+rm -rf ${BUILD_DIRECTORY}/m4-1.4.20
+tar xvf ${DOWNLOADDIR}/m4-1.4.20.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/m4-1.4.20
+	
         for config_i in $(find -name "config.sub")
         do
                 cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -20,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/m4-1.4.19
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/m4-1.4.19
+rm -rf ${BUILD_DIRECTORY}/m4-1.4.20

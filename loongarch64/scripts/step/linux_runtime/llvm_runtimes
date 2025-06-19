@@ -1,0 +1,56 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=llvm_runtimes
+export PACKAGE_VERSION=20.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/llvm_runtimes/20.1.5/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-20.1.5.src
+tar xvf ${DOWNLOADDIR}/llvm-project-20.1.5.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-20.1.5.src
+    pushd compiler-rt
+        mkdir cross-build
+        pushd cross-build
+            CC="clang" CXX="clang++" \
+            cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
+                  -DLLVM_CONFIG=${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/${LINUX_HOST}-llvm-config \
+                  -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF} \
+                  -DCMAKE_AR="${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/llvm-ar" \
+                  -DCMAKE_RANLIB="${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/llvm-ranlib" \
+                  -DCMAKE_C_FLAGS="-DNDEBUG -target ${LINUX_HOST}" \
+		  -DCMAKE_CXX_FLAGS="-DNDEBUG -target ${LINUX_HOST}" \
+		  -DCMAKE_ASM_FLAGS="-target ${LINUX_HOST}" \
+                  -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
+                  -DCMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
+                  -DCMAKE_FIND_ROOT_PATH=${LINUX_SYSROOT_DIR}/usr \
+		  -DLLVM_USE_SANITIZER:BOOL=ON \
+                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+                  -DLLVM_HOST_TRIPLE=${LINUX_HOST}
+             eval ${NINJA_AND_INSTALL}
+        popd
+    popd
+
+    pushd runtimes
+        mkdir cross-build
+        pushd cross-build
+            CC="clang" CXX="clang++" \
+            cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release \
+                  -DLLVM_CONFIG=${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/${LINUX_HOST}-llvm-config \
+                  -DLLVM_LIBDIR_SUFFIX=${LIB_SUFF} \
+                  -DCMAKE_AR="${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/llvm-ar" \
+                  -DCMAKE_RANLIB="${SYSDIR}/cross-toolchains/${LINUX_HOST}/bin/llvm-ranlib" \
+                  -DCMAKE_C_FLAGS="-DNDEBUG -target ${LINUX_HOST}" \
+		  -DCMAKE_CXX_FLAGS="-DNDEBUG -target ${LINUX_HOST}" \
+		  -DCMAKE_ASM_FLAGS="-target ${LINUX_HOST}" \
+		  -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;pstl;libcxx" \
+                  -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
+                  -DCMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
+                  -DCMAKE_FIND_ROOT_PATH=${LINUX_SYSROOT_DIR}/usr \
+                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+                  -DLLVM_HOST_TRIPLE=${LINUX_HOST}
+             eval ${NINJA_AND_INSTALL}
+        popd
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/llvm-project-20.1.5.src

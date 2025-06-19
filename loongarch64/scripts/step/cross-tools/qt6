@@ -4,18 +4,14 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.8.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.8.3/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.8.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.3/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.3/patches/0001-qt6-6.7.2-fix-for-gcc-15.patch 
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.8.3/patches/0004-qt6webengine-add-host-ldflags-for-cross-build.patch 
+export PACKAGE_VERSION=6.9.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.9.0/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.9.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.9.0/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
 	 
 
-	sed -i "/embree/d" qtquick3d/src/3rdparty/CMakeLists.txt
-	sed -i "/QT_QUICK3D_HAS_EMBREE/d" qtquick3d/src/3rdparty/CMakeLists.txt
 
 	mkdir -p native-build
 	pushd native-build
@@ -23,30 +19,20 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
 		      -DCMAKE_BUILD_TYPE=RELEASE \
 		      -DICU_ROOT=${HOST_TOOLS_DIR} \
 		      -DQT_FEATURE_system_freetype=OFF \
-		      -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};${CROSSTOOLS_DIR}/lib;${HOST_TOOLS_DIR}/lib${LIB_SUFF};${HOST_TOOLS_DIR}/lib;\\\${ORIGIN}/../lib${LIB_SUFF}" \
 		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat\;qtopcua \
 		      ..
 		eval ${MAKE_AND_INSTALL}
 	popd
 	mkdir -p ${CROSSTOOLS_DIR}/qt6/lib64/qt6/
 	ln -sf ${CROSSTOOLS_DIR}/qt6/libexec ${CROSSTOOLS_DIR}/qt6/lib64/qt6/
-	sed -i "s#@YONGBAO_HOST_LDFLAGS@#-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib:${HOST_TOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib:${HOST_TOOLS_DIR}/lib64/#g" qtwebengine/src/host/BUILD.toolchain.gn.in
 	pushd qtwebengine/src/gn
 		mkdir -p build
 		pushd build
 			cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}/qt6 \
 	                      -DCMAKE_BUILD_TYPE=RELEASE \
-		      	      -DCMAKE_INSTALL_RPATH="${CROSSTOOLS_DIR}/lib${LIB_SUFF};${CROSSTOOLS_DIR}/lib;${HOST_TOOLS_DIR}/lib${LIB_SUFF};${HOST_TOOLS_DIR}/lib;\\\${ORIGIN}/../lib${LIB_SUFF}" \
         	              ..
 			eval ${MAKE_AND_INSTALL}
 		popd
-		mv ${CROSSTOOLS_DIR}/qt6/bin/gn{,.orig}
-cat > ${CROSSTOOLS_DIR}/qt6/bin/gn << EOF
-#!/bin/bash -e
-LD_LIBRARY_PATH=${HOST_TOOLS_DIR}/lib64/ \
-${CROSSTOOLS_DIR}/qt6/bin/gn.orig "\$@"
-EOF
-		chmod +x ${CROSSTOOLS_DIR}/qt6/bin/gn
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0

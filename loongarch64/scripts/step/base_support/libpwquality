@@ -8,16 +8,17 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libpwquality/1.4.5/
 rm -rf ${BUILD_DIRECTORY}/libpwquality-1.4.5
 tar xvf ${DOWNLOADDIR}/libpwquality-1.4.5.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libpwquality-1.4.5
+    patch -Np1 -i ${SYSDIR}/files/base_support/libpwquality/1.4.5/patches/setuptools.patch 
+	 
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
-    _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     ./configure ${COMMON_CONFIG} --with-securedir=/usr/lib/security \
-                --with-python-binary=python3
+                --with-python-binary=${CROSS_TARGET}-python3
+    CC=${CROSS_TARGET}-gcc \
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
-    _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     make -j${JOBS}
+    CC=${CROSS_TARGET}-gcc \
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
-    _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     make DESTDIR=${SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/libpwquality-1.4.5

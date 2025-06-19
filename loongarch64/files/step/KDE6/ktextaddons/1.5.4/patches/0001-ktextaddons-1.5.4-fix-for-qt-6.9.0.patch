@@ -1,0 +1,24 @@
+From dae44401044a97e08e9d56d01c996fc02d173924 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 3 Jun 2025 01:33:28 +0000
+Subject: [PATCH] ktextaddons 1.5.4 fix for qt 6.9.0
+
+---
+ texttranslator/translator/plugins/google/googleengineplugin.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/texttranslator/translator/plugins/google/googleengineplugin.cpp b/texttranslator/translator/plugins/google/googleengineplugin.cpp
+index f7400dd..2ce78c7 100644
+--- a/texttranslator/translator/plugins/google/googleengineplugin.cpp
++++ b/texttranslator/translator/plugins/google/googleengineplugin.cpp
+@@ -13,6 +13,7 @@
+ #include <QNetworkReply>
+ #include <QNetworkRequest>
+ #include <QUrlQuery>
++#include <QRegularExpression>
+ #include <TextTranslator/TranslatorEngineAccessManager>
+ 
+ GoogleEnginePlugin::GoogleEnginePlugin(QObject *parent)
+-- 
+2.31.1
+

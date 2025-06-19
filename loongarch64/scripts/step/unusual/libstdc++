@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=unusual
 export STEP_PACKAGENAME=libstdc++
-export PACKAGE_VERSION=14.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/libstdc++/14.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
-tar xvf ${DOWNLOADDIR}/gcc-14.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-14.2.0
-	patch -Np1 -i ${SYSDIR}/files/unusual/libstdc++/14.2.0/patches/0001-gcc-13-add-cmodule-medium-for-loongarch-libgcc.patch 
+export PACKAGE_VERSION=15.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/libstdc++/15.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0
+tar xvf ${DOWNLOADDIR}/gcc-15.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-15.1.0
+	patch -Np1 -i ${SYSDIR}/files/unusual/libstdc++/15.1.0/patches/0001-gcc-13-add-cmodule-medium-for-loongarch-libgcc.patch 
 	 
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv cross-build
@@ -25,4 +25,4 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 		make -j${JOBS}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0

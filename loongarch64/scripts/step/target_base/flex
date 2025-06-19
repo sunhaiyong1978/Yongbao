@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/flex/2.6.4/
 rm -rf ${BUILD_DIRECTORY}/flex-2.6.4
 tar xvf ${DOWNLOADDIR}/flex-2.6.4.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/flex-2.6.4
-	
+	patch -Np1 -i ${SYSDIR}/files/target_base/flex/2.6.4/patches/0001-flex-2.6.4-fix-build-error-for-gcc-15.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}

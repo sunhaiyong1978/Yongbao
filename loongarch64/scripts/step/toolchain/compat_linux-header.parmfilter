@@ -1,0 +1,4 @@
+target=!mingw64ucrt
+host=!mingw64ucrt
+compat=1
+target_compat=1

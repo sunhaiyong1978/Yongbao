@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/toml-0.10.2
 tar xvf ${DOWNLOADDIR}/toml-0.10.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/toml-0.10.2
 	
-	${HOST_TOOLS_DIR}/bin/python3 setup.py build
-        ${HOST_TOOLS_DIR}/bin/python3 setup.py install
+	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user toml
 popd 
 rm -rf ${BUILD_DIRECTORY}/toml-0.10.2

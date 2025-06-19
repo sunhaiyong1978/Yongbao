@@ -1,0 +1,25 @@
+From 0758858212875775a1b0256a9cb9c1f4ad6d6cd6 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 13 Jun 2025 02:31:23 +0000
+Subject: [PATCH] fix test amdgpu for cross build.
+
+---
+ configure | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure b/configure
+index 99c7cf0..2b20cac 100755
+--- a/configure
++++ b/configure
+@@ -893,7 +893,7 @@ fi
+ 
+ if compile_prog "$amdgpu_drm_cflags" "" ; then
+     if $cc $amdgpu_drm_cflags -o ./conftest$EXESUF $TMPC ; then
+-        struct_size=$(./conftest$EXESUF)
++        struct_size=$(qemu-ARCH_NAME ./conftest$EXESUF)
+         echo "Detected drm_amdgpu_gem_va size: $struct_size"
+         if test "$struct_size" -eq 40; then
+             amdgpu_gem_va_old=yes
+-- 
+2.31.1
+

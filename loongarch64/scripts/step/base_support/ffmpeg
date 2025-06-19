@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ffmpeg/7.1.1/
 rm -rf ${BUILD_DIRECTORY}/ffmpeg-7.1.1
 tar xvf ${DOWNLOADDIR}/ffmpeg-7.1.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ffmpeg-7.1.1
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/ffmpeg/7.1.1/patches/ffmpeg-7.1.1-chromium_method-1.patch 
+	 
 	./configure --prefix=/usr --libdir=/usr/lib64 \
                 --cross-prefix=${CROSS_TARGET}- --sysroot=${SYSROOT_DIR} \
                 --enable-gpl         \

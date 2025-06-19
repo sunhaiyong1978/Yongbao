@@ -1,0 +1,24 @@
+From f8978d227a7bcdad7ff61f043592f191045e616d Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 1 May 2025 07:42:00 +0000
+Subject: [PATCH] woff2 1.0.2 fix for gcc 15.
+
+---
+ include/woff2/output.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/woff2/output.h b/include/woff2/output.h
+index c325f67..f562933 100644
+--- a/include/woff2/output.h
++++ b/include/woff2/output.h
+@@ -13,6 +13,7 @@
+ #include <cstring>
+ #include <memory>
+ #include <string>
++#include <cstdint>
+ 
+ namespace woff2 {
+ 
+-- 
+2.31.1
+

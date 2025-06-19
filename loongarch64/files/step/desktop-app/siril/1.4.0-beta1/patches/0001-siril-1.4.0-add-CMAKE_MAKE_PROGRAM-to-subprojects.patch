@@ -1,0 +1,46 @@
+From 32cda75093c7a99bdffe4980b33d0534d9748883 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 6 May 2025 03:56:44 +0000
+Subject: [PATCH] siril 1.4.0 add CMAKE_MAKE_PROGRAM to subprojects.
+
+---
+ meson.build | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index e831947..98eab24 100644
+--- a/meson.build
++++ b/meson.build
+@@ -298,13 +298,13 @@ if not htmesh_dep.found()
+ 
+   # Call CMake with `-DCMAKE_CXX_FLAGS="-I$(abs_srcdir)/htmesh"
+   opt_var.add_cmake_defines({'CMAKE_CXX_FLAGS': '-I'+meson.current_source_dir()+'/subprojects/htmesh'})
++  opt_var.add_cmake_defines({'CMAKE_MAKE_PROGRAM': '@NINJA_COMMAND@'})
+ if platform_windows
+   opt_var.append_compile_args('cpp', '-Wno-unknown-pragmas')
+ endif
+   sub_proj = cmake.subproject('htmesh', options: opt_var)
+ 
+   htmesh_dep = sub_proj.dependency('htmesh')
+-  htmesh_inc = sub_proj.include_directories('htmesh')
+ else
+   siril_cpp_flag += '-DHAVE_HTMESH'
+ endif
+@@ -316,13 +316,13 @@ if not yyjson_dep.found()
+   opt_var = cmake.subproject_options()
+   # Call CMake with `-DCMAKE_CXX_FLAGS="-I$(abs_srcdir)/htmesh"
+   opt_var.add_cmake_defines({'CMAKE_CXX_FLAGS': '-I'+meson.current_source_dir()+'/subprojects/yyjson'})
++  opt_var.add_cmake_defines({'CMAKE_MAKE_PROGRAM': '@NINJA_COMMAND@'})
+ if platform_windows
+   opt_var.append_compile_args('cpp', '-Wno-unknown-pragmas')
+ endif
+   sub_proj = cmake.subproject('yyjson', options: opt_var)
+ 
+   yyjson_dep = sub_proj.dependency('yyjson')
+-  yyjson_inc = sub_proj.include_directories('yyjson')
+ else
+   siril_cpp_flag += '-DHAVE_YYJSON'
+ endif
+-- 
+2.31.1
+

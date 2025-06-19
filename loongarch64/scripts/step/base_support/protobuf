@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=protobuf
-export PACKAGE_VERSION=30.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/protobuf/30.2/
-rm -rf ${BUILD_DIRECTORY}/protobuf-30.2
-tar xvf ${DOWNLOADDIR}/protobuf-30.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/protobuf-30.2
+export PACKAGE_VERSION=31.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/protobuf/31.1/
+rm -rf ${BUILD_DIRECTORY}/protobuf-31.1
+tar xvf ${DOWNLOADDIR}/protobuf-31.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/protobuf-31.1
         
         mkdir cross-build
         pushd cross-build
@@ -43,7 +43,7 @@ pushd ${BUILD_DIRECTORY}/protobuf-30.2
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/protobuf-30.2
+rm -rf ${BUILD_DIRECTORY}/protobuf-31.1
 
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/protoc \"\$@\"" \
 	> ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-protoc

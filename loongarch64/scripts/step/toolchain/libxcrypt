@@ -17,10 +17,22 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.4.38
     fi
     LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
 
-    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+    TARGET_VENDOR=$(get_user_set_env vendor "unknown")
+
+    if [ "x$(get_user_set_env compat)" == "x1" ] || [ "x$(get_user_set_env target_compat)" == "x1" ]; then
 	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
     else
-	COMPAT_TARGET="${CROSS_TARGET}"
+	case "x${TARGET_VENDOR}" in
+		"xunknown")
+			COMPAT_TARGET="${CROSS_TARGET}"
+			;;
+		"xNULL")
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@-unknown-@-@g")"
+			;;
+		*)
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+			;;
+	esac
     fi
 
 

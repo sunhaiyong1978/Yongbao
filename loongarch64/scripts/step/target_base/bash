@@ -22,7 +22,7 @@ cat > config.cache << "EOF"
 	bash_cv_unusable_rtsigs=no
 	gt_cv_int_divbyzero_sigfpe=yes
 EOF
-	
+	CFLAGS_FOR_BUILD="-std=gnu17" CFLAGS="-std=gnu17" \
 	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
 	            --host=${CROSS_TARGET} --without-bash-malloc \
 	            --with-installed-readline=${SYSROOT_DIR}/usr --cache-file=config.cache

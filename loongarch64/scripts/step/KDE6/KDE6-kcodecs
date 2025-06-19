@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kcodecs
-export PACKAGE_VERSION=6.13.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kcodecs/6.13.0/
-rm -rf ${BUILD_DIRECTORY}/kcodecs-6.13.0
-tar xvf ${DOWNLOADDIR}/kcodecs-6.13.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kcodecs-6.13.0
+export PACKAGE_VERSION=6.14.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kcodecs/6.14.0/
+rm -rf ${BUILD_DIRECTORY}/kcodecs-6.14.0
+tar xvf ${DOWNLOADDIR}/kcodecs-6.14.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kcodecs-6.14.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/kcodecs-6.13.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kcodecs-6.13.0
+rm -rf ${BUILD_DIRECTORY}/kcodecs-6.14.0

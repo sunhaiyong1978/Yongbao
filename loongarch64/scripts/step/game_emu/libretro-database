@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=game_emu
 export STEP_PACKAGENAME=libretro-database
-export PACKAGE_VERSION=1.20.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/libretro-database/1.20.0/
-rm -rf ${BUILD_DIRECTORY}/libretro-database-1.20.0
-tar xvf ${DOWNLOADDIR}/libretro-database-1.20.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libretro-database-1.20.0
+export PACKAGE_VERSION=1.21.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/libretro-database/1.21.1/
+rm -rf ${BUILD_DIRECTORY}/libretro-database-1.21.1
+tar xvf ${DOWNLOADDIR}/libretro-database-1.21.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libretro-database-1.21.1
 	make INSTALLDIR=/usr/share/retroarch/database DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libretro-database-1.20.0
+rm -rf ${BUILD_DIRECTORY}/libretro-database-1.21.1

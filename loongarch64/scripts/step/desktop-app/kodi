@@ -21,7 +21,6 @@ pushd ${BUILD_DIRECTORY}/xbmc-21.2-Omega
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
 		CXXFLAGS="${CXXFLAGS} -DTIXML_USE_STL" CFLAGS="${CFLAGS} -DTIXML_USE_STL" \
-		LDFLAGS="${LDFLAGS} -Wl,-rpath-link=${SYSROOT_DIR}/usr/lib64/samba" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \

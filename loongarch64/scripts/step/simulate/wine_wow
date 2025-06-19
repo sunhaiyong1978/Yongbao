@@ -1,0 +1,77 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+source scripts/step/simulate/wine_wow.env
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=wine_wow
+export PACKAGE_VERSION=10.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine_wow/10.9/
+rm -rf ${BUILD_DIRECTORY}/wine-10.9
+tar xvf ${DOWNLOADDIR}/wine-10.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-10.9
+	if [ -f ${RESOURCEDIR}/wine-staging.url ]; then
+		git init
+		mkdir -p wine-staging
+		tar xvf ${RESOURCEDIR}/files/wine-staging.tar.gz --strip-components=1  -C wine-staging
+		wine-staging/staging/patchinstall.py DESTDIR=${PWD} --all
+	fi
+        
+
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+
+	mkdir -p wine-build-tools
+	pushd wine-build-tools
+		CC="gcc" CXX="g++" PKG_CONFIG_SYSROOT_DIR="" PKG_CONFIG_LIBDIR="" PKG_CONFIG_PATH="" \
+		LDFLAGS="" \
+		../configure --prefix=${PWD}/ --enable-archs=i386,x86_64 --without-x
+		make __tooldeps__
+		cp -a ../nls ./
+	popd
+
+        export RUNTIME_SYSROOT_DIR=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "RUNTIME_SYSROOT_DIR" "/usr/lib/x86_64/sys-root")
+        export LINUX_SYSROOT_DIR="${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}"
+
+
+        export PKG_CONFIG_SYSROOT_DIR="${LINUX_SYSROOT_DIR}"
+        export PKG_CONFIG_PATH="${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${LINUX_SYSROOT_DIR}/usr/share/pkgconfig"
+        export PKG_CONFIG_LIBDIR="${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${LINUX_SYSROOT_DIR}/usr/share/pkgconfig"
+
+	mkdir -p cross-build
+	pushd cross-build
+                LDFLAGS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}" \
+		CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
+        	../configure --prefix=/opt/wine-wow --build=${CROSS_HOST} --host=${LINUX_HOST} \
+			--with-wine-tools=${PWD}/../wine-build-tools \
+			PULSE_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" \
+			NETAPI_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" \
+			OSSLIBDIR=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/oss \
+			--enable-archs=i386,x86_64 \
+			--without-unwind \
+			--enable-build-id \
+			--enable-malloc0returnsnull
+	        CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+        	make DESTDIR=${SYSROOT_DIR} install
+	popd
+
+	mkdir -p ${SYSROOT_DIR}/opt/wine-wow/share/wine/{mono,gecko}
+        tar xf ${RESOURCEDIR}/files/wine-mono-$(grep "MONO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86.tar.xz -C ${SYSROOT_DIR}/opt/wine-wow/share/wine/mono/
+        tar xf ${RESOURCEDIR}/files/wine-gecko-$(grep "GECKO_VER:" tools/gitlab/test.yml | awk -F':' '{ print $2 }' | sed "s@ @@g")-x86_64.tar.xz -C ${SYSROOT_DIR}/opt/wine-wow/share/wine/gecko/
+
+	ln -sfv ../lib/wine/x86_64-unix/wine ${SYSROOT_DIR}/opt/wine-wow/bin/wine
+
+popd 
+rm -rf ${BUILD_DIRECTORY}/wine-10.9
+
+set_strip_step "/opt/wine-wow/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-unix/" "1" "*.so*" "--strip-unneeded" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
+
+set_strip_step "/opt/wine-wow/lib/wine/i386-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+set_strip_step "/opt/wine-wow/lib/wine/i386-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+set_strip_step "/opt/wine-wow/lib/wine/i386-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
+
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"

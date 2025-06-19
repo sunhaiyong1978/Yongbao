@@ -1,6 +1,6 @@
-From e4be27a3d6c2568d0f7de0f92a3208cbc0f6dc01 Mon Sep 17 00:00:00 2001
+From ac7dd51bbebbd908d815f29c824a4654f3875bf0 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Tue, 26 Mar 2024 12:21:31 +0000
+Date: Mon, 9 Jun 2025 01:52:29 +0000
 Subject: [PATCH 4/9] UniVT: Add a old_screen_size variable saves the original
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -12,10 +12,10 @@ Content-Transfer-Encoding: 8bit
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index fc0132c98..b4ba9152e 100644
+index 7ef80efa2..c4d32bc03 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -1141,7 +1141,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+@@ -1149,7 +1149,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
  {
  	unsigned long old_origin, new_origin, new_scr_end, rlth, rrem, err = 0;
  	unsigned long end;
@@ -24,7 +24,7 @@ index fc0132c98..b4ba9152e 100644
  	unsigned int new_cols, new_rows, new_row_size, new_screen_size;
  	unsigned short *oldscreen, *newscreen;
  	u32 **new_uniscr = NULL;
-@@ -1195,6 +1195,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+@@ -1203,6 +1203,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
  
  	old_rows = vc->vc_rows;
  	old_row_size = vc->vc_size_row;

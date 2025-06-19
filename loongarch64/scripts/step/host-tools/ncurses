@@ -8,15 +8,21 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ncurses/6.5/
 rm -rf ${BUILD_DIRECTORY}/ncurses-6.5
 tar xvf ${DOWNLOADDIR}/ncurses-6.5.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ncurses-6.5
-	
-        for config_i in $(find -name "config.sub")
-        do
-                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-shared --without-debug \
+                    --without-normal --enable-pc-files --without-ada \
+                    --with-pkg-config-libdir=${PREFIX}/lib${LIB_SUFF}/pkgconfig --enable-widec \
+                    --disable-stripping
+        eval ${MAKE_AND_INSTALL}
+
+        for lib in ncurses form panel menu ; do
+            rm -vf                    ${PREFIX}/lib${LIB_SUFF}/lib${lib}.so
+            echo "INPUT(-l${lib}w)" > ${PREFIX}/lib${LIB_SUFF}/lib${lib}.so
+            ln -sfv ${lib}w.pc        ${PREFIX}/lib${LIB_SUFF}/pkgconfig/${lib}.pc
         done
-        if [ ! -f configure ]; then
-                autoreconf -ifv
-        fi
-	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --without-ada --with-shared --enable-pc-files --with-pkg-config-libdir=${PREFIX}/lib64/pkgconfig 
-	eval ${MAKE_AND_INSTALL}
+
+        rm -vf  ${PREFIX}/lib${LIB_SUFF}/libcursesw.so
+        echo "INPUT(-lncursesw)" > ${PREFIX}/lib${LIB_SUFF}/libcursesw.so
+        ln -sfv libncurses.so      ${PREFIX}/lib${LIB_SUFF}/libcurses.so
+        rm -fv ${PREFIX}/lib${LIB_SUFF}/libncurses++w.a
 popd 
 rm -rf ${BUILD_DIRECTORY}/ncurses-6.5

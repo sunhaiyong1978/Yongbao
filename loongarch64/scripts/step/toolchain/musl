@@ -1,0 +1,51 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=musl
+export PACKAGE_VERSION=1.2.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/musl/1.2.5/
+rm -rf ${BUILD_DIRECTORY}/musl-1.2.5
+tar xvf ${DOWNLOADDIR}/musl-1.2.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/musl-1.2.5
+    
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+        ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env host ${CROSS_TARGET})" "MABI" "")
+    else
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+        ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env target ${CROSS_TARGET})" "MABI" "")
+    fi
+    LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
+
+    TARGET_VENDOR=$(get_user_set_env vendor "unknown")
+
+    if [ "x$(get_user_set_env compat)" == "x1" ] || [ "x$(get_user_set_env target_compat)" == "x1" ]; then
+        COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+        if [ "x${TARGET_VENDOR}" != "xunknown" ]; then
+                COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+        else
+                COMPAT_TARGET="${CROSS_TARGET}"
+        fi
+    fi
+
+
+    TARGET_CROSSTOOLCHAIN_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools"
+    PATH=${TARGET_CROSSTOOLCHAIN_DIR}/bin:${PATH}
+
+    mkdir -p build
+    pushd build
+        BUILD_CC="gcc" \
+	CC="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
+        CXX="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
+        AS="${COMPAT_TARGET}-as" AR="${COMPAT_TARGET}-ar" RANLIB="${COMPAT_TARGET}-ranlib" \
+        ../configure --prefix=/usr --host=${COMPAT_TARGET}
+	make -j${JOBS}
+
+
+	INSTALL_DIST_DIR="${TARGET_CROSSTOOLCHAIN_DIR}/target"
+	make DESTDIR=${INSTALL_DIST_DIR} install-strip
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/musl-1.2.5

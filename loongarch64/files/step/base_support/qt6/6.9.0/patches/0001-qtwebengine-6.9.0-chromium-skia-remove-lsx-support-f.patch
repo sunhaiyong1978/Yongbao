@@ -1,0 +1,61 @@
+From 2d11b27cbba4284d4ffad10435c1b3033654c5a8 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 16 May 2025 02:33:03 +0000
+Subject: [PATCH] qtwebengine 6.9.0 chromium skia remove lsx support for use
+ gcc.
+
+---
+ qtwebengine/src/3rdparty/chromium/skia/BUILD.gn             | 5 +++--
+ .../third_party/skia/src/opts/SkRasterPipeline_opts.h       | 6 +++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn b/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
+index c9c09dfdf2..ba7e1c0422 100644
+--- a/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
++++ b/qtwebengine/src/3rdparty/chromium/skia/BUILD.gn
+@@ -85,6 +85,7 @@ config("skia_config") {
+     "SK_DISABLE_LEGACY_GRAPHITE_IMAGES",
+     "SK_DISABLE_LEGACY_DAWN_TEXTURE_INFO_FUNCS",
+     "SK_DISABLE_LEGACY_DAWN_BACKEND_TEXTURE_FUNCS",
++    "SK_ENABLE_OPTIMIZE_SIZE",
+   ]
+ 
+   include_dirs = [
+@@ -169,7 +170,7 @@ config("skia_config") {
+   if (current_cpu == "loong64") {
+     cflags = [
+       "-mlsx",
+-      "-flax-vector-conversions=all",
++      "-flax-vector-conversions",
+     ]
+   }
+ }
+@@ -759,7 +760,7 @@ if (current_cpu == "loong64") {
+     sources = skia_opts.lasx_sources
+     cflags = [
+       "-mlasx",
+-      "-flax-vector-conversions=all",
++      "-flax-vector-conversions",
+     ]
+     visibility = [ ":skia_opts" ]
+   }
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h b/qtwebengine/src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h
+index 5d0c91d018..780aa8d184 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h
+@@ -88,7 +88,11 @@ using NoCtx = const void*;
+ #elif SK_CPU_LSX_LEVEL >= SK_CPU_LSX_LEVEL_LASX
+     #define SKRP_CPU_LASX
+ #elif SK_CPU_LSX_LEVEL >= SK_CPU_LSX_LEVEL_LSX
+-    #define SKRP_CPU_LSX
++    #if defined(__GNUC__)
++        #define SKRP_CPU_SCALAR
++    #else
++        #define SKRP_CPU_LSX
++    #endif
+ #else
+     #define SKRP_CPU_SCALAR
+ #endif
+-- 
+2.31.1
+

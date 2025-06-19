@@ -19,13 +19,14 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0008-UniVT-Support-displaying-UTF-8-text-for-180-degree-r.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0009-UniVT-Support-displaying-UTF-8-text-for-270-degree-r.patch 
 	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-UniVT-Add-Chinese-fonts-support-in-console.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-remove-vc_uniscr_check-function-for-paste-selection.patch 
 	 
 	sed -i "s@mabi=lp64s@& -mcmodel=normal@g" arch/loongarch/Makefile
 	make mrproper
 	cp -af ${RESOURCEDIR}/linux-config-6.x_${CONFIG_STR} ./.config
 	sed -i "/^CONFIG_LOCALVERSION/s@=\"\(.*\)\"@=\"_${CONFIG_STR}\"@g" .config
 	make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- olddefconfig
-	PKG_CONFIG_SYSROOT_DIR="" HOSTLDFLAGS="-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib64" \
+	PKG_CONFIG_SYSROOT_DIR="" \
 		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}-
 	PKG_CONFIG_SYSROOT_DIR="" \
 		make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- INSTALL_MOD_PATH=dest modules_install

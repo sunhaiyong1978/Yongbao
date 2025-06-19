@@ -3,16 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=perf
-export PACKAGE_VERSION=6.14.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/perf/6.14.3/
-rm -rf ${BUILD_DIRECTORY}/linux-6.14.3
-tar xvf ${DOWNLOADDIR}/linux-6.14.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.14.3
+export PACKAGE_VERSION=6.15
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/perf/6.15/
+rm -rf ${BUILD_DIRECTORY}/linux-6.15
+tar xvf ${DOWNLOADDIR}/linux-6.15.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.15
 	
 	pushd tools/perf
-		sed -i "s@\$(QUIET_GENSKEL)\$(BPFTOOL)@\$(QUIET_GENSKEL) LD_LIBRARY_PATH=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \$(BPFTOOL)@g" Makefile.perf
-		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}-  NO_LIBTRACEEVENT=1
+		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- EXTRA_CFLAGS="-Wno-error=aggressive-loop-optimizations" NO_LIBTRACEEVENT=1
 		cp -a perf ${SYSROOT_DIR}/usr/bin/
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.14.3
+rm -rf ${BUILD_DIRECTORY}/linux-6.15

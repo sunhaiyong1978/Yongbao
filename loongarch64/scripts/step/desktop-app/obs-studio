@@ -12,7 +12,8 @@ pushd ${BUILD_DIRECTORY}/obs-studio-31.0.3
 	mv obs-studio-obs-browser_git/* plugins/obs-browser/
 	tar xvf ${RESOURCEDIR}/files/obs-studio-obs-websocket_git.tar.gz
 	mv obs-studio-obs-websocket_git/* plugins/obs-websocket/
-        
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/obs-studio/31.0.3/patches/0001-obs-studio-fix-for-gcc-15.patch 
+	 
 	sed -i "/legacy_check/d" plugins/obs-websocket/CMakeLists.txt
         mkdir cross-build
         pushd cross-build

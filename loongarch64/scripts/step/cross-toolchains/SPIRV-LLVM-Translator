@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=SPIRV-LLVM-Translator
-export PACKAGE_VERSION=20.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/SPIRV-LLVM-Translator/20.1.1/
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.1
-tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-20.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.1
+export PACKAGE_VERSION=20.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/SPIRV-LLVM-Translator/20.1.2/
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.2
+tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-20.1.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.2
         
 	export PATH=${PREFIX}/llvm-project/bin:${PATH}
 	tar xvf ${RESOURCEDIR}/files/SPIRV-LLVM-Translator-headers_git.tar.gz
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.1
                 eval ${MAKE_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.1
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-20.1.2

@@ -1,0 +1,197 @@
+From 0255549bff9faa6c65e404d36557633cce32cc3b Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 16 May 2025 02:22:21 +0000
+Subject: [PATCH] qtwebengine 6.9.0 fix build error for use gcc.
+
+---
+ .../chromium/media/mojo/services/webrtc_video_perf_history.cc | 2 ++
+ .../renderer/core/css/properties/css_color_function_parser.cc | 1 +
+ .../renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc  | 2 ++
+ .../blink/renderer/core/streams/miscellaneous_operations.cc   | 2 ++
+ .../blink/renderer/core/streams/queue_with_sizes.cc           | 2 ++
+ .../blink/renderer/core/style/style_crossfade_image.cc        | 2 ++
+ .../third_party/blink/renderer/platform/graphics/color.cc     | 4 ++++
+ .../third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp    | 2 ++
+ .../chromium/third_party/pdfium/fxjs/cjs_publicmethods.cpp    | 2 ++
+ .../chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp      | 3 +++
+ .../third_party/pdfium/fxjs/xfa/cfxjse_formcalc_context.cpp   | 2 ++
+ .../third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp | 2 ++
+ .../modules/video_capture/linux/device_info_pipewire.cc       | 4 ++++
+ 13 files changed, 30 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc b/qtwebengine/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc
+index d762848f26..e3ec6132ba 100644
+--- a/qtwebengine/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc
++++ b/qtwebengine/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc
+@@ -5,6 +5,8 @@
+ #include "media/mojo/services/webrtc_video_perf_history.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include "base/format_macros.h"
+ #include "base/functional/bind.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc
+index 49db400b1c..2eac0c72a7 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc
+@@ -5,6 +5,7 @@
+ #include "third_party/blink/renderer/core/css/properties/css_color_function_parser.h"
+ 
+ #include <cmath>
++using std::isfinite;
+ 
+ #include "third_party/blink/public/mojom/use_counter/metrics/web_feature.mojom-shared.h"
+ #include "third_party/blink/renderer/core/css/css_color.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc
+index 0f4fb71073..e8e1700a63 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc
+@@ -5,6 +5,8 @@
+ #include "third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isfinite;
+ 
+ #include "third_party/blink/renderer/core/frame/settings.h"
+ #include "third_party/blink/renderer/core/html/track/vtt/vtt_cue.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc
+index 985cc0af33..a4e03b5882 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc
+@@ -8,6 +8,8 @@
+ #include "third_party/blink/renderer/core/streams/miscellaneous_operations.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include <optional>
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc
+index 52b040dc1a..6a9759131a 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc
+@@ -5,6 +5,8 @@
+ #include "third_party/blink/renderer/core/streams/queue_with_sizes.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isfinite;
+ 
+ #include "third_party/blink/renderer/platform/bindings/exception_state.h"
+ #include "third_party/blink/renderer/platform/bindings/trace_wrapper_v8_reference.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc
+index 826e5979fd..e3c17c87cb 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc
+@@ -6,6 +6,8 @@
+ // TODO(crbug.com/351564777): Remove this and convert code to safer constructs.
+ #pragma allow_unsafe_buffers
+ #endif
++#include <cmath>
++using std::isnan;
+ 
+ #include "third_party/blink/renderer/core/style/style_crossfade_image.h"
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc
+index c2df11f4e3..b9337213aa 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc
+@@ -31,6 +31,10 @@
+ #include "third_party/blink/renderer/platform/graphics/color.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isfinite;
++using std::isnan;
++using std::isinf;
+ 
+ #include <optional>
+ #include <tuple>
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp
+index 29187360a7..5caa8ce72a 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp
++++ b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp
+@@ -7,6 +7,8 @@
+ #include "core/fpdfapi/page/cpdf_psengine.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include <algorithm>
+ #include <limits>
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_publicmethods.cpp b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_publicmethods.cpp
+index f935264408..565da640f6 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_publicmethods.cpp
++++ b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_publicmethods.cpp
+@@ -18,6 +18,8 @@
+ #include <string>
+ #include <utility>
+ #include <vector>
++#include <cmath>
++using std::isnan;
+ 
+ #include "build/build_config.h"
+ #include "core/fpdfapi/parser/cpdf_stream.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp
+index 96a3d35e24..35c627974e 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp
++++ b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp
+@@ -12,6 +12,9 @@
+ 
+ #include <array>
+ #include <iterator>
++#include <cmath>
++using std::isfinite;
++using std::isnan;
+ 
+ #include "build/build_config.h"
+ #include "core/fxcrt/fx_extension.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/xfa/cfxjse_formcalc_context.cpp b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/xfa/cfxjse_formcalc_context.cpp
+index 6275eca7eb..f7aca588ae 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/xfa/cfxjse_formcalc_context.cpp
++++ b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/fxjs/xfa/cfxjse_formcalc_context.cpp
+@@ -18,6 +18,8 @@
+ #include <optional>
+ #include <utility>
+ #include <vector>
++#include <cmath>
++using std::isnan;
+ 
+ #include "core/fxcrt/cfx_datetime.h"
+ #include "core/fxcrt/check_op.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp
+index 128b6b42ec..28cc46b0c1 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp
++++ b/qtwebengine/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp
+@@ -12,6 +12,8 @@
+ #include <iterator>
+ #include <memory>
+ #include <utility>
++#include <cmath>
++using std::isnan;
+ 
+ #include "core/fxcrt/check.h"
+ #include "core/fxcrt/fx_system.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc
+index 0ec0da3933..7ec049b786 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc
++++ b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc
+@@ -19,6 +19,10 @@
+ #include <unistd.h>
+ 
+ #include <vector>
++#include <cmath>
++using std::isnormal;
++using std::isinf;
++using std::signbit;
+ 
+ #include "modules/video_capture/linux/pipewire_session.h"
+ #include "modules/video_capture/video_capture.h"
+-- 
+2.31.1
+

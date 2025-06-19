@@ -1,0 +1,48 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=qemu
+export PACKAGE_VERSION=10.0.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/qemu/10.0.2/
+rm -rf ${BUILD_DIRECTORY}/qemu-10.0.2
+tar xvf ${DOWNLOADDIR}/qemu-10.0.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-10.0.2
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+	QEMU_ARCH=$(archname_to_anyparm "$(get_user_set_env host ${CROSS_HOST})" "QEMU_ARCH" "")
+    else
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+	QEMU_ARCH=$(archname_to_anyparm "$(get_user_set_env target ${CROSS_HOST})" "QEMU_ARCH" "")
+    fi
+    TARGET_VENDOR=$(get_user_set_env vendor "unknown")
+
+    if [ "x$(get_user_set_env compat)" == "x1" ] || [ "x$(get_user_set_env target_compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+	case "x${TARGET_VENDOR}" in
+		"xunknown")
+			COMPAT_TARGET="${CROSS_TARGET}"
+			;;
+		"xNULL")
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@-unknown-@-@g")"
+			;;
+		*)
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+			;;
+	esac
+    fi
+
+    
+
+    sed -i "/HAVE_OPENAT2_H/d" meson.build
+    mkdir cross-build
+    pushd cross-build
+	../configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools \
+		     --target-list=${QEMU_ARCH}-linux-user \
+		     --disable-docs
+        ninja
+        cp qemu-${QEMU_ARCH} ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/qemu-${QEMU_ARCH}.bin
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/qemu-10.0.2

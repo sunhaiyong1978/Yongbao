@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libdeflate
-export PACKAGE_VERSION=1.23
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libdeflate/1.23/
-rm -rf ${BUILD_DIRECTORY}/libdeflate-1.23
-tar xvf ${DOWNLOADDIR}/libdeflate-1.23.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libdeflate-1.23
+export PACKAGE_VERSION=1.24
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libdeflate/1.24/
+rm -rf ${BUILD_DIRECTORY}/libdeflate-1.24
+tar xvf ${DOWNLOADDIR}/libdeflate-1.24.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libdeflate-1.24
         
 	mkdir cross-build
 	pushd cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/libdeflate-1.23
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libdeflate-1.23
+rm -rf ${BUILD_DIRECTORY}/libdeflate-1.24

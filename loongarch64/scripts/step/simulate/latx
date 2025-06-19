@@ -1,0 +1,89 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=latx
+export PACKAGE_VERSION=git
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/latx/git/
+rm -rf ${BUILD_DIRECTORY}/latx-git_git
+tar xvf ${DOWNLOADDIR}/latx-git_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/latx-git_git
+	patch -Np1 -i ${SYSDIR}/files/simulate/latx/git/patches/0001-fix-interp_prefix-to-latx-M.patch 
+	patch -Np1 -i ${SYSDIR}/files/simulate/latx/git/patches/0001-fix-test-amdgpu-for-cross-build.patch 
+	 
+	sed -i "s/qemu-ARCH_NAME/qemu-${ARCH_NAME}/g" configure
+	git init
+	mkdir -p latx32-cross-build
+	pushd latx32-cross-build
+		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
+			     --target-list=i386-linux-user \
+			     --enable-latx \
+			     --optimize-O1 \
+			     --enable-guest-base-zero \
+			     --disable-debug-info --disable-docs \
+			     --disable-werror \
+			     --extra-ldflags="-lz" \
+			     --disable-pie
+		eval ${NINJA_AND_INSTALL}
+	popd
+	mkdir -p cross-build
+	pushd cross-build
+		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
+			     --target-list=x86_64-linux-user \
+			     --enable-latx \
+			     --optimize-O1 \
+			     --enable-kzt \
+			     --disable-debug-info --disable-docs \
+			     --disable-werror \
+			     --extra-ldflags="-lz"  
+		eval ${NINJA_AND_INSTALL}
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/latx-git_git
+
+mkdir -p ${SYSROOT_DIR}/etc/binfmt.d
+cp -a ${SYSROOT_DIR}/usr/bin/latx-i386{,.orig}
+cp -a ${SYSROOT_DIR}/usr/bin/latx-x86_64{,.orig}
+
+cat > ${SYSROOT_DIR}/usr/bin/latx-i386 << EOF
+#!/bin/bash -e
+LATX_ANONYM=1 /usr/bin/latx-i386.orig "\$@"
+EOF
+
+
+cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64 << EOF
+#!/bin/bash -e
+LATX_ANONYM=1 /usr/bin/latx-x86_64.orig "\$@"
+EOF
+
+cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_aot << EOF
+#!/bin/bash -e
+LATX_ANONYM=1 LATX_AOT=0 /usr/bin/latx-x86_64.orig "\$@"
+EOF
+
+cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_kzt << EOF
+#!/bin/bash -e
+LATX_ANONYM=1 LATX_KZT=0 /usr/bin/latx-x86_64.orig "\$@"
+EOF
+
+cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_aot_kzt << EOF
+#!/bin/bash -e
+LATX_ANONYM=1 LATX_AOT=0 LATX_KZT=0 /usr/bin/latx-x86_64.orig "\$@"
+EOF
+
+chmod +x ${SYSROOT_DIR}/usr/bin/latx-i386{,.orig}
+chmod +x ${SYSROOT_DIR}/usr/bin/latx-x86_64{,_no_aot,_no_kzt,_no_aot_kzt,.orig}
+
+if [ -f ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_kzt ]; then
+        ln -sfv latx-x86_64_no_kzt ${SYSROOT_DIR}/usr/bin/x86_64-emu
+fi
+
+if [ -f ${SYSROOT_DIR}/usr/bin/latx-i386 ]; then
+        ln -sfv latx-i386 ${SYSROOT_DIR}/usr/bin/x86-emu
+fi
+
+default_set_conf "x86_64-emu" "latx" "LATX x86_64 二进制翻译" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64"
+default_set_conf "x86_64-emu" "latx_no_aot" "LATX x86_64 二进制翻译 (禁用AOT)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot"
+default_set_conf "x86_64-emu" "latx_no_kzt" "LATX x86_64 二进制翻译 (禁用库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_kzt"
+default_set_conf "x86_64-emu" "latx_no_aot_kzt" "LATX x86_64 二进制翻译 (禁用AOT和库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot_kzt"
+default_set_conf "x86-emu" "latx" "LATX x86 二进制翻译" "/usr/bin/x86-emu" "/usr/bin/latx-i386"

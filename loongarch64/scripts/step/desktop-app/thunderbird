@@ -3,29 +3,22 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=thunderbird
-export PACKAGE_VERSION=128.9.2esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/128.9.2esr/
-rm -rf ${BUILD_DIRECTORY}/thunderbird-128.9.2
-tar xvf ${DOWNLOADDIR}/thunderbird-128.9.2esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/thunderbird-128.9.2
+export PACKAGE_VERSION=128.11.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/128.11.0esr/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-128.11.0
+tar xvf ${DOWNLOADDIR}/thunderbird-128.11.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-128.11.0
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
         mv comm-l10n-*/* ./
     popd
 
-    rm -rf third_party/python/packaging/*
-    rm -rf third_party/python/typing_extensions/*
-    cp -a ${SYSROOT_DIR}/usr/lib/python$(get_package_version Python3)/site-packages/packaging third_party/python/packaging/
-    cp -a ${SYSROOT_DIR}/usr/lib/python$(get_package_version Python3)/site-packages/typing_extensions* third_party/python/typing_extensions/
-
     sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@13@g" mach
 
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/128.9.2esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/128.9.2esr/patches/0001-firefox-128.8-fix-for-glean_parser-17.0.1-build-erro.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/128.11.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/128.11.0esr/patches/0001-firefox-128.8-fix-for-glean_parser-17.0.1-build-erro.patch 
 	 
-    find third_party/rust/ -name .cargo-checksum.json \
-         -exec sed -i.uncheck -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
 
     cat > comm/third_party/botan/src/build-data/arch/loongarch64.txt << "EOF"
 family loongarch
@@ -62,23 +55,29 @@ ac_add_options --with-sysroot=${SYSROOT_DIR}
 unset MOZ_TELEMETRY_REPORTING
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/thunderbird-build-dir
 EOF
+
     export RUSTFLAGS="$RUSTFLAGS -Ccode-model=large"
+
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
-    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
+    MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach configure
+
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
-    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
+    MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach build -j${JOBS}
+
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
-    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system MOZBUILD_STATE_PATH=${PWD}/mozbuild \
+    MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach package
+
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
     MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach build installers-zh-CN
+
     mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/thunderbird/
     cp -av thunderbird-build-dir/dist/thunderbird-*.tar.bz2 ${DIST_DIRECTORY}/host/${ARCH_NAME}/thunderbird/
     tar xvf thunderbird-build-dir/dist/thunderbird-*.zh-CN.linux-${ARCH_NAME}.tar.bz2 \
@@ -105,4 +104,4 @@ ln -sfv /usr/lib64/thunderbird/chrome/icons/default/default256.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/thunderbird-128.9.2
+rm -rf ${BUILD_DIRECTORY}/thunderbird-128.11.0

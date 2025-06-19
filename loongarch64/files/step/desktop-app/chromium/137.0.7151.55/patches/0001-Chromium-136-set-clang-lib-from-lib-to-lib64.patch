@@ -1,0 +1,34 @@
+From cd5e44c7f3abd26642cab0f22ae0ae2ea440776f Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 17 May 2025 16:21:06 +0000
+Subject: [PATCH] Chromium 136 set clang lib from lib to lib64.
+
+---
+ build/rust/rust_bindgen_generator.gni | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build/rust/rust_bindgen_generator.gni b/build/rust/rust_bindgen_generator.gni
+index c91916b..6f33459 100644
+--- a/build/rust/rust_bindgen_generator.gni
++++ b/build/rust/rust_bindgen_generator.gni
+@@ -22,7 +22,7 @@ _libclang_path = rust_bindgen_root
+ if (host_os == "win") {
+   _libclang_path += "/bin"
+ } else {
+-  _libclang_path += "/lib"
++  _libclang_path += "/lib64"
+ }
+ 
+ # Template to build Rust/C bindings with bindgen.
+@@ -216,7 +216,7 @@ template("rust_bindgen_generator") {
+     # make it behave consistently with our other command line flags and allows
+     # system headers to be found.
+     clang_resource_dir =
+-        rebase_path(clang_base_path + "/lib/clang/" + clang_version,
++        rebase_path(clang_base_path + "/lib64/clang/" + clang_version,
+                     root_build_dir)
+     args += [
+       "-resource-dir",
+-- 
+2.31.1
+

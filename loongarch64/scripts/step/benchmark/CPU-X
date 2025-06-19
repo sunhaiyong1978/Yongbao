@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=benchmark
 export STEP_PACKAGENAME=CPU-X
-export PACKAGE_VERSION=5.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/benchmark/CPU-X/5.2.0/
-rm -rf ${BUILD_DIRECTORY}/CPU-X-5.2.0
-tar xvf ${DOWNLOADDIR}/CPU-X-5.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/CPU-X-5.2.0
+export PACKAGE_VERSION=5.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/benchmark/CPU-X/5.3.0/
+rm -rf ${BUILD_DIRECTORY}/CPU-X-5.3.0
+tar xvf ${DOWNLOADDIR}/CPU-X-5.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/CPU-X-5.3.0
         
+	sed -i "/POLKIT_ACTION_DIR STREQUAL \"\"/d" data/CMakeLists.txt
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
@@ -35,9 +36,10 @@ pushd ${BUILD_DIRECTORY}/CPU-X-5.2.0
                       -Dgzip_EXECUTABLE=/bin/gzip \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
+		      -DPOLKIT_ACTION_DIR=/usr/share/polkit-1/actions \
                       -DWITH_BANDWIDTH=OFF -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/CPU-X-5.2.0
+rm -rf ${BUILD_DIRECTORY}/CPU-X-5.3.0

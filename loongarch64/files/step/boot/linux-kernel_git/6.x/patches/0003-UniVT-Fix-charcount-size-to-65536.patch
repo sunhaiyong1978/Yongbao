@@ -1,6 +1,6 @@
-From dea3ed78265fb40cda8bcd305729090bfdec07bc Mon Sep 17 00:00:00 2001
+From f75a5db1287c9ff953968bcdf649410478a31b5a Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Tue, 26 Mar 2024 12:20:27 +0000
+Date: Mon, 9 Jun 2025 01:51:30 +0000
 Subject: [PATCH 3/9] UniVT: Fix charcount size to 65536.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -13,10 +13,10 @@ Content-Transfer-Encoding: 8bit
  2 files changed, 6 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index ab0223ca5..fc0132c98 100644
+index f97db7243..7ef80efa2 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -4710,7 +4710,7 @@ void reset_palette(struct vc_data *vc)
+@@ -4802,7 +4802,7 @@ void reset_palette(struct vc_data *vc)
  #define max_font_width	64
  #define max_font_height	128
  #define max_font_glyphs	512
@@ -25,7 +25,7 @@ index ab0223ca5..fc0132c98 100644
  
  static int con_font_get(struct vc_data *vc, struct console_font_op *op)
  {
-@@ -4773,8 +4773,6 @@ static int con_font_set(struct vc_data *vc, const struct console_font_op *op)
+@@ -4865,8 +4865,6 @@ static int con_font_set(struct vc_data *vc, const struct console_font_op *op)
  		return -EINVAL;
  	if (!op->data)
  		return -EINVAL;
@@ -35,10 +35,10 @@ index ab0223ca5..fc0132c98 100644
  	    op->height > max_font_height)
  		return -EINVAL;
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 98d0e2dbc..b6395691e 100644
+index 2df480376..0199de1b8 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1050,7 +1050,7 @@ static void fbcon_init(struct vc_data *vc, bool init)
+@@ -1074,7 +1074,7 @@ static void fbcon_init(struct vc_data *vc, bool init)
  
  	vc->vc_can_do_color = (fb_get_color_depth(&info->var, &info->fix)!=1);
  	vc->vc_complement_mask = vc->vc_can_do_color ? 0x7700 : 0x0800;
@@ -47,7 +47,7 @@ index 98d0e2dbc..b6395691e 100644
  		vc->vc_hi_font_mask = 0;
  	} else {
  		vc->vc_hi_font_mask = 0x100;
-@@ -1369,7 +1369,7 @@ static void fbcon_set_disp(struct fb_info *info, struct fb_var_screeninfo *var,
+@@ -1395,7 +1395,7 @@ static void fbcon_set_disp(struct fb_info *info, struct fb_var_screeninfo *var,
  	ops->var = info->var;
  	vc->vc_can_do_color = (fb_get_color_depth(&info->var, &info->fix)!=1);
  	vc->vc_complement_mask = vc->vc_can_do_color ? 0x7700 : 0x0800;
@@ -56,7 +56,7 @@ index 98d0e2dbc..b6395691e 100644
  		vc->vc_hi_font_mask = 0;
  	} else {
  		vc->vc_hi_font_mask = 0x100;
-@@ -2138,7 +2138,7 @@ static bool fbcon_switch(struct vc_data *vc)
+@@ -2164,7 +2164,7 @@ static bool fbcon_switch(struct vc_data *vc)
  	vc->vc_can_do_color = (fb_get_color_depth(&info->var, &info->fix)!=1);
  	vc->vc_complement_mask = vc->vc_can_do_color ? 0x7700 : 0x0800;
  
@@ -65,7 +65,7 @@ index 98d0e2dbc..b6395691e 100644
  		vc->vc_complement_mask <<= 1;
  
  	updatescrollmode(p, info, vc);
-@@ -2272,7 +2272,7 @@ static int fbcon_get_font(struct vc_data *vc, struct console_font *font, unsigne
+@@ -2298,7 +2298,7 @@ static int fbcon_get_font(struct vc_data *vc, struct console_font *font, unsigne
  	font->height = vc->vc_font.height;
  	if (font->height > vpitch)
  		return -ENOSPC;
@@ -74,7 +74,7 @@ index 98d0e2dbc..b6395691e 100644
  	if (!font->data)
  		return 0;
  
-@@ -2410,7 +2410,7 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
+@@ -2436,7 +2436,7 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
  	vc->vc_font.width = w;
  	vc->vc_font.height = h;
  	vc->vc_font.charcount = charcount;
@@ -83,7 +83,7 @@ index 98d0e2dbc..b6395691e 100644
  		set_vc_hi_font(vc, false);
  	else if (!vc->vc_hi_font_mask && charcount == 512)
  		set_vc_hi_font(vc, true);
-@@ -2469,11 +2469,6 @@ static int fbcon_set_font(struct vc_data *vc, const struct console_font *font,
+@@ -2495,11 +2495,6 @@ static int fbcon_set_font(struct vc_data *vc, const struct console_font *font,
  	u8 *new_data, *data = font->data;
  	int pitch = PITCH(font->width);
  

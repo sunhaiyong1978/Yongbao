@@ -13,32 +13,45 @@ pushd ${BUILD_DIRECTORY}/glibc-2.41
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
         ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env host ${CROSS_TARGET})" "MABI" "")
     else
-        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+        CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
         ARCH_MABI=$(archname_to_anyparm "$(get_user_set_env target ${CROSS_TARGET})" "MABI" "")
     fi
     LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
 
-    PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin:${PATH}
+    TARGET_VENDOR=$(get_user_set_env vendor "unknown")
 
-    sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
+    case "x${TARGET_VENDOR}" in
+	"xunknown")
+		;;
+	"xNULL")
+		CROSS_TARGET="$(echo "${CROSS_TARGET}" | sed "s@-unknown-@-@g")"
+		;;
+	*)
+		CROSS_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+		;;
+    esac
+
+    TARGET_CROSSTOOLCHAIN_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools"
+    PATH=${TARGET_CROSSTOOLCHAIN_DIR}/bin:${PATH}
+
     mkdir -p build
     pushd build
         BUILD_CC="gcc" \
-	CC="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-gcc ${ARCH_MABI}" \
-        CXX="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin/${CROSS_TARGET}-gcc ${ARCH_MABI}" \
+	CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" \
+        CXX="${CROSS_TARGET}-gcc ${ARCH_MABI}" \
         AS="${CROSS_TARGET}-as" AR="${CROSS_TARGET}-ar" RANLIB="${CROSS_TARGET}-ranlib" \
         ../configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
-	                 --with-binutils=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/bin \
-	                 --with-headers=${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target/usr/include \
+	                 --with-binutils=${TARGET_CROSSTOOLCHAIN_DIR}/bin \
+	                 --with-headers=${TARGET_CROSSTOOLCHAIN_DIR}/target/usr/include \
 	                 --enable-stack-protector=strong --enable-add-ons \
 	                 --disable-werror --disable-nscd libc_cv_slibdir=/usr/lib${LIB_SUFF} \
 	                 --enable-kernel=4.15
 	make -j${JOBS}
 
-	mkdir -pv ${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target/usr/lib{,64}
+	mkdir -pv ${TARGET_CROSSTOOLCHAIN_DIR}/target/usr/lib{,64}
 
-        INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${CROSS_TARGET}/cross-tools/target"
+	INSTALL_DIST_DIR="${TARGET_CROSSTOOLCHAIN_DIR}/target"
 	make DESTDIR=${INSTALL_DIST_DIR} install
     popd
 popd 

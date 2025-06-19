@@ -1,0 +1,24 @@
+From 568d8d1a0cff03431424be970478faea92975b89 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 2 May 2025 08:04:49 +0000
+Subject: [PATCH] obs-studio fix for gcc 15.
+
+---
+ deps/json11/json11.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/deps/json11/json11.cpp b/deps/json11/json11.cpp
+index 88024e9..32dfa36 100644
+--- a/deps/json11/json11.cpp
++++ b/deps/json11/json11.cpp
+@@ -24,6 +24,7 @@
+ #include <cmath>
+ #include <cstdlib>
+ #include <cstdio>
++#include <cstdint>
+ #include <limits>
+ 
+ namespace json11 {
+-- 
+2.31.1
+

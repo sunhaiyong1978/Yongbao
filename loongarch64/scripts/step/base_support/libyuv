@@ -9,7 +9,8 @@ rm -rf ${BUILD_DIRECTORY}/libyuv-git-default_git
 tar xvf ${DOWNLOADDIR}/libyuv-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libyuv-git-default_git
         
-	sed -i "/^INSTALL /s@ lib @ lib${LIB_SUFF} @g" CMakeLists.txt
+ 	sed -i "/^INSTALL /s@ lib @ lib${LIB_SUFF} @g" CMakeLists.txt
+	sed -i "/^install /s@ lib @ lib${LIB_SUFF} @g" CMakeLists.txt
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \

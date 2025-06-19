@@ -1,6 +1,6 @@
-From 11c8de93b9b5c520152200d4d9dc6473f25ea36f Mon Sep 17 00:00:00 2001
+From 9e70fa1a889e33a3d8e353d3998237026fb385b8 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Tue, 26 Mar 2024 12:28:20 +0000
+Date: Mon, 9 Jun 2025 02:28:36 +0000
 Subject: [PATCH 6/9] UniVT: Add support for displaying UTF-8 text.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -12,10 +12,10 @@ Content-Transfer-Encoding: 8bit
  1 file changed, 40 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/video/fbdev/core/bitblit.c b/drivers/video/fbdev/core/bitblit.c
-index 4ecacec7a..1e6e06243 100644
+index 147063bd7..b19370ac6 100644
 --- a/drivers/video/fbdev/core/bitblit.c
 +++ b/drivers/video/fbdev/core/bitblit.c
-@@ -97,14 +97,25 @@ static inline void bit_putcs_aligned(struct vc_data *vc, struct fb_info *info,
+@@ -96,14 +96,25 @@ static inline void bit_putcs_aligned(struct vc_data *vc, struct fb_info *info,
  	u32 idx = vc->vc_font.width >> 3;
  	u8 *src;
  
@@ -44,7 +44,7 @@ index 4ecacec7a..1e6e06243 100644
  
  		if (likely(idx == 1))
  			__fb_pad_aligned_buffer(dst, d_pitch, src, idx,
-@@ -132,14 +143,25 @@ static inline void bit_putcs_unaligned(struct vc_data *vc,
+@@ -131,14 +142,25 @@ static inline void bit_putcs_unaligned(struct vc_data *vc,
  	u32 idx = vc->vc_font.width >> 3;
  	u8 *src;
  
@@ -73,7 +73,7 @@ index 4ecacec7a..1e6e06243 100644
  
  		fb_pad_unaligned_buffer(dst, d_pitch, src, idx,
  					image->height, shift_high,
-@@ -253,7 +275,7 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
+@@ -252,7 +274,7 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
  	struct fb_cursor cursor;
  	struct fbcon_ops *ops = info->fbcon_par;
  	unsigned short charmask = vc->vc_hi_font_mask ? 0x1ff : 0xff;
@@ -82,7 +82,7 @@ index 4ecacec7a..1e6e06243 100644
  	int y = real_y(ops->p, vc->state.y);
  	int attribute, use_sw = vc->vc_cursor_type & CUR_SW;
  	int err = 1;
-@@ -265,8 +287,18 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
+@@ -264,8 +286,18 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
  		return;
  
   	c = scr_readw((u16 *) vc->vc_pos);

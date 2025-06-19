@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=openldap
-export PACKAGE_VERSION=2.6.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/openldap/2.6.9/
-rm -rf ${BUILD_DIRECTORY}/openldap-2.6.9
-tar xvf ${DOWNLOADDIR}/openldap-2.6.9.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/openldap-2.6.9
+export PACKAGE_VERSION=2.6.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/openldap/2.6.10/
+rm -rf ${BUILD_DIRECTORY}/openldap-2.6.10
+tar xvf ${DOWNLOADDIR}/openldap-2.6.10.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openldap-2.6.10
         
         if [ ! -f configure ]; then
                 autoreconf -ifv
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/openldap-2.6.9
         make STRIP="${LINUX_HOST}-strip" DESTDIR=${LINUX_SYSROOT_DIR} install
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/openldap-2.6.9
+rm -rf ${BUILD_DIRECTORY}/openldap-2.6.10

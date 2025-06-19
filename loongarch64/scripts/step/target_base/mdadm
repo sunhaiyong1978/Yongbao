@@ -8,7 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/mdadm/4.3/
 rm -rf ${BUILD_DIRECTORY}/mdadm-4.3
 tar xvf ${DOWNLOADDIR}/mdadm-4.3.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/mdadm-4.3
-	make -j${JOBS} CC="${CROSS_TARGET}-gcc"
+	make -j${JOBS} CC="${CROSS_TARGET}-gcc" CXFLAGS="${CFLAGS} -Wno-error=unterminated-string-initialization"
 	make DESTDIR=${SYSROOT_DIR} PKG_CONFIG=${CROSS_TARGET}-pkg-config install
 popd 
 rm -rf ${BUILD_DIRECTORY}/mdadm-4.3

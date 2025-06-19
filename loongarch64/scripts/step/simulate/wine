@@ -41,6 +41,7 @@ pushd ${BUILD_DIRECTORY}/wine-10.0
 
 	export CFLAGS=$(archname_to_cflags "$(get_user_set_env target "x86_64")" "-O3")
 	export CFLAGS_32=$(archname_to_cflags "$(get_user_set_env "i686")" "-O3")
+	export CFLAGS="${CFLAGS} -std=gnu17"
 
 	export PKG_CONFIG_SYSROOT_DIR="${LINUX_SYSROOT_DIR}"
 	export PKG_CONFIG_PATH="${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${LINUX_SYSROOT_DIR}/usr/share/pkgconfig"
@@ -58,6 +59,7 @@ pushd ${BUILD_DIRECTORY}/wine-10.0
 			OSSLIBDIR=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/oss \
 			--enable-win64 \
 			--enable-build-id \
+			--without-unwind \
 			--enable-malloc0returnsnull
         	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
 	popd
@@ -79,6 +81,7 @@ pushd ${BUILD_DIRECTORY}/wine-10.0
 			OSSLIBDIR=${LINUX32_SYSROOT_DIR}/usr/lib${LIB32_SUFF}/oss \
 			--with-wine64=../cross-build-64 \
 			--enable-build-id \
+			--without-unwind \
 			--enable-malloc0returnsnull
         	CC="${LINUX32_HOST}-gcc" CXX="${LINUX32_HOST}-g++" make -j${JOBS}
 	        make DESTDIR=${SYSROOT_DIR} install

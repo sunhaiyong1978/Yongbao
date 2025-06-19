@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=glslang
-export PACKAGE_VERSION=15.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/glslang/15.2.0/
-rm -rf ${BUILD_DIRECTORY}/glslang-15.2.0
-tar xvf ${DOWNLOADDIR}/glslang-15.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glslang-15.2.0
+export PACKAGE_VERSION=15.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/glslang/15.3.0/
+rm -rf ${BUILD_DIRECTORY}/glslang-15.3.0
+tar xvf ${DOWNLOADDIR}/glslang-15.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glslang-15.3.0
 	tar xvf ${RESOURCEDIR}/files/glslang-spirv-tools_git.tar.gz -C External/
 	mv External/glslang-spirv-tools_git External/spirv-tools
 	tar xvf ${RESOURCEDIR}/files/glslang-spirv-headers_git.tar.gz -C External/spirv-tools/external/
@@ -45,4 +45,4 @@ pushd ${BUILD_DIRECTORY}/glslang-15.2.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/glslang-15.2.0
+rm -rf ${BUILD_DIRECTORY}/glslang-15.3.0

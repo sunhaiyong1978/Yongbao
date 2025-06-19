@@ -1,0 +1,24 @@
+From 527a136153e052c7c18141d8eea1cb61a32a7993 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 2 May 2025 14:12:56 +0000
+Subject: [PATCH] kstats fix for gcc 15.
+
+---
+ kstars/auxiliary/gslhelpers.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kstars/auxiliary/gslhelpers.h b/kstars/auxiliary/gslhelpers.h
+index ebd2948..8ef9e2b 100644
+--- a/kstars/auxiliary/gslhelpers.h
++++ b/kstars/auxiliary/gslhelpers.h
+@@ -7,6 +7,7 @@
+ #pragma once
+ 
+ #include <memory>
++#include <cstdint>
+ #include <gsl/gsl_vector.h>
+ #include <gsl/gsl_sort.h>
+ #include <gsl/gsl_statistics.h>
+-- 
+2.31.1
+

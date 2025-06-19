@@ -4,24 +4,30 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-gcc-glibc
-export PACKAGE_VERSION=14.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc-glibc/14.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
-tar xvf ${DOWNLOADDIR}/gcc-14.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-14.2.0
+export PACKAGE_VERSION=15.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc-glibc/15.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0
+tar xvf ${DOWNLOADDIR}/gcc-15.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-15.1.0
+	case "${ARCH_NAME}" in
+		"loongarch64")
+			ABI_STRING="--with-abi=lp64"
+			;;
+		"i686")
+			ABI_STRING=""
+			;;
+		"x86_64")
+			ABI_STRING="--with-abi=${ARCH_ABI} --with-tune=generic"
+			;;
+		"aarch64")
+			ABI_STRING="--with-abi=lp64"
+			;;
+		*)
+			ABI_STRING="--with-abi=${ARCH_ABI}"
+			;;
+	esac
 	mkdir -p tools-build-all
 	pushd tools-build-all
-		case "${ARCH_NAME}" in
-			"i686")
-				ABI_STRING=""
-				;;
-			"x86_64")
-				ABI_STRING="--with-abi=${ARCH_ABI} --with-tune=generic"
-				;;
-			*)
-				ABI_STRING="--with-abi=${ARCH_ABI}"
-				;;
-		esac
 		../configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \
 			     --target=${LINUX_HOST} --disable-nls \
                              --with-mpfr=${CROSSTOOLS_DIR} --with-gmp=${CROSSTOOLS_DIR} \
@@ -32,6 +38,13 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto
 		make -j${JOBS}
 		make install-strip
+		rm -fv $(dirname $(realpath $(${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-gcc -print-file-name=libssp.so)))/libssp{,_nonshared}.*
+		${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-gcc -dumpspecs > specs
+		CUSTOM_LIB_PATH="${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}/lib${LIB_SUFF}"
+		sed -i "/^\*link:/,/^$/ {
+			/--build-id/ s|\(--build-id[^ ]*\)|\1 -rpath-link=${CUSTOM_LIB_PATH//\//\\/} |;
+			}" specs
+		mv specs $(dirname $(${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-gcc -print-libgcc-file-name))/specs
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0

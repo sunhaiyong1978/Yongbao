@@ -20,10 +20,20 @@ pushd ${LINUX_SYSROOT_DIR}
 	mkdir -p var/lib/{color,misc,locate,lastlog}
 	mkdir -p usr/{lib,bin,sbin}
 	ln -sf usr/{lib,bin,sbin,include} ./
-	if [ "x${LIB_SUFF}" == "x64" ]; then
-		mkdir -p usr/lib${LIB_USFF}
-		ln -sf usr/lib${LIB_SUFF} ./
-	fi
+	case "${ARCH_NAME}" in
+		aarch64)
+			if [ "x${LIB_SUFF}" == "x64" ]; then
+				ln -sf lib usr/lib${LIB_SUFF}
+				ln -sf usr/lib${LIB_SUFF} ./
+			fi
+			;;
+		*)
+			if [ "x${LIB_SUFF}" == "x64" ]; then
+				mkdir -p usr/lib${LIB_USFF}
+				ln -sf usr/lib${LIB_SUFF} ./
+			fi
+			;;
+	esac
 	mkdir -p dev proc sys
 	mkdir -p run/lock
 	mkdir -p run/media

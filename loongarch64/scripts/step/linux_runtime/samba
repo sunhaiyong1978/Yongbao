@@ -21,6 +21,7 @@ pushd ${BUILD_DIRECTORY}/samba-4.22.1
 
         NCURSES_CONFIG=${LINUX_SYSROOT_DIR}/bin/ncursesw6-config \
 	PKGCONFIG=${LINUX_HOST}-pkg-config CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
+	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" \
 	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --with-piddir=/run/samba --with-pammodulesdir=/usr/lib/security \
 		    --enable-fhs --without-ad-dc --hostcc=gcc --with-system-mitkrb5 --disable-python --without-ldap --without-ads --without-pam \
 		    --with-sockets-dir=/run/samba --with-modulesdir=/usr/lib${LIB_SUFF}/samba --with-lockdir=/var/lib/samba/lock --with-statedir=/var/lib/samba --with-cachedir=/var/lib/samba

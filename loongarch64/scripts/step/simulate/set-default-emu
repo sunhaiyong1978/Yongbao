@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/set-default-emu//
 mkdir -p ${SYSROOT_DIR}/etc/binfmt.d
 echo ":x86-emu:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x03\x00:\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/x86-emu:" > ${SYSROOT_DIR}/etc/binfmt.d/qemu-i386.conf
 echo ":x86_64-emu:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00:\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/x86_64-emu:" > ${SYSROOT_DIR}/etc/binfmt.d/qemu-x86_64.conf
+echo ":aarch64-emu:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/aarch64-emu:" > ${SYSROOT_DIR}/etc/binfmt.d/qemu-aarch64.conf
 
 ln -sfv qemu-i386 ${SYSROOT_DIR}/usr/bin/x86-emu
 if [ -f ${SYSROOT_DIR}/usr/bin/latx-i386 ]; then
@@ -23,5 +24,10 @@ if [ -f ${SYSROOT_DIR}/usr/bin/latx-x86_64 ]; then
 	ln -sfv latx-x86_64 ${SYSROOT_DIR}/usr/bin/x86_64-emu
 fi
 
+if [ -f ${SYSROOT_DIR}/usr/bin/lata-aarch64 ]; then
+	ln -sfv lata-aarch64 ${SYSROOT_DIR}/usr/bin/aarch64-emu
+fi
+
 default_set_comment "x86_64-emu" "X86 64位二进制翻译" "/usr/bin/x86_64-emu"
 default_set_comment "x86-emu" "X86 32位二进制翻译" "/usr/bin/x86-emu"
+default_set_comment "aarch64-emu" "ARM 64位二进制翻译" "/usr/bin/aarch64-emu"

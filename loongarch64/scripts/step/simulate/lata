@@ -1,0 +1,41 @@
+source env/simulate/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=simulate
+export STEP_PACKAGENAME=lata
+export PACKAGE_VERSION=git
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/lata/git/
+rm -rf ${BUILD_DIRECTORY}/lata-git_git
+tar xvf ${DOWNLOADDIR}/lata-git_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lata-git_git
+	patch -Np1 -i ${SYSDIR}/files/simulate/lata/git/patches/0001-fix-build-error-for-glibc-2.41.patch 
+	 
+	git init
+	mkdir -p cross-build
+	pushd cross-build
+		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
+			     --target-list=aarch64-linux-user \
+			     --enable-lata \
+			     --disable-debug-info --disable-docs \
+			     --disable-werror
+		eval ${NINJA_AND_INSTALL}
+	popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/lata-git_git
+
+mkdir -p ${SYSROOT_DIR}/etc/binfmt.d
+cp -a ${SYSROOT_DIR}/usr/bin/lata-aarch64{,.orig}
+rm -fv ${SYSROOT_DIR}/usr/bin/lata-aarch64
+
+cat > ${SYSROOT_DIR}/usr/bin/lata-aarch64 << EOF
+#!/bin/bash -e
+/usr/bin/lata-aarch64.orig "\$@"
+EOF
+
+chmod +x ${SYSROOT_DIR}/usr/bin/lata-aarch64
+
+if [ -f ${SYSROOT_DIR}/usr/bin/lata-aarch64 ]; then
+        ln -sfv lata-aarch64 ${SYSROOT_DIR}/usr/bin/aarch64-emu
+fi
+
+default_set_conf "aarch64-emu" "lata" "LATX AArch64 二进制翻译" "/usr/bin/aarch64-emu" "/usr/bin/lata-aarch64"

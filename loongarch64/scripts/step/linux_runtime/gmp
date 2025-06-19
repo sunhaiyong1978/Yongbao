@@ -6,12 +6,16 @@ export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=gmp
 export PACKAGE_VERSION=6.3.0
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/gmp/6.3.0/
+export GMP_ABI=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "GMP_ABI" "${ARCH_ABI}")
+
 rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0
 tar xvf ${DOWNLOADDIR}/gmp-6.3.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gmp-6.3.0
-	ABI=${ARCH_ABI} ./configure --build=${CROSS_HOST} --host=${LINUX_HOST} \
+	export CFLAGS="${CFLAGS} -std=gnu17"
+	ABI=${GMP_ABI} ./configure --build=${CROSS_HOST} --host=${LINUX_HOST} \
                 --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --enable-cxx
 	make -j${JOBS}
 	make DESTDIR=${LINUX_SYSROOT_DIR} install
+	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0

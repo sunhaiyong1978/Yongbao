@@ -1,0 +1,25 @@
+From ee6a6e1b11236d93c71ccb9d035bf21a0eb7e782 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 9 Apr 2025 09:49:48 +0000
+Subject: [PATCH] fix interp_prefix to latx-%M
+
+---
+ configure | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure b/configure
+index f3f7c3e..b1cced8 100755
+--- a/configure
++++ b/configure
+@@ -1659,7 +1659,7 @@ if test "$latx" = "yes" ; then
+     ;;
+     loongarch)
+       if test "$latx_new_world" = "yes" ; then
+-        interp_prefix="/usr/gnemul/lat-%M"
++        interp_prefix="/usr/gnemul/latx-%M"
+         if test "$target_list" = "x86_64-linux-user" ; then
+           latx_ldflags="-T$source_path/latx-x86_64-new.lds"
+         else
+-- 
+2.31.1
+

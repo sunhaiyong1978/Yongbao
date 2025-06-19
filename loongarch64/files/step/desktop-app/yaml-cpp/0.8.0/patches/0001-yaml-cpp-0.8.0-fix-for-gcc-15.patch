@@ -1,0 +1,24 @@
+From fffbe8028e921e752b76d039f761ced6e8a02d25 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 2 May 2025 13:01:30 +0000
+Subject: [PATCH] yaml-cpp 0.8.0 fix for gcc 15.
+
+---
+ src/emitterutils.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/emitterutils.cpp b/src/emitterutils.cpp
+index 6cdf6de..c13949b 100644
+--- a/src/emitterutils.cpp
++++ b/src/emitterutils.cpp
+@@ -1,6 +1,7 @@
+ #include <algorithm>
+ #include <iomanip>
+ #include <sstream>
++#include <cstdint>
+ 
+ #include "emitterutils.h"
+ #include "exp.h"
+-- 
+2.31.1
+

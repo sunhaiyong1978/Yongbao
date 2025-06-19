@@ -3,41 +3,36 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.8.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.8.3/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.8.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
+export PACKAGE_VERSION=6.9.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.9.0/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.9.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
 	export PATH=${CROSSTOOLS_DIR}/qt6/bin:${PATH}
-        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0001-qt6-webengine-configure-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0002-qtwebengine-fix-loongarch64-define-because-chromium-.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0003-qtwebengine-6.8.0-chromium-add-some-define-for-loong.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0004-qt6webengine-add-host-ldflags-for-cross-build.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0005-qtwebengine-6.8.0-fix-chromium-boringssl-openssl-tar.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0006-qtwebengine-6.8.0-crashpad-add-support-for-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0007-qtwebengine-ffmpeg-first_dts.-patch-form-Fedora-qt6-.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0008-qtwebengine-sandbox-Add-loongarch64-architecture-sup.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0009-qtwebengine-6.8.0-blink-remove-lsx-support-for-loong.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0010-fix-spellcheck_buildflags.h-file-mission.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0011-qtwebengine-6.8.0-chromium-libyuv-add-loongarch_lsx-.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0012-qtwebengine-6.8.0-fix-libvpx-build-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0013-qtwebengine-6.8.0-fix-web_cache-build-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0014-qtwebengine-6.8.0-open-lsx-and-lasx-option-for-loong.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0015-qtwebengine-6.8.0-add-sandbox-syscalls-for-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0001-qt6-6.7.2-fix-for-gcc-15.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0001-qt-6.8.0-qtquick3d-3rdparty-openxr-add-loongarch64-d.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0001-qtwebengine-6.8.0-chromium-skia-add-ENABLE_OPTIMIZE_.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0001-qtwebengine-6.8.0-chromium-build-config-fix-for-loon.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0001-qtwebengine-3rdparty-chromium-api-runtime-add-loonga.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0002-qtwebengine-3rdparty-chromium-enable-swiftshader-add.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.8.3/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
+        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0001-qt6-6.9.0-webengine-configure-add-loongarch64-suppor.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0002-qtwebengine-fix-loongarch64-define-because-chromium-.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0003-qtwebengine-6.9.0-chromium-add-some-define-for-loong.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0004-qtwebengine-6.9.0-fix-chromium-boringssl-openssl-tar.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0005-qtwebengine-6.9.0-crashpad-add-support-for-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0006-qtwebengine-6.9.0-sandbox-Add-loongarch64-architectu.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0007-qtwebengine-6.9.0-open-lsx-and-lasx-option-for-loong.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0008-qtwebengine-6.9.0-add-sandbox-syscalls-for-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0009-qtwebengine-3rdparty-chromium-api-runtime-add-loonga.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0010-qtwebengine-3rdparty-chromium-enable-swiftshader-add.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0011-qtwebengine-fix-filename-too-long-error-for-use-ninj.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0001-qtwebengine-6.9.0-fix-build-error-for-pipewire-1.3.x.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0001-qtwebengine-6.9.0-fix-build-error-for-use-gcc.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0001-qtwebengine-6.9.0-chromium-skia-remove-lsx-support-f.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.0/patches/0001-qtwebengine-6.9.0-chromium-third_party-blink-remove-.patch 
 	 
 	sed -i "/unset PKG_CONFIG_PATH/s@unset PKG_CONFIG_PATH@export PKG_CONFIG_PATH=\\\\\"${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig\\\\\"@g" qtwebengine/cmake/Functions.cmake
-	sed -i "s#@YONGBAO_HOST_LDFLAGS@#-Wl,-rpath-link=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib:${HOST_TOOLS_DIR}/lib64 -Wl,-rpath=${CROSSTOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib:${HOST_TOOLS_DIR}/lib64/#g" qtwebengine/src/host/BUILD.toolchain.gn.in
 	sed -i "/v8_enable_webassembly/s@=false@=true@g" qtwebengine/src/pdf/CMakeLists.txt
 
 	sed -i "s@../lib/@@g" qtmultimedia/cmake/FindFFmpeg.cmake
+	sed -i "s@llvm-10.0@llvm-16.0@g" qtwebengine/src/3rdparty/chromium/third_party/swiftshader/src/Reactor/BUILD.gn
 
+
+	cp -a ${SYSROOT_DIR}/usr/include/{math,stdlib}.h ${SYSROOT_DIR}/usr/local/include/
 
         mkdir cross-build
         pushd cross-build
@@ -88,7 +83,7 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.8.3
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
 
 cat > ${SYSROOT_DIR}/etc/profile.d/qt6.sh << "EOF"
 export QT_PLUGIN_PATH=${QT_PLUGIN_PATH}:/usr/lib64/qt6/plugins

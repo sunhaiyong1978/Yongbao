@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kpackage
-export PACKAGE_VERSION=6.13.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kpackage/6.13.0/
-rm -rf ${BUILD_DIRECTORY}/kpackage-6.13.0
-tar xvf ${DOWNLOADDIR}/kpackage-6.13.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kpackage-6.13.0
+export PACKAGE_VERSION=6.14.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kpackage/6.14.0/
+rm -rf ${BUILD_DIRECTORY}/kpackage-6.14.0
+tar xvf ${DOWNLOADDIR}/kpackage-6.14.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kpackage-6.14.0
         
         mkdir cross-build
         pushd cross-build
@@ -38,7 +38,7 @@ pushd ${BUILD_DIRECTORY}/kpackage-6.13.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kpackage-6.13.0
+rm -rf ${BUILD_DIRECTORY}/kpackage-6.14.0
 
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/kpackagetool6 \"\$@\"" \
         > ${CROSSTOOLS_DIR}/bin/kpackagetool6

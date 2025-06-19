@@ -8,6 +8,13 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/dhcp/4.4.3-P1/
 rm -rf ${BUILD_DIRECTORY}/dhcp-4.4.3-P1
 tar xvf ${DOWNLOADDIR}/dhcp-4.4.3-P1.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dhcp-4.4.3-P1
+	tar xvf bind/bind.tar.gz -C bind/
+        for config_i in $(find -name "config.sub")
+	do
+		chmod 0644 $(dirname ${config_i})/config.{sub,guess}
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+	done
+	
 	CFLAGS="${CFLAGS:--g -O2} -Wall -fno-strict-aliasing \
         -D_PATH_DHCLIENT_SCRIPT='\"/usr/sbin/dhclient-script\"' \
         -D_PATH_DHCPD_CONF='\"/etc/dhcp/dhcpd.conf\"' \

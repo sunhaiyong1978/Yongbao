@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=wxWidgets
-export PACKAGE_VERSION=3.2.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxWidgets/3.2.7/
-rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.7
-tar xvf ${DOWNLOADDIR}/wxWidgets-3.2.7.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.7
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/wxWidgets/3.2.7/patches/0001-wxWidgets-3.2.7-fix-host-PREFIX-for-cross-build.patch 
+export PACKAGE_VERSION=3.2.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wxWidgets/3.2.8/
+rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.8
+tar xvf ${DOWNLOADDIR}/wxWidgets-3.2.8.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.8
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/wxWidgets/3.2.8/patches/0001-wxWidgets-3.2.7-fix-host-PREFIX-for-cross-build.patch 
 	 
         for config_i in $(find -name "config.sub")
         do
@@ -31,4 +31,4 @@ pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.7
         	> ${CROSSTOOLS_DIR}/bin/wxrc
 	chmod +x ${CROSSTOOLS_DIR}/bin/wxrc
 popd 
-rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.7
+rm -rf ${BUILD_DIRECTORY}/wxWidgets-3.2.8

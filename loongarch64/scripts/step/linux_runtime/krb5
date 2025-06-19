@@ -10,6 +10,7 @@ rm -rf ${BUILD_DIRECTORY}/krb5-1.21.3
 tar xvf ${DOWNLOADDIR}/krb5-1.21.3.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/krb5-1.21.3
     pushd src
+	CFLAGS="${CFLAGS} -std=gnu17" \
         ./configure ${COMMON_CONFIG} --runstatedir=/run \
                     --with-system-ss --with-system-verto=no \
                     --enable-dns-for-realm \

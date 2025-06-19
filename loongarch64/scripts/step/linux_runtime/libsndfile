@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/libsndfile-1.2.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	CFLAGS="${CFLAGS} -std=gnu17" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
         make DESTDIR=${LINUX_SYSROOT_DIR} install
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la

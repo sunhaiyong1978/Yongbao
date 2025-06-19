@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/assimp-5.4.3
         
 	mkdir cross-build
 	pushd cross-build
-        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CXXFLAGS="${CXXFLAGS} -Wno-error=array-bounds" \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
 	              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
 	              -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \

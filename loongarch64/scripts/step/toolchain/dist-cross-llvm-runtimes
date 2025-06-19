@@ -1,0 +1,48 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=dist-cross-llvm-runtimes
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/dist-cross-llvm-runtimes//
+HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+TARGET_ARCH_NAME="$(get_user_set_env target ${DISTRO_ARCH})" 
+
+if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
+	mv ${TEMP_DIRECTORY}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
+fi
+
+COMPAT_DIR=""
+
+if [ "x$(get_user_set_env target_compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${HOST_TARGET}" | sed "s@unknown@compat@g")"
+	COMPAT_DIR="$([ "${COMPAT_DIR}" == "" ] && echo "targetcompat" || echo "${COMPAT_DIR}-targetcompat")"
+else
+	COMPAT_TARGET="${HOST_TARGET}"
+fi
+
+
+mkdir -pv ${TEMP_DIRECTORY}/cross-tools/target/${COMPAT_TARGET}/usr/lib{,64}
+ln -sv usr/lib{,64} ${TEMP_DIRECTORY}/cross-tools/target/${COMPAT_TARGET}/
+cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target/* ${TEMP_DIRECTORY}/cross-tools/target/${COMPAT_TARGET}/
+
+CLANG_RT_DIR="$(realpath ${TOOLCHAIN_DIRECTORY}/${COMPAT_TARGET}/llvm-runtimes/usr/lib/clang/*/lib | grep -o '\/clang\/.*$')"
+mkdir -pv ${TEMP_DIRECTORY}/cross-tools/{include,lib${CLANG_RT_DIR}}
+cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_TARGET}/llvm-runtimes/usr/include/${COMPAT_TARGET} ${TEMP_DIRECTORY}/cross-tools/include/
+cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_TARGET}/llvm-runtimes/usr/lib/${COMPAT_TARGET} ${TEMP_DIRECTORY}/cross-tools/lib/
+cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_TARGET}/llvm-runtimes/usr/lib${CLANG_RT_DIR}/${COMPAT_TARGET} ${TEMP_DIRECTORY}/cross-tools/lib${CLANG_RT_DIR}/
+
+pushd ${TEMP_DIRECTORY}
+	if [ -f ${DIST_DIRECTORY}/host/${TARGET_ARCH_NAME}/llvm-runtimes/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_TARGET}-llvm-runtimes.tar.xz ]; then
+		rm ${DIST_DIRECTORY}/host/${TARGET_ARCH_NAME}/llvm-runtimes/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_TARGET}-llvm-runtimes.tar.xz
+	fi
+
+	mkdir -pv ${DIST_DIRECTORY}/host/${TARGET_ARCH_NAME}/llvm-runtimes/${COMPAT_DIR}/
+
+	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${TARGET_ARCH_NAME}/llvm-runtimes/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_TARGET}-llvm-runtimes.tar.xz cross-tools
+	info_pool "生成了可发布的压缩包文件：${DIST_DIRECTORY}/host/${TARGET_ARCH_NAME}/llvm-runtimes/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_TARGET}-llvm-runtimes.tar.xz"
+popd
+
+if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
+	rm -rf ${TEMP_DIRECTORY}/cross-tools
+fi

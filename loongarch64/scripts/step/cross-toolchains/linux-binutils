@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/binutils-2.44
 	pushd tools-build
     		CC=gcc AR=ar AS=as CFLAGS=$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${CFLAGS} -Wno-error=dangling-pointer" || echo "${CFLAGS}") \
 		../configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \
+			     --with-sysroot=${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR} \
 	                     --target=${LINUX_HOST} 
 	    	make -j${JOBS} configure-host
     		make -j${JOBS}

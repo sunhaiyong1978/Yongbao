@@ -3,5 +3,5 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=gimp
-export PACKAGE_VERSION=3.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gimp/3.0.2/
+export PACKAGE_VERSION=3.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gimp/3.0.4/

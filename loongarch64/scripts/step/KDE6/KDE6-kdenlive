@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kdenlive
-export PACKAGE_VERSION=25.04.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kdenlive/25.04.0/
-rm -rf ${BUILD_DIRECTORY}/kdenlive-25.04.0
-tar xvf ${DOWNLOADDIR}/kdenlive-25.04.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kdenlive-25.04.0
+export PACKAGE_VERSION=25.04.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kdenlive/25.04.1/
+rm -rf ${BUILD_DIRECTORY}/kdenlive-25.04.1
+tar xvf ${DOWNLOADDIR}/kdenlive-25.04.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kdenlive-25.04.1
         
 	mkdir cross-build
 	pushd cross-build
@@ -42,4 +42,4 @@ pushd ${BUILD_DIRECTORY}/kdenlive-25.04.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kdenlive-25.04.0
+rm -rf ${BUILD_DIRECTORY}/kdenlive-25.04.1

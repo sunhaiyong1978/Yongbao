@@ -1,0 +1,27 @@
+From d99446bcd177847a50cc565e70d06cb49f503a60 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 14 May 2025 02:38:16 +0000
+Subject: [PATCH 04/11] qtwebengine 6.9.0 fix chromium boringssl openssl
+ target.h for loongarch64.
+
+---
+ .../third_party/boringssl/src/include/openssl/target.h         | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/target.h b/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/target.h
+index 2760f52ce8..36c95a245f 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/target.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include/openssl/target.h
+@@ -34,6 +34,9 @@
+ #elif defined(__ARMEL__) || defined(_M_ARM)
+ #define OPENSSL_32_BIT
+ #define OPENSSL_ARM
++#elif defined(__loongarch_lp64)
++#define OPENSSL_64_BIT
++#define OPENSSL_LOONGARCH64
+ #elif defined(__MIPSEL__) && !defined(__LP64__)
+ #define OPENSSL_32_BIT
+ #define OPENSSL_MIPS
+-- 
+2.31.1
+

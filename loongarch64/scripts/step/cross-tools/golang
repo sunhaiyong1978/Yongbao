@@ -4,10 +4,10 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=golang
-export PACKAGE_VERSION=1.24.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/golang/1.24.2/
+export PACKAGE_VERSION=1.24.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/golang/1.24.3/
 rm -rf ${BUILD_DIRECTORY}/go
-tar xvf ${DOWNLOADDIR}/go1.24.2.src.tar.gz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/go1.24.3.src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/go
     
     GO_ARCH_NAME=amd64

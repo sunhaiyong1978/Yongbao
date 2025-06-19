@@ -10,35 +10,76 @@ HOST_ARCH_NAME="$(get_user_set_env host ${HOST_ARCH_NAME})"
 HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
 TARGET_ARCH_NAME="$(get_user_set_env target ${DISTRO_ARCH})" 
 ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_HOST})" "${ARCH_ABI}")
+LIBRARY_SHARED=$(get_user_set_env shared "1")
+
+TARGET_VENDOR=$(get_user_set_env vendor "unknown")
 
 if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
 	mv ${TEMP_DIRECTORY}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
 fi
 
+COMPAT_DIR=""
 if [ "x$(get_user_set_env compat)" == "x1" ]; then
 	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
-	COMPAT_DIR="compat"
+	COMPAT_DIR="hostcompat"
 else
 	COMPAT_HOST="${HOST_HOST}"
-	COMPAT_DIR=""
 fi
+
+if [ "x$(get_user_set_env target_compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${HOST_TARGET}" | sed "s@unknown@compat@g")"
+	COMPAT_DIR="$([ "${COMPAT_DIR}" == "" ] && echo "targetcompat" || echo "${COMPAT_DIR}-targetcompat")"
+else
+	case "x${TARGET_VENDOR}" in
+		"xunknown")
+			;;
+		"xNULL")
+			HOST_TARGET="$(echo "${HOST_TARGET}" | sed "s@-unknown-@-@g")"
+			;;
+		*)
+			HOST_TARGET="$(echo "${HOST_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+			;;
+	esac
+	COMPAT_TARGET="${HOST_TARGET}"
+fi
+
 
 mkdir -pv ${TEMP_DIRECTORY}/cross-tools/target/usr/lib{,64}
 ln -sv usr/lib{,64} ${TEMP_DIRECTORY}/cross-tools/target/
-cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/binutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
-cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
-cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${HOST_TARGET}/gdb/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
-cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/target ${TEMP_DIRECTORY}/cross-tools/
+if [ "x${LIBRARY_SHARED}" == "x1" ]; then
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/binutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/gdb/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target ${TEMP_DIRECTORY}/cross-tools/
+else
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/binutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/gdb/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target ${TEMP_DIRECTORY}/cross-tools/
+fi
+
+pushd ${TEMP_DIRECTORY}/cross-tools/target
+	find -type f -name \*.a -exec ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-strip --strip-debug {} ';'
+	find -type f -name \*.so* -exec ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-strip --strip-unneeded {} ';'
+	for dir_i in bin sbin usr/libexec
+	do
+		if [ -d ${dir_i} ]; then
+			find ${dir_i} -type f -exec ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-strip --strip-all {} ';'
+		fi
+	done
+popd
+
+
 
 pushd ${TEMP_DIRECTORY}
-	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc-libc.tar.xz ]; then
-		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc-libc.tar.xz
+	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${COMPAT_TARGET}-gcc-libc.${HOST_ARCH_NAME}.tar.xz ]; then
+		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${COMPAT_TARGET}-gcc-libc.${HOST_ARCH_NAME}.tar.xz
 	fi
 
 	mkdir -pv ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}
 
-	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc-libc.tar.xz cross-tools
-	info_pool "生成了可发布的压缩包文件：${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${HOST_ARCH_NAME}-cross-tools-${TARGET_ARCH_NAME}-gcc-libc.tar.xz"
+	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${COMPAT_TARGET}-gcc-libc.${HOST_ARCH_NAME}.tar.xz cross-tools
+	info_pool "生成了可发布的压缩包文件：${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/gcc/${COMPAT_DIR}/${COMPAT_TARGET}-gcc-libc.${HOST_ARCH_NAME}.tar.xz"
 popd
 
 if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then

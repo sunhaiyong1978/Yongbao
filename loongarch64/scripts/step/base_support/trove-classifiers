@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=trove-classifiers
-export PACKAGE_VERSION=2025.4.11.15
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/trove-classifiers/2025.4.11.15/
-rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.4.11.15
-tar xvf ${DOWNLOADDIR}/trove_classifiers-2025.4.11.15.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/trove_classifiers-2025.4.11.15
+export PACKAGE_VERSION=2025.5.9.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/trove-classifiers/2025.5.9.12/
+rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.5.9.12
+tar xvf ${DOWNLOADDIR}/trove_classifiers-2025.5.9.12.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/trove_classifiers-2025.5.9.12
 	
 	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user trove-classifiers --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.4.11.15
+rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.5.9.12

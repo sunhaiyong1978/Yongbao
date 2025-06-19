@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=audit-userspace
-export PACKAGE_VERSION=4.0.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/audit-userspace/4.0.3/
-rm -rf ${BUILD_DIRECTORY}/audit-userspace-4.0.3
-tar xvf ${DOWNLOADDIR}/audit-userspace-4.0.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/audit-userspace-4.0.3
+export PACKAGE_VERSION=4.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/audit-userspace/4.0.4/
+rm -rf ${BUILD_DIRECTORY}/audit-userspace-4.0.4
+tar xvf ${DOWNLOADDIR}/audit-userspace-4.0.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/audit-userspace-4.0.4
         
         for config_i in $(find -name "config.sub")
         do
@@ -30,4 +30,4 @@ pushd ${BUILD_DIRECTORY}/audit-userspace-4.0.3
 	mkdir -p ${SYSROOT_DIR}/var/spool/audit
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/audit-userspace-4.0.3
+rm -rf ${BUILD_DIRECTORY}/audit-userspace-4.0.4

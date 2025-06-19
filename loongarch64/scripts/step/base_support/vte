@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=vte
-export PACKAGE_VERSION=0.80.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/vte/0.80.1/
-rm -rf ${BUILD_DIRECTORY}/vte-0.80.1
-tar xvf ${DOWNLOADDIR}/vte-0.80.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vte-0.80.1
+export PACKAGE_VERSION=0.80.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/vte/0.80.2/
+rm -rf ${BUILD_DIRECTORY}/vte-0.80.2
+tar xvf ${DOWNLOADDIR}/vte-0.80.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vte-0.80.2
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/vte-0.80.1
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/vte-0.80.1
+rm -rf ${BUILD_DIRECTORY}/vte-0.80.2

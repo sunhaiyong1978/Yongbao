@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=userspace-rcu
-export PACKAGE_VERSION=0.15.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/userspace-rcu/0.15.2/
-rm -rf ${BUILD_DIRECTORY}/userspace-rcu-0.15.2
-tar xvf ${DOWNLOADDIR}/userspace-rcu-0.15.2.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/userspace-rcu-0.15.2
+export PACKAGE_VERSION=0.15.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/userspace-rcu/0.15.3/
+rm -rf ${BUILD_DIRECTORY}/userspace-rcu-0.15.3
+tar xvf ${DOWNLOADDIR}/userspace-rcu-0.15.3.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/userspace-rcu-0.15.3
     
     autoreconf -ifv
     ./configure ${COMMON_CONFIG}
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/userspace-rcu-0.15.2
+rm -rf ${BUILD_DIRECTORY}/userspace-rcu-0.15.3

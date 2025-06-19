@@ -1,0 +1,55 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=dist-cross-llvm-project
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/dist-cross-llvm-project//
+HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+HOST_ARCH_NAME="$(get_user_set_env host ${HOST_ARCH_NAME})" 
+HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+TARGET_ARCH_NAME="$(get_user_set_env target ${DISTRO_ARCH})" 
+ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_HOST})" "${ARCH_ABI}")
+
+if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
+	mv ${TEMP_DIRECTORY}/cross-tools{,.$(date +%Y%m%d%H%M%S)}
+fi
+
+COMPAT_DIR=""
+if [ "x$(get_user_set_env compat)" == "x1" ]; then
+	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
+	COMPAT_DIR="hostcompat"
+else
+	COMPAT_HOST="${HOST_HOST}"
+fi
+
+if [ "x$(get_user_set_env target_compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${HOST_TARGET}" | sed "s@unknown@compat@g")"
+	COMPAT_DIR="$([ "${COMPAT_DIR}" == "" ] && echo "targetcompat" || echo "${COMPAT_DIR}-targetcompat")"
+else
+	COMPAT_TARGET="${HOST_TARGET}"
+fi
+
+
+mkdir -pv ${TEMP_DIRECTORY}/cross-tools
+cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/llvm-project/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+if [ "${COMPAT_HOST}" != "${COMPAT_TARGET}" ]; then
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_TARGET}/llvm-runtimes/usr/include/${COMPAT_TARGET} ${TEMP_DIRECTORY}/cross-tools/include/
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_TARGET}/llvm-runtimes/usr/lib/${COMPAT_TARGET} ${TEMP_DIRECTORY}/cross-tools/lib/
+	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_TARGET}/llvm-runtimes/usr/lib/clang/*/lib/${COMPAT_TARGET} ${TEMP_DIRECTORY}/cross-tools/lib/clang/*/lib/
+fi
+
+pushd ${TEMP_DIRECTORY}
+	if [ -f ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/llvm-project/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_HOST}-llvm-project.tar.xz ]; then
+		rm ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/llvm-project/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_HOST}-llvm-project.tar.xz
+	fi
+
+	mkdir -pv ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/llvm-project/${COMPAT_DIR}/
+
+	tar --xattrs-include='*' --owner=root --group=root -cJf ${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/llvm-project/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_HOST}-llvm-project.tar.xz cross-tools
+	info_pool "生成了可发布的压缩包文件：${DIST_DIRECTORY}/host/${HOST_ARCH_NAME}/llvm-project/${COMPAT_DIR}/${DISTRO_NAME}-${DISTRO_VERSION}-${COMPAT_HOST}-llvm-project.tar.xz"
+popd
+
+if [ -d ${TEMP_DIRECTORY}/cross-tools ]; then
+	rm -rf ${TEMP_DIRECTORY}/cross-tools
+fi

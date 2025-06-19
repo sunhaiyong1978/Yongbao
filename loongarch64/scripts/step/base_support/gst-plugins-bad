@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gst-plugins-bad
-export PACKAGE_VERSION=1.26.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gst-plugins-bad/1.26.0/
-rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.26.0
-tar xvf ${DOWNLOADDIR}/gst-plugins-bad-1.26.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gst-plugins-bad-1.26.0
+export PACKAGE_VERSION=1.26.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gst-plugins-bad/1.26.1/
+rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.26.1
+tar xvf ${DOWNLOADDIR}/gst-plugins-bad-1.26.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gst-plugins-bad-1.26.1
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/gst-plugins-bad-1.26.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.26.0
+rm -rf ${BUILD_DIRECTORY}/gst-plugins-bad-1.26.1

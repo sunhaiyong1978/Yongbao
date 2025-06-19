@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=gcc
-export PACKAGE_VERSION=14.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc/14.2.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
-tar xvf ${DOWNLOADDIR}/gcc-14.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-14.2.0
+export PACKAGE_VERSION=15.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc/15.1.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0
+tar xvf ${DOWNLOADDIR}/gcc-15.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-15.1.0
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
         ARCH_ABI=$(archname_to_archabi "$(get_user_set_env host ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -15,11 +15,22 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
         ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
     fi
+    TARGET_VENDOR=$(get_user_set_env vendor "unknown")
 
-    if [ "x$(get_user_set_env compat)" == "x1" ]; then
+    if [ "x$(get_user_set_env compat)" == "x1" ] || [ "x$(get_user_set_env target_compat)" == "x1" ]; then
 	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
     else
-	COMPAT_TARGET="${CROSS_TARGET}"
+	case "x${TARGET_VENDOR}" in
+		"xunknown")
+			COMPAT_TARGET="${CROSS_TARGET}"
+			;;
+		"xNULL")
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@-unknown-@-@g")"
+			;;
+		*)
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+			;;
+	esac
     fi
     if [ "x${ARCH_ABI}" == "x32" ]; then
 	WITH_ABI=""
@@ -49,7 +60,7 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
                      ${WITH_ABI} \
                      --enable-languages=c,c++
 	case "${CROSS_TARGET}" in
-		*-mingw*)
+		*-mingw* | *-darwin*)
         		make -j${JOBS} all-gcc
         		make install-strip-gcc
 			;;
@@ -61,4 +72,4 @@ pushd ${BUILD_DIRECTORY}/gcc-14.2.0
 	ln -sf ${COMPAT_TARGET}-gcc ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-cc
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-14.2.0
+rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0

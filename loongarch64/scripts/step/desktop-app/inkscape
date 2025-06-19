@@ -35,7 +35,7 @@ pushd ${BUILD_DIRECTORY}/inkscape-git-default_git
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
 		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-		      -DPOPPLER_INCLUDE_DIR=${SYSROOT_DIR}/usr/include/poppler -DGZIP=/usr/bin/gzip -DWITH_POPPLER=OFF -Wno-dev ..
+		      -DPOPPLER_INCLUDE_DIR=${SYSROOT_DIR}/usr/include/poppler -DGZIP=/usr/bin/gzip -DWITH_POPPLER=OFF -DWITH_CAPYPDF=OFF -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
