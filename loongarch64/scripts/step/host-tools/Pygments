@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=Pygments
-export PACKAGE_VERSION=2.19.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Pygments/2.19.1/
-rm -rf ${BUILD_DIRECTORY}/pygments-2.19.1
-tar xvf ${DOWNLOADDIR}/pygments-2.19.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pygments-2.19.1
+export PACKAGE_VERSION=2.19.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Pygments/2.19.2/
+rm -rf ${BUILD_DIRECTORY}/pygments-2.19.2
+tar xvf ${DOWNLOADDIR}/pygments-2.19.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pygments-2.19.2
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user Pygments
 popd 
-rm -rf ${BUILD_DIRECTORY}/pygments-2.19.1
+rm -rf ${BUILD_DIRECTORY}/pygments-2.19.2

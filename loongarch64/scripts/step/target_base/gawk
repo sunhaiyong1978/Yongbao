@@ -8,6 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gawk/5.3.2/
 rm -rf ${BUILD_DIRECTORY}/gawk-5.3.2
 tar xvf ${DOWNLOADDIR}/gawk-5.3.2.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gawk-5.3.2
+	
 	sed -i 's/extras//' Makefile.in
 	./configure --prefix=/usr  --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} --host=${CROSS_TARGET}
 	eval ${MAKE_AND_INSTALL}

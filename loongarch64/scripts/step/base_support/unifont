@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=unifont
-export PACKAGE_VERSION=16.0.03
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/unifont/16.0.03/
-rm -rf ${BUILD_DIRECTORY}/unifont-16.0.03
-tar xvf ${DOWNLOADDIR}/unifont-16.0.03.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/unifont-16.0.03
+export PACKAGE_VERSION=16.0.04
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/unifont/16.0.04/
+rm -rf ${BUILD_DIRECTORY}/unifont-16.0.04
+tar xvf ${DOWNLOADDIR}/unifont-16.0.04.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/unifont-16.0.04
 	make -j${JOBS}
 	pushd font
 		make ttf
 	popd
 	mkdir -pv ${SYSROOT_DIR}/usr/share/fonts/truetype/unifont/
-	cp -av font/compiled/unifont-16.0.03.ttf ${SYSROOT_DIR}/usr/share/fonts/truetype/unifont/unifont.ttf
+	cp -av font/compiled/unifont-16.0.04.ttf ${SYSROOT_DIR}/usr/share/fonts/truetype/unifont/unifont.ttf
 popd 
-rm -rf ${BUILD_DIRECTORY}/unifont-16.0.03
+rm -rf ${BUILD_DIRECTORY}/unifont-16.0.04

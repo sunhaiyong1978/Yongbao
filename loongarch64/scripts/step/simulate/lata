@@ -8,7 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/lata/git/
 rm -rf ${BUILD_DIRECTORY}/lata-git_git
 tar xvf ${DOWNLOADDIR}/lata-git_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/lata-git_git
-	patch -Np1 -i ${SYSDIR}/files/simulate/lata/git/patches/0001-fix-build-error-for-glibc-2.41.patch 
+	patch -Np1 -i ${SYSDIR}/files/simulate/lata/git/patches/0001-set-option_fam_jmp_cache-force-0.patch 
 	 
 	git init
 	mkdir -p cross-build

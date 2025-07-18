@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libvpx
-export PACKAGE_VERSION=1.15.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libvpx/1.15.1/
-rm -rf ${BUILD_DIRECTORY}/libvpx-1.15.1
-tar xvf ${DOWNLOADDIR}/libvpx-1.15.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libvpx-1.15.1
+export PACKAGE_VERSION=1.15.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libvpx/1.15.2/
+rm -rf ${BUILD_DIRECTORY}/libvpx-1.15.2
+tar xvf ${DOWNLOADDIR}/libvpx-1.15.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libvpx-1.15.2
     sed -i 's/cp -p/cp/' build/make/Makefile
     mkdir cross-build
     pushd cross-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/libvpx-1.15.1
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/libvpx-1.15.1
+rm -rf ${BUILD_DIRECTORY}/libvpx-1.15.2

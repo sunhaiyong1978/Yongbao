@@ -4,11 +4,11 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-w64-libs
-export PACKAGE_VERSION=v12.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-w64-libs/v12.0.0/
-rm -rf ${BUILD_DIRECTORY}/mingw-w64-v12.0.0
-tar xvf ${DOWNLOADDIR}/mingw-w64-v12.0.0.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mingw-w64-v12.0.0
+export PACKAGE_VERSION=v13.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-w64-libs/v13.0.0/
+rm -rf ${BUILD_DIRECTORY}/mingw-w64-v13.0.0
+tar xvf ${DOWNLOADDIR}/mingw-w64-v13.0.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mingw-w64-v13.0.0
 	mkdir -p build
 	pushd build
 		../configure --host=${MINGW_HOST} --prefix=/mingw --without-headers --without-crt --with-libraries
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/mingw-w64-v12.0.0
 		make DESTDIR=${MINGW_SYSROOT_DIR} install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mingw-w64-v12.0.0
+rm -rf ${BUILD_DIRECTORY}/mingw-w64-v13.0.0

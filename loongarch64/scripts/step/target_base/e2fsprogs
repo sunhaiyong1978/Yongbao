@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=e2fsprogs
-export PACKAGE_VERSION=1.47.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/e2fsprogs/1.47.2/
-rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
-tar xvf ${DOWNLOADDIR}/e2fsprogs-1.47.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
+export PACKAGE_VERSION=1.47.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/e2fsprogs/1.47.3/
+rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.3
+tar xvf ${DOWNLOADDIR}/e2fsprogs-1.47.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.3
 	mkdir -v build
 	pushd build
 		../configure ${COMMON_CONFIG} \
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
 	cp -av ${SYSROOT_DIR}/usr/bin/mk_cmds ${CROSSTOOLS_DIR}/bin/
 	sed -i "s@=/usr@=${SYSROOT_DIR}/usr@g" ${CROSSTOOLS_DIR}/bin/mk_cmds
 popd 
-rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
+rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.3

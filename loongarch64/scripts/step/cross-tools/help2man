@@ -18,9 +18,9 @@ pushd ${BUILD_DIRECTORY}/help2man-1.49.3
                 autoreconf -ifv
         fi
         ./configure --prefix=${CROSSTOOLS_DIR} --build=${CROSS_HOST} \
-                --host=${CROSS_HOST} --target=${CROSS_TARGET}
+                --host=${CROSS_HOST} --target=${CROSS_TARGET} --enable-nls
         eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/help2man-1.49.3
 
-sed -i "s@\`\$prog@\`qemu-${YONGBAO_TARGET_ARCH} \$prog@g" ${CROSSTOOLS_DIR}/bin/help2man
+sed -i "s@\`\$prog@\`qemu-wrapper \$prog@g" ${CROSSTOOLS_DIR}/bin/help2man

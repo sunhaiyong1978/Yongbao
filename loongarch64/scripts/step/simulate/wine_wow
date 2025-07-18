@@ -4,11 +4,11 @@ source env/function.sh
 source scripts/step/simulate/wine_wow.env
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=wine_wow
-export PACKAGE_VERSION=10.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine_wow/10.9/
-rm -rf ${BUILD_DIRECTORY}/wine-10.9
-tar xvf ${DOWNLOADDIR}/wine-10.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-10.9
+export PACKAGE_VERSION=10.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine_wow/10.12/
+rm -rf ${BUILD_DIRECTORY}/wine-10.12
+tar xvf ${DOWNLOADDIR}/wine-10.12.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-10.12
 	if [ -f ${RESOURCEDIR}/wine-staging.url ]; then
 		git init
 		mkdir -p wine-staging
@@ -62,7 +62,7 @@ pushd ${BUILD_DIRECTORY}/wine-10.9
 	ln -sfv ../lib/wine/x86_64-unix/wine ${SYSROOT_DIR}/opt/wine-wow/bin/wine
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-10.9
+rm -rf ${BUILD_DIRECTORY}/wine-10.12
 
 set_strip_step "/opt/wine-wow/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
 set_strip_step "/opt/wine-wow/lib/wine/x86_64-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
@@ -72,6 +72,6 @@ set_strip_step "/opt/wine-wow/lib/wine/i386-windows/" "1" "*.a" "--strip-debug" 
 set_strip_step "/opt/wine-wow/lib/wine/i386-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
 set_strip_step "/opt/wine-wow/lib/wine/i386-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin/i686-w64-mingw32-strip"
 
-set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
-set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
-set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin/x86_64-w64-mingw32-strip"
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.a" "--strip-debug" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32ucrt/bin/x86_64-w64-mingw32ucrt-strip"
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.dll*" "--strip-unneeded" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32ucrt/bin/x86_64-w64-mingw32ucrt-strip"
+set_strip_step "/opt/wine-wow/lib/wine/x86_64-windows/" "1" "*.exe" "--strip-all" "${SYSDIR}/cross-toolchains/x86_64-w64-mingw32ucrt/bin/x86_64-w64-mingw32ucrt-strip"

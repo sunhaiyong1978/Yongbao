@@ -1,0 +1,15 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=pyproject_hooks
+export PACKAGE_VERSION=1.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pyproject_hooks/1.2.0/
+rm -rf ${BUILD_DIRECTORY}/pyproject_hooks-1.2.0
+tar xvf ${DOWNLOADDIR}/pyproject_hooks-1.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pyproject_hooks-1.2.0
+	
+	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user pyproject_hooks
+popd 
+rm -rf ${BUILD_DIRECTORY}/pyproject_hooks-1.2.0

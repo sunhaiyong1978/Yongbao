@@ -1,0 +1,18 @@
+source env/unusual/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=unusual
+export STEP_PACKAGENAME=compat-linux-header
+export PACKAGE_VERSION=6.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/compat-linux-header/6.6/
+rm -rf ${BUILD_DIRECTORY}/linux-6.6
+tar xvf ${DOWNLOADDIR}/linux-6.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.6
+	
+	make ARCH=${ARCH_FAMILY} mrproper
+	make ARCH=${ARCH_FAMILY} INSTALL_HDR_PATH=dest headers_install
+	find dest/include -name '.*' -delete
+	mkdir -pv ${SYSROOT_DIR}/usr/include
+	cp -rv dest/include/* ${SYSROOT_DIR}/usr/include
+popd 
+rm -rf ${BUILD_DIRECTORY}/linux-6.6

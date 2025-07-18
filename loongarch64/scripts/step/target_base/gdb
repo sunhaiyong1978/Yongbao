@@ -16,7 +16,9 @@ pushd ${BUILD_DIRECTORY}/gdb-16.3
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-                ./configure ${COMMON_CONFIG} --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd --with-system-readline --with-libgmp-prefix=${SYSROOT_DIR} --with-libexpat-prefix=${SYSROOT_DIR}
+                ./configure ${COMMON_CONFIG} --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd \
+			--with-system-readline --with-libgmp-prefix=${SYSROOT_DIR} \
+			--with-libexpat-prefix=${SYSROOT_DIR} --with-python=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
                 eval ${MAKE_AND_INSTALL}
         rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

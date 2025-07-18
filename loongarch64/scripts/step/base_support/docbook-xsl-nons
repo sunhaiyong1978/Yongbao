@@ -61,5 +61,7 @@ pushd ${BUILD_DIRECTORY}/docbook-xsl-nons-1.79.2
            "/usr/share/xml/docbook/xsl-stylesheets-nons-1.79.2" \
     ${SYSROOT_DIR}/etc/xml/catalog
 
+    ln -sfv ../../xml/docbook/xsl-stylesheets-nons-1.79.2 ${SYSROOT_DIR}/usr/share/sgml/docbook/xsl-stylesheets-nons
+
 popd 
 rm -rf ${BUILD_DIRECTORY}/docbook-xsl-nons-1.79.2

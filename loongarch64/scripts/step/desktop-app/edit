@@ -1,0 +1,16 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=edit
+export PACKAGE_VERSION=1.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/edit/1.2.0/
+rm -rf ${BUILD_DIRECTORY}/edit-1.2.0
+tar xvf ${DOWNLOADDIR}/edit-1.2.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/edit-1.2.0
+    
+    RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc -Ccode-model=large" \
+    cargo build --release --target ${CROSS_TARGET}
+    install -Dm755 target/${CROSS_TARGET}/release/edit ${SYSROOT_DIR}/usr/bin/
+popd 
+rm -rf ${BUILD_DIRECTORY}/edit-1.2.0

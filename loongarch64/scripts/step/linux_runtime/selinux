@@ -4,14 +4,14 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=selinux
-export PACKAGE_VERSION=3.8.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/selinux/3.8.1/
-rm -rf ${BUILD_DIRECTORY}/selinux-3.8.1
-tar xvf ${DOWNLOADDIR}/selinux-3.8.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/selinux-3.8.1
+export PACKAGE_VERSION=3.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/selinux/3.9/
+rm -rf ${BUILD_DIRECTORY}/selinux-3.9
+tar xvf ${DOWNLOADDIR}/selinux-3.9.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/selinux-3.9
 	pushd libselinux
 		CC=${LINUX_HOST}-gcc CXX=${LINUX_HOST}-g++ make -j${JOBS} SHLIBDIR=/lib${LIB_SUFF} LIBDIR=/usr/lib${LIB_SUFF}
 		CC=${LINUX_HOST}-gcc CXX=${LINUX_HOST}-g++ make DESTDIR=${LINUX_SYSROOT_DIR} SHLIBDIR=/usr/lib${LIB_SUFF} LIBDIR=/usr/lib${LIB_SUFF} install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/selinux-3.8.1
+rm -rf ${BUILD_DIRECTORY}/selinux-3.9

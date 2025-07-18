@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=waylandpp
-export PACKAGE_VERSION=1.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/waylandpp/1.0.0/
-rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.0
-tar xvf ${DOWNLOADDIR}/waylandpp-1.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/waylandpp-1.0.0
-    patch -Np1 -i ${SYSDIR}/files/host-tools/waylandpp/1.0.0/patches/0001-waylandpp-1.0.0-fix-build-error-for-gcc-14.patch 
+export PACKAGE_VERSION=1.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/waylandpp/1.0.1/
+rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.1
+tar xvf ${DOWNLOADDIR}/waylandpp-1.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/waylandpp-1.0.1
+    patch -Np1 -i ${SYSDIR}/files/host-tools/waylandpp/1.0.1/patches/0001-waylandpp-1.0.0-fix-build-error-for-gcc-14.patch 
 	 
     mkdir -p native-build
     pushd native-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/waylandpp-1.0.0
         eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.0
+rm -rf ${BUILD_DIRECTORY}/waylandpp-1.0.1

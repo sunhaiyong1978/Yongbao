@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=wayland-protocols
-export PACKAGE_VERSION=1.44
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/wayland-protocols/1.44/
-rm -rf ${BUILD_DIRECTORY}/wayland-protocols-1.44
-tar xvf ${DOWNLOADDIR}/wayland-protocols-1.44.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wayland-protocols-1.44
+export PACKAGE_VERSION=1.45
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/wayland-protocols/1.45/
+rm -rf ${BUILD_DIRECTORY}/wayland-protocols-1.45
+tar xvf ${DOWNLOADDIR}/wayland-protocols-1.45.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wayland-protocols-1.45
     sed -i -e "/dep_scanner =/s@, native: true@@g" \
            -e "/prog_scanner =/s@find_program\(.*\)\$@find_program('wayland-scanner')@g" \
            meson.build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/wayland-protocols-1.44
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/wayland-protocols-1.44
+rm -rf ${BUILD_DIRECTORY}/wayland-protocols-1.45

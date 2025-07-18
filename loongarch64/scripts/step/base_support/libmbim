@@ -3,18 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libmbim
-export PACKAGE_VERSION=1.26.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libmbim/1.26.4/
-rm -rf ${BUILD_DIRECTORY}/libmbim-1.26.4
-tar xvf ${DOWNLOADDIR}/libmbim-1.26.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libmbim-1.26.4
-    sed -i "s@\$PKG_CONFIG_SYSROOT_DIR@@g" configure
-    mkdir cross-build
-    pushd cross-build
-        ../configure ${COMMON_CONFIG} --enable-introspection
-        make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
-             INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler
-        make DESTDIR=${SYSROOT_DIR} install
-    popd
+export PACKAGE_VERSION=1.32.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libmbim/1.32.0/
+rm -rf ${BUILD_DIRECTORY}/libmbim-1.32.0
+tar xvf ${DOWNLOADDIR}/libmbim-1.32.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libmbim-1.32.0
+	
+	mkdir cross-build
+	pushd cross-build
+		 meson ${MESON_CONFIG}  \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libmbim-1.26.4
+rm -rf ${BUILD_DIRECTORY}/libmbim-1.32.0

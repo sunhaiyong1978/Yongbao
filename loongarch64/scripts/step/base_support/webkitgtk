@@ -3,30 +3,22 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=webkitgtk
-export PACKAGE_VERSION=2.49.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.49.1/
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.49.1
-tar xvf ${DOWNLOADDIR}/webkitgtk-2.49.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/webkitgtk-2.49.1
+export PACKAGE_VERSION=2.49.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.49.3/
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.49.3
+tar xvf ${DOWNLOADDIR}/webkitgtk-2.49.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webkitgtk-2.49.3
     
     mkdir cross-build-6.0
     pushd cross-build-6.0
         WK_USE_CCACHE=NO \
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
-              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
 	      -DCMAKE_C_COMPILER="${CROSS_TARGET}-gcc" \
 	      -DCMAKE_CXX_COMPILER="${CROSS_TARGET}-g++" \
 	      -DCMAKE_C_FLAGS="-mlasx -flax-vector-conversions" \
 	      -DCMAKE_CXX_FLAGS="-mlasx -flax-vector-conversions" \
               -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
-              -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
-              -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
-              -DCMAKE_MAKE_PROGRAM=${HOST_TOOLS_DIR}/bin/ninja \
-              -DPERL_EXECUTABLE=${HOST_TOOLS_DIR}/bin/perl \
-              -DRuby_EXECUTABLE=${HOST_TOOLS_DIR}/bin/ruby \
-              -DUNIFDEF_EXECUTABLE=${HOST_TOOLS_DIR}/bin/unifdef \
-              -DGPERF_EXECUTABLE=/bin/gperf \
-	      -DTOUCH_EXECUTABLE=/bin/touch \
+               -DPERL_EXECUTABLE=${HOST_TOOLS_DIR}/bin/perl \
               -DCMAKE_SKIP_RPATH=ON \
               -DPORT=GTK \
               -DUSE_GTK4=ON \
@@ -48,4 +40,4 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.49.1
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.49.1
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.49.3

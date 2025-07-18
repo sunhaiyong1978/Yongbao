@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libproxy
-export PACKAGE_VERSION=0.5.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libproxy/0.5.0/
-rm -rf ${BUILD_DIRECTORY}/libproxy-libproxy-0.5.0
-tar xvf ${DOWNLOADDIR}/libproxy-0.5.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libproxy-libproxy-0.5.0
+export PACKAGE_VERSION=0.5.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libproxy/0.5.10/
+rm -rf ${BUILD_DIRECTORY}/libproxy-0.5.10
+tar xvf ${DOWNLOADDIR}/libproxy-0.5.10.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libproxy-0.5.10
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libproxy-libproxy-0.5.0
 	popd
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libproxy-libproxy-0.5.0
+rm -rf ${BUILD_DIRECTORY}/libproxy-0.5.10

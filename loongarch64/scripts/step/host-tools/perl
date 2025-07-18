@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=perl
-export PACKAGE_VERSION=5.40.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/perl/5.40.2/
-rm -rf ${BUILD_DIRECTORY}/perl-5.40.2
-tar xvf ${DOWNLOADDIR}/perl-5.40.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/perl-5.40.2
+export PACKAGE_VERSION=5.42.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/perl/5.42.0/
+rm -rf ${BUILD_DIRECTORY}/perl-5.42.0
+tar xvf ${DOWNLOADDIR}/perl-5.42.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/perl-5.42.0
     sed -i "s@/usr/include@${PREFIX}/include@g" ext/Errno/Errno_pm.PL
     CFLAGS="-D_LARGEFILE64_SOURCE" ./configure.gnu --prefix=${PREFIX} \
     	             -Dprivlib=${PREFIX}/lib/perl5/5.4x/core_perl \
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/perl-5.40.2
 	             -Dvendorarch=${PREFIX}/lib${TARGET_LIB_SUFF}/perl5/5.4x/vendor_perl
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/perl-5.40.2
+rm -rf ${BUILD_DIRECTORY}/perl-5.42.0

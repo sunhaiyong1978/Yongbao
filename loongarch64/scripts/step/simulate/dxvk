@@ -22,13 +22,13 @@ pushd ${BUILD_DIRECTORY}/dxvk-git-default_git
 		DESTDIR=${SYSROOT_DIR} ninja install
         popd
 
-	PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
+	PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32ucrt/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
 
         mkdir cross-build-dll
         pushd cross-build-dll
 		case ${ARCH_NAME} in
 			x86_64)
-	        	        meson --prefix=/opt/wine-assist/dxvk-${ARCH_NAME} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross_mingw64.txt \
+	        	        meson --prefix=/opt/wine-assist/dxvk-${ARCH_NAME} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross_mingw64ucrt.txt \
 				      --default-library=both \
 		                      ..
 				CC=${LINUX_HOST}-gcc ninja 

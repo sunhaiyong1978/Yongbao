@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=libxml2
-export PACKAGE_VERSION=2.14.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxml2/2.14.3/
-rm -rf ${BUILD_DIRECTORY}/libxml2-2.14.3
-tar xvf ${DOWNLOADDIR}/libxml2-2.14.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxml2-2.14.3
+export PACKAGE_VERSION=2.14.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxml2/2.14.5/
+rm -rf ${BUILD_DIRECTORY}/libxml2-2.14.5
+tar xvf ${DOWNLOADDIR}/libxml2-2.14.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxml2-2.14.5
         
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libxml2-2.14.3
         ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-history --with-icu --with-python=${PREFIX}/bin/python3 PYTHON=python3
         eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxml2-2.14.3
+rm -rf ${BUILD_DIRECTORY}/libxml2-2.14.5

@@ -3,20 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=firefox
-export PACKAGE_VERSION=128.11.0esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/128.11.0esr/
-rm -rf ${BUILD_DIRECTORY}/firefox-128.11.0
-tar xvf ${DOWNLOADDIR}/firefox-128.11.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-128.11.0
-    mkdir -pv mozbuild/l10n-central
-    pushd mozbuild/l10n-central
-        unzip ${RESOURCEDIR}/files/tip.zip
-        mv zh-CN* zh-CN
-    popd
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.11.0esr/patches/0001-firefox-125-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.11.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.11.0esr/patches/0001-firefox-119-set-vaapi-enabled-as-default.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/128.11.0esr/patches/0001-firefox-128.8-fix-for-glean_parser-17.0.1-build-erro.patch 
+export PACKAGE_VERSION=140.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/140.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-140.0
+tar xvf ${DOWNLOADDIR}/firefox-140.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-140.0
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/140.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
 	 
 
     sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@13@g" mach
@@ -42,6 +34,7 @@ ac_add_options --disable-tests
 ac_add_options --without-wasm-sandboxed-libraries
 ac_add_options --with-sysroot=${SYSROOT_DIR}
 
+
 unset MOZ_TELEMETRY_REPORTING
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 EOF
@@ -63,14 +56,10 @@ EOF
     MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach package
 
-    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
-    CXXFLAGS="-fpermissive -Wnonnull -mno-lsx" CFLAGS="-mno-lsx" \
-    MOZBUILD_STATE_PATH=${PWD}/mozbuild \
-    ./mach build installers-zh-CN
 
     mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/firefox/
-    cp -av firefox-build-dir/dist/firefox-*.tar.bz2 ${DIST_DIRECTORY}/host/${ARCH_NAME}/firefox/
-    tar xvf firefox-build-dir/dist/firefox-*.zh-CN.linux-${ARCH_NAME}.tar.bz2 \
+    cp -av firefox-build-dir/dist/firefox-*.tar.xz ${DIST_DIRECTORY}/host/${ARCH_NAME}/firefox/
+    tar xvf firefox-build-dir/dist/firefox-*.en-US.linux-${ARCH_NAME}.tar.xz \
         -C ${SYSROOT_DIR}/usr/lib64/
     ln -sfv /usr/lib64/firefox/firefox ${SYSROOT_DIR}/usr/bin/firefox
 
@@ -94,4 +83,4 @@ EOF
 ln -sfv /usr/lib64/firefox/browser/chrome/icons/default/default128.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/firefox.png
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-128.11.0
+rm -rf ${BUILD_DIRECTORY}/firefox-140.0

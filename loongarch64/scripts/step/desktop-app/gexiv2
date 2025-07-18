@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=gexiv2
-export PACKAGE_VERSION=0.14.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gexiv2/0.14.5/
-rm -rf ${BUILD_DIRECTORY}/gexiv2-0.14.5
-tar xvf ${DOWNLOADDIR}/gexiv2-0.14.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gexiv2-0.14.5
+export PACKAGE_VERSION=0.15.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gexiv2/0.15.0/
+rm -rf ${BUILD_DIRECTORY}/gexiv2-0.15.0
+tar xvf ${DOWNLOADDIR}/gexiv2-0.15.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gexiv2-0.15.0
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/gexiv2-0.14.5
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gexiv2-0.14.5
+rm -rf ${BUILD_DIRECTORY}/gexiv2-0.15.0

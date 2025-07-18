@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=systemd_pre
-export PACKAGE_VERSION=257.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd_pre/257.5/
-rm -rf ${BUILD_DIRECTORY}/systemd-257.5
-tar xvf ${DOWNLOADDIR}/systemd-257.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-257.5
+export PACKAGE_VERSION=257.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd_pre/257.7/
+rm -rf ${BUILD_DIRECTORY}/systemd-257.7
+tar xvf ${DOWNLOADDIR}/systemd-257.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-257.7
 	
 	pushd src/basic
         python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
@@ -29,4 +29,4 @@ pushd ${BUILD_DIRECTORY}/systemd-257.5
 		eval ${NINJA_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-257.5
+rm -rf ${BUILD_DIRECTORY}/systemd-257.7

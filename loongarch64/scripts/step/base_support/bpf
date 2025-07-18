@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=bpf
-export PACKAGE_VERSION=6.15
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/bpf/6.15/
-rm -rf ${BUILD_DIRECTORY}/linux-6.15
-tar xvf ${DOWNLOADDIR}/linux-6.15.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.15
+export PACKAGE_VERSION=6.15.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/bpf/6.15.7/
+rm -rf ${BUILD_DIRECTORY}/linux-6.15.7
+tar xvf ${DOWNLOADDIR}/linux-6.15.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.15.7
 	
 	pushd tools/bpf
 		unset CFLAGS
@@ -15,4 +15,4 @@ pushd ${BUILD_DIRECTORY}/linux-6.15
 		cp -a bpftool/bpftool ${SYSROOT_DIR}/usr/bin/
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.15
+rm -rf ${BUILD_DIRECTORY}/linux-6.15.7

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=gi-docgen
-export PACKAGE_VERSION=2025.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gi-docgen/2025.3/
-rm -rf ${BUILD_DIRECTORY}/gi-docgen-2025.3
-tar xvf ${DOWNLOADDIR}/gi-docgen-2025.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gi-docgen-2025.3
+export PACKAGE_VERSION=2025.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gi-docgen/2025.4/
+rm -rf ${BUILD_DIRECTORY}/gi-docgen-2025.4
+tar xvf ${DOWNLOADDIR}/gi-docgen-2025.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gi-docgen-2025.4
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user gi-docgen
 popd 
-rm -rf ${BUILD_DIRECTORY}/gi-docgen-2025.3
+rm -rf ${BUILD_DIRECTORY}/gi-docgen-2025.4

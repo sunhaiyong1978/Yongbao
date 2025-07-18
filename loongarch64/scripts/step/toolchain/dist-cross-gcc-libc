@@ -50,11 +50,17 @@ if [ "x${LIBRARY_SHARED}" == "x1" ]; then
 	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/binutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
 	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
 	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/gdb/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/elfutils/ ]; then
+		cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/elfutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	fi
 	cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target ${TEMP_DIRECTORY}/cross-tools/
 else
 	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/binutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
 	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
 	cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/gdb/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	if [ -d ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/elfutils/ ]; then
+		cp -a ${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static/elfutils/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/* ${TEMP_DIRECTORY}/cross-tools/
+	fi
 	cp -a ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target ${TEMP_DIRECTORY}/cross-tools/
 fi
 

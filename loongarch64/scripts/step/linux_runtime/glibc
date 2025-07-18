@@ -15,6 +15,9 @@ pushd ${BUILD_DIRECTORY}/glibc-2.41
 	x86_64)
 		ARCH_PARM_STR="--enable-cet"
 		;;
+	aarch64)
+		ARCH_PARM_STR="--disable-multi-arch"
+		;;
 	*)
 		;;
     esac

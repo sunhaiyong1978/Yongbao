@@ -4,13 +4,13 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-SDL2
-export PACKAGE_VERSION=2.32.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-SDL2/2.32.6/
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.32.6
-tar xvf ${DOWNLOADDIR}/SDL2-2.32.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SDL2-2.32.6
+export PACKAGE_VERSION=2.32.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-SDL2/2.32.8/
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.32.8
+tar xvf ${DOWNLOADDIR}/SDL2-2.32.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SDL2-2.32.8
     ./configure ${COMMON_CONFIG}
     make -j${JOBS} WAYLAND_SCANNER=wayland-scanner
     make DESTDIR=${MINGW_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/SDL2-2.32.6
+rm -rf ${BUILD_DIRECTORY}/SDL2-2.32.8

@@ -89,10 +89,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 EOF
-
-
-set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
-set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/sbin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
-set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/libexec/" "0" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
-set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
-set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"

@@ -14,8 +14,6 @@ pushd ${BUILD_DIRECTORY}/sddm-0.21.0
     pushd build
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
-              -DCMAKE_UNAME=${CROSSTOOLS_DIR}/bin/cross-uname \
-              -DPKG_CONFIG_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config \
               -DENABLE_JOURNALD:BOOL=ON \
               -DQT_IMPORTS_DIR=/usr/lib64/qml \
               -DSESSION_COMMAND:PATH=/etc/sddm/Xsession \

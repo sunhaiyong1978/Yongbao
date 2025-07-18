@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=wayland
-export PACKAGE_VERSION=1.23.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/wayland/1.23.0/
-rm -rf ${BUILD_DIRECTORY}/wayland-1.23.0
-tar xvf ${DOWNLOADDIR}/wayland-1.23.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wayland-1.23.0
+export PACKAGE_VERSION=1.24.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/wayland/1.24.0/
+rm -rf ${BUILD_DIRECTORY}/wayland-1.24.0
+tar xvf ${DOWNLOADDIR}/wayland-1.24.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wayland-1.24.0
     sed -i "/wayland_scanner_for_build =/s@find\(.*\)\$@'${HOST_TOOLS_DIR}/bin/wayland-scanner'@g" src/meson.build
     sed -i -e "/scanner_dep = dependency('wayland-scanner'/d" src/meson.build
     mkdir cross-build
@@ -16,10 +16,12 @@ pushd ${BUILD_DIRECTORY}/wayland-1.23.0
               ..
 	eval ${NINJA_AND_INSTALL}
     popd
+    sed -i "/^Libs:/s@ -lm@@g" ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig/wayland-client.pc
+popd 
+rm -rf ${BUILD_DIRECTORY}/wayland-1.24.0
+
 echo "#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/wayland-scanner \"\$@\"" \
                 > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wayland-scanner
 chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-wayland-scanner
 cp -v ${CROSSTOOLS_DIR}/bin/{${CROSS_TARGET}-,}wayland-scanner
-popd 
-rm -rf ${BUILD_DIRECTORY}/wayland-1.23.0

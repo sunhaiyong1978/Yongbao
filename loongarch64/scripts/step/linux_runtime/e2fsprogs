@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=e2fsprogs
-export PACKAGE_VERSION=1.47.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/e2fsprogs/1.47.2/
-rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
-tar xvf ${DOWNLOADDIR}/e2fsprogs-1.47.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
+export PACKAGE_VERSION=1.47.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/e2fsprogs/1.47.3/
+rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.3
+tar xvf ${DOWNLOADDIR}/e2fsprogs-1.47.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.3
 	mkdir -v build
 	pushd build
 		../configure ${COMMON_CONFIG} \
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
 		sed -i "s@=/usr@=${LINUX_SYSROOT_DIR}/usr@g" ${CROSS_TOOLS_PREFIX}/bin/mk_cmds
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.2
+rm -rf ${BUILD_DIRECTORY}/e2fsprogs-1.47.3

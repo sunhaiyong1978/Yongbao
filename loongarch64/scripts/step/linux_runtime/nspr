@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=nspr
-export PACKAGE_VERSION=4.36
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/nspr/4.36/
-rm -rf ${BUILD_DIRECTORY}/nspr-4.36
-tar xvf ${DOWNLOADDIR}/nspr-4.36.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nspr-4.36
+export PACKAGE_VERSION=4.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/nspr/4.37/
+rm -rf ${BUILD_DIRECTORY}/nspr-4.37
+tar xvf ${DOWNLOADDIR}/nspr-4.37.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nspr-4.37
     pushd nspr
     
     ./configure ${COMMON_CONFIG} \
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/nspr-4.36
     eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/nspr-4.36
+rm -rf ${BUILD_DIRECTORY}/nspr-4.37

@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-pkgconf
-export PACKAGE_VERSION=2.4.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-pkgconf/2.4.3/
-rm -rf ${BUILD_DIRECTORY}/pkgconf-2.4.3
-tar xvf ${DOWNLOADDIR}/pkgconf-2.4.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pkgconf-2.4.3
+export PACKAGE_VERSION=2.5.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-pkgconf/2.5.1/
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.5.1
+tar xvf ${DOWNLOADDIR}/pkgconf-2.5.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pkgconf-2.5.1
         
         ./configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} \
                 --host=${CROSS_HOST} --target=${LINUX_HOST}
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/pkgconf-2.4.3
 	make install
         cp -f ${PREFIX}/${LINUX_HOST}/bin/pkgconf ${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-pkg-config
 popd 
-rm -rf ${BUILD_DIRECTORY}/pkgconf-2.4.3
+rm -rf ${BUILD_DIRECTORY}/pkgconf-2.5.1

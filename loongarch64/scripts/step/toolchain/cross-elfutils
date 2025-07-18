@@ -1,0 +1,69 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=cross-elfutils
+export PACKAGE_VERSION=0.193
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-elfutils/0.193/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.193
+tar xvf ${DOWNLOADDIR}/elfutils-0.193.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.193
+        
+	for config_i in $(find -name "config.sub")
+	do
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+	done
+
+	HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+	HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
+	ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
+	LIB_SUFF=$(archname_to_lib_suff "${HOST_TARGET}")
+	LIBRARY_SHARED=$(get_user_set_env shared "1")
+
+	TARGET_VENDOR=$(get_user_set_env vendor "unknown")
+
+	if [ "x$(get_user_set_env compat)" == "x1" ]; then
+		COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
+	else
+		COMPAT_HOST="${HOST_HOST}"
+	fi
+
+	if [ "x$(get_user_set_env target_compat)" == "x1" ]; then
+		COMPAT_TARGET="$(echo "${HOST_TARGET}" | sed "s@unknown@compat@g")"
+	else
+		case "x${TARGET_VENDOR}" in
+			"xunknown")
+				;;
+			"xNULL")
+				HOST_TARGET="$(echo "${HOST_TARGET}" | sed "s@-unknown-@-@g")"
+				;;
+			*)
+				HOST_TARGET="$(echo "${HOST_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+				;;
+		esac
+		COMPAT_TARGET="${HOST_TARGET}"
+	fi
+
+	if [ "x${LIBRARY_SHARED}" == "x1" ]; then
+		STATIC_STR=""
+		TOOLCHAIN_INSTALL_DIR="${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}"
+	else
+		STATIC_STR="-static"
+		TOOLCHAIN_INSTALL_DIR="${TOOLCHAIN_DIRECTORY}/${COMPAT_HOST}/${COMPAT_TARGET}/static"
+	fi
+
+	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
+
+	
+	LDFLAGS="${STATIC_STR}" \
+	./configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} \
+		--host=${COMPAT_HOST} --target=${COMPAT_TARGET} \
+		--disable-debuginfod --enable-libdebuginfod=dummy --enable-maintainer-mode \
+		ac_cv_null_dereference=no
+	make -j${JOBS}
+	if [ -d ${TOOLCHAIN_INSTALL_DIR}/elfutils ]; then
+		mv ${TOOLCHAIN_INSTALL_DIR}/elfutils{,.$(date +%Y%m%d%H%M%S)}
+	fi
+	make DESTDIR=${TOOLCHAIN_INSTALL_DIR}/elfutils install-strip
+popd 
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.193

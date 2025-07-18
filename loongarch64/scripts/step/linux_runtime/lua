@@ -4,12 +4,12 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=lua
-export PACKAGE_VERSION=5.4.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/lua/5.4.7/
-rm -rf ${BUILD_DIRECTORY}/lua-5.4.7
-tar xvf ${DOWNLOADDIR}/lua-5.4.7.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/lua-5.4.7
-    patch -Np1 -i ${SYSDIR}/files/linux_runtime/lua/5.4.7/patches/lua-5.4.4-shared_library-1.patch 
+export PACKAGE_VERSION=5.4.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/lua/5.4.8/
+rm -rf ${BUILD_DIRECTORY}/lua-5.4.8
+tar xvf ${DOWNLOADDIR}/lua-5.4.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lua-5.4.8
+    patch -Np1 -i ${SYSDIR}/files/linux_runtime/lua/5.4.8/patches/lua-5.4.4-shared_library-1.patch 
 	 
     sed -i '/#define LUA_ROOT/s:/usr/local/:/usr/:' src/luaconf.h
     make -j${JOBS} CC=${LINUX_HOST}-gcc MYCFLAGS="-fPIC" linux
@@ -36,4 +36,4 @@ Libs: -L\${libdir} -llua -lm -ldl
 Cflags: -I\${includedir}
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/lua-5.4.7
+rm -rf ${BUILD_DIRECTORY}/lua-5.4.8

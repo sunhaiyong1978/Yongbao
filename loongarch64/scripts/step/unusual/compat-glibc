@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=unusual
 export STEP_PACKAGENAME=compat-glibc
-export PACKAGE_VERSION=2.36
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/compat-glibc/2.36/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.36
-tar xvf ${DOWNLOADDIR}/glibc-2.36.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.36
+export PACKAGE_VERSION=2.37
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/unusual/compat-glibc/2.37/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.37
+tar xvf ${DOWNLOADDIR}/glibc-2.37.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.37
     
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     sed -i "s@5.19.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
@@ -27,4 +27,4 @@ pushd ${BUILD_DIRECTORY}/glibc-2.36
 		make DESTDIR=${SYSROOT_DIR} install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.36
+rm -rf ${BUILD_DIRECTORY}/glibc-2.37

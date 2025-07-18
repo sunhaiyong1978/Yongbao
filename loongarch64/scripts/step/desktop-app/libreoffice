@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=libreoffice
-export PACKAGE_VERSION=25.2.4.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/
-rm -rf ${BUILD_DIRECTORY}/libreoffice-25.2.4.1
-tar xvf ${DOWNLOADDIR}/libreoffice-25.2.4.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libreoffice-25.2.4.1
+export PACKAGE_VERSION=25.8.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/
+rm -rf ${BUILD_DIRECTORY}/libreoffice-25.8.0.1
+tar xvf ${DOWNLOADDIR}/libreoffice-25.8.0.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libreoffice-25.8.0.1
     mkdir -p external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-25.2.4.1.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-help-25.2.4.1.tar.xz external/tarballs/
-    cp ${RESOURCEDIR}/files/libreoffice-translations-25.2.4.1.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-dictionaries-25.8.0.1.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-help-25.8.0.1.tar.xz external/tarballs/
+    cp ${RESOURCEDIR}/files/libreoffice-translations-25.8.0.1.tar.xz external/tarballs/
     tar xvf ${RESOURCEDIR}/files/tarballs.listfile_dir.tar.gz
     mv tarballs.listfile_dir/* external/tarballs/
     rmdir tarballs.listfile_dir
@@ -19,29 +19,27 @@ pushd ${BUILD_DIRECTORY}/libreoffice-25.2.4.1
     mv tarballs_extern.listfile_dir/* external/tarballs/
     rmdir tarballs_extern.listfile_dir
     mkdir -p src
-    ln -sv src/libreoffice-help-25.2.4.1/helpcontent2
-    ln -sv src/libreoffice-dictionaries-25.2.4.1/dictionaries
-    ln -sv src/libreoffice-translations-25.2.4.1/translations
+    ln -sv src/libreoffice-help-25.8.0.1/helpcontent2
+    ln -sv src/libreoffice-dictionaries-25.8.0.1/dictionaries
+    ln -sv src/libreoffice-translations-25.8.0.1/translations
 
     cp -a ${SYSROOT_DIR}/usr/include/{math,stdlib}.h ${SYSROOT_DIR}/usr/local/include/
 
 
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     aclocal -I m4
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-libreoffice-24.2.1.1-fix-for-cross-build.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-libreoffice-24.2.0-external-curl-configure-add-witho.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-fix-build-error-at-use-without-java.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-libreoffice-fix-for-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0002-libreoffice-7.6-pdfium-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0003-libreoffice-7.6-box2d-fix-for-gcc14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-external-libcmis-add-0001-libcmis-fix-build-error-fo.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-libreoffice-external-bzip2-remove-test-for-cross-bui.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-libreoffice-24.8.0.1-external-xmlsec-add-0001-xmlsec.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-fix-link-miss-zlib.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-external-redland-fix-build-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-calc.cxx-fix-build-for-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-xmlsecurity-add-nss-nss.h-header-file.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.2.4.1/patches/0001-libreoffice-25.2.3.1-add-gettextlib-for-fix-link-lib.patch 
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-libreoffice-24.2.1.1-fix-for-cross-build.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-libreoffice-24.2.0-external-curl-configure-add-witho.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-fix-build-error-at-use-without-java.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-libreoffice-fix-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0002-libreoffice-7.6-pdfium-fix-for-gcc14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-external-libcmis-add-0001-libcmis-fix-build-error-fo.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-libreoffice-external-bzip2-remove-test-for-cross-bui.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-fix-link-miss-zlib.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-external-redland-fix-build-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-calc.cxx-fix-build-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-xmlsecurity-add-nss-nss.h-header-file.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/libreoffice/25.8.0.1/patches/0001-libreoffice-25.2.3.1-add-gettextlib-for-fix-link-lib.patch 
 	 
     sed -i "s@python python3 dnl@python3 python dnl@g" aclocal.m4
     autoconf -I .
@@ -70,12 +68,12 @@ pushd ${BUILD_DIRECTORY}/libreoffice-25.2.4.1
     pushd ${PWD}/dest
 	find -type f -exec ${CROSS_TARGET}-strip --strip-unneeded '{}' ';'
 	cd ..
-	mv dest libreoffice-25.2.4.1
-	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.2.4.1" | sed "s@-default@@g")/
-	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.2.4.1" | sed "s@-default@@g")/libreoffice-$(echo "25.2.4.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* libreoffice-25.2.4.1
-	info_pool "生成了可发布的LibreOffice 25.2.4.1 压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.2.4.1" | sed "s@-default@@g")/libreoffice-$(echo "25.2.4.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
+	mv dest libreoffice-25.8.0.1
+	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.8.0.1" | sed "s@-default@@g")/
+	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.8.0.1" | sed "s@-default@@g")/libreoffice-$(echo "25.8.0.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* libreoffice-25.8.0.1
+	info_pool "生成了可发布的LibreOffice 25.8.0.1 压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/libreoffice/$(echo "25.8.0.1" | sed "s@-default@@g")/libreoffice-$(echo "25.8.0.1" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
     popd
 
     rm -f ${SYSROOT_DIR}/usr/local/include/{math,stdlib}.h
 popd 
-rm -rf ${BUILD_DIRECTORY}/libreoffice-25.2.4.1
+rm -rf ${BUILD_DIRECTORY}/libreoffice-25.8.0.1

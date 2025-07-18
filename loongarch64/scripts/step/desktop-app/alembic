@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=alembic
-export PACKAGE_VERSION=rel_1_16_1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/alembic/rel_1_16_1/
-rm -rf ${BUILD_DIRECTORY}/alembic-rel_1_16_1
-tar xvf ${DOWNLOADDIR}/alembic-rel_1_16_1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/alembic-rel_1_16_1
+export PACKAGE_VERSION=rel_1_16_4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/alembic/rel_1_16_4/
+rm -rf ${BUILD_DIRECTORY}/alembic-rel_1_16_4
+tar xvf ${DOWNLOADDIR}/alembic-rel_1_16_4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/alembic-rel_1_16_4
 	
 	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py build
 	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/alembic-rel_1_16_1
+rm -rf ${BUILD_DIRECTORY}/alembic-rel_1_16_4

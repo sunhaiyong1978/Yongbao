@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=Python3
-export PACKAGE_VERSION=3.13.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Python3/3.13.3/
-rm -rf ${BUILD_DIRECTORY}/Python-3.13.3
-tar xvf ${DOWNLOADDIR}/Python-3.13.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.13.3
-	CFLAGS="${CFLAGS} -fPIC"
+export PACKAGE_VERSION=3.13.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Python3/3.13.5/
+rm -rf ${BUILD_DIRECTORY}/Python-3.13.5
+tar xvf ${DOWNLOADDIR}/Python-3.13.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.13.5
+	CFLAGS="${CFLAGS} -fPIC" LDFLAGS="${LDFLAGS} -lutil"
 	./configure --prefix=${PREFIX} --with-platlibdir=lib${TARGET_LIB_SUFF} \
 	            --disable-shared --with-system-expat --with-system-ffi \
 	            --with-ensurepip=yes --enable-optimizations \
@@ -18,7 +18,6 @@ pushd ${BUILD_DIRECTORY}/Python-3.13.3
 	save_package_version Python3 "${PACKAGE_VERSION%\.*}"
 	PYTHON_VERSION="$(get_package_version Python3)"
 
-	sed -i "s@-lutil @@g" ${HOST_TOOLS_DIR}/bin/python$(get_package_version Python3)-config
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.13.3
+rm -rf ${BUILD_DIRECTORY}/Python-3.13.5

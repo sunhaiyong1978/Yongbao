@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=sudo
-export PACKAGE_VERSION=1.9.16p2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/sudo/1.9.16p2/
-rm -rf ${BUILD_DIRECTORY}/sudo-1.9.16p2
-tar xvf ${DOWNLOADDIR}/sudo-1.9.16p2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sudo-1.9.16p2
+export PACKAGE_VERSION=1.9.17p1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/sudo/1.9.17p1/
+rm -rf ${BUILD_DIRECTORY}/sudo-1.9.17p1
+tar xvf ${DOWNLOADDIR}/sudo-1.9.17p1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sudo-1.9.17p1
     sed -i "/NOPASSWD/s@^# %wheel@%wheel@g" plugins/sudoers/sudoers.in
     ./configure ${COMMON_CONFIG} \
                 --with-secure-path --with-all-insults --with-env-editor \
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/sudo-1.9.16p2
     sed -i "/^install_gid/s@= 0@= $(id -g)@g" Makefile
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/sudo-1.9.16p2
+rm -rf ${BUILD_DIRECTORY}/sudo-1.9.17p1
