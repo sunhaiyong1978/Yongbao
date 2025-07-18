@@ -38,9 +38,10 @@ declare SET_OVERLAY_DIR=""
 declare AUTO_SET_PARENT_DIR=0
 declare SET_PARENT_DIR=""
 declare OPT_SET_PARENT_DIR=""
+declare SET_CROSSTOOLS_DIR=""
 declare WORLD_PARM=""
 
-while getopts 'e:sS:O:wh?' OPT; do
+while getopts 'e:sS:O:C:wh?' OPT; do
     case $OPT in
 	e)
 	    OPT_SET_ENV=$OPTARG
@@ -53,6 +54,9 @@ while getopts 'e:sS:O:wh?' OPT; do
 	    ;;
 	O)
 	    SET_PARENT_DIR=$OPTARG
+	    ;;
+	C)
+	    SET_CROSSTOOLS_DIR=$OPTARG
 	    ;;
 	w)
 	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
@@ -77,6 +81,7 @@ while getopts 'e:sS:O:wh?' OPT; do
             echo "    -e <变量名=变量,变量名=变量,...>: 设置编译过程中传递给编译步骤的变量设置。"
             echo "    -S <目录名>: 构建过程中默认安装到sysroot目录中的文件将安装到指定目录中。"
             echo "    -O <目录名>: 构建过程中设置用于OverlayFS的目录，当需要指定多个目录时使用“,”符号进行分隔，特殊名称ORIG代表编译的软件包所在组设置的目录，目录优先级从后往前。"
+	    echo "    -C <目录名>: 构建过程中设置Cross-Tools的目录，该目录将替代cross-tools目录。"
 	    echo "    -w: 强制设置使用主线环境的软件包编译的步骤"
             exit 127
     esac
@@ -480,6 +485,14 @@ do
 	echo "卸载已挂载的目录 ${NEW_TARGET_SYSDIR}/cross-tools ..."
 	overlay_umount_cross_tools
 done
+
+SET_CROSSTOOLS_DIR=$(echo ${SET_CROSSTOOLS_DIR} | sed "s@[^[:alnum:]\|^\.\|^_\|^-]@@g")
+if [ "x${SET_CROSSTOOLS_DIR}" != "x" ] && [ "x${SET_CROSSTOOLS_DIR}" != "xcross-tools" ]; then
+	echo "设置了临时 cross-tools 目录，将使用 ${SET_CROSSTOOLS_DIR} 目录作为 cross-tools目录"
+	mkdir -p ${NEW_TARGET_SYSDIR}/${SET_CROSSTOOLS_DIR}
+	sudo mount --bind ${NEW_TARGET_SYSDIR}/${SET_CROSSTOOLS_DIR} ${NEW_TARGET_SYSDIR}/cross-tools
+fi
+
 
 declare -a USE_SET_ENV
 declare USE_SET_ENV_COUNT=0
