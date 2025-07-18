@@ -51,8 +51,10 @@ declare WORLD_PARM=""
 declare USE_PREV_INDEX_FILE=0
 declare SET_CROSSTOOLS_DIR=""
 declare CROSSTOOLS_DIR_EXT=""
+declare BUILD_ERROR_LIMITE=1
+declare BUILD_ERROR_COUNT=1
 
-while getopts 'fao:rgsde:xi:S:O:C:tpwch' OPT; do
+while getopts 'fao:rgsde:xi:S:O:C:K:tpwch' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -100,6 +102,40 @@ while getopts 'fao:rgsde:xi:S:O:C:tpwch' OPT; do
 	p)
 	    USE_PROXY_DOWNLOAD="-p"
 	    ;;
+# 	D)
+#	    case "x${OPTARG}" in
+#		x0)
+#		    BUILD_ERROR_MODE="0"
+#		    ;;
+#		x1)
+#		    BUILD_ERROR_MODE="1"
+#		    ;;
+#		*)
+#		    BUILD_ERROR_MODE=""
+#		    ;;
+#	    esac
+#	    ;;
+	K)
+	    if [[ ${OPTARG} =~ ^[0-9]+$ ]]; then
+		    case "x${OPTARG}" in
+			x0)
+				BUILD_ERROR_LIMITE=0
+				BUILD_ERROR_COUNT=1
+				;;
+			x1)
+				BUILD_ERROR_LIMITE=1
+				BUILD_ERROR_COUNT=1
+				;;
+			*)
+				BUILD_ERROR_LIMITE=2
+				BUILD_ERROR_COUNT=${OPTARG}
+				;;
+		    esac
+	    else
+		echo -e "\e[031m错误：-K 参数后必须指定一个数字！\e[0m"
+		exit 127
+	    fi
+	    ;;
 	w)
 	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
 	    NEW_BASE_DIR="${BASE_DIR}"
@@ -138,11 +174,15 @@ while getopts 'fao:rgsde:xi:S:O:C:tpwch' OPT; do
             echo "    -i: 设置指定的步骤文件（.step）或步骤索引文件(.index)。"
             echo "    -S <目录名>: 构建过程中默认安装到sysroot目录中的文件将安装到指定目录中。"
             echo "    -O <目录名>: 构建过程中设置用于OverlayFS的目录，当需要指定多个目录时使用“,”符号进行分隔，特殊名称ORIG代表编译的软件包所在组设置的目录，目录优先级从后往前。"
-            echo "    -C <目录名>: 构建过程中设置Cross-Tools的目录，该目录中与cross-tools目录的同名命令具有优先执行权。(未支持）"
+            echo "    -C <目录名>: 构建过程中设置Cross-Tools的目录，该目录将替代cross-tools目录。"
             echo "    -t: 对构建过程中编译的软件判断当构建目标架构与当前架构相同时进行编译测试过程（需要软件包脚本目录中存在 check 后缀名的测试定义文件）。"
 	    echo "    -p: 在构建过程中对需要下载软件包时使用proxy.set文件中的设置。"
 	    echo "    -w: 强制使用主线环境中的构建，不指定该参数将使用 current_branch 中指定的分支环境中进行构建，若不存在 current_branch 文件则默认使用主线环境构建。"
-	    echo "    -c: 单独使用该参数等同于使用 -i ${NEW_TARGET_SYSDIR}/step.index ，注意该参数不与 -o -r -g -i 参数共用。"
+	    echo "    -c: 构建过程按照上一次分析产生的步骤进行，单独使用该参数等同于使用 -i ${NEW_TARGET_SYSDIR}/step.index ，注意该参数不与 -o -r -g -i 参数共用。"
+	    echo "    -K <错误数>: 指定在构建过程中出现错误的步骤数上限，当达到该制定数时构建过程终止并现实构建错误步骤，若未达到制定错误步骤上限将继续构建后续步骤，在构建结束后打印存在错误的步骤列表。不指定该参数将按照默认的上限进行处理，默认上限为1，即遇到错误步骤即停止。"
+	    echo "        错误数: 0，不设上限，表示无论多少错误数都不会停止构建过程，直到构建完成为止，构建结束后打印错误步骤。"
+	    echo "        错误数: 1，出现错误步骤即立刻停止构建过程，显示相关的信息。"
+	    echo "        错误数: 2以上，指定错误步骤的上限，达到该限制时将立刻停止构建过程，并显示所有错误步骤。"
             exit 127
     esac
 done
@@ -725,6 +765,10 @@ function get_overlay_dirname
 	else
 		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
 	fi
+
+	if [ "x${SET_OVERLAY_DIR}" != "x" ]; then
+		OVERLAY_DIR=$(echo "${SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+	fi
 	echo "${OVERLAY_DIR}"
 }
 
@@ -1137,7 +1181,7 @@ function get_require
 	declare STEP_REQUIRES_NAME="$(cat ${NEW_BASE_DIR}/env/${STEPNAME}/overlay.set | grep "requires=" | tail -n1 | awk -F'=' '{ print $2 }')"
 
 	if [ "x${STEP_OVERLAY_NAME}" != "x" ]; then
-		for step_dir in $(grep -r "overlay_dir=${STEP_OVERLAY_NAME}" ${NEW_BASE_DIR}/env/* | awk -F'/' '{ print $2 }')
+		for step_dir in $(grep -r "overlay_dir=${STEP_OVERLAY_NAME}" ${NEW_BASE_DIR}/env/* | sed "s@${NEW_BASE_DIR}/env@@g" | awk -F'/' '{ print $2 }')
 		do
 			if [[ "${STEP_LISTS}" != *" ${step_dir} "* ]]; then
 				STEP_LISTS="${STEP_LISTS} ${step_dir} "
@@ -1148,7 +1192,7 @@ function get_require
 	if [ "x${STEP_PARENT_NAME}" != "x" ]; then
 		for parent_name in $(echo ${STEP_PARENT_NAME} | tr ',' '\n')
 		do
-			for step_dir in $(grep -r "overlay_dir=${parent_name}" ${NEW_BASE_DIR}/env/* | awk -F'/' '{ print $2 }')
+			for step_dir in $(grep -r "overlay_dir=${parent_name}" ${NEW_BASE_DIR}/env/* | sed "s@${NEW_BASE_DIR}/env@@g" | awk -F'/' '{ print $2 }')
 			do
 				if [[ "${STEP_LISTS}" != *" ${step_dir} "* ]]; then
 					STEP_LISTS="${STEP_LISTS} ${step_dir} "
@@ -1562,6 +1606,7 @@ function create_os_run
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_start_run ]; then
 					echo ""
 					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+#					echo " tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run"
 					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 				fi
 			fi
@@ -1646,7 +1691,6 @@ function step_to_index
 #		echo "因指定了编译步骤，需测试编译的相关组，相关组如下："
 #		echo "${STEPNAME}"
 		get_requires "${STEPNAME}" ""
-		echo "$(get_requires "${STEPNAME}" "")"
 		REQUIRES_STEPS="${STEPNAME} $(get_requires "${STEPNAME}" "")"
 		GREP_STR=$(echo ${REQUIRES_STEPS} | sed "s@\([^ ]*\)@ -e \"step/&/\"@g")
 #		echo "筛选字串： ${GREP_STR}"
@@ -1835,6 +1879,10 @@ echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
 
 
 create_date_suff
+
+if [ -f ${NEW_TARGET_SYSDIR}/logs/build_error.log ]; then
+	mv ${NEW_TARGET_SYSDIR}/logs/build_error.log{,.${DATA_SUFF}}
+fi
 
 # 保存完整的执行命令，以备后续查看。
 echo "${FULL_COMMAND}" >> ${NEW_TARGET_SYSDIR}/command_save.txt
@@ -2284,13 +2332,46 @@ do
 	os_run_clean "${STEP_STAGE}" "${PACKAGE_NAME}"
 	tools/run_package_script.sh ${WORLD_PARM} ${SCRIPT_FILE} >${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 2>&1
 	if [ "x$?" != "x0" ]; then
-		echo "错误！"
-		tools/show_package_script.sh ${WORLD_PARM} ${SCRIPT_FILE}
-		echo "${SCRIPT_FILE}制作错误!"
-		echo "错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"
-		REBUILD_ENV=$(format_package_env_to_string)
-		echo "进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} "
-		exit 1
+		echo  -e "\e[31m错误！\e[0m"
+
+		case "x${BUILD_ERROR_LIMITE}" in
+			x0)
+				echo "* ${STEP_STAGE}/${PACKAGE_NAME} $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}")" >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				echo "    错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${SET_OVERLAY_DIR}")" || echo " -S ${OPT_SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} "  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				continue
+				;;
+			x1)
+				tools/show_package_script.sh ${WORLD_PARM} ${SCRIPT_FILE}
+				echo -e "${SCRIPT_FILE}  $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}") \e[31m制作错误!\e[0m"
+				echo -e "错误日志请查看 \e[31m ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log \e[0m 文件。"
+				REBUILD_ENV=$(format_package_env_to_string)
+				echo -e "进入构建环境进行调试使用命令： \e[32m tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${SET_OVERLAY_DIR}")" || echo " -S ${OPT_SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} \e[0m"
+				exit 1
+				;;
+			*)
+				((BUILD_ERROR_COUNT--))
+				echo "* ${STEP_STAGE}/${PACKAGE_NAME} $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}")" >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				echo "    错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${SET_OVERLAY_DIR}")" || echo " -S ${OPT_SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} " >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				if [ "x${BUILD_ERROR_COUNT}" == "x0" ]; then
+					echo -e "\e[31m错误数量达到限制，构建过程停止。\e[0m"
+					echo -e "\e[31m本次编译存在以下错误步骤，请检查。\e[0m"
+
+					if [ -f ${NEW_TARGET_SYSDIR}/logs/build_error.log ]; then
+						if (( $(wc -l workbase/logs/build_error.log |awk -F' ' '{ print $1 }') >= 15 )); then
+							head -n15 ${NEW_TARGET_SYSDIR}/logs/build_error.log
+							echo -e "\e[031m......\e[0m"
+							echo -e "\e[031m错误数据太多，不再继续显示\e[0m，可打开 \e[031m ${NEW_TARGET_SYSDIR}/logs/build_error.log \e[0m 文件查看更多信息。"
+						else
+							cat ${NEW_TARGET_SYSDIR}/logs/build_error.log
+						fi
+					fi
+					exit 1
+				fi
+				continue
+				;;
+		esac
 	fi
 
 	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
@@ -2424,10 +2505,22 @@ done
 if [ "x$?" == "x0" ]; then
 	echo -e "\r编译制作过程完成。\033[0K\n"
 
+	if [ -f ${NEW_TARGET_SYSDIR}/logs/build_error.log ]; then
+		echo -e "\e[31m本次编译存在以下错误步骤，请检查。\e[0m"
+		if (( $(wc -l workbase/logs/build_error.log |awk -F' ' '{ print $1 }') >= 15 )); then
+			head -n15 ${NEW_TARGET_SYSDIR}/logs/build_error.log
+			echo -e "\e[031m......\e[0m"
+			echo -e "\e[031m错误数据太多，不再继续显示\e[0m，可打开 \e[031m ${NEW_TARGET_SYSDIR}/logs/build_error.log \e[0m 文件查看更多信息。"
+		else
+			cat ${NEW_TARGET_SYSDIR}/logs/build_error.log
+		fi
+		exit
+	fi
+
 	cat ${NEW_TARGET_SYSDIR}/logs/info_pool
 	
 	if [ "x${1}" == "x" ]; then
-		echo "接下来可以使用 ./strip_os.sh 脚本来清除调试信息，使用 ./install_os_run.sh 安装系统启动脚本，使用 ./release_info.sh 来创建软件包信息汇总 ，以及使用 ./pack_os.sh 脚本来打包系统。"
+		echo "接下来可以使用 ./strip_os.sh $([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo "-f ${SET_OVERLAY_DIR}") 脚本来清除调试信息，使用 ./install_os_run.sh 安装系统启动脚本，使用 ./release_info.sh 来创建软件包信息汇总 ，以及使用 ./pack_os.sh $([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo "-f ${SET_OVERLAY_DIR}") 脚本来打包系统。"
 	fi
 else
 	exit
