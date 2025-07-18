@@ -12,5 +12,6 @@ java_runtime
 simulate
 x86_64_runtime
 i686_runtime
+aarch64_runtime
 wine-collection
 benchmark
