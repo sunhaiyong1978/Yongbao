@@ -482,9 +482,9 @@ ${i} 没有下载路径，请检查。"
 									((FAIL_COUNT++))
 									continue;
 								fi
-								pushd ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/
+								pushd ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/ > /dev/null
 									tar -czf ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz ${LIST_NAME}_dir
-								popd
+								popd > /dev/null
 								md5sum ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} | awk -F' ' '{print $1}' > ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/hash/${LIST_NAME}.hash
 							fi
 							IS_DOWNLOADED=0

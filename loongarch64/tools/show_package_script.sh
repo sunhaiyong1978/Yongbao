@@ -121,5 +121,5 @@ SHOW_BODY="$(replace_arch_parm "$(echo "${SHOW_BODY}")")"
 
 pushd ${NEW_BASE_DIR} > /dev/null
 envsubst <<< "${SHOW_BODY}" | sed "s@#{@\${@g"
-popd
+popd > /dev/null
 
