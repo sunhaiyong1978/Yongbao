@@ -35,7 +35,7 @@ while getopts 'd:wh' OPT; do
             RELEASE_BUILD_MODE=0
 	    ;;
         h|?)
-            echo "用法: `basename $0` [选项] 软件包名 软件版本 GIT地址 分支名 提交号"
+            echo "用法: `basename $0` [选项] 软件包名 软件版本 GIT地址 分支名 提交号 是否存在子模块 源码格式"
 	    exit 0
 	    ;;
     esac
@@ -86,6 +86,11 @@ if [ "x${PKG_SUBMODULE}" == "x" ]; then
 	PKG_SUBMODULE="0"
 fi
 
+PKG_FORMAT=""
+PKG_FORMAT=${7}
+if [ "x${PKG_FORMAT}" == "x" ]; then
+	PKG_FORMAT="source"
+fi
 
 
 if [ "x${GIT_DIR}" == "x" ]; then
@@ -127,6 +132,25 @@ if [ "x${PKG_SUBMODULE}" == "x1" ]; then
 		echo "git submodule foreach git submodule update --depth 1"
 		git submodule foreach git submodule update --depth 1
 	popd
+fi
+
+if [ "x${PKG_FORMAT}" != "xsource" ]; then
+	echo "x${PKG_FORMAT}"
+	case "x${PKG_FORMAT}" in
+		xrpm)
+			pushd ${PKG_NAME}${PKG_VERSION}_git
+				mkdir -pv SOURCES
+ 				find . -maxdepth 1 -type f -exec mv '{}' SOURCES/ ';'
+				mkdir -pv SPECS
+ 				mv SOURCES/*.spec SPECS
+			popd
+			;;
+		*)
+			;;
+	esac
+fi
+
+if [ "x${PKG_SUBMODULE}" == "x1" ] || [ "x${PKG_FORMAT}" == "xrpm" ]; then
 	echo "tar -czf ${PKG_NAME}${PKG_VERSION}_git.tar.gz ${PKG_NAME}${PKG_VERSION}_git"
 	tar -czf ${PKG_NAME}${PKG_VERSION}_git.tar.gz ${PKG_NAME}${PKG_VERSION}_git
 else
