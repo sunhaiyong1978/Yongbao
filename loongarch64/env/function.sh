@@ -679,3 +679,25 @@ fi
 # if [ -f ${NEW_TARGET_SYSDIR}/package_unset.conf ]; then
 # 	source ${NEW_TARGET_SYSDIR}/package_unset.conf
 # fi
+
+
+function unpack_for_pkg_format
+{
+	if [ "x${1}" == "x" ] || [ "x${1}" == "xsource" ]; then
+		return
+	fi
+	if [ "x${2}" == "x" ]; then
+		return
+	fi
+	if [ "x${3}" == "x" ]; then
+		return
+	fi
+	rpmbuild --target=${3} -bp SPECS/${2}.spec --define "_topdir ${PWD}"
+# 	rpmbuild --buildroot=${PWD}/test --target=loongarch64 -bp gcc.spec --define "_topdir ${PWD}"
+	if [ "x${4}" != "x0" ]; then
+		RPM_PACKAGE_NAME=$(rpm --specfile --target=${3} --info SPECS/${2}.spec | grep Name | head -n1 | awk -F':' '{ print $2 }' | sed "s@ @@g")
+		RPM_PACKAGE_VERSION=$(rpm --specfile --target=${3} --info SPECS/${2}.spec | grep Version | head -n1 | awk -F':' '{ print $2 }' | sed "s@ @@g")
+		cd BUILD/${RPM_PACKAGE_NAME}-${RPM_PACKAGE_VERSION}*
+	fi
+	return
+}
