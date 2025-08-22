@@ -1861,6 +1861,33 @@ function start_download_source_for_version_index
 
 function save_watch_step
 {
+	WATCH_ID_TEMP=$(date +%s)
+	if [ -f ${SCRIPTS_DIR}/step/${1}/${2}.watch_step ]; then
+# 		cat ${SCRIPTS_DIR}/step/${1}/${2}.watch_step | grep -v "^#" | while read watch_line
+# 		do
+		while IFS= read -r watch_line; do
+			[[ $watch_line == "#"* ]] && continue
+			WATCH_STAGE=$(echo "${watch_line}" | awk -F'/' '{ print $1 }')
+			WATCH_PACKAGE_NAME=$(echo "${watch_line}" | awk -F'/' '{ print $2 }')
+			if [ "x${WATCH_PACKAGE_NAME}" == "x" ]; then
+				WATCH_PACKAGE_NAME=${WATCH_STAGE}
+				WATCH_STAGE=${1}
+			fi
+			if [ ! -d ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/ ]; then
+				mkdir -p ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME}
+			fi
+			WATCH_PACKAGE_FILE="${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/$(echo ${3} | sed -e "s@^${2}_@NAME${2}NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE${1}STAGE@g")"
+			echo ${WATCH_ID_TEMP} > ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE}
+			touch ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE}.status
+		done < "${SCRIPTS_DIR}/step/${1}/${2}.watch_step"
+# 		done
+	fi
+	echo "${WATCH_ID_TEMP}"
+	return
+}
+
+function update_watch_id
+{
 	if [ -f ${SCRIPTS_DIR}/step/${1}/${2}.watch_step ]; then
 		cat ${SCRIPTS_DIR}/step/${1}/${2}.watch_step | grep -v "^#" | while read watch_line
 		do
@@ -1873,27 +1900,58 @@ function save_watch_step
 			if [ ! -d ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/ ]; then
 				mkdir -p ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME}
 			fi
-			touch ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/$(echo ${3} | sed -e "s@^${2}_@NAME${2}NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE${1}STAGE@g")
+			WATCH_PACKAGE_FILE="${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/$(echo ${3} | sed -e "s@^${2}_@NAME${2}NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE${1}STAGE@g")"
+			echo "${4}" > ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE}
+			touch ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE}.status
+
+# 			if [ ! -f ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE} ]; then
+# 				WATCH_ID_TEMP=$(date +%s)
+# 				echo ${WATCH_ID_TEMP} > ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE}
+# 				echo ${WATCH_ID_TEMP}
+# 			else
+# 				cat ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE} | head -n1
+# 			fi
+
 		done
 	fi
 	return
 }
 
-function rm_notice_package
+function update_notice_package
 {
 	if [ "x${3}" == "x" ]; then
 		return
 	fi
-	if [ -d ${NEW_TARGET_SYSDIR}/notice/${1}/${2} ]; then
-		find ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/ -name "$(echo ${3} | sed -e "s@^${2}_@NAME\*NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE\*STAGE@g")" -exec mv '{}' '{}.bak' ';'
+	if [ -d ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/ ]; then
+ 		find ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/ -name "$(echo ${3} | sed -e "s@^${2}_@NAME\*NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE\*STAGE@g").status" -exec mv '{}' '{}.bak' ';'
+# 		find ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/ -name "$(echo ${3} | sed -e "s@^${2}_@NAME\*NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE\*STAGE@g")" -exec echo "${4}" > '{}' ';'
+# 		find ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/ -name "$(echo ${3} | sed -e "s@^${2}_@NAME\*NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE\*STAGE@g")" -exec bash -c 'echo "${4}" > "{}"' ';'
+		find ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/ -name "$(echo ${3} | sed -e "s@^${2}_@NAME\*NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE\*STAGE@g")" -exec bash -c 'echo "$1" > "{}"' -- "${4}" ';'
+		echo "${4}" > ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/${3}
 	fi
 }
 
 function test_watch_step
 {
+	CURRENT_WATCH_ID=0
+	TEMP_WATCH_ID=0
+	GET_WATCH_ID=0
+	if [ -d ${NEW_TARGET_SYSDIR}/notice/${1}/${2} ]; then
+		if [ -f ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/${3} ]; then
+# 			echo "${NEW_TARGET_SYSDIR}/notice/${1}/${2}/${3}"
+			TEMP_WATCH_ID=$(cat ${NEW_TARGET_SYSDIR}/notice/${1}/${2}/${3} | head -n1)
+		else
+# 			echo "${NEW_TARGET_SYSDIR}/status/${1}/${3}"
+			TEMP_WATCH_ID=$(stat -c %Y ${NEW_TARGET_SYSDIR}/status/${1}/${3})
+		fi
+	fi
+# 	echo "TEMP_WATCH_ID: ${TEMP_WATCH_ID}"
 	if [ -f ${SCRIPTS_DIR}/step/${1}/${2}.watch_step ]; then
-		cat ${SCRIPTS_DIR}/step/${1}/${2}.watch_step | grep -v "^#" | while read watch_line
-		do
+# 		cat ${SCRIPTS_DIR}/step/${1}/${2}.watch_step | grep -v "^#" | while read watch_line
+# 		do
+		while IFS= read -r watch_line; do
+			[[ $watch_line == "#"* ]] && continue
+
 			WATCH_STAGE=$(echo "${watch_line}" | awk -F'/' '{ print $1 }')
 			WATCH_PACKAGE_NAME=$(echo "${watch_line}" | awk -F'/' '{ print $2 }')
 			if [ "x${WATCH_PACKAGE_NAME}" == "x" ]; then
@@ -1901,17 +1959,50 @@ function test_watch_step
 				WATCH_STAGE=${1}
 			fi
 			if [ -d ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME} ]; then
-				if [ ! -f ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/$(echo ${3} | sed -e "s@^${2}_@NAME${2}NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE${1}STAGE@g") ]; then
-					echo "1"
-					return
+				WATCH_PACKAGE_FILE="${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/$(echo ${3} | sed -e "s@^${2}_@NAME${2}NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE${1}STAGE@g")"
+				if [ -f ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE}.status ]; then
+					continue;
+				else
+					if [ -f ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE} ]; then
+# 						GET_WATCH_ID=$(cat ${NEW_TARGET_SYSDIR}/notice/${WATCH_STAGE}/${WATCH_PACKAGE_NAME}/$(echo ${3} | sed -e "s@^${2}_@NAME${2}NAME_@g" -e "s@_${1}_[0-9]\{5\}@_STAGE${1}STAGE@g"))
+# 						echo "cat ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE}"
+# 						echo "GET_WATCH_ID: $(cat ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE})"
+						GET_WATCH_ID=$(cat ${NEW_TARGET_SYSDIR}/notice/${WATCH_PACKAGE_FILE})
+						if [ "x${GET_WATCH_ID}" == "x" ]; then
+							GET_WATCH_ID=$(date +%s)
+						fi
+						CURRENT_WATCH_ID=$(( CURRENT_WATCH_ID < GET_WATCH_ID ? GET_WATCH_ID : CURRENT_WATCH_ID ))
+					else
+						CURRENT_WATCH_ID=$(date +%s)
+					fi
 				fi
 			else
+				CURRENT_WATCH_ID=$(date +%s)
 				continue;
 			fi
-		done
+		done < "${SCRIPTS_DIR}/step/${1}/${2}.watch_step"
+# 		done
 	fi
 
-	echo "0"
+# 	if [ "x${CURRENT_WATCH_ID}" == "x0" ]; then
+# 		echo "0"
+# 		return
+# 	fi
+
+	if [ "x${TEMP_WATCH_ID}" == "x${CURRENT_WATCH_ID}" ]; then
+		echo "0"
+		return
+	fi
+
+# 	if [ -d ${NEW_TARGET_SYSDIR}/notice/${1}/${2} ]; then
+# 		if (( CURRENT_WATCH_ID > GET_WATCH_ID )); then
+# 			echo "1"
+# 			return
+# 		fi
+# 	fi
+
+# 	echo "${CURRENT_WATCH_ID}"
+	echo "$(( CURRENT_WATCH_ID >= TEMP_WATCH_ID ? CURRENT_WATCH_ID : 0 ))"
 	return
 }
 
@@ -2191,7 +2282,7 @@ do
 			if [ "x$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" == "x" ]; then
 				echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包当前设置不符合制作条件。\e[0m"
 			else
-				echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包因 "$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" 设置而不符合制作条件。\e[0m"
+				echo -e "\r\e[33m发现 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包因 "$(get_all_set_env_expr "${PACKAGE_ALL_OPT}")" 设置而不符合制作条件。跳过！\e[0m"
 			fi
 			continue;
 		fi
@@ -2261,6 +2352,7 @@ do
 		SCRIPT_FILE=$(echo "${line}" | awk -F' ' '{ print $2 }' | sed "s@ *step\/@@g").${OPT_SET_VERSION_INDEX}
 	fi
 
+	TEST_WATCH_PACKAGE=0
 	if [ "x${PACKAGE_NAME}" == "xbegin_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_before_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_after_run" ] || [ "x${PACKAGE_NAME}" == "xoverlay_temp_fix_run" ]; then
 		echo "${STEP_STAGE}" >> ${NEW_TARGET_SYSDIR}/logs/step_${PACKAGE_NAME}_save
 		continue;
@@ -2275,6 +2367,9 @@ do
 			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE})" | md5sum -c ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE} 2>/dev/null > /dev/null
 			if [ "$?" == "0" ] && ([ "x${FORCE_BUILD}" == "x0" ] || [ "x${FORCE_ALL_BUILD}" == "x0" ]); then
 				TEST_WATCH_PACKAGE=$(test_watch_step "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}")
+#  				test_watch_step "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}"
+#  				echo "aaaaaaaaaaaaaaaa ${TEST_WATCH_PACKAGE} aaaaaaaaaaaaaaaaa"
+# 				TEST_WATCH_PACKAGE=0
 				if [ "x${TEST_WATCH_PACKAGE}" == "x0" ]; then
 					if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
 						echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
@@ -2405,6 +2500,7 @@ do
 				echo "* ${STEP_STAGE}/${PACKAGE_NAME} $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${SET_OVERLAY_DIR}")" >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				echo "    错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} "  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				overlay_umount
 				continue
 				;;
 			x1)
@@ -2435,6 +2531,7 @@ do
 					fi
 					exit 1
 				fi
+				overlay_umount
 				continue
 				;;
 		esac
@@ -2478,8 +2575,19 @@ do
 		else
 			echo "${PACKAGE_GIT_COMMIT}$(tools/show_package_script.sh ${WORLD_PARM} -n ${SCRIPT_FILE})" | md5sum > ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${STATUS_FILE}
 		fi
-		save_watch_step "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}"
-		rm_notice_package "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}"
+
+		if [ "x${TEST_WATCH_PACKAGE}" == "x0" ]; then
+			# 默认运行或强制运行，创建 WATCH_ID 。
+# 			echo -n "强制执行 $(date +%s)"
+			WATCH_ID=$(save_watch_step "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}")
+# 			echo "${WATCH_ID}"
+# 			echo "update_notice_package \"${STEP_STAGE}\" \"${PACKAGE_NAME}\" \"${STATUS_FILE}\" \"${WATCH_ID}\""
+			update_notice_package "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}" "${WATCH_ID}"
+		else
+			# 关注连带运行，传递 WATCH_ID , TEST_WATCH_PACKAGE 值为传递的 WATCH_ID 。
+			update_watch_id "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}" "${TEST_WATCH_PACKAGE}"
+			update_notice_package "${STEP_STAGE}" "${PACKAGE_NAME}" "${STATUS_FILE}" "${TEST_WATCH_PACKAGE}"
+		fi
 	fi
 
 	echo -e "\e[032m完成！\e[0m"
