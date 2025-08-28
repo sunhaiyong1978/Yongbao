@@ -72,11 +72,14 @@ PKG_URL=${3}
 #	exit 3
 #fi
 
-PKG_BRANCH=""
-PKG_BRANCH=${4}
+PKG_GIT_INFO=${4}
 
+PKG_BRANCH=""
 PKG_COMMIT=""
-PKG_COMMIT=${5}
+PKG_BRANCH=$(echo ${PKG_GIT_INFO} | awk -F'|' '{ print $1}')
+# PKG_COMMIT=${5}
+PKG_COMMIT=$(echo ${PKG_GIT_INFO} | awk -F'|' '{ print $2}')
+
 if [ "x${PKG_COMMIT}" == "x" ]; then
 	PKG_COMMIT="HEAD"
 else
@@ -84,9 +87,24 @@ else
 	exit 0
 fi
 
-PKG_UPDATE_MODE=${6}
+# PKG_UPDATE_MODE=${6}
+PKG_COMMIT=$(echo ${PKG_GIT_INFO} | awk -F'|' '{ print $3}')
 if [ "x${PKG_UPDATE_MODE}" == "x" ]; then
 	PKG_UPDATE_MODE="手工"
+fi
+
+
+if [ ! -f ${NEW_BASE_DIR}/downloads/sources/hash/${1}-${2}.gitinfo.hash ]; then
+	echo "1"
+	exit 5
+else
+	PKG_SUBMODULE=$(echo ${PKG_GIT_INFO} | awk -F'|' '{ print $4}')
+	PKG_FORMAT=$(echo ${PKG_GIT_INFO} | awk -F'|' '{ print $5}')
+# 	if [ "x$(echo -n "${PKG_BRANCH}|${PKG_COMMIT}|${PKG_UPDATE_MODE}|${PKG_SUBMODULE}|${PKG_FORMAT}" | md5sum | cut -d ' ' -f 1)" != "x$(cat ${NEW_BASE_DIR}/downloads/sources/hash/${1}-${2}.gitinfo.hash)" ]; then
+	if [ "x$(echo -n "${PKG_GIT_INFO}" | md5sum | cut -d ' ' -f 1)" != "x$(cat ${NEW_BASE_DIR}/downloads/sources/hash/${1}-${2}.gitinfo.hash)" ]; then
+		echo "1"
+		exit 6
+	fi
 fi
 
 MODIFY_TIME=0
