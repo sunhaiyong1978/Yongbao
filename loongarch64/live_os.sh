@@ -131,7 +131,7 @@ if [ "x${KERNEL_ONLY}" != "xTRUE" ]; then
 				fi
 			done
 		else
-			if [ -f ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/*.${DISTRO_ARCH}.squashfs ]; then
+			if [ "x$(find ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/*.${DISTRO_ARCH}.squashfs)" != "x" ]; then
 				cp ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/*.${DISTRO_ARCH}.squashfs ${LIVE_DIRECTORY}/images/
 			fi
 		fi
@@ -259,6 +259,9 @@ terminal_output gfxterm
 EOF
 		for kernel_dir in $(ls ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION})
 		do
+			if [ -f ${LIVE_DIRECTORY}/images/kernel_${kernel_dir}.${DISTRO_ARCH}.squashfs ]; then
+				rm ${LIVE_DIRECTORY}/images/kernel_${kernel_dir}.${DISTRO_ARCH}.squashfs
+			fi
 			cp ${NEW_TARGET_SYSDIR}/dist/os/squashfs/${DISTRO_NAME}/${DISTRO_VERSION}/kernel_${kernel_dir}.${DISTRO_ARCH}.squashfs ${LIVE_DIRECTORY}/images/kernel_${KERNEL_VERSION}_${kernel_dir}.${DISTRO_ARCH}.squashfs
 			cp ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/boot/vmlinux.efi ${LIVE_DIRECTORY}/boot/vmlinux_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.efi
 			cp ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/initramfs-squashfs.img.gz ${LIVE_DIRECTORY}/boot/initramfs_${KERNEL_VERSION}_${kernel_dir}_${NEW_LABEL}.img.gz
@@ -316,7 +319,9 @@ if [ "x${KERNEL_ONLY}" != "xTRUE" ]; then
 
 	# 安装文档文件
 
-	cp -a ${NEW_BASE_DIR}/docs ${LIVE_DIRECTORY}/ 
+	if [ -d ${NEW_BASE_DIR}/docs ]; then
+		cp -a ${NEW_BASE_DIR}/docs ${LIVE_DIRECTORY}/ 
+	fi
 
 	# 安装发布信息文件
 	if [ -f ${NEW_TARGET_SYSDIR}/logs/release_summary.txt ]; then

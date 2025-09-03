@@ -1565,6 +1565,9 @@ function os_run_clean
 			if [ -f ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
 				rm ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 			fi
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
+				rm ${NEW_TARGET_SYSDIR}/scripts/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+			fi
 		else
 			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
 #				echo "清理 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
@@ -1572,6 +1575,9 @@ function os_run_clean
 			fi
 			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
 				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+			fi
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
+				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 			fi
 		fi
 	fi
@@ -1609,6 +1615,11 @@ function create_os_run
 #					echo " tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run"
 					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 				fi
+				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_final_run ]; then
+					echo ""
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_final_run" > ${NEW_TARGET_SYSDIR}/scripts/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+				fi
 			fi
 		else
 #			echo "${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ...."
@@ -1623,6 +1634,11 @@ function create_os_run
 					echo ""
 					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
 					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+				fi
+				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_final_run ]; then
+					echo ""
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_final_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 				fi
 			fi
 		fi
@@ -2028,7 +2044,7 @@ echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
 create_date_suff
 
 if [ -f ${NEW_TARGET_SYSDIR}/logs/build_error.log ]; then
-	mv ${NEW_TARGET_SYSDIR}/logs/build_error.log{,.${DATA_SUFF}}
+	mv ${NEW_TARGET_SYSDIR}/logs/build_error.log{,.$(stat -c %Y ${NEW_TARGET_SYSDIR}/logs/build_error.log)}
 fi
 
 # 保存完整的执行命令，以备后续查看。
@@ -2078,8 +2094,8 @@ mkdir -p ${NEW_TARGET_SYSDIR}/build
 mkdir -p ${NEW_TARGET_SYSDIR}/dist
 mkdir -p ${NEW_TARGET_SYSDIR}/temp/temp_overlay
 mkdir -p ${NEW_TARGET_SYSDIR}/common_files
-mkdir -p ${NEW_TARGET_SYSDIR}/scripts/os_{first,start}_run
-mkdir -p ${NEW_TARGET_SYSDIR}/scripts/update/os_{first,start}_run
+mkdir -p ${NEW_TARGET_SYSDIR}/scripts/os_{first,start,final}_run
+mkdir -p ${NEW_TARGET_SYSDIR}/scripts/update/os_{first,start,final}_run
 
 
 mkdir -p ${NEW_TARGET_SYSDIR}/overlaydir/{.lowerdir,.workerdir}
@@ -2500,7 +2516,9 @@ do
 				echo "* ${STEP_STAGE}/${PACKAGE_NAME} $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${SET_OVERLAY_DIR}")" >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				echo "    错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} "  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
-				overlay_umount
+				if [ "${SET_OVERLAY_DIR}" != "" ] || [ "${OPT_SET_OVERLAY_DIR}" != "" ]; then
+					overlay_umount
+				fi
 				continue
 				;;
 			x1)
@@ -2682,7 +2700,7 @@ if [ "x$?" == "x0" ]; then
 
 	if [ -f ${NEW_TARGET_SYSDIR}/logs/build_error.log ]; then
 		echo -e "\e[31m本次编译存在以下错误步骤，请检查。\e[0m"
-		if (( $(wc -l workbase/logs/build_error.log |awk -F' ' '{ print $1 }') >= 15 )); then
+		if (( $(wc -l ${NEW_TARGET_SYSDIR}/logs/build_error.log |awk -F' ' '{ print $1 }') >= 15 )); then
 			head -n15 ${NEW_TARGET_SYSDIR}/logs/build_error.log
 			echo -e "\e[031m......\e[0m"
 			echo -e "\e[031m错误数据太多，不再继续显示\e[0m，可打开 \e[031m ${NEW_TARGET_SYSDIR}/logs/build_error.log \e[0m 文件查看更多信息。"
@@ -2695,7 +2713,7 @@ if [ "x$?" == "x0" ]; then
 	cat ${NEW_TARGET_SYSDIR}/logs/info_pool
 	
 	if [ "x${1}" == "x" ]; then
-		echo "接下来可以使用 ./strip_os.sh $([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo "-f ${SET_OVERLAY_DIR}") 脚本来清除调试信息，使用 ./install_os_run.sh 安装系统启动脚本，使用 ./release_info.sh 来创建软件包信息汇总 ，以及使用 ./pack_os.sh $([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "" || echo "-f ${SET_OVERLAY_DIR}") 脚本来打包系统。"
+		echo "接下来可以使用 ./strip_os.sh $([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ -d ${NEW_TARGET_SYSDIR}/overlaydir_strip ]] && echo "-f" || echo "")" || echo "-f ${SET_OVERLAY_DIR}") 脚本来清除调试信息，使用 ./install_os_run.sh 安装系统启动脚本，$([[ -f info_set/release_sort ]] && echo "使用 ./release_info.sh 来创建软件包信息汇总 ，" || echo "" )以及使用 ./pack_os.sh $([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ -d ${NEW_TARGET_SYSDIR}/dist/os/squashfs ]] && echo "-f" || echo "")" || echo "-f ${SET_OVERLAY_DIR}") 脚本来打包系统。"
 	fi
 else
 	exit

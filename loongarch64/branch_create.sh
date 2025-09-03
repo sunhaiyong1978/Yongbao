@@ -69,6 +69,7 @@ if [ ! -f ${BASE_DIR}/Branch_${VERSION_NAME}/info_set ]; then
 fi
 
 mkdir -p ${BASE_DIR}/Branch_${VERSION_NAME}/downloads/sources/{files,hash}
+mkdir -p ${BASE_DIR}/Branch_${VERSION_NAME}/logs
 
 
 if [ -f ${BASE_DIR}/current_branch ]; then

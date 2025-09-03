@@ -143,12 +143,11 @@ function get_pkg_old_version
 }
 
 
-function test_git_need_clone
-{
-	echo "0"
-	return
-}
-
+# function test_git_need_clone
+# {
+# 	echo "0"
+# 	return
+# }
 
 
 mkdir -p ${NEW_BASE_DIR}/downloads/sources/{files,hash}
