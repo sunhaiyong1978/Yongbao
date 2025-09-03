@@ -1,0 +1,27 @@
+From febbdfd248328b04c158595fb4703d765c26abcd Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 22 Aug 2025 06:35:30 +0000
+Subject: [PATCH] jdk8 fix for call of overloaded 'null_check(Register)' is
+ ambiguous
+
+---
+ hotspot/src/cpu/loongarch/vm/c1_MacroAssembler_loongarch.hpp | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/hotspot/src/cpu/loongarch/vm/c1_MacroAssembler_loongarch.hpp b/hotspot/src/cpu/loongarch/vm/c1_MacroAssembler_loongarch.hpp
+index 38ff4c5..d67a0fa 100644
+--- a/hotspot/src/cpu/loongarch/vm/c1_MacroAssembler_loongarch.hpp
++++ b/hotspot/src/cpu/loongarch/vm/c1_MacroAssembler_loongarch.hpp
+@@ -104,9 +104,6 @@ using MacroAssembler::null_check;
+   void invalidate_registers(bool inv_a0, bool inv_s0, bool inv_a2, bool inv_a3,
+                             bool inv_a4, bool inv_a5) PRODUCT_RETURN;
+ 
+-  // This platform only uses signal-based null checks. The Label is not needed.
+-  void null_check(Register r, Label *Lnull = NULL) { MacroAssembler::null_check(r); }
+-
+   void load_parameter(int offset_in_words, Register reg);
+ 
+ #endif // CPU_LOONGARCH_C1_MACROASSEMBLER_LOONGARCH_HPP
+-- 
+2.31.1
+

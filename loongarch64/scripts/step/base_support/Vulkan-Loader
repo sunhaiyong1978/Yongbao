@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=Vulkan-Loader
-export PACKAGE_VERSION=1.4.322
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Loader/1.4.322/
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.4.322
-tar xvf ${DOWNLOADDIR}/Vulkan-Loader-1.4.322.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Vulkan-Loader-1.4.322
+export PACKAGE_VERSION=1.4.326
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/Vulkan-Loader/1.4.326/
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.4.326
+tar xvf ${DOWNLOADDIR}/Vulkan-Loader-1.4.326.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Vulkan-Loader-1.4.326
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/Vulkan-Loader-1.4.322
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.4.322
+rm -rf ${BUILD_DIRECTORY}/Vulkan-Loader-1.4.326

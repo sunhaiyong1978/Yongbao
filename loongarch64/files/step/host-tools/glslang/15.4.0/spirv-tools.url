@@ -1,6 +1,0 @@
-URL=https://github.com/KhronosGroup/SPIRV-Tools
-FILENAME=spirv-tools
-MODE=GIT
-GIT_BRANCH=
-GIT_COMMIT=f289d047f49fb60488301ec62bafab85573668cc
-GIT_SUBMODULE=0

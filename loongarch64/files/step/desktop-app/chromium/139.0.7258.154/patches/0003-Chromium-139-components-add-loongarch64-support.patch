@@ -1,0 +1,55 @@
+From b3729822ed49d5177ae3463d43da9df048c667b5 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 29 Aug 2025 09:23:04 +0000
+Subject: [PATCH 3/9] Chromium 139 components add loongarch64 support.
+
+from https://github.com/loongson/chromium/tree/loongarch-patches/chromium120/new-world reference.
+---
+ components/metrics/debug/metrics_internals_utils.cc            | 2 ++
+ components/variations/proto/study.proto                        | 2 ++
+ .../variations/service/variations_field_trial_creator_base.cc  | 3 +++
+ 3 files changed, 7 insertions(+)
+
+diff --git a/components/metrics/debug/metrics_internals_utils.cc b/components/metrics/debug/metrics_internals_utils.cc
+index b63ffa6dfa..774cb6ec49 100644
+--- a/components/metrics/debug/metrics_internals_utils.cc
++++ b/components/metrics/debug/metrics_internals_utils.cc
+@@ -71,6 +71,8 @@ std::string CpuArchitectureToString(
+       return "x86_32";
+     case variations::Study::ARM32:
+       return "arm32";
++    case variations::Study::LOONGARCH64:
++      return "loongarch64";
+     case variations::Study::TRANSLATED_X86_64:
+       return "translated_x86_64";
+   }
+diff --git a/components/variations/proto/study.proto b/components/variations/proto/study.proto
+index 0c642d82c7..f20e3d2611 100644
+--- a/components/variations/proto/study.proto
++++ b/components/variations/proto/study.proto
+@@ -262,6 +262,8 @@ message Study {
+     // A Mac-only value, indicating an x86-64 binary running on an arm64 host
+     // via "Rosetta 2" binary translation.
+     TRANSLATED_X86_64 = 4;
++
++    LOONGARCH64 = 5;
+   }
+ 
+   // Enum to pass as optional bool.
+diff --git a/components/variations/service/variations_field_trial_creator_base.cc b/components/variations/service/variations_field_trial_creator_base.cc
+index 8e7106ac16..daf7189cef 100644
+--- a/components/variations/service/variations_field_trial_creator_base.cc
++++ b/components/variations/service/variations_field_trial_creator_base.cc
+@@ -106,6 +106,9 @@ RestrictionPolicy GetVariationPolicyRestriction(PrefService* local_state) {
+ 
+ Study::CpuArchitecture GetCurrentCpuArchitecture() {
+   std::string process_arch = base::SysInfo::ProcessCPUArchitecture();
++  if (process_arch == "LOONGARCH_64") {
++    return Study::LOONGARCH64;
++  }
+   if (process_arch == "ARM_64") {
+     return Study::ARM64;
+   }
+-- 
+2.31.1
+

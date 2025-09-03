@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=glaxnimate
-export PACKAGE_VERSION=0.5.3-default
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/glaxnimate/0.5.3-default/
-rm -rf ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
-tar xvf ${DOWNLOADDIR}/glaxnimate-0.5.3-default_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/glaxnimate/git-default/
+rm -rf ${BUILD_DIRECTORY}/glaxnimate-git-default_git
+tar xvf ${DOWNLOADDIR}/glaxnimate-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glaxnimate-git-default_git
         
         mkdir cross-build
         pushd cross-build
@@ -44,4 +44,4 @@ pushd ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/glaxnimate-0.5.3-default_git
+rm -rf ${BUILD_DIRECTORY}/glaxnimate-git-default_git

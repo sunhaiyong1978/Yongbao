@@ -15,19 +15,19 @@ pushd ${BUILD_DIRECTORY}/jdk-latest_git
                 --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \
                 --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon" \
                 --with-stdc++lib=dynamic \
-                --with-boot-jdk=${CROSSTOOLS_DIR}/jdk-latest-bootstrap \
+                --with-boot-jdk=${CROSSTOOLS_DIR}/jdk24-bootstrap \
                 --disable-warnings-as-errors
     make JOBS=${JOBS} LP64=1 LDFLAGS="" BUILD_CC="gcc" images
     pushd build/linux-${ARCH_NAME}-server-release/images/jdk/
         find -type f -exec ${CROSS_TARGET}-strip --strip-unneeded '{}' ';'
 	cd ..
-	mv jdk jdk-latest
+	mv jdk jdk-laster
 	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/
-        tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/jdk-$(echo "latest" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* jdk-latest
+        tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/jdk-$(echo "latest" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* jdk-laster
         tar -xvf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/jdk-$(echo "latest" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz -C ${SYSROOT_DIR}/opt/
 	info_pool "生成了可发布的JDK latest 虚拟机压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "latest" | sed "s@-default@@g")/jdk-$(echo "latest" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/jdk-latest_git
 
-default_set_conf "jdk" "latest" "JDK 最新版" "/usr/bin/java" "/opt/jdk-latest/bin/java"
+default_set_conf "jdk" "laster" "JDK" "/usr/bin/java" "/opt/jdk-laster/bin/java"

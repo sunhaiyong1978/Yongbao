@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-rustc
-export PACKAGE_VERSION=1.88.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-rustc/1.88.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.88.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.88.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.88.0-src
+export PACKAGE_VERSION=1.89.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-rustc/1.89.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.89.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.89.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.89.0-src
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
@@ -43,7 +43,7 @@ pushd ${BUILD_DIRECTORY}/rustc-1.88.0-src
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          dist
 
-    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.88.0" | sed "s@-default@@g")/
-    find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.88.0" | sed "s@-default@@g")/ ';'
+    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.89.0" | sed "s@-default@@g")/
+    find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.89.0" | sed "s@-default@@g")/ ';'
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.88.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.89.0-src

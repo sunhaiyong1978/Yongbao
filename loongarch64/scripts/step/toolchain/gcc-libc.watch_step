@@ -1,0 +1,4 @@
+gcc
+glibc
+compat_glibc_generic
+compat_glibc_x86_64

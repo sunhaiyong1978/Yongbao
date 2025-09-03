@@ -9,7 +9,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/openh264/2.6.0/
 rm -rf ${BUILD_DIRECTORY}/openh264-2.6.0
 tar xvf ${DOWNLOADDIR}/openh264-2.6.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/openh264-2.6.0
-	
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/openh264/2.6.0/patches/0001-openh264-2.6.0-add-mips64el-support.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		CXXFLAGS="${CXXFLAGS} -Wno-error=strict-aliasing" meson ${MESON_CONFIG} --default-library=both -Dtests=disabled \

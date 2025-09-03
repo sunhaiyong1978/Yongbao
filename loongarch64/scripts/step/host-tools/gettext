@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=gettext
-export PACKAGE_VERSION=0.25.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gettext/0.25.1/
-rm -rf ${BUILD_DIRECTORY}/gettext-0.25.1
-tar xvf ${DOWNLOADDIR}/gettext-0.25.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gettext-0.25.1
+export PACKAGE_VERSION=0.26
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/gettext/0.26/
+rm -rf ${BUILD_DIRECTORY}/gettext-0.26
+tar xvf ${DOWNLOADDIR}/gettext-0.26.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gettext-0.26
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/gettext-0.25.1
 	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-libncurses-prefix=${PREFIX} --with-included-libxml
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/gettext-0.25.1
+rm -rf ${BUILD_DIRECTORY}/gettext-0.26

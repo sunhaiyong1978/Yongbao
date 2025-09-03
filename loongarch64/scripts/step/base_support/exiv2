@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=exiv2
-export PACKAGE_VERSION=0.28.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/exiv2/0.28.5/
-rm -rf ${BUILD_DIRECTORY}/exiv2-0.28.5
-tar xvf ${DOWNLOADDIR}/exiv2-0.28.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/exiv2-0.28.5
+export PACKAGE_VERSION=0.28.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/exiv2/0.28.7/
+rm -rf ${BUILD_DIRECTORY}/exiv2-0.28.7
+tar xvf ${DOWNLOADDIR}/exiv2-0.28.7.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/exiv2-0.28.7
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/exiv2-0.28.5
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/exiv2-0.28.5
+rm -rf ${BUILD_DIRECTORY}/exiv2-0.28.7

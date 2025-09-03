@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=fontconfig
-export PACKAGE_VERSION=2.16.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/fontconfig/2.16.0/
-rm -rf ${BUILD_DIRECTORY}/fontconfig-2.16.0
-tar xvf ${DOWNLOADDIR}/fontconfig-2.16.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fontconfig-2.16.0
+export PACKAGE_VERSION=2.17.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/fontconfig/2.17.1/
+rm -rf ${BUILD_DIRECTORY}/fontconfig-2.17.1
+tar xvf ${DOWNLOADDIR}/fontconfig-2.17.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fontconfig-2.17.1
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/fontconfig-2.16.0
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --disable-docs
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/fontconfig-2.16.0
+rm -rf ${BUILD_DIRECTORY}/fontconfig-2.17.1

@@ -1,0 +1,25 @@
+From ee2316b039679535e735ee49088d8669e1a16d22 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 18 Aug 2025 06:41:39 +0000
+Subject: [PATCH] appstream 1.0.6 fix for cross build.
+
+---
+ data/meson.build | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/data/meson.build b/data/meson.build
+index 3c9d6e7..82d7e88 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -9,8 +9,6 @@ install_data('its/metainfo.loc',
+ 
+ # Do not rely on an exe wrapper for rel-info, use the system one in that case
+ if meson.is_cross_build()
+-    dependency('appstream', version: '>=' + as_version, native: true,
+-               not_found_message: 'Native appstream required for cross-building')
+     ascli_exe = find_program('appstreamcli', native: true)
+ endif
+ 
+-- 
+2.31.1
+

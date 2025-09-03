@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=20.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/20.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-20.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
+export PACKAGE_VERSION=21.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/21.1.0/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
+tar xvf ${DOWNLOADDIR}/llvm-project-21.1.0.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
     
     pushd llvm
     mkdir cross-build
@@ -30,7 +30,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
               -DLLVM_HOST_TRIPLE=${CROSS_TARGET} \
 	      -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=ON \
               -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
-	for program_name in clang-ast-dump lldb-tblgen mlir-tblgen clang-tidy-confusable-chars-gen clang-pseudo-gen mlir-linalg-ods-yaml-gen mlir-pdll mlir-src-sharder
+	for program_name in clang-ast-dump lldb-tblgen mlir-tblgen clang-tidy-confusable-chars-gen clang-pseudo-gen mlir-linalg-ods-yaml-gen mlir-pdll mlir-src-sharder mlir-irdl-to-cpp
 	do
 		sed -i "s@${PWD}/bin/${program_name}@qemu-${ARCH_NAME} ${PWD}/bin/${program_name}@g" build.ninja
 	done
@@ -47,4 +47,4 @@ chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config
 save_package_version target_base_llvm-project
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src

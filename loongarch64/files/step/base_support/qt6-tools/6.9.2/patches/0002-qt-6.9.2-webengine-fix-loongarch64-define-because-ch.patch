@@ -1,0 +1,26 @@
+From c59a496bf89fdf8dddb4334b9dc566f32102968c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 29 Aug 2025 03:26:17 +0000
+Subject: [PATCH 02/11] qt 6.9.2 webengine fix loongarch64 define because
+ chromium use loong64 as loongarch64.
+
+---
+ qtwebengine/cmake/QtToolchainHelpers.cmake | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/qtwebengine/cmake/QtToolchainHelpers.cmake b/qtwebengine/cmake/QtToolchainHelpers.cmake
+index a34c0d06ef..82ac7a6be8 100644
+--- a/qtwebengine/cmake/QtToolchainHelpers.cmake
++++ b/qtwebengine/cmake/QtToolchainHelpers.cmake
+@@ -55,6 +55,8 @@ function(get_gn_arch result arch)
+         set(${result} "mips64el" PARENT_SCOPE)
+     elseif(arch STREQUAL "riscv64")
+         set(${result} "riscv64" PARENT_SCOPE)
++    elseif(arch STREQUAL "loongarch64")
++        set(${result} "loong64" PARENT_SCOPE)
+     else()
+         message(FATAL_ERROR "Unknown architecture: ${arch}")
+     endif()
+-- 
+2.31.1
+

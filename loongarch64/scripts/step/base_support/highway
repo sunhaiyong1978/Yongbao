@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=highway
-export PACKAGE_VERSION=1.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/highway/1.2.0/
-rm -rf ${BUILD_DIRECTORY}/highway-1.2.0
-tar xvf ${DOWNLOADDIR}/highway-1.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/highway-1.2.0
+export PACKAGE_VERSION=1.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/highway/1.3.0/
+rm -rf ${BUILD_DIRECTORY}/highway-1.3.0
+tar xvf ${DOWNLOADDIR}/highway-1.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/highway-1.3.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/highway-1.2.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/highway-1.2.0
+rm -rf ${BUILD_DIRECTORY}/highway-1.3.0

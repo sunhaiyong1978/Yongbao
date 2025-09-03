@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=appstream
-export PACKAGE_VERSION=1.0.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/appstream/1.0.5/
-rm -rf ${BUILD_DIRECTORY}/appstream-1.0.5
-tar xvf ${DOWNLOADDIR}/appstream-1.0.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/appstream-1.0.5
+export PACKAGE_VERSION=1.0.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/appstream/1.0.6/
+rm -rf ${BUILD_DIRECTORY}/appstream-1.0.6
+tar xvf ${DOWNLOADDIR}/appstream-1.0.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/appstream-1.0.6
     
     mkdir -p native-build
     pushd native-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/appstream-1.0.5
         ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/appstream-1.0.5
+rm -rf ${BUILD_DIRECTORY}/appstream-1.0.6

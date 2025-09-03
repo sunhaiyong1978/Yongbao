@@ -1,1 +1,3 @@
 target=!aarch64
+target=!mips64el
+target=!riscv64

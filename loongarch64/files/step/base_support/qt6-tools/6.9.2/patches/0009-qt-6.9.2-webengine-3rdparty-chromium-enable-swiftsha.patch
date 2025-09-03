@@ -1,0 +1,24 @@
+From 40b809efa6f34bb0d63ba180745669ada57005a9 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 29 Aug 2025 03:30:59 +0000
+Subject: [PATCH 09/11] qt 6.9.2 webengine 3rdparty chromium enable swiftshader
+ add loongarch64.
+
+---
+ qtwebengine/src/3rdparty/chromium/ui/gl/features.gni | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni b/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni
+index 245959e908..8b0bf31ad7 100644
+--- a/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni
++++ b/qtwebengine/src/3rdparty/chromium/ui/gl/features.gni
+@@ -30,5 +30,5 @@ declare_args() {
+        is_fuchsia) &&
+       (target_cpu == "x86" || target_cpu == "x64" || target_cpu == "arm" ||
+        target_cpu == "arm64" || target_cpu == "mipsel" ||
+-       target_cpu == "mips64el" || target_cpu == "riscv64")
++       target_cpu == "mips64el" || target_cpu == "riscv64" || target_cpu == "loong64")
+ }
+-- 
+2.31.1
+

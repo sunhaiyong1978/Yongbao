@@ -6,6 +6,7 @@ export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=ffmpeg
 export PACKAGE_VERSION=7.1.1
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/ffmpeg/7.1.1/
+export FFMPEG_ARCH=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "FFMPEG_ARCH" "${ARCH_NAME}")
 rm -rf ${BUILD_DIRECTORY}/ffmpeg-7.1.1
 tar xvf ${DOWNLOADDIR}/ffmpeg-7.1.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ffmpeg-7.1.1
@@ -31,7 +32,7 @@ pushd ${BUILD_DIRECTORY}/ffmpeg-7.1.1
                 --enable-libx265     \
                 --enable-openssl --enable-libpulse --enable-libdrm --enable-vulkan \
 		--disable-htmlpages \
-                --arch=${ARCH_NAME} --target-os=linux --cc=${LINUX_HOST}-gcc --host-cc=gcc
+                --arch=${FFMPEG_ARCH} --target-os=linux --cc=${LINUX_HOST}-gcc --host-cc=gcc
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/ffmpeg-7.1.1

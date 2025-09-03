@@ -1,0 +1,47 @@
+From b4a9a96a64b58e6f2d68b1f9be9566880822659f Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 29 Aug 2025 09:37:03 +0000
+Subject: [PATCH 10/10] Chormium 139 get pagesize support for loongarch64.
+
+---
+ .../src/partition_alloc/page_allocator_constants.h             | 3 ++-
+ .../src/partition_alloc/partition_alloc_constants.h            | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/base/allocator/partition_allocator/src/partition_alloc/page_allocator_constants.h b/base/allocator/partition_allocator/src/partition_alloc/page_allocator_constants.h
+index 4f38bdd015..fe6c23b8ab 100644
+--- a/base/allocator/partition_allocator/src/partition_alloc/page_allocator_constants.h
++++ b/base/allocator/partition_allocator/src/partition_alloc/page_allocator_constants.h
+@@ -27,6 +27,7 @@
+ 
+ #elif (PA_BUILDFLAG(IS_ANDROID) && PA_BUILDFLAG(PA_ARCH_CPU_64_BITS)) || \
+     (PA_BUILDFLAG(IS_LINUX) && PA_BUILDFLAG(PA_ARCH_CPU_ARM64)) ||       \
++    (PA_BUILDFLAG(IS_LINUX) && PA_BUILDFLAG(PA_ARCH_CPU_LOONGARCH64)) || \
+     (PA_BUILDFLAG(IS_LINUX) && PA_BUILDFLAG(PA_ARCH_CPU_PPC64))
+ // This should work for all POSIX (if needed), but currently all other
+ // supported OS/architecture combinations use either hard-coded values
+@@ -125,7 +126,7 @@ PageAllocationGranularityShift() {
+   // compiled for 64kB are likely to work on 4kB systems, 64kB is a good choice
+   // here.
+   return 16;  // 64kB
+-#elif defined(_MIPS_ARCH_LOONGSON) || PA_BUILDFLAG(PA_ARCH_CPU_LOONGARCH64)
++#elif defined(_MIPS_ARCH_LOONGSON)
+   return 14;  // 16kB
+ #elif PA_BUILDFLAG(IS_APPLE) && PA_BUILDFLAG(PA_ARCH_CPU_64_BITS)
+   return static_cast<size_t>(vm_page_shift);
+diff --git a/base/allocator/partition_allocator/src/partition_alloc/partition_alloc_constants.h b/base/allocator/partition_allocator/src/partition_alloc/partition_alloc_constants.h
+index bd17e1e260..2df995eb17 100644
+--- a/base/allocator/partition_allocator/src/partition_alloc/partition_alloc_constants.h
++++ b/base/allocator/partition_allocator/src/partition_alloc/partition_alloc_constants.h
+@@ -105,7 +105,7 @@ PA_ALWAYS_INLINE PAGE_ALLOCATOR_CONSTANTS_DECLARE_CONSTEXPR size_t
+ PartitionPageShift() {
+   return PageAllocationGranularityShift() + 2;
+ }
+-#elif defined(_MIPS_ARCH_LOONGSON) || PA_BUILDFLAG(PA_ARCH_CPU_LOONGARCH64)
++#elif defined(_MIPS_ARCH_LOONGSON)
+ PA_ALWAYS_INLINE PAGE_ALLOCATOR_CONSTANTS_DECLARE_CONSTEXPR size_t
+ PartitionPageShift() {
+   return 16;  // 64 KiB
+-- 
+2.31.1
+

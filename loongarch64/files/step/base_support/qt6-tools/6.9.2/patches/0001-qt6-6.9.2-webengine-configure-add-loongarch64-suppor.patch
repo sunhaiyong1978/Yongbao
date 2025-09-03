@@ -1,0 +1,25 @@
+From 9afb7a6b035f84007a8b7bfa1f0bf0638fb57aa2 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 29 Aug 2025 03:25:46 +0000
+Subject: [PATCH 01/11] qt6 6.9.2 webengine configure add loongarch64 support.
+
+---
+ qtwebengine/configure.cmake | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/qtwebengine/configure.cmake b/qtwebengine/configure.cmake
+index 6b3b5f7705..7b7df4b493 100644
+--- a/qtwebengine/configure.cmake
++++ b/qtwebengine/configure.cmake
+@@ -301,7 +301,7 @@ qt_webengine_configure_check("supported-platform"
+ )
+ 
+ if(LINUX AND CMAKE_CROSSCOMPILING)
+-    set(supported_targets "arm" "arm64" "armv7-a" "x86_64")
++    set(supported_targets "arm" "arm64" "armv7-a" "x86_64" "loongarch64")
+     qt_webengine_configure_check("supported-arch"
+         MODULES QtWebEngine QtPdf
+         CONDITION TEST_architecture_arch IN_LIST supported_targets
+-- 
+2.31.1
+

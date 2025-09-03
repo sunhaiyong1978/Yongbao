@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=squashfs
-export PACKAGE_VERSION=4.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/squashfs/4.7/
-rm -rf ${BUILD_DIRECTORY}/squashfs-tools-4.7
-tar xvf ${DOWNLOADDIR}/squashfs4.7.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/squashfs-tools-4.7
+export PACKAGE_VERSION=4.7.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/squashfs/4.7.2/
+rm -rf ${BUILD_DIRECTORY}/squashfs-tools-4.7.2
+tar xvf ${DOWNLOADDIR}/squashfs4.7.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/squashfs-tools-4.7.2
 	pushd squashfs-tools
 	    XZ_SUPPORT=1 LZO_SUPPORT=1 LZMA_XZ_SUPPORT=1 LZ4_SUPPORT=1 ZSTD_SUPPORT=1 make -j${JOBS} CC="${CROSS_TARGET}-gcc"
 	    make CC="${CROSS_TARGET}-gcc" INSTALL_PREFIX=${SYSROOT_DIR}/usr \
         	 INSTALL_MANPAGES_DIR=${SYSROOT_DIR}/usr/share/man/man1 install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/squashfs-tools-4.7
+rm -rf ${BUILD_DIRECTORY}/squashfs-tools-4.7.2

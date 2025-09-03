@@ -1,5 +1,10 @@
 target=!mingw64ucrt
 host=!mingw64ucrt
+target=!mingw64
+host=!mingw64
+target=!mingw32
+host=!mingw32
 compat=1
 target_compat=1
 host=x86_64
+target=x86_64

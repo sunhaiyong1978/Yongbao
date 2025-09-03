@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=LVM2
-export PACKAGE_VERSION=2.03.33
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/LVM2/2.03.33/
-rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.33
-tar xvf ${DOWNLOADDIR}/LVM2.2.03.33.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/LVM2.2.03.33
+export PACKAGE_VERSION=2.03.34
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/LVM2/2.03.34/
+rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.34
+tar xvf ${DOWNLOADDIR}/LVM2.2.03.34.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/LVM2.2.03.34
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/LVM2.2.03.33
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.33
+rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.34

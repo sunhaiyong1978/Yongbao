@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=glibc
-export PACKAGE_VERSION=2.41
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/glibc/2.41/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.41
-tar xvf ${DOWNLOADDIR}/glibc-2.41.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.41
+export PACKAGE_VERSION=2.42
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/glibc/2.42/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.42
+tar xvf ${DOWNLOADDIR}/glibc-2.42.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.42
     
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
@@ -55,4 +55,4 @@ pushd ${BUILD_DIRECTORY}/glibc-2.41
 	make DESTDIR=${INSTALL_DIST_DIR} install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.41
+rm -rf ${BUILD_DIRECTORY}/glibc-2.42

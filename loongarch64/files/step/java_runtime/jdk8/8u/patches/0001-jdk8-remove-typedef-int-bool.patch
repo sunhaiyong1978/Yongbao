@@ -1,0 +1,32 @@
+From fd431f15fc113b4c7e5d58ecb7f34acc2c17ee74 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 21 Aug 2025 09:13:51 +0000
+Subject: [PATCH] jdk8 remove typedef int bool
+
+---
+ hotspot/agent/src/os/linux/libproc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/hotspot/agent/src/os/linux/libproc.h b/hotspot/agent/src/os/linux/libproc.h
+index 5eb8211a..26780fda 100644
+--- a/hotspot/agent/src/os/linux/libproc.h
++++ b/hotspot/agent/src/os/linux/libproc.h
+@@ -34,6 +34,7 @@
+ #include <jni.h>
+ #include <unistd.h>
+ #include <stdint.h>
++#include <stdbool.h>
+ #include "proc_service.h"
+ 
+ #ifdef ALT_SASRCDIR
+@@ -94,7 +95,6 @@ combination of ptrace and /proc calls.
+ // This C bool type must be int for compatibility with Linux calls and
+ // it would be a mistake to equivalence it to C++ bool on many platforms
+ 
+-typedef int bool;
+ #define true  1
+ #define false 0
+ 
+-- 
+2.31.1
+

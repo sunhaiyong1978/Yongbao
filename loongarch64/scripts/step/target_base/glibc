@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=glibc
-export PACKAGE_VERSION=2.41
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.41/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.41
-tar xvf ${DOWNLOADDIR}/glibc-2.41.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.41
-    patch -Np1 -i ${SYSDIR}/files/target_base/glibc/2.41/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
+export PACKAGE_VERSION=2.42
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc/2.42/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.42
+tar xvf ${DOWNLOADDIR}/glibc-2.42.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.42
+    patch -Np1 -i ${SYSDIR}/files/target_base/glibc/2.42/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
 	 
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     mkdir -p build-64
@@ -26,4 +26,4 @@ pushd ${BUILD_DIRECTORY}/glibc-2.41
 		make DESTDIR=${SYSROOT_DIR} install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.41
+rm -rf ${BUILD_DIRECTORY}/glibc-2.42

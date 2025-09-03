@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-gcc
-export PACKAGE_VERSION=15.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc/15.1.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0
-tar xvf ${DOWNLOADDIR}/gcc-15.1.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-15.1.0
+export PACKAGE_VERSION=15.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc/15.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0
+tar xvf ${DOWNLOADDIR}/gcc-15.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 	case "${ARCH_NAME}" in
 		"loongarch64")
 			ABI_STRING="--with-abi=lp64"
@@ -45,4 +45,4 @@ pushd ${BUILD_DIRECTORY}/gcc-15.1.0
 		make install-strip-gcc install-strip-target-libgcc
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0
+rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0

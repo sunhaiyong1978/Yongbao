@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ostree
-export PACKAGE_VERSION=2025.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ostree/2025.3/
-rm -rf ${BUILD_DIRECTORY}/libostree-2025.3
-tar xvf ${DOWNLOADDIR}/libostree-2025.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libostree-2025.3
+export PACKAGE_VERSION=2025.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ostree/2025.5/
+rm -rf ${BUILD_DIRECTORY}/libostree-2025.5
+tar xvf ${DOWNLOADDIR}/libostree-2025.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libostree-2025.5
         
         NOCONFIGURE=1 ./autogen.sh
 	sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/libostree-2025.3
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/libostree-2025.3
+rm -rf ${BUILD_DIRECTORY}/libostree-2025.5

@@ -1,0 +1,14 @@
+source env/bootstrap/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=bootstrap
+export STEP_PACKAGENAME=jdk24-bootstrap
+export PACKAGE_VERSION=24.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/bootstrap/jdk24-bootstrap/24.0/
+rm -rf ${BUILD_DIRECTORY}/jdk-24.0.2
+tar xvf ${DOWNLOADDIR}/jdk-24_linux-x64_bin.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jdk-24.0.2
+    mkdir -pv ${CROSSTOOLS_DIR}/jdk24-bootstrap
+    cp -a * ${CROSSTOOLS_DIR}/jdk24-bootstrap
+popd 
+rm -rf ${BUILD_DIRECTORY}/jdk-24.0.2

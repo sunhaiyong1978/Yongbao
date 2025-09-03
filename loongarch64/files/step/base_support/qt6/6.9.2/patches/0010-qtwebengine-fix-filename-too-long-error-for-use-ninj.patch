@@ -1,0 +1,31 @@
+From c75bb48cbab15b96a6cc3a2a406ab19344d8a870 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 29 Aug 2025 03:31:41 +0000
+Subject: [PATCH 10/11] qtwebengine fix filename too long error for use ninja.
+
+---
+ .../src/3rdparty/gn/src/gn/ninja_action_target_writer.cc  | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/gn/src/gn/ninja_action_target_writer.cc b/qtwebengine/src/3rdparty/gn/src/gn/ninja_action_target_writer.cc
+index 0fe0c1befa..094c000c3d 100644
+--- a/qtwebengine/src/3rdparty/gn/src/gn/ninja_action_target_writer.cc
++++ b/qtwebengine/src/3rdparty/gn/src/gn/ninja_action_target_writer.cc
+@@ -155,6 +155,14 @@ std::string NinjaActionTargetWriter::WriteRuleDefinition() {
+     // strictly necessary for regular one-shot actions, but it's easier to
+     // just always define unique_name.
+     std::string rspfile = custom_rule_name;
++
++    //quick workaround if filename length > 255 - ".rsp", just cut the dirs starting from the end
++    //please note ".$unique_name" is not used at the moment
++    int pos = 0;
++    std::string delimiter("_");
++    while (rspfile.length() > 250 && (pos = rspfile.find_last_of(delimiter)) != (int) std::string::npos)
++        rspfile = rspfile.substr(0,pos);
++
+     if (!target_->sources().empty())
+       rspfile += ".$unique_name";
+     rspfile += ".rsp";
+-- 
+2.31.1
+

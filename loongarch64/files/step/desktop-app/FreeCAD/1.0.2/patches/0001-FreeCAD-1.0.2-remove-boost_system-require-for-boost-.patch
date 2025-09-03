@@ -1,0 +1,25 @@
+From 23048019fcb9063c448783e1656b1bdb3271bdaf Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 25 Aug 2025 07:58:44 +0000
+Subject: [PATCH] FreeCAD 1.0.2 remove boost_system require for boost 1.89
+
+---
+ cMake/FreeCAD_Helpers/SetupBoost.cmake | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cMake/FreeCAD_Helpers/SetupBoost.cmake b/cMake/FreeCAD_Helpers/SetupBoost.cmake
+index 0bb1343..1a389bf 100644
+--- a/cMake/FreeCAD_Helpers/SetupBoost.cmake
++++ b/cMake/FreeCAD_Helpers/SetupBoost.cmake
+@@ -3,7 +3,7 @@ macro(SetupBoost)
+ 
+     set(_boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS})
+ 
+-    set (BOOST_COMPONENTS filesystem program_options regex system thread date_time)
++    set (BOOST_COMPONENTS filesystem program_options regex thread date_time)
+     find_package(Boost ${BOOST_MIN_VERSION}
+         COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
+ 
+-- 
+2.31.1
+

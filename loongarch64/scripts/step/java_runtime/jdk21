@@ -1,0 +1,33 @@
+source env/java_runtime/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=java_runtime
+export STEP_PACKAGENAME=jdk21
+export PACKAGE_VERSION=21u
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/java_runtime/jdk21/21u/
+rm -rf ${BUILD_DIRECTORY}/jdk21-21u_git
+tar xvf ${DOWNLOADDIR}/jdk21-21u_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jdk21-21u_git
+    patch -Np1 -i ${SYSDIR}/files/java_runtime/jdk21/21u/patches/3445b99bedfba659da49d72a39979703969cfc91.diff 
+	 
+    sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
+    LDFLAGS="" CC="${CROSS_TARGET}-gcc" \
+    sh ./configure --prefix=/usr --host=${CROSS_TARGET} \
+                --with-zlib=system --with-libpng=system --enable-unlimited-crypto \
+                --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \
+                --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon" \
+                --with-stdc++lib=dynamic \
+                --with-boot-jdk=${CROSSTOOLS_DIR}/jdk20-bootstrap \
+                --disable-warnings-as-errors
+    make JOBS=${JOBS} LP64=1 LDFLAGS="" BUILD_CC="gcc" images
+    pushd build/linux-${ARCH_NAME}-server-release/images/jdk/
+        find -type f -exec ${CROSS_TARGET}-strip --strip-unneeded '{}' ';'
+	cd ..
+	mv jdk jdk-21
+	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "21u" | sed "s@-default@@g")/
+        tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "21u" | sed "s@-default@@g")/jdk-$(echo "21u" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* jdk-21
+        tar -xvf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "21u" | sed "s@-default@@g")/jdk-$(echo "21u" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz -C ${SYSROOT_DIR}/opt/
+	info_pool "生成了可发布的JDK 21u 虚拟机压缩包文件：${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "21u" | sed "s@-default@@g")/jdk-$(echo "21u" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz"
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/jdk21-21u_git

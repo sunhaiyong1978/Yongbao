@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=sddm
 export STEP_PACKAGENAME=KDE6-breeze-icons
-export PACKAGE_VERSION=6.16.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/KDE6-breeze-icons/6.16.0/
-rm -rf ${BUILD_DIRECTORY}/breeze-icons-6.16.0
-tar xvf ${DOWNLOADDIR}/breeze-icons-6.16.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/breeze-icons-6.16.0
+export PACKAGE_VERSION=6.17.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/sddm/KDE6-breeze-icons/6.17.0/
+rm -rf ${BUILD_DIRECTORY}/breeze-icons-6.17.0
+tar xvf ${DOWNLOADDIR}/breeze-icons-6.17.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/breeze-icons-6.17.0
         
 	sed -i "s@\$<TARGET_FILE:generate-symbolic-dark>@ qemu-loongarch64 ${PWD}/cross-build/bin/generate-symbolic-dark@g" icons-dark/CMakeLists.txt
 	sed -i "s@COMMAND qrcAlias@COMMAND qemu-loongarch64 ${PWD}/cross-build/bin/qrcAlias@g" src/lib/CMakeLists.txt
@@ -44,4 +44,4 @@ pushd ${BUILD_DIRECTORY}/breeze-icons-6.16.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/breeze-icons-6.16.0
+rm -rf ${BUILD_DIRECTORY}/breeze-icons-6.17.0

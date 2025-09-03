@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=upower
-export PACKAGE_VERSION=1.90.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/upower/1.90.9/
-rm -rf ${BUILD_DIRECTORY}/upower-v1.90.9
-tar xvf ${DOWNLOADDIR}/upower-v1.90.9.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/upower-v1.90.9
+export PACKAGE_VERSION=1.90.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/upower/1.90.10/
+rm -rf ${BUILD_DIRECTORY}/upower-v1.90.10
+tar xvf ${DOWNLOADDIR}/upower-v1.90.10.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/upower-v1.90.10
 	
 	mkdir cross-build
 	pushd cross-build
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/upower-v1.90.9
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/upower-v1.90.9
+rm -rf ${BUILD_DIRECTORY}/upower-v1.90.10

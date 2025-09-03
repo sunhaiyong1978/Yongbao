@@ -4,15 +4,15 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-qemu
-export PACKAGE_VERSION=10.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-qemu/10.0.2/
-rm -rf ${BUILD_DIRECTORY}/qemu-10.0.2
-tar xvf ${DOWNLOADDIR}/qemu-10.0.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-10.0.2
+export PACKAGE_VERSION=10.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-qemu/10.1.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-10.1.0
+tar xvf ${DOWNLOADDIR}/qemu-10.1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-10.1.0
     sed -i "/HAVE_OPENAT2_H/d" meson.build
     mkdir -p build
     pushd build
-        ../configure --prefix=${PREFIX}/${LINUX_HOST} --target-list=${QEMU_ARCH}-linux-user
+        ../configure --prefix=${PREFIX}/${LINUX_HOST} --target-list=${QEMU_ARCH}-linux-user --disable-docs
         ninja
         cp qemu-${QEMU_ARCH} ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin
     popd
@@ -27,4 +27,4 @@ ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR} -E LD_
 
 chmod +x ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}{,-ldd}
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-10.0.2
+rm -rf ${BUILD_DIRECTORY}/qemu-10.1.0

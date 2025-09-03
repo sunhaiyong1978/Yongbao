@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/box64-git-default_git
         
 	mkdir cross-build
 	pushd cross-build
-        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CC="clang" CXX="clang++" CFLAGS="${CFLAGS} -target ${CROSS_TARGET}" CXXFLAGS="${CXXFLAGS} -target ${CROSS_TARGET}" \
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
        		      -DCMAKE_INSTALL_PREFIX=/usr \

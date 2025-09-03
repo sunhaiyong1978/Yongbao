@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=llvm_runtimes
-export PACKAGE_VERSION=20.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm_runtimes/20.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-20.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
+export PACKAGE_VERSION=21.1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm_runtimes/21.1.0/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
+tar xvf ${DOWNLOADDIR}/llvm-project-21.1.0.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
     pushd compiler-rt
         mkdir cross-build
         pushd cross-build
@@ -119,7 +119,7 @@ pushd ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
                   -DCMAKE_C_FLAGS="-DNDEBUG -target ${CROSS_TARGET}" \
 		  -DCMAKE_CXX_FLAGS="-DNDEBUG -target ${CROSS_TARGET}" \
 		  -DCMAKE_ASM_FLAGS="-target ${CROSS_TARGET}" \
-		  -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;pstl;libcxx" \
+		  -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;libcxx" \
                   -DCMAKE_MAKE_PROGRAM:PATH=${HOST_TOOLS_DIR}/bin/ninja \
 		  -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
                   -DCMAKE_SYSROOT=${SYSROOT_DIR} \
@@ -130,4 +130,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
         popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-20.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src

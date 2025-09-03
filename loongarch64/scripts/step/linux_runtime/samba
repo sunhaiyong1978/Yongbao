@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=samba
-export PACKAGE_VERSION=4.22.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/samba/4.22.3/
-rm -rf ${BUILD_DIRECTORY}/samba-4.22.3
-tar xvf ${DOWNLOADDIR}/samba-4.22.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/samba-4.22.3
+export PACKAGE_VERSION=4.22.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/samba/4.22.4/
+rm -rf ${BUILD_DIRECTORY}/samba-4.22.4
+tar xvf ${DOWNLOADDIR}/samba-4.22.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.22.4
         
         for config_i in $(find -name "config.sub")
         do
@@ -29,7 +29,7 @@ pushd ${BUILD_DIRECTORY}/samba-4.22.3
         eval ${MAKE_AND_INSTALL}
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/samba-4.22.3
+rm -rf ${BUILD_DIRECTORY}/samba-4.22.4
 
 install -dvm 755 ${LINUX_SYSROOT_DIR}/usr/lib/cups/backend &&
 ln -v -sf /usr/bin/smbspool ${LINUX_SYSROOT_DIR}/usr/lib/cups/backend/smb

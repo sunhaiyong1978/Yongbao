@@ -1,0 +1,24 @@
+From ca22a52fe2d197305fb34ed8fa462aaa84579cd9 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 21 Jul 2025 02:57:10 +0000
+Subject: [PATCH] qemu edk2 platform add VirtNorFlashDeviceLib for loongson.
+
+---
+ Platform/Loongson/LoongArchQemuPkg/Loongson.dsc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Platform/Loongson/LoongArchQemuPkg/Loongson.dsc b/Platform/Loongson/LoongArchQemuPkg/Loongson.dsc
+index 1336fcd..dcff1db 100644
+--- a/Platform/Loongson/LoongArchQemuPkg/Loongson.dsc
++++ b/Platform/Loongson/LoongArchQemuPkg/Loongson.dsc
+@@ -200,6 +200,7 @@
+   DebugLib                         | MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
+   PeiServicesLib                   | MdePkg/Library/PeiServicesLib/PeiServicesLib.inf
+   VariableFlashInfoLib             | MdeModulePkg/Library/BaseVariableFlashInfoLib/BaseVariableFlashInfoLib.inf
++  VirtNorFlashDeviceLib            | OvmfPkg/Library/VirtNorFlashDeviceLib/VirtNorFlashDeviceLib.inf
+   VirtNorFlashPlatformLib          | OvmfPkg/Library/FdtNorFlashQemuLib/FdtNorFlashQemuLib.inf
+ 
+ [LibraryClasses.common.SEC]
+-- 
+2.31.1
+

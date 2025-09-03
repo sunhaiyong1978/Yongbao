@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libgcrypt
-export PACKAGE_VERSION=1.11.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libgcrypt/1.11.1/
-rm -rf ${BUILD_DIRECTORY}/libgcrypt-1.11.1
-tar xvf ${DOWNLOADDIR}/libgcrypt-1.11.1.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libgcrypt-1.11.1
+export PACKAGE_VERSION=1.11.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libgcrypt/1.11.2/
+rm -rf ${BUILD_DIRECTORY}/libgcrypt-1.11.2
+tar xvf ${DOWNLOADDIR}/libgcrypt-1.11.2.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libgcrypt-1.11.2
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/libgcrypt-1.11.1
     eval ${MAKE_AND_INSTALL}
     cp -av ${SYSROOT_DIR}/bin/libgcrypt-config ${CROSSTOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/libgcrypt-1.11.1
+rm -rf ${BUILD_DIRECTORY}/libgcrypt-1.11.2

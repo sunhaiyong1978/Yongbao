@@ -8,12 +8,14 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/java_runtime/jdk11/11u/
 rm -rf ${BUILD_DIRECTORY}/jdk11-11u_git
 tar xvf ${DOWNLOADDIR}/jdk11-11u_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/jdk11-11u_git
+    patch -Np1 -i ${SYSDIR}/files/java_runtime/jdk11/11u/patches/fa28fbdc260351ff9ae735e473b3d0d9bdc659bf.diff 
+	 
     sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
-    LDFLAGS="" CC="${CROSS_TARGET}-gcc" \
+    LDFLAGS="" CC="${CROSS_TARGET}-gcc" OPENJDK_BUILD_EXTRA_CFLAGS="-std=gnu11" \
     sh ./configure --prefix=/usr --host=${CROSS_TARGET} \
                 --with-zlib=system --with-libpng=system --enable-unlimited-crypto \
                 --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \
-                --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon" \
+                --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon -std=gnu11" \
                 --with-stdc++lib=dynamic \
                 --with-boot-jdk=${CROSSTOOLS_DIR}/jdk11-bootstrap \
                 --disable-warnings-as-errors

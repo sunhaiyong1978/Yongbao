@@ -71,6 +71,13 @@ do
 	fi
 done
 
+for kf6_file in $(grep -rl "PACKAGE_PREFIX_DIR \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@PACKAGE_PREFIX_DIR \"/usr\"@PACKAGE_PREFIX_DIR \"${SYSROOT_DIR}/usr\"@g" ${kf6_file}
+	fi
+done
+
 for kf6_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6ModemManagerQt/KF6ModemManagerQtTargets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/KSysGuard/KSysGuardLibraryTargets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/KPim6AkonadiSearch/KPim6AkonadiSearchTargets.cmake \
@@ -93,6 +100,24 @@ for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6Wallet/KF6WalletConfig.cmake
 do
 	if [ -f ${fix_file} ]; then
 		sed -i.orig "/KWALLETD_BIN_PATH/s@\${PACKAGE_PREFIX_DIR}@/usr@g" ${fix_file}
+	fi
+done
+
+for fix_file in $(grep -rl "INTERFACE_LINK_LIBRARIES " $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig -e "/INTERFACE_LINK_LIBRARIES/s@ \"/usr@ \"${SYSROOT_DIR}/usr@g" \
+			    -e "/INTERFACE_LINK_LIBRARIES/s@;/usr@;${SYSROOT_DIR}/usr@g" \
+			 ${fix_file}
+	fi
+done
+
+for fix_file in $(grep -rl "INTERFACE_INCLUDE_DIRECTORIES " $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig -e "/INTERFACE_INCLUDE_DIRECTORIES /s@ \"/usr@ \"${SYSROOT_DIR}/usr@g" \
+			    -e "/INTERFACE_INCLUDE_DIRECTORIES /s@;/usr@;${SYSROOT_DIR}/usr@g" \
+			 ${fix_file}
 	fi
 done
 

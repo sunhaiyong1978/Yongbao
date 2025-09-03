@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=firefox
-export PACKAGE_VERSION=140.0esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/140.0esr/
-rm -rf ${BUILD_DIRECTORY}/firefox-140.0
-tar xvf ${DOWNLOADDIR}/firefox-140.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-140.0
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/140.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+export PACKAGE_VERSION=140.2.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/firefox/140.2.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-140.2.0
+tar xvf ${DOWNLOADDIR}/firefox-140.2.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-140.2.0
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/firefox/140.2.0esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
 	 
 
     sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@13@g" mach
@@ -83,4 +83,4 @@ EOF
 ln -sfv /usr/lib64/firefox/browser/chrome/icons/default/default128.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/firefox.png
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-140.0
+rm -rf ${BUILD_DIRECTORY}/firefox-140.2.0

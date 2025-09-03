@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=wm-lxde
 export STEP_PACKAGENAME=libwnck
-export PACKAGE_VERSION=43.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/libwnck/43.2/
-rm -rf ${BUILD_DIRECTORY}/libwnck-43.2
-tar xvf ${DOWNLOADDIR}/libwnck-43.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libwnck-43.2
+export PACKAGE_VERSION=43.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/wm-lxde/libwnck/43.3/
+rm -rf ${BUILD_DIRECTORY}/libwnck-43.3
+tar xvf ${DOWNLOADDIR}/libwnck-43.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libwnck-43.3
 	
 	mkdir cross-build
 	pushd cross-build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/libwnck-43.2
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libwnck-43.2
+rm -rf ${BUILD_DIRECTORY}/libwnck-43.3

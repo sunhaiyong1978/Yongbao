@@ -17,9 +17,11 @@ tar xvf ${RESOURCEDIR}/files/qemu-edk2-edk2-platforms_git.tar.gz
 EDK2_DIRNAME=qemu-edk2-edk2_git
 EDK2_PLATFORMS_DIRNAME=qemu-edk2-edk2-platforms_git
 
-pushd ${EDK2_DIRNAME}
-	patch -Np1 -i ${SYSDIR}/files/simulate/qemu-edk2/1.0-default/patches/0001-qemu-edk2-edk2-fix-for-gcc-15.patch 
+patch -Np1 -i ${SYSDIR}/files/simulate/qemu-edk2/1.0-default/patches/0001-qemu-edk2-platform-add-VirtNorFlashDeviceLib-for-loo.patch -d qemu-edk2-edk2-platforms_git 
+	patch -Np1 -i ${SYSDIR}/files/simulate/qemu-edk2/1.0-default/patches/0001-qemu-edk2-add-gcc-CFLAGS-for-LoongArch64.patch -d qemu-edk2-edk2_git 
 	 
+
+pushd ${EDK2_DIRNAME}
 	make -j${JOBS} -C BaseTools
 	cp -av BaseTools/Conf/build_rule.template Conf/build_rule.txt
 	cp -av BaseTools/Conf/tools_def.template Conf/tools_def.txt

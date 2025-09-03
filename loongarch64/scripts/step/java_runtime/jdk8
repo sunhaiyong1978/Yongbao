@@ -8,20 +8,23 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/java_runtime/jdk8/8u/
 rm -rf ${BUILD_DIRECTORY}/jdk8-8u_git
 tar xvf ${DOWNLOADDIR}/jdk8-8u_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/jdk8-8u_git
-    sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
-    LDFLAGS="" CC="${CROSS_TARGET}-gcc" \
-    sh ./configure --prefix=/usr --host=${CROSS_TARGET} \
-                --with-zlib=system --with-libpng=system --enable-unlimited-crypto \
+    patch -Np1 -i ${SYSDIR}/files/java_runtime/jdk8/8u/patches/0001-Build-failure-with-glibc-2.42-due-to-uabs-name-colli.patch 
+	patch -Np1 -i ${SYSDIR}/files/java_runtime/jdk8/8u/patches/0001-jdk8-remove-typedef-int-bool.patch 
+	patch -Np1 -i ${SYSDIR}/files/java_runtime/jdk8/8u/patches/0001-jdk8-fix-for-call-of-overloaded-null_check-Register-.patch 
+	 
+    export ALT_SDT_H="${SYSROOT_DIR}/usr/include/sys/sys/sdt.h"
+    LDFLAGS="" CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+    sh ./configure --prefix=/usr --openjdk-target=${CROSS_TARGET} \
+                --with-zlib=system --enable-unlimited-crypto \
                 --with-extra-cxxflags="-fno-lifetime-dse -fcommon" \
-                --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon" \
+                --with-extra-cflags="-Wno-error -fno-lifetime-dse -fcommon -Wno-int-conversion -Wno-incompatible-pointer-types -std=gnu11" \
                 --with-stdc++lib=dynamic \
-                --with-boot-jdk=${CROSSTOOLS_DIR}/jdk8-bootstrap \
-                --disable-warnings-as-errors
+                --with-boot-jdk=${CROSSTOOLS_DIR}/jdk8-bootstrap
     make JOBS=${JOBS} LP64=1 LDFLAGS="" BUILD_CC="gcc" images
-    pushd build/linux-${ARCH_NAME}-normal-server-release/images/jdk/
+    pushd build/linux-${ARCH_NAME}-normal-server-release/images/j2sdk-image/
         find -type f -exec ${CROSS_TARGET}-strip --strip-unneeded '{}' ';'
 	cd ..
-	mv jdk jdk8
+	mv j2sdk-image jdk8
 	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "8u" | sed "s@-default@@g")/
         tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "8u" | sed "s@-default@@g")/jdk-$(echo "8u" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz  --exclude=.git* jdk8
         tar -xvf ${DIST_DIRECTORY}/host/${ARCH_NAME}/jdk/$(echo "8u" | sed "s@-default@@g")/jdk-$(echo "8u" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz -C ${SYSROOT_DIR}/opt/

@@ -2,5 +2,6 @@ URL=https://github.com/tianocore/edk2-platforms.git
 FILENAME=edk2-platforms
 MODE=GIT
 GIT_BRANCH=
-GIT_COMMIT=76eb7fee0c421a01407b70f9bac67e2b5b58b5f2
+GIT_COMMIT=
+# 76eb7fee0c421a01407b70f9bac67e2b5b58b5f2
 GIT_SUBMODULE=1

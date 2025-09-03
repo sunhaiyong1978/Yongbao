@@ -22,6 +22,8 @@ pushd ${BUILD_DIRECTORY}/MangoHud-0.8.1
 	mkdir -p subprojects/nlohmann_json-3.10.5
 	unzip ${RESOURCEDIR}/files/nlohmann_json-3.10.5.zip -d subprojects/nlohmann_json-3.10.5/
 
+	sed -i "/FMT_EXPORT/d" subprojects/spdlog-1.14.1/meson.build
+
         mkdir cross-build
         pushd cross-build
                 meson ${MESON_CONFIG} --default-library=both -Dwith_xnvctrl=disabled \

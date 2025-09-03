@@ -4,12 +4,12 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.9.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.9.0/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.9.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.9.0/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
+export PACKAGE_VERSION=6.9.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.9.2/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.9.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.9.2/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
 	 
 
 
@@ -35,4 +35,4 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
 		popd
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.0
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2

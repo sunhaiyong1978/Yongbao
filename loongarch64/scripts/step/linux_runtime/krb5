@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=krb5
-export PACKAGE_VERSION=1.21.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/krb5/1.21.3/
-rm -rf ${BUILD_DIRECTORY}/krb5-1.21.3
-tar xvf ${DOWNLOADDIR}/krb5-1.21.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/krb5-1.21.3
+export PACKAGE_VERSION=1.22.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/krb5/1.22.1/
+rm -rf ${BUILD_DIRECTORY}/krb5-1.22.1
+tar xvf ${DOWNLOADDIR}/krb5-1.22.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/krb5-1.22.1
     pushd src
 	CFLAGS="${CFLAGS} -std=gnu17" \
         ./configure ${COMMON_CONFIG} --runstatedir=/run \
@@ -19,6 +19,6 @@ pushd ${BUILD_DIRECTORY}/krb5-1.21.3
         eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/krb5-1.21.3
+rm -rf ${BUILD_DIRECTORY}/krb5-1.22.1
 cp -v ${LINUX_SYSROOT_DIR}/usr/bin/krb5-config ${CROSS_TOOLS_PREFIX}/bin/
 sed -i "s@-L\$libdir@@g" ${CROSS_TOOLS_PREFIX}/bin/krb5-config

@@ -4,12 +4,15 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=binutils
-export PACKAGE_VERSION=2.44
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/binutils/2.44/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.44
-tar xvf ${DOWNLOADDIR}/binutils-2.44.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.44
+export PACKAGE_VERSION=2.45
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/binutils/2.45/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.45
+tar xvf ${DOWNLOADDIR}/binutils-2.45.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.45
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/binutils/2.45/patches/8e885fece150ee97e5b0e78363e7fe9888ae9c29.diff 
+	 
 	rm -rf gdb* libdecnumber readline sim
+	sed -i "/AM_CFLAGS_FOR_BUILD/s@ZSTD_CFLAGS@@g" binutils/Makefile.in
 	mkdir -pv cross-build
 	pushd cross-build
 		../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
@@ -19,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.44
 		make DESTDIR=${LINUX_SYSROOT_DIR} tooldir=/usr install
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.44
+rm -rf ${BUILD_DIRECTORY}/binutils-2.45

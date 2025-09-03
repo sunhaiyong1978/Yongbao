@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=pip
-export PACKAGE_VERSION=25.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pip/25.1.1/
-rm -rf ${BUILD_DIRECTORY}/pip-25.1.1
-tar xvf ${DOWNLOADDIR}/pip-25.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pip-25.1.1
+export PACKAGE_VERSION=25.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pip/25.2/
+rm -rf ${BUILD_DIRECTORY}/pip-25.2
+tar xvf ${DOWNLOADDIR}/pip-25.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pip-25.2
 	
 	${HOST_TOOLS_DIR}/bin/python3 -m pip wheel -w dist --no-build-isolation --no-deps ${PWD}
 	${HOST_TOOLS_DIR}/bin/python3 -m pip install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user pip
 popd 
-rm -rf ${BUILD_DIRECTORY}/pip-25.1.1
+rm -rf ${BUILD_DIRECTORY}/pip-25.2

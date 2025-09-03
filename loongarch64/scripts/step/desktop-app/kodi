@@ -3,32 +3,24 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=kodi
-export PACKAGE_VERSION=21.2-Omega
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kodi/21.2-Omega/
-rm -rf ${BUILD_DIRECTORY}/xbmc-21.2-Omega
-tar xvf ${DOWNLOADDIR}/xbmc-21.2-Omega.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xbmc-21.2-Omega
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.2-Omega/patches/0001-kodi-fix-build-error-for-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.2-Omega/patches/0001-fix-xbmc-Settings-undefine-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.2-Omega/patches/0002-kodi-internal-spdlog-update-to-1.12.0.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/21.2-Omega/patches/0001-change-font-setting-from-Default-to-Arial.patch 
+export PACKAGE_VERSION=22.0a1-Piers
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/
+rm -rf ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
+tar xvf ${DOWNLOADDIR}/xbmc-22.0a1-Piers.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/patches/0001-kodi-fix-build-error-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/patches/0001-fix-xbmc-Settings-undefine-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/patches/0001-change-font-setting-from-Default-to-Arial.patch 
 	 
 	export PATH=${CROSSTOOLS_DIR}/jdk17-bootstrap/bin:${PATH}
 	sed -i "/DSPDLOG_FMT_EXTERNAL/s@=ON@=OFF@g" cmake/modules/FindSpdlog.cmake
 	sed -i "/configure/s@configure@& --host=${CROSS_TARGET}@g" cmake/modules/FindUdfread.cmake
 	sed -i "s@resource.language.en_gb@resource.language.zh_cn@g" system/settings/settings.xml
+
+	sed -i "s@COMMAND JsonSchemaBuilder::JsonSchemaBuilder @COMMAND qemu-${ARCH_NAME} ${PWD}/cross-build/build/bin/JsonSchemaBuilder @g" xbmc/interfaces/json-rpc/schema/CMakeLists.txt
         mkdir cross-build
         pushd cross-build
-                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-		CXXFLAGS="${CXXFLAGS} -DTIXML_USE_STL" CFLAGS="${CFLAGS} -DTIXML_USE_STL" \
-                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
-                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
-                      -DCMAKE_INSTALL_PREFIX=/usr \
-                      -DBUILD_SHARED_LIBS=ON \
-		      -DAPP_RENDER_SYSTEM=gl -DHOST_CAN_EXECUTE_TARGET=ON \
-		      -DENABLE_INTERNAL_FMT=ON \
-                      -Wno-dev ..
-
+		mkdir -p build/download
 		cp ${RESOURCEDIR}/files/libdvdcss-1.4.3-Next-Nexus-Alpha2-2.tar.gz build/download/
 		cp ${RESOURCEDIR}/files/libdvdread-6.1.3-Next-Nexus-Alpha2-2.tar.gz build/download/
 		cp ${RESOURCEDIR}/files/libdvdnav-6.1.1-Next-Nexus-Alpha2-2.tar.gz build/download/
@@ -38,30 +30,35 @@ pushd ${BUILD_DIRECTORY}/xbmc-21.2-Omega
 		mv tarballs.listfile_dir/* build/download/
 		rmdir tarballs.listfile_dir
 
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+		CXXFLAGS="${CXXFLAGS} -DTIXML_USE_STL" CFLAGS="${CFLAGS} -DTIXML_USE_STL" \
+		LDFLAGS="${LDFLAGS} -Wl,-rpath-link=${SYSROOT_DIR}/usr/lib64/samba" \
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+		      -DWAYLANDPP_SCANNER=${HOST_TOOLS_DIR}/bin/wayland-scanner++ \
+                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
+                      -DCMAKE_INSTALL_PREFIX=/usr \
+                      -DBUILD_SHARED_LIBS=ON \
+		      -DAPP_RENDER_SYSTEM=gl -DHOST_CAN_EXECUTE_TARGET=ON \
+		      -DENABLE_INTERNAL_FMT=ON \
+                      -Wno-dev ..
 
-		make TexturePacker/fast
-		mv build/texturepacker/TexturePacker{,.orig}
+		make buildtexturepacker/fast
+		mv build/bin/TexturePacker{,.orig}
 		echo "#!/bin/bash
- qemu-loongarch64 ${PWD}/build/texturepacker/TexturePacker.orig \"\$@\"" > build/texturepacker/TexturePacker
-		chmod +x build/texturepacker/TexturePacker
+ qemu-loongarch64 ${PWD}/build/bin/TexturePacker.orig \"\$@\"" > build/bin/TexturePacker
+		chmod +x build/bin/TexturePacker
 
-                make CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" JsonSchemaBuilder
-                mv build/bin/JsonSchemaBuilder{,.orig}
-                echo "#!/bin/bash
- qemu-loongarch64 ${PWD}/build/bin/JsonSchemaBuilder.orig \"\$@\"" > build/bin/JsonSchemaBuilder
-                chmod +x build/bin/JsonSchemaBuilder
+                make CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" build-JsonSchemaBuilder
 
 		make -j${JOBS} CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"
 
-		rm build/texturepacker/TexturePacker
-		mv build/texturepacker/TexturePacker{.orig,}
-		rm build/bin/JsonSchemaBuilder
-		mv build/bin/JsonSchemaBuilder{.orig,}
+		rm build/bin/TexturePacker
+		mv build/bin/TexturePacker{.orig,}
 		make DESTDIR=${SYSROOT_DIR} install
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xbmc-21.2-Omega
+rm -rf ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
 
 rm ${SYSROOT_DIR}/usr/share/wayland-sessions/kodi-gbm.desktop
 rm ${SYSROOT_DIR}/usr/share/xsessions/kodi.desktop

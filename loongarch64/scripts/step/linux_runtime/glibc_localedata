@@ -4,22 +4,23 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=glibc_localedata
-export PACKAGE_VERSION=2.41
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glibc_localedata/2.41/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.41
-tar xvf ${DOWNLOADDIR}/glibc-2.41.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.41
-	patch -Np1 -i ${SYSDIR}/files/linux_runtime/glibc_localedata/2.41/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
+export PACKAGE_VERSION=2.42
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glibc_localedata/2.42/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.42
+tar xvf ${DOWNLOADDIR}/glibc-2.42.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.42
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/glibc_localedata/2.42/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
 	 
         mkdir -p build-locale
         pushd build-locale
 		export LDFLAGS=""
 		export CFLAGS=""
-		CC="/bin/gcc" CXX="/bin/g++" \
+		CC="gcc" CXX="g++" \
                 ../configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
                          --enable-stack-protector=strong --enable-add-ons \
                          --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF}
                 make -j${JOBS}
+		patchelf --remove-rpath elf/ld.so
                 make -j${JOBS} DESTDIR=${LINUX_SYSROOT_DIR} localedata/install-locales
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.41
+rm -rf ${BUILD_DIRECTORY}/glibc-2.42

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-binutils
-export PACKAGE_VERSION=2.44
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.44/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.44
-tar xvf ${DOWNLOADDIR}/binutils-2.44.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.44
+export PACKAGE_VERSION=2.45
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.45/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.45
+tar xvf ${DOWNLOADDIR}/binutils-2.45.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.45
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -15,7 +15,8 @@ pushd ${BUILD_DIRECTORY}/binutils-2.44
 
     TARGET_VENDOR=$(get_user_set_env vendor "unknown")
 
-    
+    patch -Np1 -i ${SYSDIR}/files/toolchain/cross-binutils/2.45/patches/8e885fece150ee97e5b0e78363e7fe9888ae9c29.diff 
+	 
 
     if [ "x$(get_user_set_env compat)" == "x1" ]; then
 	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"
@@ -66,4 +67,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.44
         make DESTDIR=${TOOLCHAIN_INSTALL_DIR}/binutils install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.44
+rm -rf ${BUILD_DIRECTORY}/binutils-2.45

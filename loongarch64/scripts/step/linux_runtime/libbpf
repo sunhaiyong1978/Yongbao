@@ -4,13 +4,13 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libbpf
-export PACKAGE_VERSION=1.6.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libbpf/1.6.0/
-rm -rf ${BUILD_DIRECTORY}/libbpf-1.6.0
-tar xvf ${DOWNLOADDIR}/libbpf-1.6.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libbpf-1.6.0
+export PACKAGE_VERSION=1.6.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libbpf/1.6.2/
+rm -rf ${BUILD_DIRECTORY}/libbpf-1.6.2
+tar xvf ${DOWNLOADDIR}/libbpf-1.6.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libbpf-1.6.2
 	
 	make -j${JOBS} CC="${LINUX_HOST}-gcc" -C src
 	make -C src DESTDIR=${LINUX_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libbpf-1.6.0
+rm -rf ${BUILD_DIRECTORY}/libbpf-1.6.2

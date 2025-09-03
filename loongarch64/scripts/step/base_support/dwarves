@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/dwarves-1.30
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
 		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-		      -D__LIB=lib64 -Wno-dev ..
+		      -D__LIB=lib${LIB_SUFF} -DCMAKE_INSTALL_LIBDIR=lib${LIB_SUFF} -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

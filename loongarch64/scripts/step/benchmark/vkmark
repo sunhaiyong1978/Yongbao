@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/benchmark/vkmark/git/
 rm -rf ${BUILD_DIRECTORY}/vkmark-git_git
 tar xvf ${DOWNLOADDIR}/vkmark-git_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/vkmark-git_git
-	
+	patch -Np1 -i ${SYSDIR}/files/benchmark/vkmark/git/patches/0001-vkmark-fix-vk.xml-path-for-cross-build.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		meson ${MESON_CONFIG}  \

@@ -1,0 +1,24 @@
+From c32168eb3258d3f9e8c8cdc2edf5b694f94b55fd Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 28 Aug 2025 06:34:47 +0000
+Subject: [PATCH] vkmark fix vk.xml path for cross build.
+
+---
+ src/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/meson.build b/src/meson.build
+index b0e8c4a..cbd9e21 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -1,6 +1,6 @@
+ prog_python = find_program('python3')
+ 
+-vulkan_prefix = meson.get_external_property('sys_root', '') + vulkan_dep.get_variable('prefix')
++vulkan_prefix = vulkan_dep.get_variable('prefix')
+ 
+ vk_xml = join_paths([
+     vulkan_prefix,
+-- 
+2.31.1
+

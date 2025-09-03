@@ -1,0 +1,61 @@
+From 0654e2a31333aa620e323a0b2b7270c354fed15c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 29 Aug 2025 09:29:09 +0000
+Subject: [PATCH 6/9] Chromium 139 build/config add loongarch64 support.
+
+---
+ build/config/linux/pkg-config.py | 1 +
+ build/config/posix/BUILD.gn      | 2 +-
+ build/config/sysroot.gni         | 4 +++-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/build/config/linux/pkg-config.py b/build/config/linux/pkg-config.py
+index f4d31de676..376420d915 100755
+--- a/build/config/linux/pkg-config.py
++++ b/build/config/linux/pkg-config.py
+@@ -59,6 +59,7 @@ def SetConfigPath(options):
+     sys.exit(1)
+ 
+   libdir = sysroot + '/usr/' + options.system_libdir + '/pkgconfig'
++  libdir += ':' + sysroot + '/usr/' + 'lib64' + '/pkgconfig'
+   libdir += ':' + sysroot + '/usr/share/pkgconfig'
+   os.environ['PKG_CONFIG_LIBDIR'] = libdir
+   return libdir
+diff --git a/build/config/posix/BUILD.gn b/build/config/posix/BUILD.gn
+index 9638527df0..9099be90a6 100644
+--- a/build/config/posix/BUILD.gn
++++ b/build/config/posix/BUILD.gn
+@@ -28,7 +28,7 @@ config("runtime_library") {
+   if (!is_apple && sysroot != "" && current_os != "zos") {
+     # Pass the sysroot to all C compiler variants, the assembler, and linker.
+     sysroot_flags = [ "--sysroot=" + rebase_path(sysroot, root_build_dir) ]
+-    if (is_linux || is_chromeos) {
++    if ((is_linux && current_cpu != "loong64") || is_chromeos) {
+       # This is here so that all files get recompiled after a sysroot roll and
+       # when turning the sysroot on or off. (defines are passed via the command
+       # line, and build system rebuilds things when their commandline
+diff --git a/build/config/sysroot.gni b/build/config/sysroot.gni
+index e3a5732823..d4d2edf55e 100644
+--- a/build/config/sysroot.gni
++++ b/build/config/sysroot.gni
+@@ -22,7 +22,7 @@ declare_args() {
+   use_sysroot =
+       current_cpu == "x86" || current_cpu == "x64" || current_cpu == "arm" ||
+       current_cpu == "arm64" || current_cpu == "mipsel" ||
+-      current_cpu == "mips64el" || current_cpu == "riscv64"
++      current_cpu == "mips64el" || current_cpu == "riscv64" || current_cpu == "loong64"
+ }
+ 
+ if (sysroot == "") {
+@@ -51,6 +51,8 @@ if (sysroot == "") {
+       sysroot = "$target_sysroot_dir/debian_bullseye_arm64-sysroot"
+     } else if (current_cpu == "riscv64") {
+       sysroot = "$target_sysroot_dir/debian_trixie_riscv64-sysroot"
++   } else if (current_cpu == "loong64") {
++      sysroot = "$target_sysroot_dir/loongarch64-sysroot"
+     } else {
+       assert(false, "No linux sysroot for cpu: $target_cpu")
+     }
+-- 
+2.31.1
+

@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/java_runtime/jdk17/17u/
 rm -rf ${BUILD_DIRECTORY}/jdk17-17u_git
 tar xvf ${DOWNLOADDIR}/jdk17-17u_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/jdk17-17u_git
+    patch -Np1 -i ${SYSDIR}/files/java_runtime/jdk17/17u/patches/4241313127be05704eeebcc6454120742cc93753.diff 
+	 
     sed -i "s@(defined LOONGARCH)@(defined LOONGARCH64)@g" src/hotspot/os/linux/os_linux.cpp
     LDFLAGS="" CC="${CROSS_TARGET}-gcc" \
     sh ./configure --prefix=/usr --host=${CROSS_TARGET} \

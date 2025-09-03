@@ -9,7 +9,8 @@ rm -rf ${BUILD_DIRECTORY}/cups-2.4.12
 tar xvf ${DOWNLOADDIR}/cups-2.4.12-source.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/cups-2.4.12
     sed -i 's#@CUPS_HTMLVIEW@#firefox#' desktop/cups.desktop.in
-    ./configure ${COMMON_CONFIG} --with-rcdir=/tmp/cupsinit   \
+    ./configure ${COMMON_CONFIG} --with-rcdir=/tmp/cupsinit \
+	    --enable-debug \
             --with-system-groups=lpadmin --with-systemd=/usr/lib/systemd/system
     eval ${MAKE_AND_INSTALL}
     rm -rf ${SYSROOT_DIR}/tmp/cupsinit

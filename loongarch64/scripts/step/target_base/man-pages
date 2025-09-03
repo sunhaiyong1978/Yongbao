@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=man-pages
-export PACKAGE_VERSION=6.14
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/man-pages/6.14/
-rm -rf ${BUILD_DIRECTORY}/man-pages-6.14
-tar xvf ${DOWNLOADDIR}/man-pages-6.14.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/man-pages-6.14
+export PACKAGE_VERSION=6.15
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/man-pages/6.15/
+rm -rf ${BUILD_DIRECTORY}/man-pages-6.15
+tar xvf ${DOWNLOADDIR}/man-pages-6.15.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/man-pages-6.15
 	make prefix=${PREFIX} DESTDIR=${SYSROOT_DIR} install -R
 popd 
-rm -rf ${BUILD_DIRECTORY}/man-pages-6.14
+rm -rf ${BUILD_DIRECTORY}/man-pages-6.15

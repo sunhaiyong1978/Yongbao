@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=OpenCL-Headers
-export PACKAGE_VERSION=2025.06.13
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/OpenCL-Headers/2025.06.13/
-rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2025.06.13
-tar xvf ${DOWNLOADDIR}/OpenCL-Headers-2025.06.13.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OpenCL-Headers-2025.06.13
+export PACKAGE_VERSION=2025.07.22
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/OpenCL-Headers/2025.07.22/
+rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2025.07.22
+tar xvf ${DOWNLOADDIR}/OpenCL-Headers-2025.07.22.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenCL-Headers-2025.07.22
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/OpenCL-Headers-2025.06.13
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2025.06.13
+rm -rf ${BUILD_DIRECTORY}/OpenCL-Headers-2025.07.22

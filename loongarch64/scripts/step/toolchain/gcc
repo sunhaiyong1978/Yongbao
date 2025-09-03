@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=gcc
-export PACKAGE_VERSION=15.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc/15.1.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0
-tar xvf ${DOWNLOADDIR}/gcc-15.1.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-15.1.0
+export PACKAGE_VERSION=15.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/gcc/15.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0
+tar xvf ${DOWNLOADDIR}/gcc-15.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-15.2.0
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
         ARCH_ABI=$(archname_to_archabi "$(get_user_set_env host ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -55,8 +55,7 @@ pushd ${BUILD_DIRECTORY}/gcc-15.1.0
                      --disable-libsanitizer --disable-libquadmath --disable-threads \
                      --disable-target-zlib --with-system-zlib --enable-checking=release \
                      --enable-default-pie \
-		     --enable-default-ssp \
-		     --disable-multilib --disable-libssp \
+		     --disable-multilib \
                      ${WITH_ABI} \
                      --enable-languages=c,c++
 	case "${CROSS_TARGET}" in
@@ -72,4 +71,4 @@ pushd ${BUILD_DIRECTORY}/gcc-15.1.0
 	ln -sf ${COMPAT_TARGET}-gcc ${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin/${COMPAT_TARGET}-cc
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-15.1.0
+rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0

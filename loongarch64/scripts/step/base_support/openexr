@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=openexr
-export PACKAGE_VERSION=3.3.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/openexr/3.3.4/
-rm -rf ${BUILD_DIRECTORY}/openexr-3.3.4
-tar xvf ${DOWNLOADDIR}/openexr-3.3.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/openexr-3.3.4
+export PACKAGE_VERSION=3.3.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/openexr/3.3.5/
+rm -rf ${BUILD_DIRECTORY}/openexr-3.3.5
+tar xvf ${DOWNLOADDIR}/openexr-3.3.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/openexr-3.3.5
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/openexr-3.3.4
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/openexr-3.3.4
+rm -rf ${BUILD_DIRECTORY}/openexr-3.3.5
