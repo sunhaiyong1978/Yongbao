@@ -52,6 +52,7 @@
 %step/cross-tools/llvm-project_git|g_opt;llvm_git
 %step/cross-tools/SPIRV-LLVM-Translator|f_opt;!llvm_git
 %step/cross-tools/SPIRV-LLVM-Translator_git|f_opt;llvm_git
+%step/host-tools/patchelf|
 %step/host-tools/NULL|
 %step/cross-tools/NULL|
 %step/bootstrap/rust-bootstrap|g_opt
@@ -160,7 +161,7 @@
 %step/host-tools/nghttp2|f_opt
 %step/host-tools/curl|f_opt
 %step/host-tools/libxmlb|f_opt
-%step/host-tools/appstream|f_opt;f_host-tools_appstream_bad
+%step/host-tools/appstream|f_opt
 %step/host-tools/rdfind|
 %step/host-tools/chai|
 %step/host-tools/pugixml|
@@ -206,6 +207,8 @@
 %step/host-tools/texinfo|
 %step/host-tools/lzip|
 %step/host-tools/Locale-gettext|
+%step/host-tools/distlib|
+%step/host-tools/scikit-build-core|
 %step/host-tools/NULL|
 %step/cross-tools/NULL|
 %step/cross-tools/grub|
@@ -1318,14 +1321,16 @@
 %step/KDE6/NULL|g_opt+KDE6
 %step/KDE6/create_files|g_opt+KDE6
 %step/KDE6/final_run|g_opt+KDE6
-%step/bootstrap/jdk-latest-bootstrap|java
+%step/bootstrap/jdk24-bootstrap|java
 %step/java_runtime/jdk|java
+%step/bootstrap/jdk20-bootstrap|java;jdk21
+%step/java_runtime/jdk21|java;jdk21
 %step/bootstrap/jdk17-bootstrap|java;jdk17,kodi
 %step/java_runtime/jdk17|java;jdk17+kodi
 %step/bootstrap/jdk11-bootstrap|java;jdk11
 %step/java_runtime/jdk11|java;jdk11
 %step/bootstrap/jdk8-bootstrap|java;jdk8
-%step/java_runtime/jdk8|java;jdk8;f_java_runtime_jdk8_bad
+%step/java_runtime/jdk8|java;jdk8
 %step/java_runtime/set-default-java|java;none_status
 %step/java_runtime/dist_sysroot|java
 %step/game_emu/overlay_temp_fix_run|game
@@ -1437,6 +1442,7 @@
 %step/desktop-app/NULL|g_opt+desk-app
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/yaml-cpp|g_opt+desk-app;design
+%step/desktop-app/scikit-build-core|g_opt+desk-app;design
 %step/desktop-app/pybind11-python|g_opt+desk-app;design
 %step/desktop-app/pybind11|g_opt+desk-app;design
 %step/desktop-app/qbs|g_opt+desk-app;design
@@ -1579,6 +1585,7 @@
 %step/mingw_sysroot/Windows-QEMU|mingw_sysroot;%target=?mingw64ucrt
 %step/mingw_sysroot/NULL|f_opt
 %step/cross-toolchains/NULL|f_opt
+%step/linux_runtime/NULL|f_opt
 %step/linux_runtime/make_directory|f_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime;%PARENT=sysroot
 %step/cross-toolchains/NULL|f_opt
 %step/cross-toolchains/linux-binutils|g_opt;linux_runtime,chromium,wine;%target=?x86_64
@@ -1793,10 +1800,10 @@
 %step/linux_runtime/libseccomp|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libunwind|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libbpf|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/fmt|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/MangoHud|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/pciutils|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/pipewire|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
-%step/linux_runtime/fmt|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/json|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/Catch2|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/llvm_runtimes|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
@@ -2018,10 +2025,10 @@
 %step/linux_runtime/libseccomp|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libunwind|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libbpf|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/fmt|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/MangoHud|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/pciutils|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/pipewire|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
-%step/linux_runtime/fmt|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/json|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/Catch2|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/llvm_runtimes|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
@@ -2058,6 +2065,7 @@
 %step/simulate/NULL|emu
 %step/simulate/augeas|emu
 %step/simulate/hivex|emu
+%step/simulate/supermin|emu;f_simulate_supermin_bad
 %step/simulate/libguestfs|emu;f_simulate_libguestfs_bad
 %step/simulate/NULL|emu
 %step/simulate/latx|emu
@@ -2087,7 +2095,6 @@
 %step/toolchain/compat_glibc_x86_64|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/musl|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/mingw-w64|g_opt+host-dist;%compat=?0;%host=?;%vendor=
-%step/toolchain/libstdc++|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/libxcrypt|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/gcc-libc|g_opt+host-dist;%compat=?0;%host=?;%vendor=;!gcc_git
 %step/toolchain/gcc_git-libc|g_opt+host-dist;%compat=?0;%host=?;%vendor=;gcc_git
@@ -2109,7 +2116,6 @@
 %step/toolchain/compat_glibc_x86_64|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/musl|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/mingw-w64|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
-%step/toolchain/libstdc++|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/libxcrypt|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/gcc-libc|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?;!gcc_git
 %step/toolchain/gcc_git-libc|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?;gcc_git
