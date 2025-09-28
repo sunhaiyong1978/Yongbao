@@ -88,7 +88,8 @@ else
 fi
 
 # PKG_UPDATE_MODE=${6}
-PKG_COMMIT=$(echo ${PKG_GIT_INFO} | awk -F'|' '{ print $3}')
+PKG_UPDATE_MODE=""
+PKG_UPDATE_MODE=$(echo ${PKG_GIT_INFO} | awk -F'|' '{ print $3}')
 if [ "x${PKG_UPDATE_MODE}" == "x" ]; then
 	PKG_UPDATE_MODE="手工"
 fi
@@ -117,6 +118,7 @@ case "x${PKG_UPDATE_MODE}" in
 		exit 0
 		;;
 	x每次 | xEverytime)
+		RET_VALUE="1"
 		;;
 	*)
 		if [ -f ${DEST_DIR}/${PKG_NAME}${PKG_VERSION}_git.commit ]; then
