@@ -6,14 +6,18 @@ declare RELEASE_BUILD_MODE=0
 declare NEW_BASE_DIR="${PWD}"
 
 
+declare DO_STRIP=TRUE
 declare FORCE_COPY=FALSE
 declare OVERLAY_NAME=""
 declare WORLD_PARM=""
 
-while getopts 'fwh' OPT; do
+while getopts 'fnwh' OPT; do
     case $OPT in
         f)
             FORCE_COPY=TRUE
+            ;;
+        n)
+            DO_STRIP=FALSE
             ;;
 	w)
 	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
@@ -37,6 +41,7 @@ while getopts 'fwh' OPT; do
             echo "选项："
             echo "    -h: 显示当前帮助信息。"
             echo "    -f: 将原有目录进行重命名，并重新进行目标系统的调试符清理工作。"
+            echo "    -n: 不进行调试符清理工作。"
 	    echo "    -w: 强制在主线环境中进行清理，不指定该参数将使用 current_branch 指定的分支环境中进行清理，若不存在 current_branch 文件则默认对主线环境进行清理。"
             exit 0
             ;;
@@ -75,7 +80,8 @@ if [ -d ${NEW_BASE_DIR}/workbase/overlaydir/ ]; then
 		if [ "x${FORCE_COPY}" == "xTRUE" ]; then
 			mv ${NEW_BASE_DIR}/workbase/overlaydir_strip{,.$(date +%Y%m%d%H%M%S)}
 		else
-			echo "已发现存在 ${NEW_BASE_DIR}/workbase/overlaydir_strip/ 目录，程序将继续处理该目录中的内容，如果需要更新处理目录的内容，请使用-f参数重新执行命令。"
+# 			echo "已发现存在 ${NEW_BASE_DIR}/workbase/overlaydir_strip/ 目录，程序将继续处理该目录中的内容，如果需要更新处理目录的内容，请使用-f参数重新执行命令。"
+			echo "已发现存在 ${NEW_BASE_DIR}/workbase/overlaydir_strip/ 目录，程序将不再继续其中的目录，如果需要更新处理目录的内容，请使用-f参数重新执行命令，或者指定其中具体要处理的目录。"
 			exit 2
 		fi
 	fi
@@ -120,9 +126,17 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 			fi
 #			STEP_NAME=$(grep -r "overlay_dir=$i" ${NEW_BASE_DIR}/env/*/overlay.set | head -n1 | awk -F'/' '{ print $2 }')
 #			tools/strip_step.sh ${STEP_NAME} ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i || true
-			tools/strip_step.sh ${WORLD_PARM} ${i} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} || true
-
-			tools/split_step.sh ${WORLD_PARM} ${i} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} || true
+			if [ "x${DO_STRIP}" == "xTRUE" ]; then
+				echo -n "开始进行去除调试信息的步骤..."
+				tools/strip_step.sh ${WORLD_PARM} ${i} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} > ${NEW_TARGET_SYSDIR}/logs/strip/strip_${i}.log 2>&1 || true
+				echo " 过程记录在 ${NEW_TARGET_SYSDIR}/logs/strip/strip_${i}.log"
+			fi
+			echo -n "开始进行目标系统运行准备处理步骤..."
+			tools/final_step.sh ${WORLD_PARM} ${i} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} > ${NEW_TARGET_SYSDIR}/logs/final_fix/final_fix_${i}.log 2>&1 || true
+			echo " 过程记录在 ${NEW_TARGET_SYSDIR}/logs/final_fix/final_fix_${i}.log"
+			echo -n "开始进行拆分组件的步骤..."
+			tools/split_step.sh ${WORLD_PARM} ${i} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} > ${NEW_TARGET_SYSDIR}/logs/split/split_${i}.log 2>&1 || true
+			echo " 过程记录在 ${NEW_TARGET_SYSDIR}/logs/split/split_${i}.log"
 		else
 			echo "${NEW_BASE_DIR}/workbase/overlaydir 中没有发现 $i${RELEASE_SUFF} 目录，跳过。"
 		fi
@@ -152,8 +166,17 @@ else
 				cp -a ${NEW_BASE_DIR}/workbase/overlaydir{,_strip}/${OVERLAY_NAME}${RELEASE_SUFF}
 			fi
 		fi
-		tools/strip_step.sh ${WORLD_PARM} ${OVERLAY_NAME} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} || true
-		tools/split_step.sh ${WORLD_PARM} ${OVERLAY_NAME} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} || true
+		if [ "x${DO_STRIP}" == "xTRUE" ]; then
+			echo -n "开始进行去除调试信息的步骤..."
+			tools/strip_step.sh ${WORLD_PARM} ${OVERLAY_NAME} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} > ${NEW_TARGET_SYSDIR}/logs/strip/strip_${OVERLAY_NAME}${RELEASE_SUFF}.log 2>&1 || true
+			echo " 过程记录在 ${NEW_TARGET_SYSDIR}/logs/strip/strip_${OVERLAY_NAME}${RELEASE_SUFF}.log"
+		fi
+		echo -n "开始进行目标系统运行准备处理步骤..."
+		tools/final_step.sh ${WORLD_PARM} ${OVERLAY_NAME} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} > ${NEW_TARGET_SYSDIR}/logs/final_fix/final_fix_${OVERLAY_NAME}${RELEASE_SUFF}.log 2>&1 || true
+		echo " 过程记录在 ${NEW_TARGET_SYSDIR}/logs/final_fix/final_fix_${OVERLAY_NAME}${RELEASE_SUFF}.log"
+		echo -n "开始进行拆分组件的步骤..."
+		tools/split_step.sh ${WORLD_PARM} ${OVERLAY_NAME} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} > ${NEW_TARGET_SYSDIR}/logs/split/split_${OVERLAY_NAME}${RELEASE_SUFF}.log 2>&1 || true
+		echo " 过程记录在 ${NEW_TARGET_SYSDIR}/logs/split/split_${OVERLAY_NAME}${RELEASE_SUFF}.log"
 	else
 		echo "${NEW_BASE_DIR}/workbase/overlaydir 中没有发现 ${OVERLAY_NAME}${RELEASE_SUFF} 目录，跳过。"
 	fi
