@@ -41,6 +41,7 @@ declare SINGLE_PACKAGE=FALSE
 declare VERSION_INDEX=""
 declare WORLD_PARM=""
 declare AUTO_DOWNLOAD_OR_COPY=0
+declare SAVE_PROXY=""
 
 while getopts 'gfuri:pswav:h' OPT; do
     case $OPT in
@@ -58,6 +59,7 @@ while getopts 'gfuri:pswav:h' OPT; do
 	    ;;
 	p)
 	    PROXY_MODE=1
+	    SAVE_PROXY=${https_proxy}
 	    ;;
 	i)
 	    INDEX_FILE=$OPTARG
@@ -116,15 +118,53 @@ function set_proxy
 	if [ -f proxy.set ]; then 
 		PROXY_SERVER=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }')
 	fi
-        if [ "x${PROXY_SERVER}" == "x" ]; then
-                        unset https_proxy
-                        unset http_proxy
+#         if [ "x${PROXY_SERVER}" == "x" ]; then
+#                         unset https_proxy
+#                         unset http_proxy
+#         else
+#                         export https_proxy=${PROXY_SERVER}
+#                         export http_proxy=${PROXY_SERVER}
+#         fi
+
+	if [ "x${PROXY_SERVER}" == "x" ]; then
+		if [ "x${SAVE_PROXY}" == "x" ]; then
+#                       echo "取消代理"
+			unset https_proxy
+                else
+# 			echo "恢复代理: ${SAVE_PROXY}"
+			export https_proxy=${SAVE_PROXY}
+                fi
         else
-                        export https_proxy=${PROXY_SERVER}
-                        export http_proxy=${PROXY_SERVER}
+# 		echo "设置代理：https_proxy=${PROXY_SERVER}"
+		export https_proxy=${PROXY_SERVER}
         fi
 }
 
+function replace_url
+{
+	declare DOMAIN=$(echo ${1} | grep -o ".\{0,\}//[^/]\{0,\}" | awk -F'/' '{print $NF}')
+	declare REPLACE_URL=""
+	if [ -f replace.url ]; then
+		REPLACE_URL=$(cat replace.url | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }')
+		if [ "x${REPLACE_URL}" == "x" ]; then
+			REPLACE_URL=$(cat replace.url | grep -v "^#" | grep "^* " | awk -F' ' '{ print $2 }')
+		fi
+	fi
+
+	if [ "x${REPLACE_URL}" == "x" ]; then
+		echo "${1}"
+	else
+		case "${REPLACE_URL%%/*}" in
+			https: | http: | ftps: | ftp:)
+				echo "${REPLACE_URL}${2}"
+				;;
+			*)
+				echo "${1}"
+				;;
+		esac
+			
+	fi
+}
 
 function get_pkg_old_version
 {
@@ -236,10 +276,16 @@ do
 						fi
 						echo "下载：$i 所需源码包到${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}..."
 						# wget -c ${URL} -O ${BASE_DIR}/downloads/sources/files/${URL##*/}
-						wget -c ${URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+						REPLACE_REAL_URL=$(replace_url "${URL}" "${SAVE_FILENAME}")
+						wget -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
 						if [ "x$?" != "x0" ]; then
-							echo "${URL} 下载失败！"
-							echo "下载 ${URL} 失败！" >> logs/download_fail.log
+							if [ "${REPLACE_REAL_URL}" == "${URL}" ]; then
+								echo "${URL} 下载失败！"
+								echo "下载 ${URL} 失败！" >> logs/download_fail.log
+							else
+								echo "${URL} -> ${REPLACE_REAL_URL} 下载失败！"
+								echo "下载 ${URL} ( 实际下载地址：${REPLACE_REAL_URL} ) 失败！" >> logs/download_fail.log
+							fi
 							((FAIL_COUNT++))
 							continue;
 						fi
@@ -401,7 +447,7 @@ ${i} 没有下载路径，请检查。"
 	fi
 
 
-	if [ -d ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ ] && [ "x$(find ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -name *.url)" != "x" ]; then
+	if [ -d ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ ] && [ "x$(find ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -name "*.url")" != "x" ]; then
 		echo "发现${i}存在需要下载的资源文件……"
 		for url_i in $(ls ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/*.url)
 		do
@@ -478,10 +524,17 @@ ${i} 没有下载路径，请检查。"
 									if [ -f ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME} ]; then
 										rm -f ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
 									fi
-									wget -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
+# 									wget -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
+									REPLACE_REAL_RESOURCES_URL=$(replace_url "${RESOURCES_URL}" "${RESOURCES_FILENAME}")
+									wget -c ${REPLACE_REAL_RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
 									if [ "x$?" != "x0" ]; then
-										echo "${RESOURCES_URL} 下载失败！"
-										echo "下载${i}资源文件 ${RESOURCES_URL} 失败！" >> logs/download_fail.log
+										if [ "${REPLACE_REAL_RESOURCES_URL}" == "${RESOURCES_URL}" ]; then
+											echo "${RESOURCES_URL} 下载失败！"
+											echo "下载 ${i} 的资源文件 ${RESOURCES_URL} 失败！" >> logs/download_fail.log
+										else
+											echo "${RESOURCES_URL} -> ${REPLACE_REAL_RESOURCES_URL} 下载失败！"
+											echo "下载 ${i} 的资源文件 ${RESOURCES_URL} ( 实际下载地址：${REPLACE_REAL_RESOURCES_URL} ) 失败！" >> logs/download_fail.log
+										fi
 										((FAIL_COUNT++))
 										continue;
 									fi
@@ -502,7 +555,7 @@ ${i} 没有下载路径，请检查。"
 		echo "已完成${i}需要下载的资源文件。"
 	fi
 
-	if [ -d ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ ] && [ "x$(find ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -name *.listfile)" != "x" ]; then
+	if [ -d ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ ] && [ "x$(find ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -name "*.listfile")" != "x" ]; then
 		if [ "x${GIT_ONLY}" == "xFALSE" ]; then
 			echo "发现${i}存在需要下载的资源组文件……"
 			for listfile_i in $(ls ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/*.listfile)
@@ -545,10 +598,17 @@ ${i} 没有下载路径，请检查。"
 								echo "从${LIST_URL}下载${LIST_FILENAME}中的文件..."
 								mkdir -p ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/{files,hash}/
 								mkdir -p ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir
-								wget -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
+# 								wget -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
+								REPLACE_REAL_LIST_URL=$(replace_url "${LIST_URL}" "")
+								wget -c -B ${REPLACE_REAL_LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
 								if [ "x$?" != "x0" ]; then
-									echo "从 ${LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！"
-									echo "${i}从${LIST_URL}下载资源组文件 ${LIST_FILENAME} 失败！" >> logs/download_fail.log
+									if [ "${REPLACE_REAL_LIST_URL}" == "${LIST_URL}" ]; then
+										echo "从 ${LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！"
+										echo "${i} 从 ${LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！" >> logs/download_fail.log
+									else
+										echo "从 ${LIST_URL} -> ${REPLACE_REAL_LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！"
+										echo "${i} 从 ${LIST_URL} ( 实际下载地址：${REPLACE_REAL_LIST_URL} ) 下载资源组文件 ${LIST_FILENAME} 失败！" >> logs/download_fail.log
+									fi
 									((FAIL_COUNT++))
 									continue;
 								fi
