@@ -65,7 +65,8 @@ fi
 SPLIT_DIR="${2}"
 
 echo "拆分 ${SPLIT_DIR} 目录..."
-echo "拆分 ${SPLIT_DIR} 目录..." > ${NEW_BASE_DIR}/logs/split_${SPLIT_STEP_NAME}.log
+mkdir -p ${NEW_TARGET_SYSDIR}/logs/split/
+echo "拆分 ${SPLIT_DIR} 目录..." > ${NEW_TARGET_SYSDIR}/logs/split/split_${SPLIT_STEP_NAME}.log
 
 if [ -d ${SPLIT_DIR} ]; then
 	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${SPLIT_STEP_NAME}.split ]; then
