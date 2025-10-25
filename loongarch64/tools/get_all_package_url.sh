@@ -42,6 +42,7 @@ declare VERSION_INDEX=""
 declare WORLD_PARM=""
 declare AUTO_DOWNLOAD_OR_COPY=0
 declare SAVE_PROXY=""
+declare EMU_BROWSER=""
 
 while getopts 'gfuri:pswav:h' OPT; do
     case $OPT in
@@ -116,7 +117,15 @@ function set_proxy
         declare DOMAIN=$(echo ${1} | grep -o ".\{0,\}//[^/]\{0,\}" | awk -F'/' '{print $NF}')
         declare PROXY_SERVER=""
 	if [ -f proxy.set ]; then 
-		PROXY_SERVER=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }')
+# 		PROXY_SERVER=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }')
+        	PROXY_SERVER=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }' | awk -F'|' '{ print $1 }')
+        	PROXY_RETRY=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }' | awk -F'|' '{ print $2 }')
+        	PROXY_EMU=$(cat proxy.set | grep -v "^#" | grep "${DOMAIN} " | awk -F' ' '{ print $2 }' | awk -F'|' '{ print $3 }')
+	fi
+	if [ "x${PROXY_EMU}" == "x" ]; then
+		EMU_BROWSER=""
+	else
+		EMU_BROWSER="${PROXY_EMU}"
 	fi
 #         if [ "x${PROXY_SERVER}" == "x" ]; then
 #                         unset https_proxy
@@ -243,6 +252,7 @@ do
 		URL="$(replace_arch_parm "$(cat ${SOURCES_DIR}/url/${i}.${VERSION_INDEX} | awk -F'|' '{ print $2 }')" )"
 		SAVE_FILENAME="$(replace_arch_parm "$(cat ${SOURCES_DIR}/url/${i}.${VERSION_INDEX} | awk -F'|' '{ print $3 }')" )"
 	fi
+	EMU_BROWSER=""
 
 	if [ "x${SAVE_FILENAME}" == "x" ]; then
 		SAVE_FILENAME="${URL##*/}"
@@ -277,17 +287,33 @@ do
 						echo "下载：$i 所需源码包到${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}..."
 						# wget -c ${URL} -O ${BASE_DIR}/downloads/sources/files/${URL##*/}
 						REPLACE_REAL_URL=$(replace_url "${URL}" "${SAVE_FILENAME}")
-						wget -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+# 						echo "EMU_BROWSER = ${EMU_BROWSER}"
+						if [ "x${EMU_BROWSER}" == "x" ]; then
+							wget -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+						else
+							wget -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
+						fi
 						if [ "x$?" != "x0" ]; then
 							if [ "${REPLACE_REAL_URL}" == "${URL}" ]; then
 								echo "${URL} 下载失败！"
 								echo "下载 ${URL} 失败！" >> logs/download_fail.log
+								((FAIL_COUNT++))
+								continue;
 							else
-								echo "${URL} -> ${REPLACE_REAL_URL} 下载失败！"
-								echo "下载 ${URL} ( 实际下载地址：${REPLACE_REAL_URL} ) 失败！" >> logs/download_fail.log
+								if [ "x${EMU_BROWSER}" == "x" ]; then
+									wget -c ${URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+								else
+									wget -c ${URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
+								fi
+								if [ "x$?" != "x0" ]; then
+									echo "${URL} 与 ${REPLACE_REAL_URL} 均下载失败！"
+									echo "下载 ${URL} ( 提换下载地址：${REPLACE_REAL_URL} ) 均下载失败！" >> logs/download_fail.log
+									((FAIL_COUNT++))
+									continue;
+								fi
 							fi
-							((FAIL_COUNT++))
-							continue;
+# 							((FAIL_COUNT++))
+# 							continue;
 						fi
 						md5sum ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} | awk -F' ' '{print $1}' > ${NEW_BASE_DIR}/downloads/sources/hash/${SAVE_FILENAME}.hash
 					fi
@@ -531,12 +557,19 @@ ${i} 没有下载路径，请检查。"
 										if [ "${REPLACE_REAL_RESOURCES_URL}" == "${RESOURCES_URL}" ]; then
 											echo "${RESOURCES_URL} 下载失败！"
 											echo "下载 ${i} 的资源文件 ${RESOURCES_URL} 失败！" >> logs/download_fail.log
+											((FAIL_COUNT++))
+											continue;
 										else
-											echo "${RESOURCES_URL} -> ${REPLACE_REAL_RESOURCES_URL} 下载失败！"
-											echo "下载 ${i} 的资源文件 ${RESOURCES_URL} ( 实际下载地址：${REPLACE_REAL_RESOURCES_URL} ) 失败！" >> logs/download_fail.log
+											wget -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
+											if [ "x$?" != "x0" ]; then
+												echo "${RESOURCES_URL} 与 ${REPLACE_REAL_RESOURCES_URL} 均下载失败！"
+												echo "下载 ${i} 的资源文件 ${RESOURCES_URL} ( 提换下载地址：${REPLACE_REAL_RESOURCES_URL} ) 均下载失败！" >> logs/download_fail.log
+												((FAIL_COUNT++))
+												continue;
+											fi
 										fi
-										((FAIL_COUNT++))
-										continue;
+# 										((FAIL_COUNT++))
+# 										continue;
 									fi
 									md5sum ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME} | awk -F' ' '{print $1}' > ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/hash/${RESOURCES_FILENAME}.hash
 								fi
@@ -605,12 +638,19 @@ ${i} 没有下载路径，请检查。"
 									if [ "${REPLACE_REAL_LIST_URL}" == "${LIST_URL}" ]; then
 										echo "从 ${LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！"
 										echo "${i} 从 ${LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！" >> logs/download_fail.log
+										((FAIL_COUNT++))
+										continue;
 									else
-										echo "从 ${LIST_URL} -> ${REPLACE_REAL_LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！"
-										echo "${i} 从 ${LIST_URL} ( 实际下载地址：${REPLACE_REAL_LIST_URL} ) 下载资源组文件 ${LIST_FILENAME} 失败！" >> logs/download_fail.log
+										wget -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
+										if [ "x$?" != "x0" ]; then
+											echo "从 ${LIST_URL} 与 ${REPLACE_REAL_LIST_URL} 下载资源组文件 ${LIST_FILENAME} 均失败！"
+											echo "${i} 从 ${LIST_URL} ( 提换下载地址：${REPLACE_REAL_LIST_URL} ) 下载资源组文件 ${LIST_FILENAME} 均失败！" >> logs/download_fail.log
+											((FAIL_COUNT++))
+											continue;
+										fi
 									fi
-									((FAIL_COUNT++))
-									continue;
+# 									((FAIL_COUNT++))
+# 									continue;
 								fi
 								pushd ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/ > /dev/null
 									tar -czf ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz ${LIST_NAME}_dir

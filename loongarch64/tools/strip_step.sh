@@ -167,5 +167,5 @@ if [ -d ${STRIP_DIR} ]; then
 		popd > /dev/null
 	fi
 else
-	echo "没有找到 ${STRIP_DIR} 目录，请检查是否制定了正确的路径。"
+	echo "没有找到 ${STRIP_DIR} 目录，请检查是否指定了正确的路径。"
 fi

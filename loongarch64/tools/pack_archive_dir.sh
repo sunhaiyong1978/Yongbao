@@ -59,7 +59,7 @@ fi
 
 
 if [ "x${1}" == "x" ]; then
-	echo "没有制定需要打包的目录。"
+	echo "没有指定需要打包的目录。"
 	exit 1
 fi
 ARCHIVE_DIR="${1}"
@@ -138,5 +138,5 @@ if [ -d ${ARCHIVE_DIR} ]; then
 		
 	popd > /dev/null
 else
-	echo "没有找到 ${ARCHIVE_DIR} 目录，请检查是否制定了正确的路径。"
+	echo "没有找到 ${ARCHIVE_DIR} 目录，请检查是否指定了正确的路径。"
 fi

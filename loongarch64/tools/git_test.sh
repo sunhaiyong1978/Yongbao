@@ -193,7 +193,7 @@ else
 	fi
 #  	echo "cat ${DEST_DIR}/${PKG_NAME}${PKG_VERSION}_git.commit | awk -F'COMMIT=' '{ print $2 }'"
 # 	echo "${GET_GIT_COMMIT}"
-	if [ "x$(cat ${DEST_DIR}/${PKG_NAME}${PKG_VERSION}_git.commit | awk -F'COMMIT=' '{ print $2 }')" == "x${GET_GIT_COMMIT}" ]; then
+	if [ "x${GET_GIT_COMMIT}" == "x" ] || [ "x$(cat ${DEST_DIR}/${PKG_NAME}${PKG_VERSION}_git.commit | awk -F'COMMIT=' '{ print $2 }')" == "x${GET_GIT_COMMIT}" ]; then
 		echo "0"
 	else
 		echo "1"
