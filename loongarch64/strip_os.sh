@@ -91,6 +91,8 @@ else
 	exit 1
 fi
 
+mkdir -p ${NEW_TARGET_SYSDIR}/logs/{strip,split,final_fix}
+
 if [ "x${OVERLAY_NAME}" == "x" ]; then
 #	for i in $(cat ${NEW_BASE_DIR}/env/*/overlay.set | grep overlay_dir | awk -F'=' '{ print $2 }' | sort | uniq)
 	OVERLAY_DIR_LIST=$(find ${NEW_BASE_DIR}/workbase/overlaydir/ -maxdepth 1 -type f -name "*.dist" | awk -F'/' '{ print $NF }' | sed "s@\.dist\$@@g")
