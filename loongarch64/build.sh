@@ -179,7 +179,7 @@ while getopts 'fao:rgsde:xi:S:O:C:K:tpwch' OPT; do
 	    echo "    -p: 在构建过程中对需要下载软件包时使用proxy.set文件中的设置。"
 	    echo "    -w: 强制使用主线环境中的构建，不指定该参数将使用 current_branch 中指定的分支环境中进行构建，若不存在 current_branch 文件则默认使用主线环境构建。"
 	    echo "    -c: 构建过程按照上一次分析产生的步骤进行，单独使用该参数等同于使用 -i ${NEW_TARGET_SYSDIR}/step.index ，注意该参数不与 -o -r -g -i 参数共用。"
-	    echo "    -K <错误数>: 指定在构建过程中出现错误的步骤数上限，当达到该制定数时构建过程终止并现实构建错误步骤，若未达到制定错误步骤上限将继续构建后续步骤，在构建结束后打印存在错误的步骤列表。不指定该参数将按照默认的上限进行处理，默认上限为1，即遇到错误步骤即停止。"
+	    echo "    -K <错误数>: 指定在构建过程中出现错误的步骤数上限，当达到该指定数时构建过程终止并现实构建错误步骤，若未达到指定错误步骤上限将继续构建后续步骤，在构建结束后打印存在错误的步骤列表。不指定该参数将按照默认的上限进行处理，默认上限为1，即遇到错误步骤即停止。"
 	    echo "        错误数: 0，不设上限，表示无论多少错误数都不会停止构建过程，直到构建完成为止，构建结束后打印错误步骤。"
 	    echo "        错误数: 1，出现错误步骤即立刻停止构建过程，显示相关的信息。"
 	    echo "        错误数: 2以上，指定错误步骤的上限，达到该限制时将立刻停止构建过程，并显示所有错误步骤。"
@@ -220,11 +220,13 @@ SOURCE_STEP_FILE="${NEW_BASE_DIR}/step"
 export BUILD_PACKAGE_CHECK=${BUILD_PACKAGE_CHECK}
 
 if [ "x${USE_PREV_INDEX_FILE}" == "x1" ]; then
-	if [ -f ${NEW_TARGET_SYSDIR}/step.index ]; then
-		SET_STEP_FILE=${NEW_TARGET_SYSDIR}/step.index
-	else
-		echo "没有发现上次执行时保留下来的分析文件 ${NEW_TARGET_SYSDIR}/step.index，无法按照上次的步骤进行构建，请进行一次常规的构建分析后再使用 -c 参数。"
-		exit 126
+	if [ "x${SET_STEP_FILE##*.}" != "xindex" ]; then
+		if [ -f ${NEW_TARGET_SYSDIR}/step.index.temp ]; then
+			SET_STEP_FILE=${NEW_TARGET_SYSDIR}/step.index
+		else
+			echo "没有发现上次执行时保留下来的分析文件 ${NEW_TARGET_SYSDIR}/step.index，无法按照上次的步骤进行构建，请进行一次常规的构建分析后再使用 -c 参数。"
+			exit 126
+		fi
 	fi
 fi
 
@@ -1680,7 +1682,7 @@ function step_to_index
 		FORMAT_STRING=$(format_step_str "${STEP_PKG_STR}")
 		echo "指定了编译步骤：${FORMAT_STRING}"
 		if [ "x${FORMAT_STRING}" == "xNULL" ]; then
-			echo "错误：制定的软件包或步骤组 ${STEP_PKG_STR} 不存在，请检查是否输入正确。"
+			echo "错误：指定的软件包或步骤组 ${STEP_PKG_STR} 不存在，请检查是否输入正确。"
 			exit 1
 		fi
 		if [ $(echo "${FORMAT_STRING}" | head -n1) != $(echo "${FORMAT_STRING}" | tail -n1) ]; then
@@ -2264,6 +2266,11 @@ echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 # STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
 STEP_FILE="${INDEX_STEP_FILE}"
 
+if [ "x${USE_PREV_INDEX_FILE}" != "x1" ]; then
+	cp ${INDEX_STEP_FILE} ${NEW_TARGET_SYSDIR}/step.index.temp
+fi
+STEP_FILE="${NEW_TARGET_SYSDIR}/step.index.temp"
+
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_begin_run_save
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_final_run_save
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_overlay_before_run_save
@@ -2694,6 +2701,8 @@ do
 		fi
 	fi
 	echo "" >> ${NEW_TARGET_SYSDIR}/logs/build_log
+# 	echo "sed -i \"\\#^${line_all}\$#d\" ${STEP_FILE}"
+	sed -i "\\#^${line_all}\$#d" ${STEP_FILE}
 done
 
 if [ "x$?" == "x0" ]; then
@@ -2719,6 +2728,9 @@ if [ "x$?" == "x0" ]; then
 else
 	exit
 fi
+
+rm -f ${NEW_TARGET_SYSDIR}/step.index.temp
+
 echo "编译制作过程完成。" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 
