@@ -129,7 +129,7 @@
 %step/host-tools/freetype|wine,wine64
 %step/host-tools/m4|
 %step/host-tools/icu4c|
-%step/host-tools/node|
+%step/host-tools/node|f_opt
 %step/host-tools/hiredis|
 %step/host-tools/xxHash|
 %step/host-tools/doctest|
