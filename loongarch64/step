@@ -146,7 +146,7 @@
 %step/host-tools/semantic-version|
 %step/host-tools/poetry-core|f_opt
 %step/host-tools/dnspython|f_opt
-%step/host-tools/nasm|f_opt
+%step/host-tools/nasm|
 %step/host-tools/ply|f_opt
 %step/host-tools/scons|
 %step/host-tools/sgml-common|
