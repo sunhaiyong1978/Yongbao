@@ -62,14 +62,15 @@
 %step/host-tools/lua|
 %step/host-tools/libyaml|
 %step/host-tools/ruby|
-%step/host-tools/wayland|
 %step/host-tools/cmake|
 %step/host-tools/libgcrypt|f_host-tools_libgcrypt_bad
 %step/host-tools/ncurses|
 %step/host-tools/readline|
 %step/host-tools/gettext|
+%step/host-tools/doxygen|
 %step/host-tools/libxml2|
 %step/host-tools/libxslt|
+%step/host-tools/wayland|
 %step/host-tools/Cython|
 %step/host-tools/glslang|
 %step/host-tools/pycairo|f_host-tools_pycairo_bad
@@ -149,6 +150,7 @@
 %step/host-tools/nasm|
 %step/host-tools/ply|f_opt
 %step/host-tools/scons|
+%step/host-tools/unzip|
 %step/host-tools/sgml-common|
 %step/host-tools/docbook-3.1|
 %step/host-tools/docbook-4.5|
@@ -161,7 +163,9 @@
 %step/host-tools/nghttp2|f_opt
 %step/host-tools/curl|f_opt
 %step/host-tools/libxmlb|f_opt
+%step/host-tools/libfyaml|f_opt
 %step/host-tools/appstream|f_opt
+%step/host-tools/nettle|
 %step/host-tools/rdfind|
 %step/host-tools/chai|
 %step/host-tools/pugixml|
@@ -409,6 +413,7 @@
 %step/target_base/python-nftables|
 %step/target_base/firewalld|
 %step/target_base/help2man|
+%step/target_base/autogen|
 %step/target_base/dist_sysroot|
 %step/target_base/final_run|
 %step/host-tools/cargo-c|f_opt
@@ -618,7 +623,6 @@
 %step/base_support/cairo|g_opt
 %step/base_support/keybinder3|g_opt
 %step/base_support/imlib2|g_opt
-%step/base_support/libnotify|g_opt
 %step/base_support/snappy|g_opt
 %step/base_support/libass|g_opt
 %step/base_support/fdk-aac|g_opt
@@ -664,6 +668,7 @@
 %step/base_support/polkit|g_opt
 %step/base_support/colord|g_opt
 %step/base_support/gtk4|g_opt
+%step/base_support/libnotify|g_opt
 %step/base_support/libpwquality|g_opt
 %step/base_support/krb5|g_opt
 %step/base_support/cyrus-sasl|g_opt
@@ -905,6 +910,7 @@
 %step/base_support/rpds-py|g_opt
 %step/base_support/gtk-doc|g_opt
 %step/base_support/libxmlb|g_opt
+%step/base_support/libfyaml|g_opt
 %step/base_support/appstream|g_opt
 %step/base_support/libadwaita|g_opt
 %step/base_support/fuse|g_opt
@@ -1023,6 +1029,8 @@
 %step/base_support/pyside6|g_opt
 %step/base_support/python-build|g_opt
 %step/base_support/pyproject_hooks|g_opt
+%step/base_support/distlib|g_opt
+%step/base_support/zenity|g_opt
 %step/base_support/create_files|g_opt
 %step/base_support/final_run|g_opt
 %step/target_base/blfs-systemd-units|
@@ -1247,7 +1255,11 @@
 %step/KDE6/KDE6-kglobalacceld|g_opt+KDE6
 %step/KDE6/KDE6-kwayland|g_opt+KDE6
 %step/KDE6/KDE6-kpipewire|g_opt+KDE6
+%step/KDE6/KDE6-knights|g_opt+KDE6
+%step/KDE6/KDE6-knighttime|g_opt+KDE6
+%step/KDE6/KDE6-aurorae|g_opt+KDE6
 %step/KDE6/KDE6-kwin|g_opt+KDE6
+%step/KDE6/KDE6-kwin-x11|g_opt+KDE6
 %step/KDE6/KDE6-plasma5support|g_opt+KDE6
 %step/KDE6/KDE6-plasma-workspace|g_opt+KDE6
 %step/KDE6/KDE6-plasma-disks|g_opt+KDE6
@@ -1420,6 +1432,7 @@
 %step/desktop-app/libdatachannel|g_opt+desk-app
 %step/desktop-app/uthash|g_opt+desk-app
 %step/desktop-app/mbedtls|g_opt+desk-app
+%step/desktop-app/simde|g_opt+desk-app
 %step/desktop-app/obs-studio|g_opt+desk-app
 %step/desktop-app/MPlayer|g_opt+desk-app
 %step/desktop-app/smplayer|g_opt+desk-app
@@ -1544,6 +1557,7 @@
 %step/desktop-app/ollama|g_opt+desk-app;golang
 %step/desktop-app/create_files|g_opt+desk-app
 %step/desktop-app/dist_sysroot|g_opt+desk-app
+%step/desktop-app/final_run|g_opt+desk-app
 %step/cross-toolchains/NULL|f_opt
 %step/mingw_sysroot/NULL|f_opt
 %step/cross-toolchains/mingw-binutils|wine,wine32;%target=mingw32
@@ -1810,6 +1824,7 @@
 %step/linux_runtime/fix_sysroot|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime;none_status
 %step/linux_runtime/create_base_files|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/dist_sysroot|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/final_run|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/NULL|f_opt
 %step/linux_runtime/make_directory|i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime;%PARENT=sysroot
 %step/cross-toolchains/NULL|f_opt
@@ -2035,6 +2050,7 @@
 %step/linux_runtime/fix_sysroot|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime;none_status
 %step/linux_runtime/create_base_files|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/dist_sysroot|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/final_run|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/NULL|f_opt
 %step/desktop-app/NULL|chromium
 %step/host-tools/rust-bindgen|chromium;f_opt
@@ -2100,6 +2116,8 @@
 %step/toolchain/gcc_git-libc|g_opt+host-dist;%compat=?0;%host=?;%vendor=;gcc_git
 %step/toolchain/mingw-w64-libs|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/gmp|g_opt+host-dist;%compat=?0;%host=?;%vendor=
+%step/toolchain/mpfr|g_opt+host-dist;%compat=?0;%host=?;%vendor=
+%step/toolchain/mpc|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/zlib|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/zstd|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/qemu|g_opt+host-dist;%compat=?0;%host=?;%vendor=
@@ -2121,6 +2139,8 @@
 %step/toolchain/gcc_git-libc|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?;gcc_git
 %step/toolchain/mingw-w64-libs|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/gmp|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
+%step/toolchain/mpfr|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
+%step/toolchain/mpc|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/zlib|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/zstd|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/qemu|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
