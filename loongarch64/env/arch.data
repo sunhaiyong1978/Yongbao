@@ -2,9 +2,9 @@ loongarch64/loongarch64-unknown-linux-gnu/loongarch64-cross-linux-gnu=loongarch6
 loongarch64-musl/loongarch64-unknown-linux-musl/loongarch64-cross-linux-muls=loongarch64-musl.conf
 
 x86_64/x86_64-unknown-linux-gnu/x86_64-pc-linux-gnu/x86_64-cross-linux-gnu=x86_64.conf
-x86_64-v2=x86_64-v2.conf
-x86_64-v3=x86_64-v3.conf
-x86_64-v4=x86_64-v4.conf
+x86_64-v2/x86_64-v2-linux-gnu=x86_64-v2.conf
+x86_64-v3/x86_64-v3-linux-gnu=x86_64-v3.conf
+x86_64-v4/x86_64-v4-linux-gnu=x86_64-v4.conf
 x86_64-musl/x86_64-unknown-linux-musl/x86_64-pc-linux-musl/x86_64-cross-linux-musl=x86_64-musl.conf
 x86_64-darwin/x86_64-apple-darwin=x86_64-darwin.conf
 
