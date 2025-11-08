@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xwayland
-export PACKAGE_VERSION=24.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xwayland/24.1.8/
-rm -rf ${BUILD_DIRECTORY}/xwayland-24.1.8
-tar xvf ${DOWNLOADDIR}/xwayland-24.1.8.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xwayland-24.1.8
-    
+export PACKAGE_VERSION=24.1.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xwayland/24.1.9/
+rm -rf ${BUILD_DIRECTORY}/xwayland-24.1.9
+tar xvf ${DOWNLOADDIR}/xwayland-24.1.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xwayland-24.1.9
+    patch -Np1 -i ${SYSDIR}/files/base_support/xwayland/24.1.9/patches/0001-xwayland-24.1.8-fix-glxdri-directory-for-cross-build.patch 
+	 
     sed -i -e "/scanner_dep/s@, native: true@@g" \
            -e "/scanner =/s@find_program\(.*\)\$@find_program('wayland-scanner')@g" \
            hw/xwayland/meson.build 
@@ -22,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/xwayland-24.1.8
     popd
     mkdir -pv ${SYSROOT_DIR}/etc/X11/xorg.conf.d
 popd 
-rm -rf ${BUILD_DIRECTORY}/xwayland-24.1.8
+rm -rf ${BUILD_DIRECTORY}/xwayland-24.1.9

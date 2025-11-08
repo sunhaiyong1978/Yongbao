@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libarchive
-export PACKAGE_VERSION=3.8.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libarchive/3.8.1/
-rm -rf ${BUILD_DIRECTORY}/libarchive-3.8.1
-tar xvf ${DOWNLOADDIR}/libarchive-3.8.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libarchive-3.8.1
+export PACKAGE_VERSION=3.8.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libarchive/3.8.2/
+rm -rf ${BUILD_DIRECTORY}/libarchive-3.8.2
+tar xvf ${DOWNLOADDIR}/libarchive-3.8.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libarchive-3.8.2
     sed -i "/linux\/fs.h/d" libarchive/archive_read_disk_posix.c
     ./configure ${COMMON_CONFIG}
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libarchive-3.8.1
+rm -rf ${BUILD_DIRECTORY}/libarchive-3.8.2

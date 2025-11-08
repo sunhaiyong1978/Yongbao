@@ -33,3 +33,5 @@ EOF
 	ln -sfv bash ${LINUX_SYSROOT_DIR}/bin/sh
 popd 
 rm -rf ${BUILD_DIRECTORY}/bash-5.3
+
+set_strip_step "usr/lib${LIB_SUFF}/bash/"

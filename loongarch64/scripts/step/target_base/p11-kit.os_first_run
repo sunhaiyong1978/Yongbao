@@ -1,1 +1,2 @@
 ln -sf /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/certs/
+ln -sf /etc/pki/tls/certs/ca-bundle.crt /etc/pki/tls/cert.pem

@@ -1,0 +1,25 @@
+From 36fa6d00e77d08d1ab055e3e38bdd14f6d24eff7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 25 Sep 2025 08:24:16 +0000
+Subject: [PATCH] ssr 0.4.4 fix for ffmpeg 8.
+
+---
+ src/AV/Output/BaseEncoder.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/AV/Output/BaseEncoder.cpp b/src/AV/Output/BaseEncoder.cpp
+index 7c01ef3..6fa8bbc 100644
+--- a/src/AV/Output/BaseEncoder.cpp
++++ b/src/AV/Output/BaseEncoder.cpp
+@@ -176,7 +176,7 @@ void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
+ 
+ void BaseEncoder::Free() {
+ 	if(m_codec_opened) {
+-		avcodec_close(m_codec_context);
++		avcodec_free_context(&m_codec_context);
+ 		m_codec_opened = false;
+ 	}
+ }
+-- 
+2.31.1
+

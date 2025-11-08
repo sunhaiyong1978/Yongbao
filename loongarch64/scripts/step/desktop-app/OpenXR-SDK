@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=OpenXR-SDK
-export PACKAGE_VERSION=release-1.1.51
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenXR-SDK/release-1.1.51/
-rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.51
-tar xvf ${DOWNLOADDIR}/OpenXR-SDK-release-1.1.51.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.51
+export PACKAGE_VERSION=release-1.1.53
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenXR-SDK/release-1.1.53/
+rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.53
+tar xvf ${DOWNLOADDIR}/OpenXR-SDK-release-1.1.53.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.53
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.51
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.51
+rm -rf ${BUILD_DIRECTORY}/OpenXR-SDK-release-1.1.53

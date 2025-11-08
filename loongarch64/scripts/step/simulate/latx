@@ -38,6 +38,38 @@ pushd ${BUILD_DIRECTORY}/latx-git_git
 			     --extra-ldflags="-lz"  
 		eval ${NINJA_AND_INSTALL}
 	popd
+
+	mkdir -p latx32-lowmem-cross-build
+	pushd latx32-lowmem-cross-build
+		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
+			     --target-list=i386-linux-user \
+			     --enable-latx \
+			     --optimize-O1 \
+			     --low_mem_mode0 \
+			     --enable-guest-base-zero \
+			     --disable-debug-info --disable-docs \
+			     --disable-werror \
+			     --extra-ldflags="-lz" \
+			     --disable-pie
+		ninja
+		cp -a latx-i386 ${SYSROOT_DIR}/usr/bin/latx-i386_lowmem
+	popd
+
+	mkdir -p lowmem-cross-build
+	pushd lowmem-cross-build
+		../configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- \
+			     --target-list=x86_64-linux-user \
+			     --enable-latx \
+			     --optimize-O1 \
+			     --low_mem_mode0 \
+			     --enable-kzt \
+			     --disable-debug-info --disable-docs \
+			     --disable-werror \
+			     --extra-ldflags="-lz"
+		ninja
+		cp -a latx-x86_64 ${SYSROOT_DIR}/usr/bin/latx-x86_64_lowmem
+	popd
+
 popd 
 rm -rf ${BUILD_DIRECTORY}/latx-git_git
 
@@ -73,9 +105,11 @@ EOF
 
 chmod +x ${SYSROOT_DIR}/usr/bin/latx-i386{,.orig}
 chmod +x ${SYSROOT_DIR}/usr/bin/latx-x86_64{,_no_aot,_no_kzt,_no_aot_kzt,.orig}
+chmod +x ${SYSROOT_DIR}/usr/bin/latx-{i386,x86_64}_lowmem
 
-if [ -f ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_kzt ]; then
-        ln -sfv latx-x86_64_no_kzt ${SYSROOT_DIR}/usr/bin/x86_64-emu
+
+if [ -f ${SYSROOT_DIR}/usr/bin/latx-x86_64 ]; then
+        ln -sfv latx-x86_64 ${SYSROOT_DIR}/usr/bin/x86_64-emu
 fi
 
 if [ -f ${SYSROOT_DIR}/usr/bin/latx-i386 ]; then
@@ -86,4 +120,6 @@ default_set_conf "x86_64-emu" "latx" "LATX x86_64 二进制翻译" "/usr/bin/x86
 default_set_conf "x86_64-emu" "latx_no_aot" "LATX x86_64 二进制翻译 (禁用AOT)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot"
 default_set_conf "x86_64-emu" "latx_no_kzt" "LATX x86_64 二进制翻译 (禁用库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_kzt"
 default_set_conf "x86_64-emu" "latx_no_aot_kzt" "LATX x86_64 二进制翻译 (禁用AOT和库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot_kzt"
+default_set_conf "x86_64-emu" "latx_64_lowmem" "LATX x86_64 二进制翻译 (低内存模式)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_lowmem"
 default_set_conf "x86-emu" "latx" "LATX x86 二进制翻译" "/usr/bin/x86-emu" "/usr/bin/latx-i386"
+default_set_conf "x86-emu" "latx_32_lowmem" "LATX x86 二进制翻译 (低内存模式)" "/usr/bin/x86-emu" "/usr/bin/latx-i386_lowmem"

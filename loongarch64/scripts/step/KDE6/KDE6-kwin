@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kwin
-export PACKAGE_VERSION=6.4.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kwin/6.4.4/
-rm -rf ${BUILD_DIRECTORY}/kwin-6.4.4
-tar xvf ${DOWNLOADDIR}/kwin-6.4.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kwin-6.4.4
+export PACKAGE_VERSION=6.5.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kwin/6.5.1/
+rm -rf ${BUILD_DIRECTORY}/kwin-6.5.1
+tar xvf ${DOWNLOADDIR}/kwin-6.5.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kwin-6.5.1
         
         sed -i "s@COMMAND qtwaylandscanner_kde@COMMAND qemu-loongarch64 ${PWD}/cross-build/bin/qtwaylandscanner_kde@g" src/wayland/tools/CMakeLists.txt
         mkdir cross-build
@@ -19,10 +19,10 @@ pushd ${BUILD_DIRECTORY}/kwin-6.4.4
                       -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
                       -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
-                      -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
-                      -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
-                      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
-                      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \
+                      -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+                      -DPython3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+                      -DPYTHON_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
+                      -DPYTHON3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
                       -DPERL_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-perl \
                       -DRuby_EXECUTABLE=${SYSDIR}/cross-tools/bin/ruby \
                       -DGPERF_EXECUTABLE=/bin/gperf -DGperf_EXECUTABLE=/bin/gperf \
@@ -40,4 +40,4 @@ pushd ${BUILD_DIRECTORY}/kwin-6.4.4
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kwin-6.4.4
+rm -rf ${BUILD_DIRECTORY}/kwin-6.5.1

@@ -51,3 +51,5 @@ echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/meinproc5 --srcdir ${SYSROOT_DIR}/
 echo "qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/checkXML5 \"\$@\"" \
 	> ${CROSSTOOLS_DIR}/bin/checkXML5
 chmod +x ${CROSSTOOLS_DIR}/bin/meinproc5 ${CROSSTOOLS_DIR}/bin/checkXML5
+
+set_final_fix_step "usr/share/kf5/kdoctools/customization/dtd/" "F" "f" "*.dtd"

@@ -3,19 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-libkdcraw
-export PACKAGE_VERSION=25.08.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-libkdcraw/25.08.0/
-rm -rf ${BUILD_DIRECTORY}/libkdcraw-25.08.0
-tar xvf ${DOWNLOADDIR}/libkdcraw-25.08.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libkdcraw-25.08.0
+export PACKAGE_VERSION=25.08.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-libkdcraw/25.08.2/
+rm -rf ${BUILD_DIRECTORY}/libkdcraw-25.08.2
+tar xvf ${DOWNLOADDIR}/libkdcraw-25.08.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libkdcraw-25.08.2
         
 	mkdir cross-build
 	pushd cross-build
-		export _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET}
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
-		      -DPython_EXECUTABLE=${HOST_TOOLS_DIR}/bin/python3 \
-		      -DPython3_EXECUTABLE=${HOST_TOOLS_DIR}/bin/python3 \
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
        		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
@@ -25,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/libkdcraw-25.08.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libkdcraw-25.08.0
+rm -rf ${BUILD_DIRECTORY}/libkdcraw-25.08.2

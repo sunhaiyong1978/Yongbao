@@ -1,0 +1,112 @@
+From 5512705fb1c5dfd8c380457195d04e476b27c580 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 8 Sep 2025 05:21:39 +0000
+Subject: [PATCH 3/3] Chromium 140 sandbox remove statx for loongarch64 fix 2.
+
+---
+ sandbox/linux/syscall_broker/broker_client.cc     | 15 ---------------
+ sandbox/linux/syscall_broker/broker_client.h      |  3 ---
+ sandbox/linux/syscall_broker/broker_host.cc       | 15 ---------------
+ .../linux/syscall_broker/syscall_dispatcher.cc    |  5 -----
+ sandbox/linux/syscall_broker/syscall_dispatcher.h |  3 ---
+ 5 files changed, 41 deletions(-)
+
+diff --git a/sandbox/linux/syscall_broker/broker_client.cc b/sandbox/linux/syscall_broker/broker_client.cc
+index 05af89e..848af10 100644
+--- a/sandbox/linux/syscall_broker/broker_client.cc
++++ b/sandbox/linux/syscall_broker/broker_client.cc
+@@ -198,21 +198,6 @@ int BrokerClient::Stat64(const char* pathname,
+                            sizeof(*sb));
+ }
+ 
+-int BrokerClient::Statx(const char* pathname,
+-                        bool follow_links,
+-                        struct kernel_statx* sb) const {
+-  if (!pathname || !sb)
+-    return -EFAULT;
+-
+-  if (fast_check_in_client_ &&
+-      !CommandStatIsSafe(policy_->allowed_command_set,
+-                         *policy_->file_permissions, pathname)) {
+-    return -policy_->file_permissions->denied_errno();
+-  }
+-  return StatFamilySyscall(COMMAND_STATX, pathname, follow_links, sb,
+-                           sizeof(*sb));
+-}
+-
+ int BrokerClient::Unlink(const char* path) const {
+   if (!path)
+     return -EFAULT;
+diff --git a/sandbox/linux/syscall_broker/broker_client.h b/sandbox/linux/syscall_broker/broker_client.h
+index 32efc3f..9d0fdee 100644
+--- a/sandbox/linux/syscall_broker/broker_client.h
++++ b/sandbox/linux/syscall_broker/broker_client.h
+@@ -67,9 +67,6 @@ class SANDBOX_EXPORT BrokerClient : public SyscallDispatcher {
+   int Stat64(const char* pathname,
+              bool follow_links,
+              struct kernel_stat64* sb) const override;
+-  int Statx(const char* pathname,
+-            bool follow_links,
+-            struct kernel_statx* sb) const override;
+   int Unlink(const char* unlink) const override;
+   int InotifyAddWatch(int fd,
+                       const char* pathname,
+diff --git a/sandbox/linux/syscall_broker/broker_host.cc b/sandbox/linux/syscall_broker/broker_host.cc
+index c8da5b6..a588997 100644
+--- a/sandbox/linux/syscall_broker/broker_host.cc
++++ b/sandbox/linux/syscall_broker/broker_host.cc
+@@ -302,21 +302,6 @@ void BrokerHost::StatFileForIPC(BrokerCommand command_type,
+     RAW_CHECK(reply->AddIntToMessage(0));
+     RAW_CHECK(
+         reply->AddDataToMessage(reinterpret_cast<char*>(&sb), sizeof(sb)));
+-#elif defined(__NR_statx)
+-    DCHECK(command_type == COMMAND_STATX);
+-    struct kernel_statx sb;
+-
+-    int sts = sandbox::sys_statx(AT_FDCWD, file_to_access,
+-                                 follow_links ? 0 : AT_SYMLINK_NOFOLLOW,
+-                                 STATX_BASIC_STATS, &sb);
+-    if (sts < 0) {
+-      RAW_CHECK(reply->AddIntToMessage(-errno));
+-      return;
+-    }
+-    RAW_CHECK(reply->AddIntToMessage(0));
+-    RAW_CHECK(
+-        reply->AddDataToMessage(reinterpret_cast<char*>(&sb), sizeof(sb)));
+-
+ #else
+     // We should not reach here on 64-bit systems, as the *stat*64() are only
+     // necessary on 32-bit.
+diff --git a/sandbox/linux/syscall_broker/syscall_dispatcher.cc b/sandbox/linux/syscall_broker/syscall_dispatcher.cc
+index a4a12db..69f705e 100644
+--- a/sandbox/linux/syscall_broker/syscall_dispatcher.cc
++++ b/sandbox/linux/syscall_broker/syscall_dispatcher.cc
+@@ -174,11 +174,6 @@ int SyscallDispatcher::DispatchSyscall(const arch_seccomp_data& args) {
+       return Stat64(reinterpret_cast<const char*>(args.args[0]), true,
+                     reinterpret_cast<struct kernel_stat64*>(args.args[1]));
+ #endif
+-#if defined(__NR_statx)
+-    case __NR_statx:
+-      return Statx(reinterpret_cast<const char*>(args.args[0]), true,
+-                   reinterpret_cast<struct kernel_statx*>(args.args[1]));
+-#endif
+ #if defined(__NR_lstat)
+     case __NR_lstat:
+       // See https://crbug.com/847096
+diff --git a/sandbox/linux/syscall_broker/syscall_dispatcher.h b/sandbox/linux/syscall_broker/syscall_dispatcher.h
+index 7d0b8e0..906c37d 100644
+--- a/sandbox/linux/syscall_broker/syscall_dispatcher.h
++++ b/sandbox/linux/syscall_broker/syscall_dispatcher.h
+@@ -49,9 +49,6 @@ class SANDBOX_EXPORT SyscallDispatcher {
+   virtual int Stat64(const char* pathname,
+                      bool follow_links,
+                      struct kernel_stat64* sb) const = 0;
+-  virtual int Statx(const char* pathname,
+-                    bool follow_links,
+-                    struct kernel_statx* sb) const = 0;
+ 
+   // Emulates unlink()/unlinkat().
+   virtual int Unlink(const char* unlink) const = 0;
+-- 
+2.31.1
+

@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=nss
-export PACKAGE_VERSION=3.115
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/nss/3.115/
-rm -rf ${BUILD_DIRECTORY}/nss-3.115
-tar xvf ${DOWNLOADDIR}/nss-3.115.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nss-3.115
-patch -Np1 -i ${SYSDIR}/files/host-tools/nss/3.115/patches/0001-nss-3.97-fix-miss-SQLITE_INCLUDE_DIR-in-nss-cmd-dbto.patch 
+export PACKAGE_VERSION=3.117
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/nss/3.117/
+rm -rf ${BUILD_DIRECTORY}/nss-3.117
+tar xvf ${DOWNLOADDIR}/nss-3.117.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nss-3.117
+patch -Np1 -i ${SYSDIR}/files/host-tools/nss/3.117/patches/0001-nss-3.97-fix-miss-SQLITE_INCLUDE_DIR-in-nss-cmd-dbto.patch 
 	 
 pushd nss
     make -j${JOBS} BUILD_OPT=1 USE_64=1 USE_SYSTEM_ZLIB=1 NSS_USE_SYSTEM_SQLITE=1 NSS_ENABLE_WERROR=0 \
@@ -43,4 +43,4 @@ pushd dist
     install -v -m755 Linux*/bin/{certutil,pk12util} ${PREFIX}/bin
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/nss-3.115
+rm -rf ${BUILD_DIRECTORY}/nss-3.117

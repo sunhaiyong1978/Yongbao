@@ -1,0 +1,22 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=final_run
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/final_run//
+if [ -d ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/ ]; then
+	find ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/ -type f -name "*.la" -exec rm '{}' ';'
+	find ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/ -type f -name "*.prl" -exec rm '{}' ';'
+fi
+
+set_final_fix_step "${RUNTIME_SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake" "S" "f" "*.cmake" "${RUNTIME_SYSROOT_DIR}>>>"
+set_final_fix_step "${RUNTIME_SYSROOT_DIR}/usr/bin/" "S" "g" "ASCII" "${SYSROOT_DIR}>>>"
+set_final_fix_step "${RUNTIME_SYSROOT_DIR}/usr/bin/" "S" "g" "text executable" "${SYSROOT_DIR}>>>"
+set_final_fix_step "${RUNTIME_SYSROOT_DIR}/usr/bin/" "S" "g" "ASCII" "${RUNTIME_SYSROOT_DIR}>>>"
+set_final_fix_step "${RUNTIME_SYSROOT_DIR}/usr/bin/" "S" "g" "text executable" "${RUNTIME_SYSROOT_DIR}>>>"
+
+if [ -f ${LINUX_SYSROOT_DIR}/usr/sbin/ldconfig ]; then
+	qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/sbin/ldconfig -r ${LINUX_SYSROOT_DIR}/
+fi

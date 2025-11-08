@@ -44,7 +44,7 @@ popd
 
 export MESON_CPU=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "MESON_CPU" "${ARCH_NAME}")
 
-cat > ${COMMON_DIR}/meson-cross-${ARCH_NAME}.txt << EOF
+cat > ${COMMON_DIR}/meson-cross-${TAG_NAME}.txt << EOF
 [binaries]
 c = '${LINUX_HOST}-gcc'
 cpp = '${LINUX_HOST}-g++'
@@ -68,7 +68,7 @@ cpu = '${MESON_CPU}'
 endian = 'little'
 EOF
 
-cat > ${COMMON_DIR}/cmake-cross-${ARCH_NAME}.cmake << EOF
+cat > ${COMMON_DIR}/cmake-cross-${TAG_NAME}.cmake << EOF
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR ${ARCH_NAME})
 

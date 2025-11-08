@@ -10,8 +10,8 @@ rm -rf ${BUILD_DIRECTORY}/lmdb-LMDB_0.9.31
 tar xvf ${DOWNLOADDIR}/lmdb-LMDB_0.9.31.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/lmdb-LMDB_0.9.31
     pushd libraries/liblmdb
-        make -j${JOBS} CC=${LINUX_HOST}-gcc prefix=/usr libdir=/usr/lib64
-        make DESTDIR=${LINUX_SYSROOT_DIR} prefix=/usr libdir=/usr/lib64 install
+        make -j${JOBS} CC=${LINUX_HOST}-gcc prefix=/usr libdir=/usr/lib${LIB_SUFF}
+        make DESTDIR=${LINUX_SYSROOT_DIR} prefix=/usr libdir=/usr/lib${LIB_SUFF} install
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/lmdb-LMDB_0.9.31

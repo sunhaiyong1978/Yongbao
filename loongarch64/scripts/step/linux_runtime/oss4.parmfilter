@@ -1,3 +1,5 @@
 target=!aarch64
 target=!mips64el
 target=!riscv64
+target=!loongarch64
+target=!x86_64-v4

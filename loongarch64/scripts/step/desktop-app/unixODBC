@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=unixODBC
-export PACKAGE_VERSION=2.3.12
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/unixODBC/2.3.12/
-rm -rf ${BUILD_DIRECTORY}/unixODBC-2.3.12
-tar xvf ${DOWNLOADDIR}/unixODBC-2.3.12.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/unixODBC-2.3.12
+export PACKAGE_VERSION=2.3.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/unixODBC/2.3.14/
+rm -rf ${BUILD_DIRECTORY}/unixODBC-2.3.14
+tar xvf ${DOWNLOADDIR}/unixODBC-2.3.14.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/unixODBC-2.3.14
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/unixODBC-2.3.12
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/unixODBC-2.3.12
+rm -rf ${BUILD_DIRECTORY}/unixODBC-2.3.14

@@ -1,0 +1,36 @@
+From 4ed45aab51b4b0e2f5c59095f564e6cbb953b520 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 24 Oct 2025 10:02:48 +0000
+Subject: [PATCH] pcsc-lite 2.4.0 fix for cross build.
+
+---
+ meson.build | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 4d4d2bf..643e3f1 100644
+--- a/meson.build
++++ b/meson.build
+@@ -268,7 +268,7 @@ install_headers(
+ # data
+ if get_option('polkit')
+ install_data('doc/org.debian.pcsc-lite.policy',
+-  install_dir : polkit_dep.get_variable('policydir'))
++  install_dir : polkit_dep.get_pkgconfig_variable('policydir', define_variable: [ 'datadir', get_option('prefix') + '/share' ]))
+ endif
+ 
+ install_data('etc/fr.apdu.pcsclite.metainfo.xml',
+@@ -294,8 +294,8 @@ configure_file(output : 'pcscd.h',
+ if get_option('libsystemd')
+   systemd = dependency('systemd')
+   unit = get_option('systemdunit')
+-  systemdsystemunitdir = systemd.get_variable(pkgconfig : 'systemd' + unit + 'unitdir')
+-  sysusersdir = systemd.get_variable(pkgconfig : 'sysusersdir')
++  systemdsystemunitdir = systemd.get_pkgconfig_variable('systemd_user_unit_dir', define_variable: [ 'prefix', get_option('prefix') ])
++  sysusersdir = systemd.get_pkgconfig_variable('sysusers_dir', define_variable: [ 'prefix', get_option('prefix') ])
+ configure_file(output : 'pcscd.socket',
+   input : 'etc/pcscd.socket.in',
+   install_dir : systemdsystemunitdir,
+-- 
+2.31.1
+

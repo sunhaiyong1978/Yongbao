@@ -1,0 +1,26 @@
+From 6e08d6895c3128f0c4a9330152ae150372e2fe20 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 6 Sep 2025 03:25:12 +0000
+Subject: [PATCH 5/9] Chromium 140 base system sys_info add loongarch64
+ support.
+
+---
+ base/system/sys_info.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/base/system/sys_info.cc b/base/system/sys_info.cc
+index 000604bcb8..8b08fcc46c 100644
+--- a/base/system/sys_info.cc
++++ b/base/system/sys_info.cc
+@@ -256,6 +256,8 @@ std::string SysInfo::ProcessCPUArchitecture() {
+   return "ARM_64";
+ #elif defined(ARCH_CPU_RISCV64)
+   return "RISCV_64";
++#elif defined(ARCH_CPU_LOONGARCH64)
++  return "LOONGARCH_64";
+ #else
+   return std::string();
+ #endif
+-- 
+2.31.1
+

@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/RetroArch/1.21.0/
 rm -rf ${BUILD_DIRECTORY}/RetroArch-1.21.0
 tar xvf ${DOWNLOADDIR}/RetroArch-1.21.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/RetroArch-1.21.0
-        
+        patch -Np1 -i ${SYSDIR}/files/game_emu/RetroArch/1.21.0/patches/0001-RetroArch-1.21.0-fix-for-ffmpeg-8.patch 
+	 
         for config_i in $(find -name "config.sub")
         do
                 cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/

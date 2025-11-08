@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=glib
-export PACKAGE_VERSION=2.85.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glib/2.85.1/
-rm -rf ${BUILD_DIRECTORY}/glib-2.85.1
-tar xvf ${DOWNLOADDIR}/glib-2.85.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.85.1
+export PACKAGE_VERSION=2.86.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glib/2.86.1/
+rm -rf ${BUILD_DIRECTORY}/glib-2.86.1
+tar xvf ${DOWNLOADDIR}/glib-2.86.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.86.1
         
         mkdir cross-build
         pushd cross-build
@@ -28,4 +28,4 @@ cp -a ${CROSSTOOLS_DIR}/bin/{${CROSS_TARGET}-,}glib-compile-schemas
 cp -a ${SYSROOT_DIR}/usr/bin/glib-mkenums ${CROSSTOOLS_DIR}/bin/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.85.1
+rm -rf ${BUILD_DIRECTORY}/glib-2.86.1

@@ -18,9 +18,7 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
     TARGET_ARCH_BIT=$(archname_to_archbit "${HOST_TARGET}" "")
     LIB_SUFF=$(archbit_to_lib_suff "${TARGET_ARCH_BIT}")
 
-    patch -Np1 -i ${SYSDIR}/files/toolchain/cross-gcc-libc/15.2.0/patches/do-not-use-the-cached-value-of-the-gcc_except_table_section-for-comdat-functions.patch 
-	patch -Np1 -i ${SYSDIR}/files/toolchain/cross-gcc-libc/15.2.0/patches/0001-gcc-15.1.0-build-error-for-glibc-2.42.patch 
-	 
+    
 
     if [ "x$(get_user_set_env compat)" == "x1" ]; then
 	COMPAT_HOST="$(echo "${HOST_HOST}" | sed "s@unknown@compat@g")"

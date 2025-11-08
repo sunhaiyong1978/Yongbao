@@ -1,0 +1,25 @@
+From d979163bda7fa662c9d2518db2147306ac48ef82 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 30 Oct 2025 03:28:30 +0000
+Subject: [PATCH] at-spi2-core 2.58.1 remove python module.
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index ea66f89..f337d5a 100644
+--- a/meson.build
++++ b/meson.build
+@@ -215,7 +215,7 @@ if not get_option('atk_only')
+   subdir('atk-adaptor')
+   subdir('tests')
+   if python.found()
+-    subdir('python')
++#     subdir('python')
+   endif
+ endif
+ 
+-- 
+2.31.1
+

@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libgphoto2
-export PACKAGE_VERSION=2.5.32
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libgphoto2/2.5.32/
-rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.32
-tar xvf ${DOWNLOADDIR}/libgphoto2-2.5.32.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.32
+export PACKAGE_VERSION=2.5.33
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libgphoto2/2.5.33/
+rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.33
+tar xvf ${DOWNLOADDIR}/libgphoto2-2.5.33.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.33
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -18,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/libgphoto2-2.5.32
         make DESTDIR=${LINUX_SYSROOT_DIR} install
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.32
+rm -rf ${BUILD_DIRECTORY}/libgphoto2-2.5.33

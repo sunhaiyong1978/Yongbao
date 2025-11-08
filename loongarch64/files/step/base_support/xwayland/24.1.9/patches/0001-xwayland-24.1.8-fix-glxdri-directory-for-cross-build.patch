@@ -1,0 +1,25 @@
+From f10155ee0931727b093e4c65074fd4309ac7f1c3 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 27 Oct 2025 01:39:20 +0000
+Subject: [PATCH] xwayland 24.1.8 fix glxdri directory for cross build.
+
+---
+ include/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/meson.build b/include/meson.build
+index 72e1e5d..b58b7e5 100644
+--- a/include/meson.build
++++ b/include/meson.build
+@@ -204,7 +204,7 @@ conf_data.set('DBE', '1')
+ conf_data.set('DPMSExtension', build_dpms ? '1' : false)
+ conf_data.set('DRI3', build_dri3 ? '1' : false)
+ if build_glx
+-    conf_data.set_quoted('DRI_DRIVER_PATH', dri_dep.get_variable(pkgconfig : 'dridriverdir'))
++    conf_data.set_quoted('DRI_DRIVER_PATH', dri_dep.get_pkgconfig_variable('dridriverdir', define_variable: [ 'prefix', get_option('prefix') ]))
+ endif
+ conf_data.set('MITSHM', build_mitshm ? '1' : false)
+ conf_data.set('PANORAMIX', build_xinerama ? '1' : false)
+-- 
+2.31.1
+

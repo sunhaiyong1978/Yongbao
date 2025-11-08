@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=rust-bindgen
-export PACKAGE_VERSION=0.72.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/rust-bindgen/0.72.0/
-rm -rf ${BUILD_DIRECTORY}/rust-bindgen-0.72.0
-tar xvf ${DOWNLOADDIR}/rust-bindgen-0.72.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rust-bindgen-0.72.0
+export PACKAGE_VERSION=0.72.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/rust-bindgen/0.72.1/
+rm -rf ${BUILD_DIRECTORY}/rust-bindgen-0.72.1
+tar xvf ${DOWNLOADDIR}/rust-bindgen-0.72.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rust-bindgen-0.72.1
 	cargo build --release
 	install -Dm755 target/release/bindgen ${PREFIX}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/rust-bindgen-0.72.0
+rm -rf ${BUILD_DIRECTORY}/rust-bindgen-0.72.1

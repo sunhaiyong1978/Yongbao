@@ -1,0 +1,25 @@
+From 06275356fdf21217a362ea049080c2b118c6abc3 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 3 Oct 2025 08:25:56 +0000
+Subject: [PATCH] ModemManager 1.24.2 fix polkit dir error for cross-build.
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index d815ec3..f0cbfb3 100644
+--- a/meson.build
++++ b/meson.build
+@@ -240,7 +240,7 @@ enable_polkit = (polkit_opt != 'no')
+ if enable_polkit
+   polkit_gobject_dep = dependency('polkit-gobject-1', version: '>= 0.97', not_found_message: 'PolicyKit development headers are required')
+ 
+-  polkit_gobject_policydir = polkit_gobject_dep.get_pkgconfig_variable('policydir', define_variable: ['prefix', mm_prefix])
++  polkit_gobject_policydir = polkit_gobject_dep.get_pkgconfig_variable('policydir', define_variable: ['datadir', mm_datadir])
+ 
+   policy_conf = {'MM_DEFAULT_USER_POLICY': (polkit_opt == 'permissive' ? 'yes' : 'auth_self_keep')}
+ endif
+-- 
+2.31.1
+

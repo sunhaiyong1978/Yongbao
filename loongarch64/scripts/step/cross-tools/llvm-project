@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=21.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/21.1.0/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
-tar xvf ${DOWNLOADDIR}/llvm-project-21.1.0.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
+export PACKAGE_VERSION=21.1.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/llvm-project/21.1.4/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.4.src
+tar xvf ${DOWNLOADDIR}/llvm-project-21.1.4.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-21.1.4.src
 	
 pushd llvm
     mkdir -p native-build
@@ -35,4 +35,4 @@ pushd llvm
 	save_package_version cross-tools_llvm-project "${LLVM_DIST_VERSION}"
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.4.src

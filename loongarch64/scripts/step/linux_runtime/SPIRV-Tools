@@ -34,3 +34,9 @@ pushd ${BUILD_DIRECTORY}/SPIRV-Tools-git_git
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/SPIRV-Tools-git_git
+
+if [ "x${PACKAGE_VERSION}" == "xgit" ]; then
+        save_package_version ${STEP_PACKAGENAME} "${PACKAGE_VERSION}_git"
+else
+        save_package_version ${STEP_PACKAGENAME} "${PACKAGE_VERSION}"
+fi

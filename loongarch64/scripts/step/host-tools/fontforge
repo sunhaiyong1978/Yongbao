@@ -3,20 +3,20 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=fontforge
-export PACKAGE_VERSION=20230101
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/fontforge/20230101/
-rm -rf ${BUILD_DIRECTORY}/fontforge-20230101
-tar xvf ${DOWNLOADDIR}/fontforge-20230101.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fontforge-20230101
-    patch -Np1 -i ${SYSDIR}/files/host-tools/fontforge/20230101/patches/0001-fontforge-remove-it-and-fr-po-for-fix-msgfmt-build-e.patch 
+export PACKAGE_VERSION=20251009
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/fontforge/20251009/
+rm -rf ${BUILD_DIRECTORY}/fontforge-20251009
+tar xvf ${DOWNLOADDIR}/fontforge-20251009.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fontforge-20251009
+    patch -Np1 -i ${SYSDIR}/files/host-tools/fontforge/20251009/patches/0001-fontforge-remove-it-and-fr-po-for-fix-msgfmt-build-e.patch 
 	 
     mkdir -p native-build
     pushd native-build
 	CC="gcc" CXX="g++" \
-        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DENABLE_GUI=OFF -DENABLE_PYTHON_EXTENSION=OFF -DENABLE_PYTHON_SCRIPTING=OFF -DENABLE_LIBSPIRO=OFF -DENABLE_DOCS=OFF \
+        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DENABLE_GUI=OFF -DENABLE_PYTHON_EXTENSION=OFF -DENABLE_PYTHON_SCRIPTING=OFF -DENABLE_LIBSPIRO=OFF -DENABLE_DOCS=OFF -DENABLE_LIBREADLINE=OFF \
 	      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
               -DCMAKE_BUILD_TYPE=Release ..
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/fontforge-20230101
+rm -rf ${BUILD_DIRECTORY}/fontforge-20251009

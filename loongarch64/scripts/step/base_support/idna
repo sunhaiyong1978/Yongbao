@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=idna
-export PACKAGE_VERSION=3.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/idna/3.10/
-rm -rf ${BUILD_DIRECTORY}/idna-3.10
-tar xvf ${DOWNLOADDIR}/idna-3.10.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/idna-3.10
+export PACKAGE_VERSION=3.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/idna/3.11/
+rm -rf ${BUILD_DIRECTORY}/idna-3.11
+tar xvf ${DOWNLOADDIR}/idna-3.11.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/idna-3.11
 	
 	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user idna --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/idna-3.10
+rm -rf ${BUILD_DIRECTORY}/idna-3.11

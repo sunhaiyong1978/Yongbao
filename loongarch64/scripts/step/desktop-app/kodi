@@ -24,7 +24,6 @@ pushd ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
 		cp ${RESOURCEDIR}/files/libdvdcss-1.4.3-Next-Nexus-Alpha2-2.tar.gz build/download/
 		cp ${RESOURCEDIR}/files/libdvdread-6.1.3-Next-Nexus-Alpha2-2.tar.gz build/download/
 		cp ${RESOURCEDIR}/files/libdvdnav-6.1.1-Next-Nexus-Alpha2-2.tar.gz build/download/
-		cp ${RESOURCEDIR}/files/spdlog-1.12.0.tar.gz  build/download/
 
 		tar xvf ${RESOURCEDIR}/files/tarballs.listfile_dir.tar.gz
 		mv tarballs.listfile_dir/* build/download/

@@ -55,6 +55,7 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
                      --disable-libsanitizer --disable-libquadmath --disable-threads \
                      --disable-target-zlib --with-system-zlib --enable-checking=release \
                      --enable-default-pie \
+		     --enable-default-ssp --disable-libssp \
 		     --disable-multilib \
                      ${WITH_ABI} \
                      --enable-languages=c,c++

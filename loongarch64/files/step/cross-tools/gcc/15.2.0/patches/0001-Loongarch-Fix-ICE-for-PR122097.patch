@@ -1,0 +1,93 @@
+From aeb482d1d0814508a629324c5b070b3df45d6c31 Mon Sep 17 00:00:00 2001
+From: Lulu Cheng <chenglulu@loongson.cn>
+Date: Tue, 30 Sep 2025 11:32:47 +0800
+Subject: [PATCH] Loongarch: Fix ICE for PR122097.
+
+gcc/ChangeLog:
+
+	* config/loongarch/loongarch.cc
+	(loongarch_const_vector_bitimm_set_p): Add support for vector float.
+	(loongarch_print_operand): Likewise.
+
+Change-Id: Ie99887bb73e8612fd1eb702e2f48e5af0bfc6f69
+---
+ gcc/config/loongarch/loongarch.cc | 51 ++++++++++++++++++++++++++++---
+ 1 file changed, 47 insertions(+), 4 deletions(-)
+
+diff --git a/gcc/config/loongarch/loongarch.cc b/gcc/config/loongarch/loongarch.cc
+index ef5d5f4e060..25cbcf1dafa 100644
+--- a/gcc/config/loongarch/loongarch.cc
++++ b/gcc/config/loongarch/loongarch.cc
+@@ -1718,14 +1718,36 @@ loongarch_symbol_binds_local_p (const_rtx x)
+ bool
+ loongarch_const_vector_bitimm_set_p (rtx op, machine_mode mode)
+ {
+-  if (GET_CODE (op) == CONST_VECTOR && op != CONST0_RTX (mode))
++  if (GET_CODE (op) == CONST_VECTOR
++      && (GET_MODE_CLASS (mode) == MODE_VECTOR_FLOAT
++	  || GET_MODE_CLASS (mode) == MODE_VECTOR_INT))
+     {
+-      unsigned HOST_WIDE_INT val = UINTVAL (CONST_VECTOR_ELT (op, 0));
++      unsigned HOST_WIDE_INT val;
++
++      if (GET_MODE_CLASS (mode) == MODE_VECTOR_FLOAT)
++	{
++	  rtx val_s = CONST_VECTOR_ELT (op, 0);
++	  const REAL_VALUE_TYPE *x = CONST_DOUBLE_REAL_VALUE (val_s);
++	  if (GET_MODE (val_s) == DFmode)
++	    {
++	      long tmp[2];
++	      REAL_VALUE_TO_TARGET_DOUBLE(*x, tmp);
++	      val = (unsigned HOST_WIDE_INT)tmp[1] << 32 | tmp[0];
++	    }
++	  else
++	    {
++	      long tmp;
++	      REAL_VALUE_TO_TARGET_SINGLE(*x, tmp);
++	      val = (unsigned HOST_WIDE_INT) tmp;
++	    }
++	}
++      else
++	val = UINTVAL (CONST_VECTOR_ELT (op, 0));
++
+       int vlog2 = exact_log2 (val & GET_MODE_MASK (GET_MODE_INNER (mode)));
+ 
+       if (vlog2 != -1)
+ 	{
+-	  gcc_assert (GET_MODE_CLASS (mode) == MODE_VECTOR_INT);
+ 	  gcc_assert (vlog2 >= 0 && vlog2 <= GET_MODE_UNIT_BITSIZE (mode) - 1);
+ 	  return loongarch_const_vector_same_val_p (op, mode);
+ 	}
+@@ -6395,7 +6417,28 @@ loongarch_print_operand (FILE *file, rtx op, int letter)
+       if (CONST_VECTOR_P (op))
+ 	{
+ 	  machine_mode mode = GET_MODE_INNER (GET_MODE (op));
+-	  unsigned HOST_WIDE_INT val = UINTVAL (CONST_VECTOR_ELT (op, 0));
++	  rtx val_s = CONST_VECTOR_ELT (op, 0);
++	  unsigned HOST_WIDE_INT val;
++
++	  if (GET_MODE_CLASS (mode) == MODE_FLOAT)
++	    {
++	      const REAL_VALUE_TYPE *x = CONST_DOUBLE_REAL_VALUE (val_s);
++	      if (GET_MODE (val_s) == DFmode)
++		{
++		  long tmp[2];
++		  REAL_VALUE_TO_TARGET_DOUBLE(*x, tmp);
++		  val = (unsigned HOST_WIDE_INT) (tmp[1] << 32 | tmp[0]);
++		}
++	      else
++		{
++		  long tmp;
++		  REAL_VALUE_TO_TARGET_SINGLE(*x, tmp);
++		  val = (unsigned HOST_WIDE_INT) tmp;
++		}
++	    }
++	  else
++	    val = UINTVAL (val_s);
++
+ 	  int vlog2 = exact_log2 (val & GET_MODE_MASK (mode));
+ 	  if (vlog2 != -1)
+ 	    fprintf (file, "%d", vlog2);
+-- 
+2.34.1
+

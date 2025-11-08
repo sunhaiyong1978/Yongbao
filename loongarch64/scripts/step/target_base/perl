@@ -31,3 +31,4 @@ popd
 rm -rf ${BUILD_DIRECTORY}/perl-5.42.0
 
 set_strip_step "usr/lib${LIB_SUFF}/perl5" "0"
+set_final_fix_step "usr/lib64/perl5/5.4x/site_perl" "D" "f" ".packlist"

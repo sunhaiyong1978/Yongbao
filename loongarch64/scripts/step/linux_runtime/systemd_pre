@@ -4,15 +4,12 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=systemd_pre
-export PACKAGE_VERSION=257.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd_pre/257.8/
-rm -rf ${BUILD_DIRECTORY}/systemd-257.8
-tar xvf ${DOWNLOADDIR}/systemd-257.8.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-257.8
+export PACKAGE_VERSION=258.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd_pre/258.1/
+rm -rf ${BUILD_DIRECTORY}/systemd-258.1
+tar xvf ${DOWNLOADDIR}/systemd-258.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-258.1
 	
-	pushd src/basic
-        python3 missing_syscalls.py missing_syscall_def.h $(ls syscalls-*.txt)
-	popd
 	sed -i -e 's/GROUP="render"/GROUP="video"/' \
            -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
 	sed -i "s@Werror=undef',@& '-Wno-error=format-overflow', '-Wno-error=implicit-function-declaration',@g" meson.build
@@ -29,4 +26,4 @@ pushd ${BUILD_DIRECTORY}/systemd-257.8
 		eval ${NINJA_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-257.8
+rm -rf ${BUILD_DIRECTORY}/systemd-258.1

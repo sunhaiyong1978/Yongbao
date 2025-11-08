@@ -1,0 +1,28 @@
+From 8ff1c1bbd2898281904cba991e16d27f68421e8c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 8 Sep 2025 04:02:16 +0000
+Subject: [PATCH 2/2] Chromium 140 remove statx_default for loongarch64.
+
+---
+ sandbox/policy/linux/sandbox_linux.cc | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/sandbox/policy/linux/sandbox_linux.cc b/sandbox/policy/linux/sandbox_linux.cc
+index c5c2a24..38a8de5 100644
+--- a/sandbox/policy/linux/sandbox_linux.cc
++++ b/sandbox/policy/linux/sandbox_linux.cc
+@@ -580,11 +580,7 @@ bpf_dsl::ResultExpr SandboxLinux::HandleViaBroker(int sysno) const {
+   const bpf_dsl::ResultExpr handle_via_broker =
+       bpf_dsl::Trap(syscall_broker::BrokerClient::SIGSYS_Handler,
+                     broker_process_->GetBrokerClientSignalBased());
+-#if defined(__loongarch_lp64)
+-  if (sysno == __NR_statx_default) { // __NR_fstatat_default or __NR_statx_default
+-#else
+   if (sysno == __NR_fstatat_default) {
+-#endif
+     // This may be an fstatat(fd, "", stat_buf, AT_EMPTY_PATH), which should be
+     // rewritten as fstat(fd, stat_buf). This should be consistent with how the
+     // baseline policy handles fstatat().
+-- 
+2.31.1
+

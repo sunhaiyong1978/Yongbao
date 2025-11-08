@@ -1,0 +1,41 @@
+From 58b7dad99cad95d368ae7451a591cbb7d78d2a09 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sun, 7 Sep 2025 14:23:09 +0000
+Subject: [PATCH] Chromium 140 third_party webrtc add loongarch64 support.
+
+---
+ third_party/webrtc/BUILD.gn                          | 4 ++++
+ third_party/webrtc/rtc_base/platform_thread_types.cc | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/third_party/webrtc/BUILD.gn b/third_party/webrtc/BUILD.gn
+index 3357c2dcdf..d8b6d7c52b 100644
+--- a/third_party/webrtc/BUILD.gn
++++ b/third_party/webrtc/BUILD.gn
+@@ -441,6 +441,10 @@ config("common_config") {
+     defines += [ "WEBRTC_HAS_NEON" ]
+   }
+ 
++  if (current_cpu == "loong64") {
++    defines += [ "WEBRTC_ARCH_LOONG64" ]
++  }
++
+   if (current_cpu == "arm") {
+     defines += [ "WEBRTC_ARCH_ARM" ]
+     if (arm_version >= 7) {
+diff --git a/third_party/webrtc/rtc_base/platform_thread_types.cc b/third_party/webrtc/rtc_base/platform_thread_types.cc
+index 20bf4afc44..b1ff42a05e 100644
+--- a/third_party/webrtc/rtc_base/platform_thread_types.cc
++++ b/third_party/webrtc/rtc_base/platform_thread_types.cc
+@@ -16,7 +16,7 @@
+ #include <sys/prctl.h>
+ #include <sys/syscall.h>
+ 
+-#if !defined(WEBRTC_ARCH_ARM) && !defined(WEBRTC_ARCH_ARM64)
++#if !defined(WEBRTC_ARCH_ARM) && !defined(WEBRTC_ARCH_ARM64) && !defined(WEBRTC_ARCH_LOONG64)
+ #include <asm/unistd_64.h>
+ #endif
+ #endif
+-- 
+2.31.1
+

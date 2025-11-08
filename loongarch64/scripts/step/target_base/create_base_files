@@ -11,6 +11,7 @@ cp -a ${RESOURCEDIR}/etc-bashrc ${SYSROOT_DIR}/etc/bashrc
 cp -a ${RESOURCEDIR}/etc-profile ${SYSROOT_DIR}/etc/profile
 cp -a ${RESOURCEDIR}/etc-profile.d_default-event.sh ${SYSROOT_DIR}/etc/profile.d/default-event.sh
 cp -a ${RESOURCEDIR}/etc-profile.d_add-opt-path.sh ${SYSROOT_DIR}/etc/profile.d/add-opt-path.sh
+cp -a ${RESOURCEDIR}/etc-profile.d_alias.sh ${SYSROOT_DIR}/etc/profile.d/alias.sh
 mkdir -pv ${SYSROOT_DIR}/etc/skel
 cp -a ${RESOURCEDIR}/etc-skel_bash_profile ${SYSROOT_DIR}/etc/skel/.bash_profile
 cp -a ${RESOURCEDIR}/etc-skel_bash_profile ${SYSROOT_DIR}/etc/skel/.bashrc
@@ -65,6 +66,7 @@ set_strip_step "/usr/sbin/"
 set_strip_step "/usr/libexec/" "0"
 set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-debug"
 set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded" "${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-strip"
+set_strip_step "/usr/lib${LIB_SUFF}/" "0" "*.so" "--strip-unnedded"
 
 set_strip_step "/usr/lib${LIB_SUFF}/guile/" "0" "*.go" "--strip-unneeded"
 set_strip_step "/usr/lib${LIB_SUFF}/gettext/"

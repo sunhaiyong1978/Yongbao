@@ -1,0 +1,49 @@
+source env/toolchain/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=toolchain
+export STEP_PACKAGENAME=mpfr
+export PACKAGE_VERSION=4.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/mpfr/4.2.2/
+rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.2
+tar xvf ${DOWNLOADDIR}/mpfr-4.2.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mpfr-4.2.2
+    if [ "x$(get_user_set_env target)" == "x" ]; then
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
+    else
+	CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_HOST})" "${CROSS_HOST}")
+    fi
+    LIB_SUFF=$(archname_to_lib_suff "${CROSS_TARGET}")
+    INSTALL_PREFIX_DIR=$(archname_to_anyparm "${CROSS_TARGET}" "PREFIX_DIR" "/usr")
+
+    TARGET_VENDOR=$(get_user_set_env vendor "unknown")
+
+    if [ "x$(get_user_set_env compat)" == "x1" ] || [ "x$(get_user_set_env target_compat)" == "x1" ]; then
+	COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@compat@g")"
+    else
+	case "x${TARGET_VENDOR}" in
+		"xunknown")
+			COMPAT_TARGET="${CROSS_TARGET}"
+			;;
+		"xNULL")
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@-unknown-@-@g")"
+			;;
+		*)
+			COMPAT_TARGET="$(echo "${CROSS_TARGET}" | sed "s@unknown@${TARGET_VENDOR}@g")"
+			;;
+	esac
+    fi
+
+     INSTALL_DIST_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/target"
+     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
+
+	
+
+
+	./configure --prefix=${INSTALL_PREFIX_DIR} --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
+		--libdir=${INSTALL_PREFIX_DIR}/lib${LIB_SUFF}
+	make -j${JOBS}
+	make DESTDIR=${INSTALL_DIST_DIR} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.2
+rm -f ${INSTALL_DIST_DIR}/usr/lib${LIB_SUFF}/*.la

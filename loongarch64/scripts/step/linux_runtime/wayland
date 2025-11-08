@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/wayland-1.24.0
     sed -i -e "/scanner_dep = dependency('wayland-scanner'/d" src/meson.build
     mkdir cross-build
     pushd cross-build
-	meson ${MESON_CONFIG} \
+	meson ${MESON_CONFIG} -Ddocumentation=false \
               ..
 	eval ${NINJA_AND_INSTALL}
     popd

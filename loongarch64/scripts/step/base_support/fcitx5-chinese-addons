@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
 tar xvf ${DOWNLOADDIR}/fcitx5-chinese-addons-5.1.9.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
 	cp ${RESOURCEDIR}/files/py_table-20121124.tar.gz modules/pinyinhelper/
-	cp ${RESOURCEDIR}/files/py_stroke-20121124.tar.gz modules/pinyinhelper/
+	cp ${RESOURCEDIR}/files/py_stroke-20250329.tar.gz modules/pinyinhelper/
         
         sed -i "s@\${FCITX_INSTALL_CMAKECONFIG_DIR}@${SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake@g" CMakeLists.txt
 	sed -i "s@COMMAND LibIME::pinyindict@COMMAND qemu-loongarch64 ${SYSROOT_DIR}/usr/bin/libime_pinyindict@g" im/pinyin/CMakeLists.txt
@@ -26,3 +26,5 @@ pushd ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
+
+set_final_fix_step "/usr/share/fcitx5/inputmethod/" "F" "f" "*.conf"

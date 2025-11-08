@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=game_emu
 export STEP_PACKAGENAME=Catch2
-export PACKAGE_VERSION=3.10.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/Catch2/3.10.0/
-rm -rf ${BUILD_DIRECTORY}/Catch2-3.10.0
-tar xvf ${DOWNLOADDIR}/Catch2-3.10.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Catch2-3.10.0
+export PACKAGE_VERSION=3.11.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/Catch2/3.11.0/
+rm -rf ${BUILD_DIRECTORY}/Catch2-3.11.0
+tar xvf ${DOWNLOADDIR}/Catch2-3.11.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Catch2-3.11.0
         
 	sed -i.orig "/\.pc\"/s@\"\${CMAKE_INSTALL_PREFIX}@\"${SYSROOT_DIR}/\${CMAKE_INSTALL_PREFIX}@g" CMakeLists.txt
         mkdir cross-build
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/Catch2-3.10.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/Catch2-3.10.0
+rm -rf ${BUILD_DIRECTORY}/Catch2-3.11.0

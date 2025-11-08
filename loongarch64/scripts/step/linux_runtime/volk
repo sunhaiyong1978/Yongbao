@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/volk-1.4.304
         	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIB_SUFF} \
-		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-${ARCH_NAME}.cmake \
+		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-${TAG_NAME}.cmake \
 		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
        		      -DCMAKE_INSTALL_PREFIX=/usr -DVOLK_INSTALL=ON -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}

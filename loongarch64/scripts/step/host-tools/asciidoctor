@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=asciidoctor
-export PACKAGE_VERSION=2.0.23
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/asciidoctor/2.0.23/
-rm -rf ${BUILD_DIRECTORY}/asciidoctor-2.0.23
-tar xvf ${DOWNLOADDIR}/asciidoctor-2.0.23.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/asciidoctor-2.0.23
+export PACKAGE_VERSION=2.0.25
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/asciidoctor/2.0.25/
+rm -rf ${BUILD_DIRECTORY}/asciidoctor-2.0.25
+tar xvf ${DOWNLOADDIR}/asciidoctor-2.0.25.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/asciidoctor-2.0.25
 	gem build asciidoctor.gemspec
-	gem install asciidoctor-2.0.23.gem
+	gem install asciidoctor-2.0.25.gem
 popd 
-rm -rf ${BUILD_DIRECTORY}/asciidoctor-2.0.23
+rm -rf ${BUILD_DIRECTORY}/asciidoctor-2.0.25

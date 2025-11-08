@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fish-shell
-export PACKAGE_VERSION=4.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fish-shell/4.0.2/
-rm -rf ${BUILD_DIRECTORY}/fish-shell-4.0.2
-tar xvf ${DOWNLOADDIR}/fish-shell-4.0.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fish-shell-4.0.2
+export PACKAGE_VERSION=4.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fish-shell/4.1.2/
+rm -rf ${BUILD_DIRECTORY}/fish-shell-4.1.2
+tar xvf ${DOWNLOADDIR}/fish-shell-4.1.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fish-shell-4.1.2
         
 	mkdir temp-bin
 	pushd temp-bin
@@ -32,4 +32,4 @@ pushd ${BUILD_DIRECTORY}/fish-shell-4.0.2
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fish-shell-4.0.2
+rm -rf ${BUILD_DIRECTORY}/fish-shell-4.1.2

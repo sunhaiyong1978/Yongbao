@@ -3,26 +3,25 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.9.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.9.2/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.9.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2
+export PACKAGE_VERSION=6.9.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.9.3/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.9.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
 	export PATH=${CROSSTOOLS_DIR}/qt6/bin:${PATH}
-        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0001-qt6-6.9.2-webengine-configure-add-loongarch64-suppor.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0002-qt-6.9.2-webengine-fix-loongarch64-define-because-ch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0003-qt-6.9.2-webengine-chromium-add-some-define-for-loon.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0004-qt-6.9.2-webengine-fix-chromium-boringssl-openssl-ta.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0005-qtwebengine-6.9.2-crashpad-add-support-for-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0006-qtwebengine-6.9.2-open-lsx-and-lasx-option-for-loong.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0007-qtwebengine-6.9.2-add-sandbox-syscalls-for-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0008-qt-6.9.2-webengine-3rdparty-chromium-api-runtime-add.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0009-qt-6.9.2-webengine-3rdparty-chromium-enable-swiftsha.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0010-qtwebengine-fix-filename-too-long-error-for-use-ninj.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0011-qtwebengine-6.9.2-sandbox-Add-loongarch64-architectu.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0001-qtwebengine-6.9.0-fix-build-error-for-use-gcc.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0001-qtwebengine-6.9.0-chromium-skia-remove-lsx-support-f.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.2/patches/0001-qtwebengine-6.9.0-chromium-third_party-blink-remove-.patch 
+        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0001-qt6-6.9.2-webengine-configure-add-loongarch64-suppor.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0002-qt-6.9.2-webengine-fix-loongarch64-define-because-ch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0003-qt-6.9.2-webengine-chromium-add-some-define-for-loon.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0004-qt-6.9.2-webengine-fix-chromium-boringssl-openssl-ta.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0005-qtwebengine-6.9.2-crashpad-add-support-for-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0006-qtwebengine-6.9.2-open-lsx-and-lasx-option-for-loong.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0008-qt-6.9.2-webengine-3rdparty-chromium-api-runtime-add.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0009-qt-6.9.2-webengine-3rdparty-chromium-enable-swiftsha.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0010-qtwebengine-fix-filename-too-long-error-for-use-ninj.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0001-qtwebengine-6.9.2-use-statx-for-sandbox-add-loongarc.patch -d qtwebengine/src/3rdparty/chromium 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0001-qtwebengine-6.9.0-fix-build-error-for-use-gcc.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0001-qtwebengine-6.9.0-chromium-skia-remove-lsx-support-f.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.9.3/patches/0001-qtwebengine-6.9.0-chromium-third_party-blink-remove-.patch 
 	 
 	sed -i "/unset PKG_CONFIG_PATH/s@unset PKG_CONFIG_PATH@export PKG_CONFIG_PATH=\\\\\"${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig\\\\\"@g" qtwebengine/cmake/QtToolchainHelpers.cmake
 	sed -i "/v8_enable_webassembly/s@=false@=true@g" qtwebengine/src/pdf/CMakeLists.txt
@@ -32,6 +31,8 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2
 
 
 	cp -a ${SYSROOT_DIR}/usr/include/{math,stdlib}.h ${SYSROOT_DIR}/usr/local/include/
+
+	sed -i -e "/^if(/d" -e "/^endif/d" qtwebengine/examples/CMakeLists.txt
 
         mkdir -pv cross-build
         pushd cross-build
@@ -64,13 +65,12 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2
 		      -DQT_FEATURE_use_lld_linker:BOOL=OFF \
 		      -DFEATURE_qtpdf_build:BOOL=ON -DFEATURE_pdf_v8:BOOL=ON \
 		      -DQT_GENERATE_SBOM=OFF \
-		      -DQT_BUILD_EXAMPLES=ON \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.2
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
 
 cat > ${SYSROOT_DIR}/etc/profile.d/qt6.sh << "EOF"
 export QT_PLUGIN_PATH=${QT_PLUGIN_PATH}:/usr/lib64/qt6/plugins

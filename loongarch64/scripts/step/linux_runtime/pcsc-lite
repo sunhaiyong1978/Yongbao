@@ -4,12 +4,13 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=pcsc-lite
-export PACKAGE_VERSION=2.3.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/pcsc-lite/2.3.3/
-rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.3.3
-tar xvf ${DOWNLOADDIR}/pcsc-lite-2.3.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pcsc-lite-2.3.3
-	
+export PACKAGE_VERSION=2.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/pcsc-lite/2.4.0/
+rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.4.0
+tar xvf ${DOWNLOADDIR}/pcsc-lite-2.4.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pcsc-lite-2.4.0
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/pcsc-lite/2.4.0/patches/0001-pcsc-lite-2.4.0-fix-for-cross-build.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		 meson ${MESON_CONFIG} --default-library=both -Dpolkit=false \
@@ -18,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/pcsc-lite-2.3.3
 	popd
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.3.3
+rm -rf ${BUILD_DIRECTORY}/pcsc-lite-2.4.0

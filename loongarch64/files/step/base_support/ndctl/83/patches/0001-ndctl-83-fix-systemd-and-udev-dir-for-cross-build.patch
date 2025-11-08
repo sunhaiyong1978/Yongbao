@@ -1,0 +1,28 @@
+From dd634db043d94b8a13a55436c49d2cc18f33e603 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 3 Oct 2025 13:28:17 +0000
+Subject: [PATCH] ndctl 83 fix systemd and udev dir for cross build.
+
+---
+ meson.build | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 0001595..82c6f17 100644
+--- a/meson.build
++++ b/meson.build
+@@ -160,9 +160,9 @@ endif
+ 
+ if get_option('systemd').enabled()
+   systemd = dependency('systemd', required : true)
+-  systemdunitdir = systemd.get_variable(pkgconfig : 'systemdsystemunitdir')
++  systemdunitdir = systemd.get_pkgconfig_variable('systemdsystemunitdir', define_variable: ['systemd_system_unit_dir', '/usr/lib/systemd/system'])
+   udev = dependency('udev', required : true)
+-  udevdir = udev.get_variable(pkgconfig : 'udevdir')
++  udevdir = udev.get_pkgconfig_variable('udevdir', define_variable: ['udev_dir', '/usr/lib/udev'])
+   udevrulesdir = udevdir / 'rules.d'
+ endif
+ 
+-- 
+2.31.1
+

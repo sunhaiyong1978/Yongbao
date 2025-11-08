@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=computer_language
 export STEP_PACKAGENAME=ocaml
-export PACKAGE_VERSION=5.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/ocaml/5.3.0/
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.3.0
-tar xvf ${DOWNLOADDIR}/ocaml-5.3.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ocaml-5.3.0
-        patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.3.0/patches/0001-Add-loongarch-architecture-support.patch 
+export PACKAGE_VERSION=5.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/computer_language/ocaml/5.4.0/
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.4.0
+tar xvf ${DOWNLOADDIR}/ocaml-5.4.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ocaml-5.4.0
+        patch -Np1 -i ${SYSDIR}/files/computer_language/ocaml/5.4.0/patches/0001-Add-loongarch-architecture-support.patch 
 	 
 	cp -a -f $(automake --print-libdir)/config.{sub,guess} build-aux/
 	autoconf
@@ -61,8 +61,8 @@ pushd ${BUILD_DIRECTORY}/ocaml-5.3.0
 	make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 
-       	make DESTDIR=${PWD}/ocaml-$(echo "5.3.0" | sed "s@-default@@g")-${ARCH_NAME} install
-        mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.3.0" | sed "s@-default@@g")/
-       	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.3.0" | sed "s@-default@@g")/ocaml-$(echo "5.3.0" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz ocaml-$(echo "5.3.0" | sed "s@-default@@g")-${ARCH_NAME}
+       	make DESTDIR=${PWD}/ocaml-$(echo "5.4.0" | sed "s@-default@@g")-${ARCH_NAME} install
+        mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.4.0" | sed "s@-default@@g")/
+       	tar -cJf ${DIST_DIRECTORY}/host/${ARCH_NAME}/ocaml/$(echo "5.4.0" | sed "s@-default@@g")/ocaml-$(echo "5.4.0" | sed "s@-default@@g")-${ARCH_NAME}.tar.xz ocaml-$(echo "5.4.0" | sed "s@-default@@g")-${ARCH_NAME}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.3.0
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.4.0

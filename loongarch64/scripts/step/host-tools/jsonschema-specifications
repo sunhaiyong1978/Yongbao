@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=jsonschema-specifications
-export PACKAGE_VERSION=2025.4.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/jsonschema-specifications/2025.4.1/
-rm -rf ${BUILD_DIRECTORY}/jsonschema_specifications-2025.4.1
-tar xvf ${DOWNLOADDIR}/jsonschema_specifications-2025.4.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/jsonschema_specifications-2025.4.1
+export PACKAGE_VERSION=2025.9.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/jsonschema-specifications/2025.9.1/
+rm -rf ${BUILD_DIRECTORY}/jsonschema_specifications-2025.9.1
+tar xvf ${DOWNLOADDIR}/jsonschema_specifications-2025.9.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/jsonschema_specifications-2025.9.1
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user jsonschema-specifications
 popd 
-rm -rf ${BUILD_DIRECTORY}/jsonschema_specifications-2025.4.1
+rm -rf ${BUILD_DIRECTORY}/jsonschema_specifications-2025.9.1

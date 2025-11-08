@@ -1,0 +1,32 @@
+From 96eb6e4005e883fd9a8f322322d45208dd7e60f9 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 24 Sep 2024 12:22:06 +0000
+Subject: [PATCH] chromium 128 third_party libpng fix for loongarch64 lsx
+ define.
+
+---
+ third_party/libpng/BUILD.gn | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/third_party/libpng/BUILD.gn b/third_party/libpng/BUILD.gn
+index 81648e3..6813a76 100644
+--- a/third_party/libpng/BUILD.gn
++++ b/third_party/libpng/BUILD.gn
+@@ -91,6 +91,14 @@ source_set("libpng_sources") {
+       "mips/filter_msa_intrinsics.c",
+       "mips/mips_init.c",
+     ]
++  } else if (current_cpu == "loong64") {
++    sources += [
++      "loongarch/filter_lsx_intrinsics.c",
++      "loongarch/loongarch_lsx_init.c",
++    ]
++    defines += [
++      "PNG_LOONGARCH_LSX_OPT=1",
++    ]
+   }
+ 
+   configs -= [ "//build/config/compiler:chromium_code" ]
+-- 
+2.31.1
+

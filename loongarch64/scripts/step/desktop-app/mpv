@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/mpv/0.40.0/
 rm -rf ${BUILD_DIRECTORY}/mpv-0.40.0
 tar xvf ${DOWNLOADDIR}/mpv-0.40.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/mpv-0.40.0
-	
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/mpv/0.40.0/patches/0001-mpv-0.40.0-fix-for-ffmpeg-8.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		 meson ${MESON_CONFIG}  \

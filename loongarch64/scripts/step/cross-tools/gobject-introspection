@@ -4,12 +4,12 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=gobject-introspection
-export PACKAGE_VERSION=1.84.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gobject-introspection/1.84.0/
+export PACKAGE_VERSION=1.86.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/gobject-introspection/1.86.0/
 if [ ! -f ${HOST_TOOLS_DIR}/bin/g-ir-scanner ]; then
-rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.84.0
-tar xvf ${DOWNLOADDIR}/gobject-introspection-1.84.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gobject-introspection-1.84.0
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.86.0
+tar xvf ${DOWNLOADDIR}/gobject-introspection-1.86.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gobject-introspection-1.86.0
     
     tar xvf ${RESOURCEDIR}/files/gobject-introspection-glib_git.tar.gz -C subprojects/
     mv subprojects/gobject-introspection-glib_git subprojects/glib
@@ -24,7 +24,7 @@ pushd ${BUILD_DIRECTORY}/gobject-introspection-1.84.0
         ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.84.0
+rm -rf ${BUILD_DIRECTORY}/gobject-introspection-1.86.0
 fi
 
 mkdir -p ${CROSSTOOLS_DIR}/bin

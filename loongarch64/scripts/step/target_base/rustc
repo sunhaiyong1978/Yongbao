@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.89.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.89.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.89.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.89.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.89.0-src
-    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.89.0/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
+export PACKAGE_VERSION=1.90.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.90.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.90.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.90.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.90.0-src
+    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.90.0/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
 	 
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
@@ -32,4 +32,5 @@ pushd ${BUILD_DIRECTORY}/rustc-1.89.0-src
          $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          DESTDIR=${SYSROOT_DIR}/ install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.89.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.90.0-src
+rm -f ${SYSROOT_DIR}/usr/lib/rustlib/manifest-*

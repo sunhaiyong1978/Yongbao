@@ -1,0 +1,26 @@
+From 8581455ea36b0e3f98dd7074a510e8152d535f8c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 6 Sep 2025 03:26:23 +0000
+Subject: [PATCH 7/9] Chromium 140 rust config add loongarch64 support.
+
+---
+ build/config/compiler/BUILD.gn | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
+index 77b02f76d2..1296917ff4 100644
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -1126,6 +1126,9 @@ config("compiler") {
+     # We use clang-rt sanitizer runtimes.
+     "-Zexternal-clangrt",
+   ]
++  if (current_cpu == "loong64") {
++    rustflags += [ "-Ccode-model=medium" ]
++  }
+ 
+   if (!is_win || force_rustc_color_output) {
+     # Colorize error output. The analogous flag is passed for clang. This must
+-- 
+2.31.1
+

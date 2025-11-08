@@ -1,0 +1,30 @@
+From 72eeb30eb88935ac6f4ffd459f55efdd4959cf16 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 6 Sep 2025 03:24:42 +0000
+Subject: [PATCH 4/9] Chromium 140 third_party boringssl add loongarch64
+ support.
+
+---
+ third_party/boringssl/src/include/openssl/target.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/third_party/boringssl/src/include/openssl/target.h b/third_party/boringssl/src/include/openssl/target.h
+index 8d4763d0b3..4854c7b99d 100644
+--- a/third_party/boringssl/src/include/openssl/target.h
++++ b/third_party/boringssl/src/include/openssl/target.h
+@@ -45,6 +45,12 @@
+ #define OPENSSL_RISCV64
+ #elif defined(__riscv) && __SIZEOF_POINTER__ == 4
+ #define OPENSSL_32_BIT
++#elif defined(__loongarch__) && !defined(__loongarch_lp64)
++#define OPENSSL_32_BIT
++#define OPENSSL_LOONGARCH
++#elif defined(__loongarch__) && defined(__loongarch_lp64)
++#define OPENSSL_64_BIT
++#define OPENSSL_LOONGARCH64
+ #elif defined(__pnacl__)
+ #define OPENSSL_32_BIT
+ #define OPENSSL_PNACL
+-- 
+2.31.1
+

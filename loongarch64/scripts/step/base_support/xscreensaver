@@ -24,3 +24,5 @@ account include system-account
 
 ## End /etc/pam.d/xscreensaver
 EOF
+
+set_final_fix_step "/usr/libexec/xscreensaver/" "F" "g" "text executable"

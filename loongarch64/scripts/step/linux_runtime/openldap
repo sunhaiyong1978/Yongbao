@@ -21,6 +21,6 @@ pushd ${BUILD_DIRECTORY}/openldap-2.6.10
         make -j${JOBS} LD="${LINUX_HOST}-ld" depend
 	make -j${JOBS} LD="${LINUX_HOST}-ld"
         make STRIP="${LINUX_HOST}-strip" DESTDIR=${LINUX_SYSROOT_DIR} install
-        rm -f ${LINUX_SYSROOT_DIR}/usr/lib64/*.la
+        rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/openldap-2.6.10

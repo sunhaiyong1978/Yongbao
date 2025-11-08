@@ -1,0 +1,310 @@
+From c64b4a2755680a1f4c29d36269d7e50398c48357 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 8 Sep 2025 03:59:57 +0000
+Subject: [PATCH] Chromium 140 sandbox remove statx for loongarch64.
+
+---
+ .../seccomp-bpf-helpers/baseline_policy.cc    |  2 -
+ .../seccomp-bpf-helpers/sigsys_handlers.cc    |  2 -
+ .../linux/seccomp-bpf-helpers/syscall_sets.cc |  7 +--
+ sandbox/linux/services/syscall_wrappers.cc    | 60 +------------------
+ sandbox/linux/services/syscall_wrappers.h     |  6 --
+ .../services/syscall_wrappers_unittest.cc     |  2 -
+ .../linux/syscall_broker/broker_process.cc    |  2 +-
+ .../syscall_broker/broker_process_unittest.cc |  4 --
+ sandbox/linux/system_headers/linux_stat.h     | 45 --------------
+ 9 files changed, 4 insertions(+), 126 deletions(-)
+
+diff --git a/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc b/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+index 6253120..0ee8a74 100644
+--- a/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+@@ -304,14 +304,12 @@ ResultExpr EvaluateSyscallImpl(int fs_denied_errno,
+     return RestrictMemfdCreate();
+   }
+ 
+-#if !defined(__loongarch__)
+   // The fstatat syscalls are file system syscalls, which will be denied below
+   // with fs_denied_errno. However some allowed fstat syscalls are rewritten by
+   // libc implementations to fstatat syscalls, and we need to rewrite them back.
+   if (sysno == __NR_fstatat_default) {
+     return RewriteFstatatSIGSYS(fs_denied_errno);
+   }
+-#endif
+ 
+   // The statx syscall is a filesystem syscall, which will be denied below with
+   // fs_denied_errno. However, on some platforms, glibc will default to statx
+diff --git a/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc b/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
+index 6cf19f4..424f755 100644
+--- a/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
+@@ -386,7 +386,6 @@ intptr_t SIGSYSSchedHandler(const struct arch_seccomp_data& args,
+ 
+ intptr_t SIGSYSFstatatHandler(const struct arch_seccomp_data& args,
+                               void* fs_denied_errno) {
+-#if !defined(__loongarch__)
+   if (args.nr == __NR_fstatat_default) {
+     if (*reinterpret_cast<const char*>(args.args[1]) == '\0' &&
+         args.args[3] == static_cast<uint64_t>(AT_EMPTY_PATH)) {
+@@ -395,7 +394,6 @@ intptr_t SIGSYSFstatatHandler(const struct arch_seccomp_data& args,
+     }
+     return -reinterpret_cast<intptr_t>(fs_denied_errno);
+   }
+-#endif
+ 
+   CrashSIGSYS_Handler(args, fs_denied_errno);
+ 
+diff --git a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+index f0160d6..fa9f076 100644
+--- a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+@@ -138,7 +138,7 @@ bool SyscallSets::IsFileSystem(int sysno) {
+ #endif
+     case __NR_fchmodat:
+     case __NR_fchownat:  // Should be called chownat ?
+-#if defined(__x86_64__) || defined(__aarch64__)
++#if defined(__x86_64__) || defined(__aarch64__) || defined(__loongarch_lp64)
+     case __NR_newfstatat:  // fstatat(). EPERM not a valid errno.
+ #elif defined(__i386__) || defined(__arm__) || \
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS))
+@@ -213,12 +213,7 @@ bool SyscallSets::IsTruncate(int sysno) {
+ 
+ bool SyscallSets::IsAllowedFileSystemAccessViaFd(int sysno) {
+   switch (sysno) {
+-#if !defined(__loongarch__)
+     case __NR_fstat:
+-#endif
+-#if defined(__loongarch__)
+-    case __NR_statx:
+-#endif
+     case __NR_ftruncate:
+ #if defined(__i386__) || defined(__arm__) || \
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS))
+diff --git a/sandbox/linux/services/syscall_wrappers.cc b/sandbox/linux/services/syscall_wrappers.cc
+index fee67d7..94bfc68 100644
+--- a/sandbox/linux/services/syscall_wrappers.cc
++++ b/sandbox/linux/services/syscall_wrappers.cc
+@@ -170,58 +170,11 @@ int sys_sigaction(int signum,
+   return sigaction(signum, act, oldact);
+ }
+ 
+-void statx_to_stat(struct kernel_stat* to, struct kernel_statx* from) {
+-  memset(to, 0, sizeof(struct kernel_stat));
+-  to->st_dev = ((from->stx_dev_minor & 0xff) | (from->stx_dev_major << 8) |
+-                ((from->stx_dev_minor & ~0xff) << 12));
+-  to->st_rdev = ((from->stx_rdev_minor & 0xff) | (from->stx_rdev_major << 8) |
+-                 ((from->stx_rdev_minor & ~0xff) << 12));
+-  to->st_ino = from->stx_ino;
+-  to->st_mode = from->stx_mode;
+-  to->st_nlink = from->stx_nlink;
+-  to->st_uid = from->stx_uid;
+-  to->st_gid = from->stx_gid;
+-  to->st_atime_ = from->stx_atime.tv_sec;
+-  to->st_atime_nsec_ = from->stx_atime.tv_nsec;
+-  to->st_mtime_ = from->stx_mtime.tv_sec;
+-  to->st_mtime_nsec_ = from->stx_mtime.tv_nsec;
+-  to->st_ctime_ = from->stx_ctime.tv_sec;
+-  to->st_ctime_nsec_ = from->stx_ctime.tv_nsec;
+-  to->st_size = from->stx_size;
+-  to->st_blocks = from->stx_blocks;
+-  to->st_blksize = from->stx_blksize;
+-}
+-
+-int sys_statx(int fd,
+-              const char* path,
+-              int flags,
+-              unsigned int mask,
+-              struct kernel_statx* statx_buf) {
+-#if defined(__NR_statx)
+-  int res;
+-  res = syscall(__NR_statx, fd, path, flags, mask, statx_buf);
+-  if (res == 0)
+-    MSAN_UNPOISON(stat_buf, sizeof(*stat_buf));
+-  return res;
+-#else  // defined(__NR_statx)
+-  RAW_CHECK(false);
+-  return -ENOSYS;
+-#endif
+-}
+-
+ int sys_stat(const char* path, struct kernel_stat* stat_buf) {
+   int res;
+ #if !defined(__NR_stat)
+-#if defined(__NR_statx)
+-  kernel_statx statx_buf;
+-  res = sys_statx(AT_FDCWD, path, AT_STATX_SYNC_AS_STAT, STATX_BASIC_STATS,
+-                  &statx_buf);
+-  if (res == 0)
+-    statx_to_stat(stat_buf, &statx_buf);
+-#else  // defined(__NR_statx)
+   res = syscall(__NR_newfstatat, AT_FDCWD, path, stat_buf, 0);
+-#endif
+-#else  //! defined(__NR_stat)
++#else
+   res = syscall(__NR_stat, path, stat_buf);
+ #endif
+   if (res == 0)
+@@ -232,17 +185,8 @@ int sys_stat(const char* path, struct kernel_stat* stat_buf) {
+ int sys_lstat(const char* path, struct kernel_stat* stat_buf) {
+   int res;
+ #if !defined(__NR_lstat)
+-#if defined(__NR_statx)
+-  kernel_statx statx_buf;
+-  int flag = 0;
+-  flag = AT_NO_AUTOMOUNT | AT_SYMLINK_NOFOLLOW;
+-  res = sys_statx(AT_FDCWD, path, flag, STATX_BASIC_STATS, &statx_buf);
+-  if (res == 0)
+-    statx_to_stat(stat_buf, &statx_buf);
+-#else  // defined(__NR_statx)
+   res = syscall(__NR_newfstatat, AT_FDCWD, path, stat_buf, AT_SYMLINK_NOFOLLOW);
+-#endif
+-#else  //! defined(__NR_lstat)
++#else
+   res = syscall(__NR_lstat, path, stat_buf);
+ #endif
+   if (res == 0)
+diff --git a/sandbox/linux/services/syscall_wrappers.h b/sandbox/linux/services/syscall_wrappers.h
+index abf0f4d..d591dbc 100644
+--- a/sandbox/linux/services/syscall_wrappers.h
++++ b/sandbox/linux/services/syscall_wrappers.h
+@@ -18,7 +18,6 @@ struct rlimit64;
+ struct cap_hdr;
+ struct cap_data;
+ struct kernel_stat;
+-struct kernel_statx;
+ struct kernel_stat64;
+ struct landlock_ruleset_attr;
+ 
+@@ -93,11 +92,6 @@ SANDBOX_EXPORT int sys_sigaction(int signum,
+ // architectures, with the same capabilities as stat() and lstat().
+ SANDBOX_EXPORT int sys_stat(const char* path, struct kernel_stat* stat_buf);
+ SANDBOX_EXPORT int sys_lstat(const char* path, struct kernel_stat* stat_buf);
+-SANDBOX_EXPORT int sys_statx(int fd,
+-                             const char* path,
+-                             int flags,
+-                             unsigned int mask,
+-                             struct kernel_statx* statx_buf);
+ 
+ // Takes care of unpoisoning |stat_buf| for MSAN. Check-fails if fstatat64() is
+ // not a supported syscall on the current platform.
+diff --git a/sandbox/linux/services/syscall_wrappers_unittest.cc b/sandbox/linux/services/syscall_wrappers_unittest.cc
+index dc4f62d..0905089 100644
+--- a/sandbox/linux/services/syscall_wrappers_unittest.cc
++++ b/sandbox/linux/services/syscall_wrappers_unittest.cc
+@@ -104,7 +104,6 @@ TEST(SyscallWrappers, LinuxSigSet) {
+             linux_sigset);
+ }
+ 
+-#if !defined(__loongarch_lp64)
+ TEST(SyscallWrappers, Stat) {
+   // Create a file to stat, with 12 bytes of data.
+   ScopedTemporaryFile tmp_file;
+@@ -171,7 +170,6 @@ TEST(SyscallWrappers, Stat) {
+   EXPECT_EQ(0u, sb->__unused5);
+ #endif
+ }
+-#endif
+ 
+ #if defined(__NR_fstatat64)
+ TEST(SyscallWrappers, Stat64) {
+diff --git a/sandbox/linux/syscall_broker/broker_process.cc b/sandbox/linux/syscall_broker/broker_process.cc
+index 353456c..cc42219 100644
+--- a/sandbox/linux/syscall_broker/broker_process.cc
++++ b/sandbox/linux/syscall_broker/broker_process.cc
+@@ -169,7 +169,7 @@ bool BrokerProcess::IsSyscallBrokerable(int sysno, bool fast_check) const {
+ #if defined(__NR_fstatat64)
+     case __NR_fstatat64:
+ #endif
+-#if defined(__x86_64__) || defined(__aarch64__)
++#if defined(__x86_64__) || defined(__aarch64__) || defined(__loongarch_lp64)
+     case __NR_newfstatat:
+ #endif
+ #if defined(__NR_statx)
+diff --git a/sandbox/linux/syscall_broker/broker_process_unittest.cc b/sandbox/linux/syscall_broker/broker_process_unittest.cc
+index a14c837..54d3182 100644
+--- a/sandbox/linux/syscall_broker/broker_process_unittest.cc
++++ b/sandbox/linux/syscall_broker/broker_process_unittest.cc
+@@ -893,9 +893,6 @@ TEST(BrokerProcess, CreateFile) {
+   unlink(permfile_name);
+ }
+ 
+-// Use statx instead of stat,lstat and fstatat on loongarch64 architecture,
+-// So not test run TestStatHelper on loongarch64.
+-#if !defined(__loongarch_lp64)
+ void TestStatHelper(bool fast_check_in_client, bool follow_links) {
+   ScopedTemporaryFile tmp_file;
+   EXPECT_EQ(12, write(tmp_file.fd(), "blahblahblah", 12));
+@@ -1107,7 +1104,6 @@ TEST(BrokerProcess, StatFileHost) {
+   TestStatHelper(false, true);
+   TestStatHelper(false, false);
+ }
+-#endif
+ 
+ void TestRenameHelper(bool fast_check_in_client) {
+   std::string oldpath;
+diff --git a/sandbox/linux/system_headers/linux_stat.h b/sandbox/linux/system_headers/linux_stat.h
+index 5104cea..694f63e 100644
+--- a/sandbox/linux/system_headers/linux_stat.h
++++ b/sandbox/linux/system_headers/linux_stat.h
+@@ -175,37 +175,6 @@ struct kernel_stat {
+ };
+ #endif
+ 
+-#if defined(__loongarch_lp64)
+-struct kernel_statx_timestamp {
+-  long tv_sec;
+-  unsigned int tv_nsec;
+-  int __reserved;
+-};
+-struct kernel_statx {
+-  unsigned int stx_mask;
+-  unsigned int stx_blksize;
+-  unsigned long stx_attributes;
+-  unsigned int stx_nlink;
+-  unsigned int stx_uid;
+-  unsigned int stx_gid;
+-  unsigned short stx_mode;
+-  unsigned short __spare0[1];
+-  unsigned long stx_ino;
+-  unsigned long stx_size;
+-  unsigned long stx_blocks;
+-  unsigned long stx_attributes_mask;
+-  struct kernel_statx_timestamp stx_atime;
+-  struct kernel_statx_timestamp stx_btime;
+-  struct kernel_statx_timestamp stx_ctime;
+-  struct kernel_statx_timestamp stx_mtime;
+-  unsigned int stx_rdev_major;
+-  unsigned int stx_rdev_minor;
+-  unsigned int stx_dev_major;
+-  unsigned int stx_dev_minor;
+-  unsigned long __spare2[14];
+-};
+-#endif
+-
+ #if !defined(AT_EMPTY_PATH)
+ #define AT_EMPTY_PATH 0x1000
+ #endif
+@@ -238,20 +207,6 @@ using default_stat_struct = struct kernel_stat;
+ #define __NR_fstatat_default __NR_newfstatat
+ #define __NR_fstat_default __NR_fstat
+ 
+-#elif defined(__NR_statx)
+-
+-namespace sandbox {
+-using default_stat_struct = struct kernel_statx;
+-}  // namespace sandbox
+-
+-#define AT_STATX_SYNC_TYPE 0x6000
+-#define AT_STATX_SYNC_AS_STAT 0x0000
+-#define AT_STATX_FORCE_SYNC 0x2000
+-#define AT_STATX_DONT_SYNC 0x4000
+-#define STATX_ALL 0x00000fffU
+-
+-#define __NR_statx_default __NR_statx
+-
+ #else
+ #error "one of fstatat64 and newfstatat must be defined"
+ #endif
+-- 
+2.31.1
+

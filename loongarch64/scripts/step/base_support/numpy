@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=numpy
-export PACKAGE_VERSION=2.3.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/numpy/2.3.2/
-rm -rf ${BUILD_DIRECTORY}/numpy-2.3.2
-tar xvf ${DOWNLOADDIR}/numpy-2.3.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/numpy-2.3.2
+export PACKAGE_VERSION=2.3.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/numpy/2.3.4/
+rm -rf ${BUILD_DIRECTORY}/numpy-2.3.4
+tar xvf ${DOWNLOADDIR}/numpy-2.3.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/numpy-2.3.4
         
 	mkdir cross-build
 	pushd cross-build
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/numpy-2.3.2
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/numpy-2.3.2
+rm -rf ${BUILD_DIRECTORY}/numpy-2.3.4

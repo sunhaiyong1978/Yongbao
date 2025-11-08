@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=llvm_runtimes
-export PACKAGE_VERSION=21.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/llvm_runtimes/21.1.0/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
-tar xvf ${DOWNLOADDIR}/llvm-project-21.1.0.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
+export PACKAGE_VERSION=21.1.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/llvm_runtimes/21.1.4/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.4.src
+tar xvf ${DOWNLOADDIR}/llvm-project-21.1.4.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-21.1.4.src
     pushd compiler-rt
         mkdir cross-build
         pushd cross-build
@@ -53,4 +53,4 @@ pushd ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
         popd
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.0.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.4.src

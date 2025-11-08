@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=shaderc
-export PACKAGE_VERSION=2025.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/shaderc/2025.3/
-rm -rf ${BUILD_DIRECTORY}/shaderc-2025.3
-tar xvf ${DOWNLOADDIR}/shaderc-2025.3.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/shaderc-2025.3
+export PACKAGE_VERSION=2025.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/shaderc/2025.4/
+rm -rf ${BUILD_DIRECTORY}/shaderc-2025.4
+tar xvf ${DOWNLOADDIR}/shaderc-2025.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/shaderc-2025.4
 	tar xvf ${DOWNLOADDIR}/SPIRV-Tools-$(get_package_version "SPIRV-Tools").tar.gz -C third_party/
 	mv third_party/SPIRV-Tools-$(get_package_version "SPIRV-Tools") third_party/spirv-tools
 	
@@ -30,7 +30,7 @@ pushd ${BUILD_DIRECTORY}/shaderc-2025.3
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/shaderc-2025.3
+rm -rf ${BUILD_DIRECTORY}/shaderc-2025.4
 
 echo "#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/glslc \"\$@\"" \

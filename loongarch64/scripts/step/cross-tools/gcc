@@ -10,6 +10,7 @@ rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0
 tar xvf ${DOWNLOADDIR}/gcc-15.2.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 	patch -Np1 -i ${SYSDIR}/files/cross-tools/gcc/15.2.0/patches/0001-LoongArch-Fix-bug-simd_maddw_evod_-mode-_-su.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/gcc/15.2.0/patches/0001-Loongarch-Fix-ICE-for-PR122097.patch 
 	 
 	mkdir -p tools-build-all
 	pushd tools-build-all

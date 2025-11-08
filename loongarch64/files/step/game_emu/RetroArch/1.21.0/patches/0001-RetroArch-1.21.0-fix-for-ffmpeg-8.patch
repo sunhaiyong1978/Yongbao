@@ -1,0 +1,68 @@
+From d696181c3104ca65d589d2e6f556c8bb9275998b Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 25 Sep 2025 08:19:39 +0000
+Subject: [PATCH] RetroArch 1.21.0 fix for ffmpeg 8.
+
+---
+ cores/libretro-ffmpeg/ffmpeg_core.c | 6 +++---
+ record/drivers/record_ffmpeg.c      | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/cores/libretro-ffmpeg/ffmpeg_core.c b/cores/libretro-ffmpeg/ffmpeg_core.c
+index 374d0a7..2a889b3 100644
+--- a/cores/libretro-ffmpeg/ffmpeg_core.c
++++ b/cores/libretro-ffmpeg/ffmpeg_core.c
+@@ -2089,16 +2089,16 @@ void CORE_PREFIX(retro_unload_game)(void)
+    for (i = 0; i < MAX_STREAMS; i++)
+    {
+       if (sctx[i])
+-         avcodec_close(sctx[i]);
++         avcodec_free_context(&sctx[i]);
+       if (actx[i])
+-         avcodec_close(actx[i]);
++         avcodec_free_context(&actx[i]);
+       sctx[i] = NULL;
+       actx[i] = NULL;
+    }
+ 
+    if (vctx)
+    {
+-      avcodec_close(vctx);
++      avcodec_free_context(&vctx);
+       vctx = NULL;
+    }
+ 
+diff --git a/record/drivers/record_ffmpeg.c b/record/drivers/record_ffmpeg.c
+index a7fb989..c65d988 100644
+--- a/record/drivers/record_ffmpeg.c
++++ b/record/drivers/record_ffmpeg.c
+@@ -374,7 +374,7 @@ static bool ffmpeg_init_audio(ffmpeg_t *handle, const char *audio_resampler)
+    if (!audio->buffer)
+       return false;
+ 
+-   audio->outbuf_size = AV_INPUT_BUFFER_MIN_SIZE;
++   audio->outbuf_size = 4096;
+    audio->outbuf      = (uint8_t*)av_malloc(audio->outbuf_size);
+ 
+    if (!audio->outbuf)
+@@ -951,7 +951,7 @@ static void ffmpeg_free(void *data)
+ 
+    if (handle->audio.codec)
+    {
+-      avcodec_close(handle->audio.codec);
++      avcodec_free_context(&handle->audio.codec);
+       av_free(handle->audio.codec);
+    }
+ 
+@@ -959,7 +959,7 @@ static void ffmpeg_free(void *data)
+ 
+    if (handle->video.codec)
+    {
+-      avcodec_close(handle->video.codec);
++      avcodec_free_context(&handle->video.codec);
+       av_free(handle->video.codec);
+    }
+ 
+-- 
+2.31.1
+

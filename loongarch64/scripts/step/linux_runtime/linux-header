@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=linux-header
-export PACKAGE_VERSION=6.16.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/linux-header/6.16.4/
-rm -rf ${BUILD_DIRECTORY}/linux-6.16.4
-tar xvf ${DOWNLOADDIR}/linux-6.16.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.16.4
+export PACKAGE_VERSION=6.17.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/linux-header/6.17.4/
+rm -rf ${BUILD_DIRECTORY}/linux-6.17.4
+tar xvf ${DOWNLOADDIR}/linux-6.17.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.17.4
 	make ARCH=${LINUX_NAME} mrproper
 	make ARCH=${LINUX_NAME} INSTALL_HDR_PATH=dest headers_install
 	find dest/include -name '.*' -delete
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/linux-6.16.4
         mkdir -pv ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include
         cp -rv dest/include/* ${TOOLCHAIN_DIRECTORY}/${ARCH_NAME}/linux-header/usr/include/
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.16.4
+rm -rf ${BUILD_DIRECTORY}/linux-6.17.4

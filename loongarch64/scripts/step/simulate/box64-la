@@ -9,20 +9,17 @@ rm -rf ${BUILD_DIRECTORY}/box64-git-default_git
 tar xvf ${DOWNLOADDIR}/box64-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/box64-git-default_git
         
-        mkdir cross-build
-        pushd cross-build
-                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
-                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
-                      -DCMAKE_INSTALL_PREFIX=/usr \
-                      -DBUILD_SHARED_LIBS=OFF -DLARCH64=ON -DBOX32=ON \
-                      -Wno-dev ..
-                make -j${JOBS}
-		cp -a box64 ${SYSROOT_DIR}/usr/bin/box64-la
-        popd
+	mkdir cross-build
+	pushd cross-build
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
+       		      -DCMAKE_INSTALL_PREFIX=/usr \
+		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+		      -DLARCH64=ON -DBOX32=ON -DWOW64=ON -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/box64-git-default_git
-
-default_set_conf "x86_64-emu" "box64-standard" "Box64 无加速" "/usr/bin/x86-emu" "/usr/bin/box64"
-default_set_conf "x86_64-emu" "box64-loongarch64" "Box64 Loongarch64 加速版" "/usr/bin/x86-emu" "/usr/bin/box64-la"

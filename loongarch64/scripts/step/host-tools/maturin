@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=maturin
-export PACKAGE_VERSION=1.9.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/maturin/1.9.4/
-rm -rf ${BUILD_DIRECTORY}/maturin-1.9.4
-tar xvf ${DOWNLOADDIR}/maturin-1.9.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/maturin-1.9.4
+export PACKAGE_VERSION=1.9.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/maturin/1.9.6/
+rm -rf ${BUILD_DIRECTORY}/maturin-1.9.6
+tar xvf ${DOWNLOADDIR}/maturin-1.9.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/maturin-1.9.6
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user maturin
 popd 
-rm -rf ${BUILD_DIRECTORY}/maturin-1.9.4
+rm -rf ${BUILD_DIRECTORY}/maturin-1.9.6

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=ocaml
-export PACKAGE_VERSION=5.3.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ocaml/5.3.0/
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.3.0
-tar xvf ${DOWNLOADDIR}/ocaml-5.3.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ocaml-5.3.0
+export PACKAGE_VERSION=5.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ocaml/5.4.0/
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.4.0
+tar xvf ${DOWNLOADDIR}/ocaml-5.4.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ocaml-5.4.0
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/ocaml-5.3.0
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ocaml-5.3.0
+rm -rf ${BUILD_DIRECTORY}/ocaml-5.4.0

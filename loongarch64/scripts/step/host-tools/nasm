@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=nasm
-export PACKAGE_VERSION=2.16.03
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/nasm/2.16.03/
-rm -rf ${BUILD_DIRECTORY}/nasm-2.16.03
-tar xvf ${DOWNLOADDIR}/nasm-2.16.03.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nasm-2.16.03
+export PACKAGE_VERSION=3.01
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/nasm/3.01/
+rm -rf ${BUILD_DIRECTORY}/nasm-3.01
+tar xvf ${DOWNLOADDIR}/nasm-3.01.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nasm-3.01
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/nasm-2.16.03
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/nasm-2.16.03
+rm -rf ${BUILD_DIRECTORY}/nasm-3.01
