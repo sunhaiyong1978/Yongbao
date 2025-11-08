@@ -1,10 +1,11 @@
+export TAG_NAME=$(get_user_set_env target "x86_64")
 export ARCH_NAME=$(archname_to_name "$(get_user_set_env target "x86_64")" "${ARCH_NAME}")
 export ARCH_FAMILY=$(archname_to_name "$(get_user_set_env target "x86_64")" "${ARCH_FAMILY}")
 export ABI=$(archname_to_archabi "$(get_user_set_env target "x86_64")" "${ABI}")
 export QEMU_ARCH=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "QEMU_ARCH" "${ARCH_NAME}")
 export LINUX_NAME=$(archname_to_linuxname "$(get_user_set_env target "x86_64")" "${ARCH_FAMILY}")
 export ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target "x86_64")" "${ARCH_BIT}")
-export LD_LINUXFILE=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "LD_LINUXFILE" "${ARCH_NAME}")
+export LD_LINUXFILE=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "LD_LINUXFILE" "ld-unknown.so.1")
 
 export PREFIX=/usr
 export RUNTIME_SYSROOT_DIR=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "RUNTIME_SYSROOT_DIR" "/usr/lib/x86_64/sys-root")
@@ -18,7 +19,7 @@ export LINUX_HOST=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET
 
 export COMMON_CONFIG="--prefix=/usr --build=${CROSS_HOST} --host=${LINUX_HOST} --libdir=/usr/lib${LIB_SUFF} --sysconfdir=/etc"
 export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${LINUX_SYSROOT_DIR} install && rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la"
-export MESON_CONFIG="--prefix=/usr --libdir=/usr/lib${LIB_SUFF} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross-${ARCH_NAME}.txt"
+export MESON_CONFIG="--prefix=/usr --libdir=/usr/lib${LIB_SUFF} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross-${TAG_NAME}.txt"
 export NINJA_AND_INSTALL="CC=${LINUX_HOST}-gcc ninja && DESTDIR=${LINUX_SYSROOT_DIR} ninja install"
 
 export CROSS_TARGET=${LINUX_HOST}
