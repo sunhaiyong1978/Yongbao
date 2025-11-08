@@ -17,7 +17,7 @@ while getopts 'a:K:h' OPT; do
 		echo "本脚本可以创建指定架构runtime环境"
 		echo "custom/${0} [选项]"
 		echo "-a <架构名> : 指定编译的架构名称。"
-		echo "支持架构：loongarch64 | x86_64 | i686 | aarch64 | mips64 | x86_64-v2 | x86_64-v3 | x86_64-v4"
+		echo "支持架构：loongarch64 | x86_64 | i686 | aarch64 | mips64 | riscv64 | x86_64-v2 | x86_64-v3 | x86_64-v4"
 		echo "-K <数字>: 表示允许出错步骤的数量，0表示没有限制。"
 		echo "-h: 帮助信息。"
 		exit 127
@@ -26,7 +26,7 @@ done
 shift $(($OPTIND - 1))
 
 case "${CREATE_ARCH_NAME}" in
-	loongarch64 | x86_64 | i686 | aarch64 | mips64 | x86_64-v2 | x86_64-v3 | x86_64-v4)
+	loongarch64 | x86_64 | i686 | aarch64 | mips64 | riscv64 | x86_64-v2 | x86_64-v3 | x86_64-v4)
 		echo "即将开始构建 ${CREATE_ARCH_NAME} 架构的 runtime，runtime 存放目录 workbase/overlay/${CREATE_ARCH_NAME}_runtime ..."
 		# build.sh 是构建脚本
 		# -d 参数表示构建前检查并需要下载的软件包，去掉该参数表示构建过程中检查需要的软件包并下载。
