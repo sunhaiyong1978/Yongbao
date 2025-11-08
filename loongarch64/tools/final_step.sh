@@ -85,6 +85,7 @@ if [ -d ${FINAL_FIX_DIR} ]; then
 
 
 	echo -n "" > ${TEMP_DIRECTORY}/final_fix_all.txt
+	echo -n "" > ${TEMP_DIRECTORY}/final_fix_custom.txt
 
 	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${FIX_STEP_NAME}.final_fix ]; then
 		echo "发现 ${NEW_TARGET_SYSDIR}/overlaydir/${FIX_STEP_NAME}.final_fix 文件，按照其中的设置对 ${FIX_STEP_NAME} 目录进行追加处理操作..."
@@ -102,6 +103,7 @@ if [ -d ${FINAL_FIX_DIR} ]; then
 			FINAL_FIX_SET_COMMAND_OPT=$(echo "${line_fix}" | awk -F'|' '{ print $2 }')
 			FINAL_FIX_SET_FILES_TYPE=$(echo "${line_fix}" | awk -F'|' '{ print $3 }')
 			FINAL_FIX_SET_COMMAND_DIST=$(echo "${line_fix}" | awk -F'|' '{ print $4 }')
+			FINAL_FIX_SET_COMMAND_DIST_FIX=$(echo "${line_fix}" | awk -F'|' '{ print $5 }')
 			pushd ${FINAL_FIX_DIR} > /dev/null
 				case "${FINAL_FIX_SET_COMMAND_OPT}" in
 					F)
@@ -112,13 +114,48 @@ if [ -d ${FINAL_FIX_DIR} ]; then
 								eval "${RUN_COMMAND}"
 								set +x
 								;;
+							g)
+								RUN_COMMAND="file ${PWD}/./${FINAL_FIX_SET_DIRECTORY}/* | grep -e '"${FINAL_FIX_SET_COMMAND_DIST}"' | awk -F':' '{ print \$1 }' >> ${TEMP_DIRECTORY}/final_fix_all.txt"
+								set -x
+								eval "${RUN_COMMAND}"
+								set +x
+								;;
+# 							c)
+# 								RUN_COMMAND="file ${PWD}/./${FINAL_FIX_SET_DIRECTORY}/* | grep -e '"${FINAL_FIX_SET_COMMAND_DIST}"' | awk -F':' '{ print \"${FINAL_FIX_SET_COMMAND_DIST_FIX}|\" \$1 }' >> ${TEMP_DIRECTORY}/final_fix_custom.txt"
+# 								set -x
+# 								eval "${RUN_COMMAND}"
+# 								set +x
+# 								;;
 							d)
 								;;
 							*)
-								echo "追加修复操作码“${FINAL_FIX_SET_COMMAND_OPT}”对类型“${FINAL_FIX_SET_FILES_TYPE}”设置无法操作，请使用 f(文件) 、d(目录) 及 l(链接)。"
+# 								echo "追加修复操作码“${FINAL_FIX_SET_COMMAND_OPT}”对类型“${FINAL_FIX_SET_FILES_TYPE}”设置无法操作，请使用 f(文件) 、g(文件类型)、c(自定义修改)、d(目录) 及 l(链接)。"
+								echo "追加修复操作码“${FINAL_FIX_SET_COMMAND_OPT}”对类型“${FINAL_FIX_SET_FILES_TYPE}”设置无法操作，请使用 f(文件) 、g(文件类型)、d(目录) 及 l(链接)。"
 								;;
 						esac
 						;;
+					S)
+						case "${FINAL_FIX_SET_FILES_TYPE}" in
+							f)
+								RUN_COMMAND="find ${PWD}/./${FINAL_FIX_SET_DIRECTORY} -type f -name '"${FINAL_FIX_SET_COMMAND_DIST}"' -exec echo \"${FINAL_FIX_SET_COMMAND_DIST_FIX}|{}\" ';' >> ${TEMP_DIRECTORY}/final_fix_custom.txt"
+								set -x
+								eval "${RUN_COMMAND}"
+								set +x
+								;;
+							g)
+								RUN_COMMAND="file ${PWD}/./${FINAL_FIX_SET_DIRECTORY}/* | grep -e '"${FINAL_FIX_SET_COMMAND_DIST}"' | awk -F':' '{ print \"${FINAL_FIX_SET_COMMAND_DIST_FIX}|\" \$1 }' >> ${TEMP_DIRECTORY}/final_fix_custom.txt"
+								set -x
+								eval "${RUN_COMMAND}"
+								set +x
+								;;
+							d)
+								;;
+							*)
+								echo "追加修复操作码“${FINAL_FIX_SET_COMMAND_OPT}”对类型“${FINAL_FIX_SET_FILES_TYPE}”设置无法操作，请使用 f(文件) 、g(文件类型)、d(目录) 及 l(链接)。"
+								;;
+						esac
+						;;
+
 					D)
 						case "${FINAL_FIX_SET_FILES_TYPE}" in
 							f)
@@ -187,7 +224,7 @@ if [ -d ${FINAL_FIX_DIR} ]; then
 # 		echo -n "" > ${TEMP_DIRECTORY}/final_fix_all.txt
 		touch ${TEMP_DIRECTORY}/final_fix-foo
 # 		file usr/{bin,sbin,libexec}/* | grep "text executable" | awk -F':' '{ print $1 }' >> ${TEMP_DIRECTORY}/final_fix_all.txt
-		file usr/{bin,sbin,libexec}/* | grep "ASCII text" | awk -F':' '{ print $1 }' >> ${TEMP_DIRECTORY}/final_fix_all.txt
+		file usr/{bin,sbin,libexec}/* | grep -e "ASCII text" -e "text executable" | awk -F':' '{ print $1 }' >> ${TEMP_DIRECTORY}/final_fix_all.txt
 		find usr -type f -name "*.pc" \
                         -o -type f -name "*.cmake" \
                         -o -type f -name "Makefile*" \
@@ -208,6 +245,25 @@ if [ -d ${FINAL_FIX_DIR} ]; then
 			-e "s@${SYSROOT_DIR}/usr@/usr@g" \
 			-e "s@${SYSROOT_DIR}@@g" \
 			$(cat ${TEMP_DIRECTORY}/final_fix_all.txt)
+
+		echo "执行自定义的替换操作..."
+		cat ${TEMP_DIRECTORY}/final_fix_custom.txt | grep -v "^#" | while read custom_line
+		do
+			CUSTOM_REPLACE_STR=$(echo "${custom_line}" | awk -F'|' '{ print $1 }')
+			CUSTOM_REPLACE_FILE=$(echo "${custom_line}" | awk -F'|' '{ print $2 }')
+			CUSTOM_REPLACE_STR_SOURCE=$(echo "${CUSTOM_REPLACE_STR}" | awk -F'>>>' '{ print $1 }')
+			CUSTOM_REPLACE_STR_DEST=$(echo "${CUSTOM_REPLACE_STR}" | awk -F'>>>' '{ print $2 }')
+			if [ -f ${CUSTOM_REPLACE_FILE} ]; then
+				if [ "x${CUSTOM_REPLACE_STR_SOURCE}" != "x" ]; then
+					sed -i "s@${CUSTOM_REPLACE_STR_SOURCE}@${CUSTOM_REPLACE_STR_DEST}@g" ${CUSTOM_REPLACE_FILE}
+				else
+					echo "被替换字符不允许是空字串！"
+				fi
+			else
+				echo "找不到 ${CUSTOM_REPLACE_FILE} 文件"
+			fi
+		done
+
 
 # 		touch ${TEMP_DIRECTORY}/strip-foo
 # 		sed -i \
