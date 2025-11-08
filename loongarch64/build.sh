@@ -757,6 +757,22 @@ function remove_date_suff
 	rm -f ${NEW_TARGET_SYSDIR}/datetime_stemp
 }
 
+function get_true_overlay_dirname
+{
+	declare OVERLAY_DIR=""
+	if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
+		if [ -f ${1} ]; then
+			OVERLAY_DIR=$(cat ${1} | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
+		else
+			OVERLAY_DIR=""
+		fi
+	else
+		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^\.\|^-]@@g")
+	fi
+
+	echo "${OVERLAY_DIR}"
+}
+
 
 function get_overlay_dirname
 {
@@ -765,11 +781,12 @@ function get_overlay_dirname
 	if [ "x${OPT_SET_OVERLAY_DIR}" == "x" ]; then
 		OVERLAY_DIR=$(cat ${1} | grep "overlay_dir=" | head -n1 | gawk -F'=' '{ print $2 }')
 	else
-		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+		OVERLAY_DIR=$(echo "${OPT_SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^\.\|^-]@@g")
 	fi
 
-	if [ "x${SET_OVERLAY_DIR}" != "x" ]; then
-		OVERLAY_DIR=$(echo "${SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+# 	if [ "x${SET_OVERLAY_DIR}" != "x" ]; then
+	if [ "x${SET_OVERLAY_DIR}" != "x" ] && [ "x${AUTO_SET_OVERLAY_DIR}" == "x0" ]; then
+		OVERLAY_DIR=$(echo "${SET_OVERLAY_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^\.\|^-]@@g")
 	fi
 	echo "${OVERLAY_DIR}"
 }
@@ -829,10 +846,10 @@ function overlay_mount
 	LOWERDIR_LIST=""
 	if [ -f ${2} ]; then
 		OVERLAY_DIR=$(get_overlay_dirname ${2})
+# 		OVERLAY_DIR=$(get_true_overlay_dirname ${2})
 	else
 		OVERLAY_DIR=""
 	fi
-
 
 #	if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${OVERLAY_DIR}.released ]; then
 		if [ "x${SET_PARENT_DIR}" == "x" ]; then
@@ -893,7 +910,7 @@ function overlay_mount
 	ONLY_PARENT_DIR=0
 	LOWERDIR_SET_LIST=""
 	if [ "x${SET_PARENT_DIR}" != "x" ]; then
-		for i in $(echo "${SET_PARENT_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^-]@@g")
+		for i in $(echo "${SET_PARENT_DIR}" | sed -e "s@,@ @g" -e "s@[^[:alnum:]\|^[:space:]\|^_\|^\.\|^-]@@g")
 		do
 			if [ "x${i}" == "xNULL" ]; then
 				continue;
@@ -1289,7 +1306,7 @@ function set_to_default_opt
                 if [ "x${i}" == "xnone_status" ] || [ "x${i:0:1}" == "x%" ]; then
                         continue
                 fi
-                if [ "x{i}" != "x" ]; then
+                if [ "x${i}" != "x" ]; then
 			SET_OPT[${SET_COUNT}]=${i}
 			((SET_COUNT++))
 		fi
@@ -1388,7 +1405,7 @@ function test_opt
 
 	for i in $(echo "${TEST_STR}" | tr "+" "\\n")
 	do
-		if [ "x{i}" != "x" ]; then
+		if [ "x${i}" != "x" ]; then
 			TEST_OPT[${TEST_COUNT}]=${i}
 			((TEST_COUNT++))
 		fi
@@ -1469,7 +1486,7 @@ function test_opt_group
 
 	for i in $(echo "${TEST_STR}" | tr "," "\\n")
 	do
-		if [ "x{i}" != "x" ]; then
+		if [ "x${i}" != "x" ]; then
 			TEST_OPT[${TEST_COUNT}]=${i}
 			((TEST_COUNT++))
 		fi
@@ -1518,7 +1535,7 @@ function test_opt_can_run
 		if [ "x${i}" == "xnone_status" ] || [ "x${i:0:1}" == "x%" ]; then
 			continue
 		fi
-		if [ "x{i}" != "x" ]; then
+		if [ "x${i}" != "x" ]; then
 			TEST_OPT[${TEST_COUNT}]=${i}
 			((TEST_COUNT++))
 		fi
@@ -1558,6 +1575,7 @@ function os_run_clean
 	declare STEP_STAGE="${1}"
 	declare PACKAGE_NAME="${2}"
 	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+# 		declare OS_RUN_OVERLAY_DIR=$(get_true_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		declare OS_RUN_OVERLAY_DIR=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OS_RUN_OVERLAY_DIR}.released ]; then
 			if [ -f ${NEW_TARGET_SYSDIR}/scripts/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
@@ -1571,15 +1589,15 @@ function os_run_clean
 				rm ${NEW_TARGET_SYSDIR}/scripts/os_final_run/${OS_RUN_OVERLAY_DIR}/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
 			fi
 		else
-			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
-#				echo "清理 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
-				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run ]; then
+#				echo "清理 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run "
+				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run
 			fi
-			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
-				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run ]; then
+				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run
 			fi
-			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run ]; then
-				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+			if [ -f ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}.update/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run ]; then
+				rm ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}.update/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run
 			fi
 		fi
 	fi
@@ -1602,6 +1620,7 @@ function create_os_run
 	declare PACKAGE_NAME="${3}"
 	declare PACKAGE_INDEX="${4}"
 	if [ -f ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set ]; then
+# 		declare OS_RUN_OVERLAY_DIR=$(get_true_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		declare OS_RUN_OVERLAY_DIR=$(get_overlay_dirname ${NEW_BASE_DIR}/env/${STEP_STAGE}/overlay.set)
 		if [ ! -f ${NEW_TARGET_SYSDIR}/overlaydir/${OS_RUN_OVERLAY_DIR}.released ]; then
 #			if [ -f ${NEW_TARGET_SYSDIR}/status/${STEP_STAGE}/${PACKAGE_NAME}_${STEP_STAGE}_${PACKAGE_INDEX} ]; then
@@ -1630,18 +1649,19 @@ function create_os_run
 			if [ -f ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/${STATUS_FILE} ] || [ "x${PACKAGE_NAME}" == "xfinal_run" ]; then
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_first_run ]; then
 					echo ""
-					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
-					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_first_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_first_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run
 				fi
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_start_run ]; then
 					echo ""
-					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
-					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run "
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_start_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_start_run/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run
 				fi
 				if [ -f ${SCRIPTS_DIR}/step/${SCRIPT_FILE}.os_final_run ]; then
 					echo ""
-					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run "
-					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_final_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.${PACKAGE_NAME}.run
+					echo "创建 ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}.update/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run "
+					mkdir -p ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}.update
+					tools/show_package_script.sh ${WORLD_PARM} -e -n ${SCRIPT_FILE} "os_final_run" > ${NEW_TARGET_SYSDIR}/scripts/update/os_final_run/${OS_RUN_OVERLAY_DIR}.update/${STEP_STAGE}.${OS_RUN_OVERLAY_DIR}.update.${PACKAGE_NAME}.run
 				fi
 			fi
 		fi
@@ -2356,10 +2376,11 @@ do
 #	echo ""
 #	echo "OVERLAY_DIR: ${OVERLAY_DIR}"
 #	echo "SET_OVERLAY_DIR: ${SET_OVERLAY_DIR}"
+	export SET_OVERLAY_DIR=${SET_OVERLAY_DIR}
 #	echo "AUTO_SET_OVERLAY_DIR: ${AUTO_SET_OVERLAY_DIR}"
 
 	STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}${CROSSTOOLS_DIR_EXT}_${PACKAGE_INDEX}"
-	if [ "x${SET_OVERLAY_DIR}" != "x" ] && [ "x{AUTO_SET_OVERLAY_DIR}" == "x0" ]; then
+	if [ "x${SET_OVERLAY_DIR}" != "x" ] && [ "x${AUTO_SET_OVERLAY_DIR}" == "x0" ]; then
 		STATUS_FILE="${PACKAGE_NAME}${PACKAGE_SET_ENV}_${STEP_STAGE}_${SET_OVERLAY_DIR}${CROSSTOOLS_DIR_EXT}_${PACKAGE_INDEX}"
 	else
 #		if [ "x${SET_OVERLAY_DIR}" != "x" ]; then
