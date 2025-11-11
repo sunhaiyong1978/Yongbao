@@ -28,11 +28,11 @@ LD_TRACE_LOADED_OBJECTS=1 LD_LIBRARY_PATH=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF
 		;;
 	*)
 		echo "#!/bin/bash -e
-${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR} -E LD_LIBRARY_PATH=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF} \"\$@\"" \
+${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR} -E LD_LIBRARY_PATH=/usr/lib${LIB_SUFF} \"\$@\"" \
 > ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}
 
 		echo "#!/bin/bash -e
-${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR} -E LD_TRACE_LOADED_OBJECTS=1 -E LD_LIBRARY_PATH=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF} \"\$@\"" \
+${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}.bin -L ${LINUX_SYSROOT_DIR} -E LD_TRACE_LOADED_OBJECTS=1 -E LD_LIBRARY_PATH=/usr/lib${LIB_SUFF} \"\$@\"" \
 > ${PREFIX}/${LINUX_HOST}/bin/qemu-${QEMU_ARCH}-ldd
 		;;
 esac

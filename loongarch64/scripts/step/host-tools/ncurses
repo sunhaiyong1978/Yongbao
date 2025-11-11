@@ -9,7 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/ncurses-6.5
 tar xvf ${DOWNLOADDIR}/ncurses-6.5.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/ncurses-6.5
         ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-shared --without-debug \
-                    --without-normal --enable-pc-files \
+                    --without-normal --enable-pc-files --without-ada \
                     --with-pkg-config-libdir=${PREFIX}/lib${LIB_SUFF}/pkgconfig --enable-widec \
                     --disable-stripping
         eval ${MAKE_AND_INSTALL}

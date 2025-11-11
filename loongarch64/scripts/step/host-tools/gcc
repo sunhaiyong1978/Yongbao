@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 	patch -Np1 -i ${SYSDIR}/files/host-tools/gcc/15.2.0/patches/do-not-use-the-cached-value-of-the-gcc_except_table_section-for-comdat-functions.patch 
 	 
 
-	export PATH=/usr/bin:/usr/sbin
+	export PATH=/usr/bin:/usr/sbin:/bin:/sbin
 
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv build
