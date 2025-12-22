@@ -1,0 +1,29 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=rustc
+export PACKAGE_VERSION=1.91.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/rustc/1.91.1/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.91.1-src
+tar xvf ${DOWNLOADDIR}/rustc-1.91.1-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.91.1-src
+	
+	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
+	./configure --target=${LINUX_HOST},$(echo ${CROSS_HOST} | sed 's@cross@unknown@g') \
+	            --prefix=${PREFIX}/${LINUX_HOST} --sysconfdir=${PREFIX}/${LINUX_HOST}/etc \
+	            --local-rust-root=${CROSSTOOLS_DIR}/rust/usr/local \
+	            --enable-extended --enable-vendor --disable-docs --disable-dist-src --release-channel=dev \
+		    --set=target.${LINUX_HOST}.linker="${LINUX_HOST}-gcc" \
+		    --set=target.${LINUX_HOST}.cc="${LINUX_HOST}-gcc" \
+		    --set=target.${LINUX_HOST}.cxx="${LINUX_HOST}-g++" \
+		    --set=target.${LINUX_HOST}.llvm-config="${LINUX_HOST}-llvm-config" \
+	            --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler
+
+        make -j${JOBS}
+        make -j${JOBS} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/rustc-1.91.1-src
+
+save_package_version cross-toolchains_rustc "${PACKAGE_VERSION}-dev"

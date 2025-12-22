@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=nss
-export PACKAGE_VERSION=3.117
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/nss/3.117/
-rm -rf ${BUILD_DIRECTORY}/nss-3.117
-tar xvf ${DOWNLOADDIR}/nss-3.117.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nss-3.117
+export PACKAGE_VERSION=3.119
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/nss/3.119/
+rm -rf ${BUILD_DIRECTORY}/nss-3.119
+tar xvf ${DOWNLOADDIR}/nss-3.119.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nss-3.119
 pushd nss
 
     case "${ARCH_NAME}" in
@@ -54,4 +54,4 @@ pushd dist
     install -v -m755 Linux*/bin/{certutil,pk12util} ${LINUX_SYSROOT_DIR}/usr/bin
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/nss-3.117
+rm -rf ${BUILD_DIRECTORY}/nss-3.119

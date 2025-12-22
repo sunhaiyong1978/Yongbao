@@ -3,23 +3,23 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=chromium
-export PACKAGE_VERSION=141.0.7390.122
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/chromium/141.0.7390.122/
-rm -rf ${BUILD_DIRECTORY}/chromium-141.0.7390.122
-tar xvf ${DOWNLOADDIR}/chromium-141.0.7390.122.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/chromium-141.0.7390.122
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0001-Chromium-140-third_party-crashpad-add-loongarch64-su.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0001-Chromium-140-sandbox-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0003-Chromium-140-components-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0004-Chromium-140-third_party-boringssl-add-loongarch64-s.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0005-Chromium-140-base-system-sys_info-add-loongarch64-su.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0006-Chromium-140-build-config-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0007-Chromium-140-rust-config-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0008-Chromium-140-fix-atspi2-version.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0009-Chromium-140-build-ffmpeg-scripts-add-loongarch64.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0001-Chromium-140-third_party-webrtc-add-loongarch64-supp.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0001-Chromium-136-set-clang-lib-from-lib-to-lib64.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/141.0.7390.122/patches/0001-chromium-128-third_party-libpng-fix-for-loongarch64-.patch 
+export PACKAGE_VERSION=143.0.7499.40
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/chromium/143.0.7499.40/
+rm -rf ${BUILD_DIRECTORY}/chromium-143.0.7499.40
+tar xvf ${DOWNLOADDIR}/chromium-143.0.7499.40.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/chromium-143.0.7499.40
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0001-Chromium-140-third_party-crashpad-add-loongarch64-su.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0001-Chromium-140-sandbox-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0003-Chromium-140-components-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0004-Chromium-140-third_party-boringssl-add-loongarch64-s.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0005-Chromium-140-base-system-sys_info-add-loongarch64-su.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0006-Chromium-140-build-config-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0007-Chromium-140-rust-config-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0008-Chromium-140-fix-atspi2-version.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0009-Chromium-140-build-ffmpeg-scripts-add-loongarch64.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0001-Chromium-140-third_party-webrtc-add-loongarch64-supp.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0001-Chromium-136-set-clang-lib-from-lib-to-lib64.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/chromium/143.0.7499.40/patches/0001-chromium-128-third_party-libpng-fix-for-loongarch64-.patch 
 	 
 	sed -i "s@llvm-10.0@llvm-16.0@g" third_party/swiftshader/src/Reactor/BUILD.gn
 	${CROSSTOOLS_DIR}/qt6/libexec/moc ui/qt/qt_shim.h > ui/qt/qt6_shim_moc.cc
@@ -149,15 +149,15 @@ ${CROSS_TARGET}-strip ${CHROMIUM_DIST_DIR}/lib64/chromium/*.so*
 ${CROSS_TARGET}-strip ${CHROMIUM_DIST_DIR}/lib64/chromium/{chrome_crashpad_handler,chromium-browser}
 
 pushd ${CHROMIUM_DIST_DIR}/../
-	tar -cJf chromium-141.0.7390.122-linux-${ARCH_NAME}.tar.xz chromium
+	tar -cJf chromium-143.0.7499.40-linux-${ARCH_NAME}.tar.xz chromium
 	mkdir -p ${SYSROOT_DIR}/opt/
-	tar xvf chromium-141.0.7390.122-linux-${ARCH_NAME}.tar.xz \
+	tar xvf chromium-143.0.7499.40-linux-${ARCH_NAME}.tar.xz \
 		-C ${SYSROOT_DIR}/opt/
 
 	mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/
-	cp -av chromium-141.0.7390.122-linux-${ARCH_NAME}.tar.xz ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/
+	cp -av chromium-143.0.7499.40-linux-${ARCH_NAME}.tar.xz ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/
 	info_pool "生成了可发布的Chromium浏览器压缩包文件：\
-	$(ls ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/chromium-141.0.7390.122-linux-${ARCH_NAME}.tar.xz)"
+	$(ls ${DIST_DIRECTORY}/host/${ARCH_NAME}/chromium/chromium-143.0.7499.40-linux-${ARCH_NAME}.tar.xz)"
 popd
 
 ln -sfv /opt/chromium/bin/chromium-browser ${SYSROOT_DIR}/usr/bin/
@@ -177,4 +177,4 @@ mkdir -p ${SYSROOT_DIR}/usr/share/applications/
 cp ${RESOURCEDIR}/chromium-browser.desktop ${SYSROOT_DIR}/usr/share/applications/
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/chromium-141.0.7390.122
+rm -rf ${BUILD_DIRECTORY}/chromium-143.0.7499.40

@@ -54,9 +54,13 @@ objcopy = '${LINUX_HOST}-objcopy'
 pkgconfig = '${LINUX_HOST}-pkg-config'
 glib-compile-resources = '${LINUX_HOST}-glib-compile-resources'
 glib-compile-schemas = '${LINUX_HOST}-glib-compile-schemas'
+wayland-scanner = '${LINUX_HOST}-wayland-scanner'
 llvm-config = '${LINUX_HOST}-llvm-config'
+rust = 'rustc'
 exe_wrapper = 'qemu-${QEMU_ARCH}'
-[properties]"
+[built-in options]
+rust_args = '--target ${LINUX_HOST}'
+[properties]
 skip_sanity_check = true
 needs_exe_wrapper = true
 sys_root = '${LINUX_SYSROOT_DIR}'

@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/atk-2.38.0
 	 
 	mkdir cross-build
 	pushd cross-build
-		 meson ${MESON_CONFIG} --default-library=static -Dintrospection=false \
+		 meson ${MESON_CONFIG} --default-library=both -Dintrospection=false \
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd

@@ -9,8 +9,13 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gmp/6.3.0/
 rm -rf ${BUILD_DIRECTORY}/gmp-6.3.0
 tar xvf ${DOWNLOADDIR}/gmp-6.3.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gmp-6.3.0
-	ABI=64 ./configure --build=${CROSS_HOST} --host=${MINGW_HOST} \
-                --prefix=/mingw --enable-cxx
+	ABI=$(archname_to_archabi "$(get_user_set_env target "mingw64")" "${MINGW_HOST}") ./configure --build=${CROSS_HOST} --host=${MINGW_HOST} \
+                --prefix=/mingw --enable-cxx --disable-shared --enable-static
+	make -j${JOBS}
+	make DESTDIR=${MINGW_SYSROOT_DIR} install
+	make distclean
+	ABI=$(archname_to_archabi "$(get_user_set_env target "mingw64")" "${MINGW_HOST}") ./configure --build=${CROSS_HOST} --host=${MINGW_HOST} \
+                --prefix=/mingw --enable-cxx --enable-shared --disable-static
 	make -j${JOBS}
 	make DESTDIR=${MINGW_SYSROOT_DIR} install
 popd 

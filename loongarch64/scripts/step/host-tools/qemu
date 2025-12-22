@@ -1,0 +1,22 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=qemu
+export PACKAGE_VERSION=10.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/qemu/10.1.2/
+rm -rf ${BUILD_DIRECTORY}/qemu-10.1.2
+tar xvf ${DOWNLOADDIR}/qemu-10.1.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-10.1.2
+	
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --enable-tools --disable-xkbcommon --disable-docs --disable-system --disable-linux-user --disable-install-blobs --enable-strip
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/qemu-10.1.2

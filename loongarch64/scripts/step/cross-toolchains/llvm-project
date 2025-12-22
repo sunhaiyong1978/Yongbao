@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=21.1.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/llvm-project/21.1.4/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.4.src
-tar xvf ${DOWNLOADDIR}/llvm-project-21.1.4.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-21.1.4.src
+export PACKAGE_VERSION=21.1.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/llvm-project/21.1.7/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.7.src
+tar xvf ${DOWNLOADDIR}/llvm-project-21.1.7.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-21.1.7.src
 
 pushd llvm
     mkdir -p native-build
@@ -22,7 +22,7 @@ pushd llvm
                  -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
 		 -DLLVM_VERSION_SUFFIX='' \
-		 -DLLVM_LIBDIR_SUFFIX=64 \
+		 -DLLVM_LIBDIR_SUFFIX=${HOST_LIB_SUFF} \
 		 -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
 		 -DLLVM_ENABLE_PROJECTS='llvm;clang;lld' \
 		 -DLLVM_INCLUDE_RUNTIMES:BOOL=ON \
@@ -31,7 +31,7 @@ pushd llvm
 		 -DBUILTINS_${LINUX_HOST}_CMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
 		 -DRUNTIMES_${LINUX_HOST}_CMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \
 		 -DLLVM_DEFAULT_TARGET_TRIPLE=${LINUX_HOST} \
-		 -DLLVM_HOST_TRIPLE=${LINUX_HOST} \
+		 -DLLVM_HOST_TRIPLE=${CROSS_HOST} \
                  -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF
         ninja
         ninja install
@@ -41,4 +41,4 @@ LLVM_DIST_VERSION="$(${PREFIX}/${LINUX_HOST}/bin/llvm-config --version)"
 save_package_version cross_toolchains_llvm-project "${LLVM_DIST_VERSION}"
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.4.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.7.src

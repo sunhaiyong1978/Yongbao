@@ -4,11 +4,11 @@ source env/function.sh
 source scripts/step/simulate/wine_wow.env
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=wine_wow
-export PACKAGE_VERSION=10.17
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine_wow/10.17/
-rm -rf ${BUILD_DIRECTORY}/wine-10.17
-tar xvf ${DOWNLOADDIR}/wine-10.17.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wine-10.17
+export PACKAGE_VERSION=10.20
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/wine_wow/10.20/
+rm -rf ${BUILD_DIRECTORY}/wine-10.20
+tar xvf ${DOWNLOADDIR}/wine-10.20.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wine-10.20
 	if [ -f ${RESOURCEDIR}/wine-staging.url ]; then
 		git init
 		mkdir -p wine-staging
@@ -30,9 +30,12 @@ pushd ${BUILD_DIRECTORY}/wine-10.17
 		cp -a ../nls ./
 	popd
 
-        export RUNTIME_SYSROOT_DIR=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "RUNTIME_SYSROOT_DIR" "/usr/lib/x86_64/sys-root")
-        export LINUX_SYSROOT_DIR="${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}"
 
+
+
+
+
+	export LINUX_HOST_CFLAGS=$(echo "${LINUX_HOST_CFLAGS}" | sed -e 's/-fcf-protection//' -e 's/-fstack-protector-strong//' -e 's/-fstack-clash-protection//')
 
         export PKG_CONFIG_SYSROOT_DIR="${LINUX_SYSROOT_DIR}"
         export PKG_CONFIG_PATH="${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${LINUX_SYSROOT_DIR}/usr/share/pkgconfig"
@@ -40,18 +43,16 @@ pushd ${BUILD_DIRECTORY}/wine-10.17
 
 	mkdir -p cross-build
 	pushd cross-build
-                LDFLAGS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}" \
 		CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
+		CFLAGS="${LINUX_HOST_CFLAGS}" \
+		x86_64_CC="${MINGW_HOST}-gcc" i386_CC="${MINGW32_HOST}-gcc" \
         	../configure --prefix=/opt/wine-wow --build=${CROSS_HOST} --host=${LINUX_HOST} \
 			--with-wine-tools=${PWD}/../wine-build-tools \
-			PULSE_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" \
-			NETAPI_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" \
-			OSSLIBDIR=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/oss \
 			--enable-archs=i386,x86_64 \
 			--without-unwind \
 			--enable-build-id \
 			--enable-malloc0returnsnull
-	        CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+		make -j${JOBS}
         	make DESTDIR=${SYSROOT_DIR} install
 	popd
 
@@ -62,7 +63,7 @@ pushd ${BUILD_DIRECTORY}/wine-10.17
 	ln -sfv ../lib/wine/x86_64-unix/wine ${SYSROOT_DIR}/opt/wine-wow/bin/wine
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/wine-10.17
+rm -rf ${BUILD_DIRECTORY}/wine-10.20
 
 set_strip_step "/opt/wine-wow/bin/" "1" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
 set_strip_step "/opt/wine-wow/lib/wine/x86_64-unix/" "1" "*.a" "--strip-debug" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"

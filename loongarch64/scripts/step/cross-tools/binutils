@@ -4,13 +4,12 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=binutils
-export PACKAGE_VERSION=2.45
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/binutils/2.45/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.45
-tar xvf ${DOWNLOADDIR}/binutils-2.45.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.45
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/binutils/2.45/patches/8e885fece150ee97e5b0e78363e7fe9888ae9c29.diff 
-	 
+export PACKAGE_VERSION=2.45.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/binutils/2.45.1/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.45.1
+tar xvf ${DOWNLOADDIR}/binutils-2.45.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.45.1
+	
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -p tools-build
 	pushd tools-build
@@ -24,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.45
     	cp -v ../include/libiberty.h ${SYSDIR}/sysroot/usr/include
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.45
+rm -rf ${BUILD_DIRECTORY}/binutils-2.45.1

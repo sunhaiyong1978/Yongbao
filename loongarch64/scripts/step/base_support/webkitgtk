@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=webkitgtk
-export PACKAGE_VERSION=2.50.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.50.1/
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.50.1
-tar xvf ${DOWNLOADDIR}/webkitgtk-2.50.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/webkitgtk-2.50.1
+export PACKAGE_VERSION=2.51.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.51.2/
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.51.2
+tar xvf ${DOWNLOADDIR}/webkitgtk-2.51.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webkitgtk-2.51.2
     
 
     sed -i "/GST_CHECK_VERSION/s@27@28@g"  Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.{h,cpp}
@@ -44,4 +44,4 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.50.1
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.50.1
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.51.2

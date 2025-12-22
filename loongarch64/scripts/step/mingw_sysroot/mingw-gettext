@@ -9,9 +9,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gettext/0.26/
 rm -rf ${BUILD_DIRECTORY}/gettext-0.26
 tar xvf ${DOWNLOADDIR}/gettext-0.26.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gettext-0.26
-	sed -i "/hello-c++-kde/d" gettext-tools/examples/Makefile.in
-	sed -i "/close_used_without_requesting_gnulib_module_close/d" $(grep -rl "close_used_without_requesting_gnulib_module_close" *)
-	./configure ${COMMON_CONFIG} --disable-shared --enable-threads=win32 --enable-static --without-emacs --disable-openmp
+	sed -i "s@ gnulib-tests @ @g" gettext-tools/Makefile.in
+	./configure ${COMMON_CONFIG} --enable-shared --enable-threads=win32 --enable-static --without-emacs --disable-openmp
 	make -j${JOBS}
         make DESTDIR=${MINGW_SYSROOT_DIR} install
 	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la

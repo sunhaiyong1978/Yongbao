@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=sdl12-compat
-export PACKAGE_VERSION=release-1.2.68
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sdl12-compat/release-1.2.68/
-rm -rf ${BUILD_DIRECTORY}/sdl12-compat-release-1.2.68
-tar xvf ${DOWNLOADDIR}/sdl12-compat-release-1.2.68.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/sdl12-compat-release-1.2.68
+export PACKAGE_VERSION=release-1.2.72
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sdl12-compat/release-1.2.72/
+rm -rf ${BUILD_DIRECTORY}/sdl12-compat-release-1.2.72
+tar xvf ${DOWNLOADDIR}/sdl12-compat-release-1.2.72.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/sdl12-compat-release-1.2.72
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/sdl12-compat-release-1.2.68
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/sdl12-compat-release-1.2.68
+rm -rf ${BUILD_DIRECTORY}/sdl12-compat-release-1.2.72

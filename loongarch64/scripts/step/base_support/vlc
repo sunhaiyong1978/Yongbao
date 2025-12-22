@@ -3,15 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=vlc
-export PACKAGE_VERSION=3.0.21
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/vlc/3.0.21/
-rm -rf ${BUILD_DIRECTORY}/vlc-3.0.21
-tar xvf ${DOWNLOADDIR}/vlc-3.0.21.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vlc-3.0.21
-    patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.21/patches/0001-VLC-fix-for-gcc13.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.21/patches/vlc-for-tablib-2.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.21/patches/0001-vlc-3.0.21-fix-for-ffmpeg-7.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.21/patches/0001-vlc-3.0.21-fix-for-ffmpeg-8.patch 
+export PACKAGE_VERSION=3.0.22
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/vlc/3.0.22/
+rm -rf ${BUILD_DIRECTORY}/vlc-3.0.22
+tar xvf ${DOWNLOADDIR}/vlc-3.0.22.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vlc-3.0.22
+    patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.22/patches/0001-vlc-3.0.22-fix-for-ffmpeg-8.patch 
 	 
     CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-chromecast
     make -j${JOBS} -C compat
@@ -19,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/vlc-3.0.21
     make -C src DESTDIR=${SYSROOT_DIR} install
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/vlc-3.0.21
+rm -rf ${BUILD_DIRECTORY}/vlc-3.0.22

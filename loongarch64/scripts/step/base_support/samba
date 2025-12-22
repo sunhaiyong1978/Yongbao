@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=samba
-export PACKAGE_VERSION=4.23.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/samba/4.23.2/
-rm -rf ${BUILD_DIRECTORY}/samba-4.23.2
-tar xvf ${DOWNLOADDIR}/samba-4.23.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/samba-4.23.2
+export PACKAGE_VERSION=4.23.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/samba/4.23.3/
+rm -rf ${BUILD_DIRECTORY}/samba-4.23.3
+tar xvf ${DOWNLOADDIR}/samba-4.23.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.23.3
         
         for config_i in $(find -name "config.sub")
         do
@@ -45,7 +45,7 @@ pushd ${BUILD_DIRECTORY}/samba-4.23.2
 
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/samba-4.23.2
+rm -rf ${BUILD_DIRECTORY}/samba-4.23.3
 
 cat > ${SYSROOT_DIR}/etc/samba/smb.conf << EOF
 [global]

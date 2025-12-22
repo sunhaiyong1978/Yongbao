@@ -4,21 +4,27 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-glib
-export PACKAGE_VERSION=2.86.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-glib/2.86.1/
-rm -rf ${BUILD_DIRECTORY}/glib-2.86.1
-tar xvf ${DOWNLOADDIR}/glib-2.86.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glib-2.86.1
-	sed -i "/libintl.type_name/d" meson.build
-	sed -i "s@libiconv = \[\]@libiconv = dependency\('iconv'\)@g" meson.build
+export PACKAGE_VERSION=2.87.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-glib/2.87.0/
+rm -rf ${BUILD_DIRECTORY}/glib-2.87.0
+tar xvf ${DOWNLOADDIR}/glib-2.87.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glib-2.87.0
         
-        mkdir cross-build
-        pushd cross-build
+        mkdir cross-build-static
+        pushd cross-build-static
                 meson ${MESON_CONFIG} --default-library=static -Dtests=false -Dman=false -Dselinux=disabled \
                       ..
 		ninja
 		DESTDIR=${MINGW_SYSROOT_DIR} ninja install
         popd
+        mkdir cross-build-shared
+        pushd cross-build-shared
+                meson ${MESON_CONFIG} --default-library=shared -Dtests=false -Dman=false -Dselinux=disabled \
+                      ..
+		ninja
+		DESTDIR=${MINGW_SYSROOT_DIR} ninja install
+        popd
+
         rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/glib-2.86.1
+rm -rf ${BUILD_DIRECTORY}/glib-2.87.0

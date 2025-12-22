@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/pcre2-10.47
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --enable-static --enable-unicode --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --enable-static --enable-unicode --enable-pcre2-16 --enable-pcre2-32 --enable-malloc0returnsnull
 	CC="${MINGW_HOST}-gcc" CXX="${MINGW_HOST}-g++" make -j${JOBS}
         make DESTDIR=${MINGW_SYSROOT_DIR} install
 	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=libxslt
-export PACKAGE_VERSION=1.1.43
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxslt/1.1.43/
-rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.43
-tar xvf ${DOWNLOADDIR}/libxslt-1.1.43.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libxslt-1.1.43
+export PACKAGE_VERSION=1.1.45
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libxslt/1.1.45/
+rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.45
+tar xvf ${DOWNLOADDIR}/libxslt-1.1.45.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libxslt-1.1.45
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libxslt-1.1.43
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} PYTHON=python3
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.43
+rm -rf ${BUILD_DIRECTORY}/libxslt-1.1.45

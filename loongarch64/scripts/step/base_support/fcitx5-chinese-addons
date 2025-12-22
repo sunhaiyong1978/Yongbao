@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fcitx5-chinese-addons
-export PACKAGE_VERSION=5.1.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5-chinese-addons/5.1.9/
-rm -rf ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
-tar xvf ${DOWNLOADDIR}/fcitx5-chinese-addons-5.1.9.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
+export PACKAGE_VERSION=5.1.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5-chinese-addons/5.1.10/
+rm -rf ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.10
+tar xvf ${DOWNLOADDIR}/fcitx5-chinese-addons-5.1.10.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.10
 	cp ${RESOURCEDIR}/files/py_table-20121124.tar.gz modules/pinyinhelper/
 	cp ${RESOURCEDIR}/files/py_stroke-20250329.tar.gz modules/pinyinhelper/
         
@@ -25,6 +25,6 @@ pushd ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.9
+rm -rf ${BUILD_DIRECTORY}/fcitx5-chinese-addons-5.1.10
 
 set_final_fix_step "/usr/share/fcitx5/inputmethod/" "F" "f" "*.conf"

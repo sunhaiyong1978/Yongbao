@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=nspr
-export PACKAGE_VERSION=4.37
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nspr/4.37/
-rm -rf ${BUILD_DIRECTORY}/nspr-4.37
-tar xvf ${DOWNLOADDIR}/nspr-4.37.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nspr-4.37
+export PACKAGE_VERSION=4.38.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/nspr/4.38.2/
+rm -rf ${BUILD_DIRECTORY}/nspr-4.38.2
+tar xvf ${DOWNLOADDIR}/nspr-4.38.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nspr-4.38.2
     pushd nspr
-    patch -Np2 -i ${SYSDIR}/files/target_base/nspr/4.37/patches/nspr-4.32-add-loongarch64.patch 
+    patch -Np2 -i ${SYSDIR}/files/target_base/nspr/4.38.2/patches/nspr-4.32-add-loongarch64.patch 
 	 
     for config_i in $(find -name "config.sub")
     do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/nspr-4.37
     eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/nspr-4.37
+rm -rf ${BUILD_DIRECTORY}/nspr-4.38.2

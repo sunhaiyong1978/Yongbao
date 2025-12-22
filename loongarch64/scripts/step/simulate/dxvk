@@ -9,42 +9,25 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/dxvk/git-default/
 rm -rf ${BUILD_DIRECTORY}/dxvk-git-default_git
 tar xvf ${DOWNLOADDIR}/dxvk-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dxvk-git-default_git
-        patch -Np1 -i ${SYSDIR}/files/simulate/dxvk/git-default/patches/0001-dxvk-fix-for-gcc-14.1.0.patch 
-	 
-
+        
 
         mkdir cross-build
         pushd cross-build
-                meson --prefix=/opt/wine-assist/dxvk-${ARCH_NAME} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross-${ARCH_NAME}.txt \
+                meson --prefix=/opt/wine-assist/dxvk-${ARCH_NAME} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross-${LINUX_TAG_NAME}.txt \
 		      --default-library=both \
                       ..
-		CC=${LINUX_HOST}-gcc ninja 
+		ninja 
 		DESTDIR=${SYSROOT_DIR} ninja install
         popd
 
-	PATH=${SYSDIR}/cross-toolchains/x86_64-w64-mingw32ucrt/bin:${SYSDIR}/cross-toolchains/i686-w64-mingw32/bin:${PATH}
-
+	PATH=${CROSS_TOOLS_MINGW_PREFIX}/bin:${PATH}
         mkdir cross-build-dll
         pushd cross-build-dll
-		case ${ARCH_NAME} in
-			x86_64)
-	        	        meson --prefix=/opt/wine-assist/dxvk-${ARCH_NAME} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross_mingw64ucrt.txt \
-				      --default-library=both \
-		                      ..
-				CC=${LINUX_HOST}-gcc ninja 
-				DESTDIR=${SYSROOT_DIR} ninja install
-				;;
-			i686)
-	        	        meson --prefix=/opt/wine-assist/dxvk-${ARCH_NAME} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross_mingw32.txt \
-				      --default-library=both \
-		                      ..
-				CC=${LINUX_HOST}-gcc ninja 
-				DESTDIR=${SYSROOT_DIR} ninja install
-				;;
-			*)
-				;;
-		esac
+       	        meson --prefix=/opt/wine-assist/dxvk-${ARCH_NAME} --buildtype=release --cross-file ${COMMON_DIR}/meson-cross_${MINGW_TAG_NAME}.txt \
+		      --default-library=both \
+                      ..
+		ninja 
+		DESTDIR=${SYSROOT_DIR} ninja install
         popd
-
 popd 
 rm -rf ${BUILD_DIRECTORY}/dxvk-git-default_git

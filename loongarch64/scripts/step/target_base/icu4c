@@ -3,24 +3,25 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=icu4c
-export PACKAGE_VERSION=77_1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/icu4c/77_1/
-rm -rf ${BUILD_DIRECTORY}/icu
-tar xvf ${DOWNLOADDIR}/icu4c-77_1-src.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/icu
+export PACKAGE_VERSION=78.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/icu4c/78.1/
+rm -rf ${BUILD_DIRECTORY}/icu-release-78.1
+tar xvf ${DOWNLOADDIR}/icu4c-78.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/icu-release-78.1
     touch LICENSE
-    pushd source
+    pushd icu4c/source
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
     done
     touch config/icucross.mk
     touch config/icucross.inc
-    sed -i '/^PKGDATA/s@$(TOOLBINDIR)@/bin@g' data/Makefile.in
-    sed -i '/INVOKE/s@$(TOOLBINDIR)@/bin@g' data/Makefile.in extra/uconv/Makefile.in
-    sed -i '/INVOKE/s@/bin/icupkg@/sbin/icupkg@g' data/Makefile.in
+    sed -i '/^PKGDATA/s@$(TOOLBINDIR)@${HOST_TOOLS_DIR}/bin@g' data/Makefile.in
+    sed -i "/INVOKE/s@\$(TOOLBINDIR)@${HOST_TOOLS_DIR}/bin@g" data/Makefile.in extra/uconv/Makefile.in python/icutools/databuilder/renderers/makefile.py
+    sed -i "/INVOKE/s@${HOST_TOOLS_DIR}/bin/icupkg@${HOST_TOOLS_DIR}/sbin/icupkg@g" data/Makefile.in python/icutools/databuilder/renderers/makefile.py
     ./configure ${COMMON_CONFIG} --with-cross-build=${PWD}
+    sed -i '/INVOKE/s@${HOST_TOOLS_DIR}/bin/icupkg@${HOST_TOOLS_DIR}/sbin/icupkg@g' data/rules.mk
     eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/icu
+rm -rf ${BUILD_DIRECTORY}/icu-release-78.1

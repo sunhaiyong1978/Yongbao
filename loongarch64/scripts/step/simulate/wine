@@ -18,9 +18,10 @@ pushd ${BUILD_DIRECTORY}/wine-10.0
                 autoreconf -ifv
         fi
 
+	unset PKG_CONFIG_SYSROOT_DIR PKG_CONFIG_LIBDIR PKG_CONFIG_PATH
 	mkdir -p wine-build-tools
 	pushd wine-build-tools
-		CC="gcc" CXX="g++" PKG_CONFIG_SYSROOT_DIR="" PKG_CONFIG_LIBDIR="" PKG_CONFIG_PATH="" \
+ 		CC="gcc" CXX="g++" \
 		LDFLAGS="" \
 		../configure --prefix=${PWD}/ --enable-win64 --without-x
 		make __tooldeps__
@@ -36,12 +37,11 @@ pushd ${BUILD_DIRECTORY}/wine-10.0
 	export CROSS_TOOLS_PREFIX=${SYSDIR}/cross-toolchains/${LINUX_HOST}
 	export CROSS_TOOLS32_PREFIX=${SYSDIR}/cross-toolchains/${LINUX32_HOST}
 	export PATH=${CROSS_TOOLS_PREFIX}/bin:${CROSS_TOOLS32_PREFIX}/bin:${SYSDIR}/cross-toolchains/llvm-project/bin:$PATH
-	export LIB_SUFF="64"
-	export LIB32_SUFF=""
+	export LIB_SUFF=$(archname_to_lib_suff "$(get_user_set_env target "x86_64")" "64")
+	export LIB32_SUFF=$(archname_to_lib_suff "$(get_user_set_env target_32 "i686")" "")
 
-	export CFLAGS=$(archname_to_cflags "$(get_user_set_env target "x86_64")" "-O3")
-	export CFLAGS_32=$(archname_to_cflags "$(get_user_set_env "i686")" "-O3")
-	export CFLAGS="${CFLAGS} -std=gnu17"
+	export LINUX_HOST_CFLAGS=$(archname_to_cflags "$(get_user_set_env target "x86_64")" "-O3")
+	export LINUX32_HOST_CFLAGS=$(archname_to_cflags "$(get_user_set_env "i686")" "-O3")
 
 	export PKG_CONFIG_SYSROOT_DIR="${LINUX_SYSROOT_DIR}"
 	export PKG_CONFIG_PATH="${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig:${LINUX_SYSROOT_DIR}/usr/share/pkgconfig"
@@ -49,19 +49,15 @@ pushd ${BUILD_DIRECTORY}/wine-10.0
 
 	mkdir -p cross-build-64
 	pushd cross-build-64
-		export CROSSCFLAGS="-g -O2 ${CFLAGS}"
 		CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
-		LDFLAGS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}" \
+		CFLAGS="${LINUX_HOST_CFLAGS}" \
         	../configure --prefix=/opt/wine --build=${CROSS_HOST} --host=${LINUX_HOST} \
 			--with-wine-tools=../wine-build-tools \
-			PULSE_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pulseaudio -lpulse -lpthread" \
-			NETAPI_LIBS="-Wl,-rpath-link=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/samba -lnetapi" \
-			OSSLIBDIR=${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/oss \
 			--enable-win64 \
 			--enable-build-id \
 			--without-unwind \
 			--enable-malloc0returnsnull
-        	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+        	make -j${JOBS}
 	popd
 
 
@@ -71,19 +67,15 @@ pushd ${BUILD_DIRECTORY}/wine-10.0
 
 	mkdir -p cross-build-32
 	pushd cross-build-32
-		export CROSSCFLAGS="-g -O2 -Wno-incompatible-pointer-types ${CFLAGS_32}"
-		export CFLAGS="${CFLAGS_32} -Wno-incompatible-pointer-types"
-		LDFLAGS="-Wl,-rpath-link=${LINUX32_SYSROOT_DIR}/usr/lib${LIB32_SUFF}" \
+        	CC="${LINUX32_HOST}-gcc" CXX="${LINUX32_HOST}-g++" \
+		CFLAGS="${LINUX32_HOST_CFLAGS}" \
         	../configure --prefix=/opt/wine --build=${CROSS_HOST} --host=${LINUX32_HOST} \
 			--with-wine-tools=../wine-build-tools \
-			PULSE_LIBS="-Wl,-rpath-link=${LINUX32_SYSROOT_DIR}/usr/lib${LIB32_SUFF}/pulseaudio -lpulse -lpthread" \
-			NETAPI_LIBS="-Wl,-rpath-link=${LINUX32_SYSROOT_DIR}/usr/lib${LIB32_SUFF}/samba -lnetapi" \
-			OSSLIBDIR=${LINUX32_SYSROOT_DIR}/usr/lib${LIB32_SUFF}/oss \
 			--with-wine64=../cross-build-64 \
 			--enable-build-id \
 			--without-unwind \
 			--enable-malloc0returnsnull
-        	CC="${LINUX32_HOST}-gcc" CXX="${LINUX32_HOST}-g++" make -j${JOBS}
+        	make -j${JOBS}
 	        make DESTDIR=${SYSROOT_DIR} install
 	popd
 

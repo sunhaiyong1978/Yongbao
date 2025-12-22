@@ -4,13 +4,13 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libcap
-export PACKAGE_VERSION=2.76
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libcap/2.76/
-rm -rf ${BUILD_DIRECTORY}/libcap-2.76
-tar xvf ${DOWNLOADDIR}/libcap-2.76.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libcap-2.76
+export PACKAGE_VERSION=2.77
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libcap/2.77/
+rm -rf ${BUILD_DIRECTORY}/libcap-2.77
+tar xvf ${DOWNLOADDIR}/libcap-2.77.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libcap-2.77
 	make -j${JOBS} CROSS_COMPILE="${LINUX_HOST}-" BUILD_CC="gcc" GOLANG=no prefix=/usr lib=lib${LIB_SUFF}
 	make CROSS_COMPILE="${LINUX_HOST}-" BUILD_CC="gcc" GOLANG=no prefix=/usr lib=lib${LIB_SUFF} \
 		 DESTDIR=${LINUX_SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/libcap-2.76
+rm -rf ${BUILD_DIRECTORY}/libcap-2.77

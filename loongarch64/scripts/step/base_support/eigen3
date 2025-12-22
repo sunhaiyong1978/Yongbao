@@ -1,0 +1,25 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=eigen3
+export PACKAGE_VERSION=3.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/eigen3/3.4.0/
+rm -rf ${BUILD_DIRECTORY}/eigen-3.4.0
+tar xvf ${DOWNLOADDIR}/eigen3-3.4.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/eigen-3.4.0
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
+       		      -DCMAKE_INSTALL_PREFIX=/usr \
+		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+		      -DCMAKE_Fortran_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-gfortran -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/eigen-3.4.0

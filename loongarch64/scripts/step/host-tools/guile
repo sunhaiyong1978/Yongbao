@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=guile
-export PACKAGE_VERSION=3.0.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/guile/3.0.10/
-rm -rf ${BUILD_DIRECTORY}/guile-3.0.10
-tar xvf ${DOWNLOADDIR}/guile-3.0.10.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/guile-3.0.10
+export PACKAGE_VERSION=3.0.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/guile/3.0.11/
+rm -rf ${BUILD_DIRECTORY}/guile-3.0.11
+tar xvf ${DOWNLOADDIR}/guile-3.0.11.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/guile-3.0.11
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/guile-3.0.10
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/guile-3.0.10
+rm -rf ${BUILD_DIRECTORY}/guile-3.0.11

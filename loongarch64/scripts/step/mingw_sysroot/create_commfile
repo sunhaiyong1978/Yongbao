@@ -15,8 +15,15 @@ ar = '${MINGW_HOST}-ar'
 strip = '${MINGW_HOST}-strip'
 ranlib = '${MINGW_HOST}-ranlib'
 pkgconfig = '${MINGW_HOST}-pkg-config'
+pkg-config = '${MINGW_HOST}-pkg-config'
 windres = '${MINGW_HOST}-windres'
 dlltool = '${MINGW_HOST}-dlltool'
+glib-genmarshal = '${MINGW_SYSROOT_DIR}/mingw/bin/glib-genmarshal'
+glib-mkenums = '${MINGW_SYSROOT_DIR}/mingw/bin/glib-mkenums'
+glib-compile-resources = '${HOST_TOOLS_DIR}/bin/glib-compile-resources'
+gdbus-codegen = '${MINGW_SYSROOT_DIR}/mingw/bin/gdbus-codegen'
+glib-compile-schemas = '${HOST_TOOLS_DIR}/bin/glib-compile-schemas'
+
 
 [properties]
 sys_root = '${MINGW_SYSROOT_DIR}'
@@ -25,8 +32,38 @@ pkg_config_libdir = '${MINGW_SYSROOT_DIR}/mingw/lib/pkgconfig'
 
 [host_machine]
 system = 'windows'
-cpu_family = 'x86_64'
-cpu = 'x86_64'
+cpu_family = '${LINUX_FAMILY_NAME}'
+cpu = '${LINUX_CPU_NAME}'
 endian = 'little'
 EOF
 popd > /dev/null
+
+cat > ${COMMON_DIR}/cmake-cross_${INSTALL_ARCH_NAME}.cmake << EOF 
+SET(CMAKE_SYSTEM_NAME Windows)
+SET(CMAKE_SYSTEM_PROCESSOR ${LINUX_FAMILY_NAME})
+ 
+set(CMAKE_SYSROOT ${MINGW_SYSROOT_DIR}) 
+SET(CMAKE_FIND_ROOT_PATH ${MINGW_SYSROOT_DIR}/mingw)
+ 
+IF(NOT $ENV{RC})
+    SET(CMAKE_RC_COMPILER ${MINGW_HOST}-windres)
+ENDIF()
+SET(CMAKE_AR:FILEPATH ${MINGW_HOST}-ar)
+SET(CMAKE_RANLIB:FILEPATH ${MINGW_HOST}-ranlib)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER) 
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY) 
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY) 
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY) 
+ 
+
+
+find_program(PKG_CONFIG_EXECUTABLE ${MINGW_HOST}-pkg-config) 
+find_program(BISON_EXECUTABLE bison) 
+find_program(FLEX_EXECUTABLE flex) 
+find_program(FLEX_EXECUTABLE gzip) 
+find_program(GPERF_EXECUTABLE gperf) 
+find_program(Gperf_EXECUTABLE gperf) 
+find_program(DOXYGEN_EXECUTABLE doxygen) 
+find_program(gzip_EXECUTABLE gzip)
+EOF

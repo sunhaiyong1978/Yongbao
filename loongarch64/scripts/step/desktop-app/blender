@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=blender
-export PACKAGE_VERSION=4.5.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/4.5.3/
-rm -rf ${BUILD_DIRECTORY}/blender-4.5.3
-tar xvf ${DOWNLOADDIR}/blender-4.5.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/blender-4.5.3
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/4.5.3/patches/0001-blender-4.5.3-fix-for-ffmpeg-8.patch 
-	 
+export PACKAGE_VERSION=5.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/5.0.0/
+rm -rf ${BUILD_DIRECTORY}/blender-5.0.0
+tar xvf ${DOWNLOADDIR}/blender-5.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/blender-5.0.0
+        
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER \"${CROSSTOOLS_DIR}/bin/wayland-scanner\")@g" build_files/cmake/platform/platform_unix.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc@g" build_files/cmake/macros.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc_icon>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc_icon@g" build_files/cmake/macros.cmake
@@ -45,4 +44,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/oslc \"\$@\"" > o
 	rm -v ${SYSROOT_DIR}/usr/share/blender/*/python/bin/*
 	rm -r ${SYSROOT_DIR}/usr/share/blender/*/python/lib64/python$(cat ${COMMON_DIR}/Python3.version)/config-$(cat ${COMMON_DIR}/Python3.version)-*
 popd 
-rm -rf ${BUILD_DIRECTORY}/blender-4.5.3
+rm -rf ${BUILD_DIRECTORY}/blender-5.0.0

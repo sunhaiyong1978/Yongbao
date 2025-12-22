@@ -4,23 +4,23 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=SPIRV-LLVM-Translator
-export PACKAGE_VERSION=21.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/SPIRV-LLVM-Translator/21.1.1/
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-21.1.1
-tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-21.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-21.1.1
+export PACKAGE_VERSION=21.1.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/SPIRV-LLVM-Translator/21.1.3/
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-21.1.3
+tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-21.1.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-21.1.3
         
 	export PATH=${PREFIX}/llvm-project/bin:${PATH}
 	tar xvf ${RESOURCEDIR}/files/SPIRV-LLVM-Translator-headers_git.tar.gz
         mkdir -p build
         pushd build
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX}/${LINUX_HOST} \
-		      -DLLVM_DIR:PATH=${SYSDIR}/cross-toolchains/${LINUX_HOST}/lib${LIB_SUFF}/cmake/llvm \
-		      -DCMAKE_INSTALL_RPATH="${PREFIX}/${LINUX_HOST}/lib${LIB_SUFF};${HOST_TOOLS_DIR}/lib64;\\\${ORIGIN}/../lib64" \
+		      -DLLVM_DIR:PATH=${SYSDIR}/cross-toolchains/${LINUX_HOST}/lib${HOST_LIB_SUFF}/cmake/llvm \
+		      -DCMAKE_INSTALL_RPATH="${PREFIX}/${LINUX_HOST}/lib${HOST_LIB_SUFF};${HOST_TOOLS_DIR}/lib64;\\\${ORIGIN}/../lib${LIB_SUFF}" \
                       -DBUILD_SHARED_LIBS=OFF -DCCACHE_ALLOWED=OFF -DBASE_LLVM_VERSION="$(get_package_version cross_toolchains_llvm-project)" \
 		      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${PWD}/../SPIRV-LLVM-Translator-headers_git \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-21.1.1
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-21.1.3

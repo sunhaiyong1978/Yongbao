@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=game_emu
 export STEP_PACKAGENAME=RetroArch
-export PACKAGE_VERSION=1.21.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/RetroArch/1.21.0/
-rm -rf ${BUILD_DIRECTORY}/RetroArch-1.21.0
-tar xvf ${DOWNLOADDIR}/RetroArch-1.21.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/RetroArch-1.21.0
-        patch -Np1 -i ${SYSDIR}/files/game_emu/RetroArch/1.21.0/patches/0001-RetroArch-1.21.0-fix-for-ffmpeg-8.patch 
-	 
+export PACKAGE_VERSION=1.22.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/game_emu/RetroArch/1.22.2/
+rm -rf ${BUILD_DIRECTORY}/RetroArch-1.22.2
+tar xvf ${DOWNLOADDIR}/RetroArch-1.22.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/RetroArch-1.22.2
+        
         for config_i in $(find -name "config.sub")
         do
                 cp -a -f ${CROSSTOOLS_DIR}/share/automake*/config.* $(dirname ${config_i})/
@@ -31,4 +30,4 @@ pushd ${BUILD_DIRECTORY}/RetroArch-1.21.0
 
 	mkdir -p ${SYSROOT_DIR}/usr/share/retroarch/cores
 popd 
-rm -rf ${BUILD_DIRECTORY}/RetroArch-1.21.0
+rm -rf ${BUILD_DIRECTORY}/RetroArch-1.22.2

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=pyproject-metadata
-export PACKAGE_VERSION=0.9.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pyproject-metadata/0.9.1/
-rm -rf ${BUILD_DIRECTORY}/pyproject_metadata-0.9.1
-tar xvf ${DOWNLOADDIR}/pyproject_metadata-0.9.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pyproject_metadata-0.9.1
+export PACKAGE_VERSION=0.10.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pyproject-metadata/0.10.0/
+rm -rf ${BUILD_DIRECTORY}/pyproject_metadata-0.10.0
+tar xvf ${DOWNLOADDIR}/pyproject_metadata-0.10.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pyproject_metadata-0.10.0
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user pyproject-metadata
 popd 
-rm -rf ${BUILD_DIRECTORY}/pyproject_metadata-0.9.1
+rm -rf ${BUILD_DIRECTORY}/pyproject_metadata-0.10.0

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=breeze-grub
-export PACKAGE_VERSION=6.5.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/breeze-grub/6.5.1/
-rm -rf ${BUILD_DIRECTORY}/breeze-grub-6.5.1
-tar xvf ${DOWNLOADDIR}/breeze-grub-6.5.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/breeze-grub-6.5.1
+export PACKAGE_VERSION=6.5.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/breeze-grub/6.5.3/
+rm -rf ${BUILD_DIRECTORY}/breeze-grub-6.5.3
+tar xvf ${DOWNLOADDIR}/breeze-grub-6.5.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/breeze-grub-6.5.3
 	sed -i -e "s@\"grub-mkfont@\"${CROSS_TARGET}-grub-mkfont@g" \
 	       -e "s@\"/usr/share@\"${SYSROOT_DIR}/usr/share@g" \
 	       mkfont.sh
@@ -15,4 +15,4 @@ pushd ${BUILD_DIRECTORY}/breeze-grub-6.5.1
 	mkdir -pv ${SYSROOT_DIR}/usr/share/grub/themes/
 	cp -a breeze ${SYSROOT_DIR}/usr/share/grub/themes/
 popd 
-rm -rf ${BUILD_DIRECTORY}/breeze-grub-6.5.1
+rm -rf ${BUILD_DIRECTORY}/breeze-grub-6.5.3

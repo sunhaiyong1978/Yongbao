@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mlt
-export PACKAGE_VERSION=7.32.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mlt/7.32.0/
-rm -rf ${BUILD_DIRECTORY}/mlt-7.32.0
-tar xvf ${DOWNLOADDIR}/mlt-7.32.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mlt-7.32.0
-        patch -Np1 -i ${SYSDIR}/files/base_support/mlt/7.32.0/patches/mlt-7.32.0-Support-FFmpeg8-from-upstream.patch 
-	 
+export PACKAGE_VERSION=7.34.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mlt/7.34.1/
+rm -rf ${BUILD_DIRECTORY}/mlt-7.34.1
+tar xvf ${DOWNLOADDIR}/mlt-7.34.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mlt-7.34.1
+        
         mkdir cross-build
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
@@ -38,10 +37,10 @@ pushd ${BUILD_DIRECTORY}/mlt-7.32.0
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
-		      -DMOD_QT6=ON -DMOD_GLAXNIMATE_QT6=ON \
+		      -DMOD_QT6=ON -DMOD_GLAXNIMATE_QT6=ON  -DMOD_SOX=OFF -DMOD_VIDSTAB=OFF -DMOD_JACKRACK=OFF \
                       -DBUILD_TESTING=OFF -DMOD_GLAXNIMATE=ON -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mlt-7.32.0
+rm -rf ${BUILD_DIRECTORY}/mlt-7.34.1

@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
 
 	mkdir -p native-build
 	pushd native-build
+		LDFLAGS="${LDFLAGS} -Wl,-rpath=${CROSSTOOLS_DIR}/lib64" \
 		cmake -DCMAKE_INSTALL_PREFIX=${CROSSTOOLS_DIR}/qt6 \
 		      -DCMAKE_BUILD_TYPE=RELEASE \
 		      -DICU_ROOT=${HOST_TOOLS_DIR} \

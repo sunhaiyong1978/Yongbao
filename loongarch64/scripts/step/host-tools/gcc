@@ -31,7 +31,7 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 	rm -fv ${PREFIX}/bin/$(${PREFIX}/bin/gcc -dumpmachine)-*
 	rm -fv $(dirname $(realpath $(${PREFIX}/bin/gcc -print-file-name=libssp.a)))/libssp*
 	${PREFIX}/bin/gcc -dumpspecs > specs
-	CUSTOM_LIB_PATH="${HOST_TOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib:${CROSSTOOLS_DIR}/lib64:${CROSSTOOLS_DIR}/lib"
+	CUSTOM_LIB_PATH="${HOST_TOOLS_DIR}/lib64:${HOST_TOOLS_DIR}/lib"
 	sed -i "/^\*link:/,/^$/ { 
 /--build-id/ s|\(--build-id[^ ]*\)|\1 -rpath=${CUSTOM_LIB_PATH//\//\\/}|;
 }" specs

@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/pango-1.57.0
 	
 	mkdir cross-build
 	pushd cross-build
-		LDFLAGS="-lcairo -lfreetype -lharfbuzz -lpthread -lpng -lpixman-1" meson ${MESON_CONFIG} --default-library=static  --wrap-mode=nofallback \
+		 meson ${MESON_CONFIG} --default-library=both  --wrap-mode=nofallback \
                       ..
 		eval ${NINJA_AND_INSTALL}
 	popd

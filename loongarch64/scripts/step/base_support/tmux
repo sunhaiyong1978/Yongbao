@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=tmux
-export PACKAGE_VERSION=3.5a
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/tmux/3.5a/
-rm -rf ${BUILD_DIRECTORY}/tmux-3.5a
-tar xvf ${DOWNLOADDIR}/tmux-3.5a.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/tmux-3.5a
+export PACKAGE_VERSION=3.6a
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/tmux/3.6a/
+rm -rf ${BUILD_DIRECTORY}/tmux-3.6a
+tar xvf ${DOWNLOADDIR}/tmux-3.6a.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tmux-3.6a
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/tmux-3.5a
     eval ${MAKE_AND_INSTALL}
     install -m 644 example_tmux.conf ${SYSROOT_DIR}/etc/example_tmux.conf
 popd 
-rm -rf ${BUILD_DIRECTORY}/tmux-3.5a
+rm -rf ${BUILD_DIRECTORY}/tmux-3.6a

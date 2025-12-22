@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=kodi
-export PACKAGE_VERSION=22.0a1-Piers
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/
-rm -rf ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
-tar xvf ${DOWNLOADDIR}/xbmc-22.0a1-Piers.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/patches/0001-kodi-fix-build-error-for-gcc-14.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/patches/0001-fix-xbmc-Settings-undefine-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a1-Piers/patches/0001-change-font-setting-from-Default-to-Arial.patch 
+export PACKAGE_VERSION=22.0a2-Piers
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/kodi/22.0a2-Piers/
+rm -rf ${BUILD_DIRECTORY}/xbmc-22.0a2-Piers
+tar xvf ${DOWNLOADDIR}/xbmc-22.0a2-Piers.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xbmc-22.0a2-Piers
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a2-Piers/patches/0001-kodi-fix-build-error-for-gcc-14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a2-Piers/patches/0001-fix-xbmc-Settings-undefine-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/kodi/22.0a2-Piers/patches/0001-change-font-setting-from-Default-to-Arial.patch 
 	 
 	export PATH=${CROSSTOOLS_DIR}/jdk17-bootstrap/bin:${PATH}
 	sed -i "/DSPDLOG_FMT_EXTERNAL/s@=ON@=OFF@g" cmake/modules/FindSpdlog.cmake
@@ -57,7 +57,7 @@ pushd ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xbmc-22.0a1-Piers
+rm -rf ${BUILD_DIRECTORY}/xbmc-22.0a2-Piers
 
 rm ${SYSROOT_DIR}/usr/share/wayland-sessions/kodi-gbm.desktop
 rm ${SYSROOT_DIR}/usr/share/xsessions/kodi.desktop

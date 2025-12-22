@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=flatpak
-export PACKAGE_VERSION=1.16.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/flatpak/1.16.1/
-rm -rf ${BUILD_DIRECTORY}/flatpak-1.16.1
-tar xvf ${DOWNLOADDIR}/flatpak-1.16.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/flatpak-1.16.1
+export PACKAGE_VERSION=1.17.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/flatpak/1.17.0/
+rm -rf ${BUILD_DIRECTORY}/flatpak-1.17.0
+tar xvf ${DOWNLOADDIR}/flatpak-1.17.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/flatpak-1.17.0
 	mkdir -p subprojects/bubblewrap
 	tar xvf ${RESOURCEDIR}/files/flatpak-bubblewrap_git.tar.gz -C subprojects/bubblewrap --strip-components=1
 	mkdir -p subprojects/dbus-proxy
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/flatpak-1.16.1
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/flatpak-1.16.1
+rm -rf ${BUILD_DIRECTORY}/flatpak-1.17.0

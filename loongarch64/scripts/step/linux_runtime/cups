@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=cups
-export PACKAGE_VERSION=2.4.14
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/cups/2.4.14/
-rm -rf ${BUILD_DIRECTORY}/cups-2.4.14
-tar xvf ${DOWNLOADDIR}/cups-2.4.14-source.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cups-2.4.14
+export PACKAGE_VERSION=2.4.16
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/cups/2.4.16/
+rm -rf ${BUILD_DIRECTORY}/cups-2.4.16
+tar xvf ${DOWNLOADDIR}/cups-2.4.16-source.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cups-2.4.16
     sed -i 's#@CUPS_HTMLVIEW@#firefox#' desktop/cups.desktop.in
     ./configure ${COMMON_CONFIG} --with-rcdir=/tmp/cupsinit   \
             --with-system-groups=lpadmin --with-systemd=/usr/lib/systemd/system
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/cups-2.4.14
     mkdir -p ${LINUX_SYSROOT_DIR}/etc/cups
     echo "ServerName /run/cups/cups.sock" > ${LINUX_SYSROOT_DIR}/etc/cups/client.conf
 popd 
-rm -rf ${BUILD_DIRECTORY}/cups-2.4.14
+rm -rf ${BUILD_DIRECTORY}/cups-2.4.16

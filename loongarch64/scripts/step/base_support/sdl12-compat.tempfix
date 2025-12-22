@@ -1,0 +1,22 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=sdl12-compat
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sdl12-compat//
+touch ${TEMP_DIRECTORY}/strip-foo
+
+for cmake_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo)
+do
+        if [ -f ${cmake_file} ]; then
+                sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${cmake_file}
+        fi
+done
+
+for cmake_file in $(grep -rl "\.a\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo)
+do
+        if [ -f ${cmake_file} ]; then
+                sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${cmake_file}
+        fi
+done

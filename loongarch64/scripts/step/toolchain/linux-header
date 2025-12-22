@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=linux-header
-export PACKAGE_VERSION=6.17.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/linux-header/6.17.4/
-rm -rf ${BUILD_DIRECTORY}/linux-6.17.4
-tar xvf ${DOWNLOADDIR}/linux-6.17.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.17.4
+export PACKAGE_VERSION=6.18
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/linux-header/6.18/
+rm -rf ${BUILD_DIRECTORY}/linux-6.18
+tar xvf ${DOWNLOADDIR}/linux-6.18.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-6.18
 	if [ "x$(get_user_set_env target)" == "x" ]; then
 		CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
 		CROSS_KERNEL_NAME=$(archname_to_linuxname "$(get_user_set_env host $(uname -m))" "$(uname -m)")
@@ -35,4 +35,4 @@ pushd ${BUILD_DIRECTORY}/linux-6.17.4
         mkdir -pv ${INSTALL_DIST_DIR}/usr/include
         cp -rv dest/include/* ${INSTALL_DIST_DIR}/usr/include/
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.17.4
+rm -rf ${BUILD_DIRECTORY}/linux-6.18

@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/zstd-1.5.7
 
         mkdir cross-build
         pushd cross-build
-                meson ${MESON_CONFIG} --default-library=static \
+                meson ${MESON_CONFIG} --default-library=both \
                       ..
                 ninja
                 DESTDIR=${MINGW_SYSROOT_DIR} ninja install

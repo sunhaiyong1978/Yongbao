@@ -3,15 +3,15 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt5
-export PACKAGE_VERSION=5.15.17
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt5/5.15.17/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.17
-tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.17.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.17
-    patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.17/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.17/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.17/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.17/patches/qtlocation-fix-rapidjson-build.patch -d qtlocation 
+export PACKAGE_VERSION=5.15.18
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt5/5.15.18/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.18
+tar xvf ${DOWNLOADDIR}/qt-everywhere-opensource-src-5.15.18.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.18
+    patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.18/patches/qt-everywhere-src-5.15.2-add-loongarch.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.18/patches/0001-QT-5.15.8-add-loongarch64-support.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.18/patches/0001-qt5-5.15-add-stdint-for-compiler-use-gcc-13.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt5/5.15.18/patches/qtlocation-fix-rapidjson-build.patch -d qtlocation 
 	 
     sed -i "s@defined(__aarch64__)@& || defined(__loongarch__)@g" qtbase/src/3rdparty/forkfd/forkfd_linux.c
     mkdir cross-build
@@ -36,7 +36,7 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.17
         make INSTALL_ROOT=${SYSROOT_DIR} install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.17
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.18
 
 cat > ${SYSROOT_DIR}/etc/profile.d/qt5.sh << "EOF"
 export QT_PLUGIN_PATH=${QT_PLUGIN_PATH}:/usr/lib64/qt5/plugins

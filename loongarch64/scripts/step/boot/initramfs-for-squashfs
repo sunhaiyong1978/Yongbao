@@ -67,5 +67,11 @@ pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
     gzip -9 initramfs.img
     mkdir -pv ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/ 
     cp initramfs.img.gz ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/initramfs-squashfs.img.gz
+
+        mkdir -p ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/merge_boot/boot
+        cp -af ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/vmlinux.efi ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/merge_boot/boot/vmlinux-${LINUX_KERNEL_VERSION}_${CONFIG_STR}.efi
+        cp -af ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/boot/vmlinux.config ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/merge_boot/boot/vmlinux-${LINUX_KERNEL_VERSION}_${CONFIG_STR}.config
+	cp initramfs.img.gz ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/merge_boot/boot/initramfs-${LINUX_KERNEL_VERSION}_${CONFIG_STR}.img.gz
+
 popd
 rm -rf ${BUILD_DIRECTORY}/ISO-Build

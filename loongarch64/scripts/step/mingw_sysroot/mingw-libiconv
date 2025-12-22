@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/libiconv-1.18
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --enable-static --enable-static --disable-shared --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --enable-static --enable-static --enable-shared --enable-malloc0returnsnull
 	CC="${MINGW_HOST}-gcc" CXX="${MINGW_HOST}-g++" make -j${JOBS}
         make DESTDIR=${MINGW_SYSROOT_DIR} install
 	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la

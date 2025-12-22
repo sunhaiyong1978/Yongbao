@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/gtk+-3.24.43
 	 
         mkdir cross-build
         pushd cross-build
-                meson ${MESON_CONFIG} --default-library=static -Dintrospection=false -Dbroadway_backend=true --wrap-mode=nodownload -Dtests=false \
+                meson ${MESON_CONFIG} --default-library=both -Dintrospection=false -Dbroadway_backend=true --wrap-mode=nodownload -Dtests=false \
                       ..
                 eval ${NINJA_AND_INSTALL}
         popd

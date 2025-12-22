@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=node
-export PACKAGE_VERSION=25.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/node/25.0.0/
-rm -rf ${BUILD_DIRECTORY}/node-25.0.0
-tar xvf ${DOWNLOADDIR}/node-25.0.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/node-25.0.0
+export PACKAGE_VERSION=25.2.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/node/25.2.1/
+rm -rf ${BUILD_DIRECTORY}/node-25.2.1
+tar xvf ${DOWNLOADDIR}/node-25.2.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/node-25.2.1
     
     ./configure --prefix ${PREFIX} --shared-openssl --with-intl=system-icu
     eval ${MAKE_AND_INSTALL}
     cp -av out/Release/node ${PREFIX}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/node-25.0.0
+rm -rf ${BUILD_DIRECTORY}/node-25.2.1

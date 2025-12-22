@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=kImageAnnotator
-export PACKAGE_VERSION=0.7.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/kImageAnnotator/0.7.1/
-rm -rf ${BUILD_DIRECTORY}/kImageAnnotator-0.7.1
-tar xvf ${DOWNLOADDIR}/kImageAnnotator-0.7.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kImageAnnotator-0.7.1
+export PACKAGE_VERSION=0.7.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/kImageAnnotator/0.7.2/
+rm -rf ${BUILD_DIRECTORY}/kImageAnnotator-0.7.2
+tar xvf ${DOWNLOADDIR}/kImageAnnotator-0.7.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kImageAnnotator-0.7.2
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/kImageAnnotator-0.7.1
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kImageAnnotator-0.7.1
+rm -rf ${BUILD_DIRECTORY}/kImageAnnotator-0.7.2

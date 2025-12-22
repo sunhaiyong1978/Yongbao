@@ -3,20 +3,21 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=icu4c
-export PACKAGE_VERSION=77_1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/77_1/
-rm -rf ${BUILD_DIRECTORY}/icu
-tar xvf ${DOWNLOADDIR}/icu4c-77_1-src.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/icu
+export PACKAGE_VERSION=78.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/78.1/
+rm -rf ${BUILD_DIRECTORY}/icu-release-78.1
+tar xvf ${DOWNLOADDIR}/icu4c-78.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/icu-release-78.1
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
     done
 
     touch LICENSE
-    pushd source
-    CC=gcc CXX=g++ ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib64
+    pushd icu4c/source
+    CC=gcc CXX=g++ ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib64 --enable-static
     eval ${MAKE_AND_INSTALL}
+    cp -av ${HOST_TOOLS_DIR}/sbin/{gensprep,icupkg} ${HOST_TOOLS_DIR}/bin/
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/icu
+rm -rf ${BUILD_DIRECTORY}/icu-release-78.1

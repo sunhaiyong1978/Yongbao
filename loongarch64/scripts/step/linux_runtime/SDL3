@@ -1,0 +1,25 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=SDL3
+export PACKAGE_VERSION=3.3.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/SDL3/3.3.2/
+rm -rf ${BUILD_DIRECTORY}/SDL3-3.3.2
+tar xvf ${DOWNLOADDIR}/SDL3-3.3.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SDL3-3.3.2
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIB_SUFF} \
+		      -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross-${TAG_NAME}.cmake \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+       		      -DCMAKE_INSTALL_PREFIX=/usr  -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/SDL3-3.3.2

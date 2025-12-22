@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ffmpeg
-export PACKAGE_VERSION=8.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ffmpeg/8.0/
-rm -rf ${BUILD_DIRECTORY}/ffmpeg-8.0
-tar xvf ${DOWNLOADDIR}/ffmpeg-8.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ffmpeg-8.0
-	patch -Np1 -i ${SYSDIR}/files/base_support/ffmpeg/8.0/patches/ffmpeg-7.1.1-chromium_method-1.patch 
+export PACKAGE_VERSION=8.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ffmpeg/8.0.1/
+rm -rf ${BUILD_DIRECTORY}/ffmpeg-8.0.1
+tar xvf ${DOWNLOADDIR}/ffmpeg-8.0.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ffmpeg-8.0.1
+	patch -Np1 -i ${SYSDIR}/files/base_support/ffmpeg/8.0.1/patches/ffmpeg-7.1.1-chromium_method-1.patch 
 	 
 	./configure --prefix=/usr --libdir=/usr/lib64 \
                 --cross-prefix=${CROSS_TARGET}- --sysroot=${SYSROOT_DIR} \
@@ -32,4 +32,4 @@ pushd ${BUILD_DIRECTORY}/ffmpeg-8.0
                 --arch=${ARCH_NAME} --target-os=linux --cc=${CROSS_TARGET}-gcc --host-cc=gcc
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ffmpeg-8.0
+rm -rf ${BUILD_DIRECTORY}/ffmpeg-8.0.1

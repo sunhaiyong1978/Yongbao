@@ -1,0 +1,17 @@
+source env/mingw_sysroot/config
+source env/distro.info
+source env/function.sh
+source env/mingw_sysroot/custom
+export STEP_BUILDNAME=mingw_sysroot
+export STEP_PACKAGENAME=bzip2
+export PACKAGE_VERSION=1.0.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/bzip2/1.0.8/
+rm -rf ${BUILD_DIRECTORY}/bzip2-1.0.8
+tar xvf ${DOWNLOADDIR}/bzip2-1.0.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bzip2-1.0.8
+	make -j${JOBS} CC=${MINGW_HOST}-gcc -f Makefile-libbz2_so
+	make clean
+	make -j${JOBS} CC=${MINGW_HOST}-gcc
+	make PREFIX=${MINGW_SYSROOT_DIR}/mingw install
+popd 
+rm -rf ${BUILD_DIRECTORY}/bzip2-1.0.8

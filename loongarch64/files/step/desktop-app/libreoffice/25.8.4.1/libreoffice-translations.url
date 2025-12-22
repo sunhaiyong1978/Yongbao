@@ -1,0 +1,3 @@
+URL=http://download.documentfoundation.org/libreoffice/src/25.8.4/libreoffice-translations-<<<PACKAGE_VERSION>>>.tar.xz
+FILENAME=libreoffice-translations-<<<PACKAGE_VERSION>>>.tar.xz
+MODE=FILE

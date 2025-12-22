@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=cargo-c
-export PACKAGE_VERSION=0.10.16
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/cargo-c/0.10.16/
-rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.16
-tar xvf ${DOWNLOADDIR}/cargo-c-0.10.16.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cargo-c-0.10.16
+export PACKAGE_VERSION=0.10.18
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/cargo-c/0.10.18/
+rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.18
+tar xvf ${DOWNLOADDIR}/cargo-c-0.10.18.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cargo-c-0.10.18
 	cargo build --release
 	install -Dm755 target/release/cargo-{capi,cbuild,cinstall,ctest} ${HOST_TOOLS_DIR}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.16
+rm -rf ${BUILD_DIRECTORY}/cargo-c-0.10.18

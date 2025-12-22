@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=qt-creator
-export PACKAGE_VERSION=17.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qt-creator/17.0.2/
-rm -rf ${BUILD_DIRECTORY}/qt-creator-17.0.2
-tar xvf ${DOWNLOADDIR}/qt-creator-17.0.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-creator-17.0.2
+export PACKAGE_VERSION=18.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qt-creator/18.0.0/
+rm -rf ${BUILD_DIRECTORY}/qt-creator-18.0.0
+tar xvf ${DOWNLOADDIR}/qt-creator-18.0.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-creator-18.0.0
         
         mkdir cross-build
         pushd cross-build
@@ -34,9 +34,10 @@ pushd ${BUILD_DIRECTORY}/qt-creator-17.0.2
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
 		      -DUSE_PROJECTSTORAGE=ON -DWITH_QMLDESIGNER=ON \
+		      -DBUILD_EXECUTABLE_CMDBRIDGE=OFF \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-creator-17.0.2
+rm -rf ${BUILD_DIRECTORY}/qt-creator-18.0.0

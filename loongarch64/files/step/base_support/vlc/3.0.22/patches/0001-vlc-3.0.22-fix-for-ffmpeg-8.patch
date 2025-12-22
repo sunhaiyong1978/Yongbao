@@ -1,0 +1,147 @@
+From 6691b5c0b3ff341c694e155b4787fe064b93d49c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 8 Dec 2025 02:39:46 +0000
+Subject: [PATCH] vlc 3.0.22 fix for ffmpeg 8.
+
+---
+ modules/codec/avcodec/audio.c           |  4 ++--
+ modules/codec/avcodec/avcommon_compat.h |  2 +-
+ modules/codec/avcodec/encoder.c         | 20 ++++++++++----------
+ modules/codec/avcodec/vaapi.c           |  8 ++++----
+ modules/codec/avcodec/video.c           |  9 +++++----
+ 5 files changed, 22 insertions(+), 21 deletions(-)
+
+diff --git a/modules/codec/avcodec/audio.c b/modules/codec/avcodec/audio.c
+index b6186d6..d637682 100644
+--- a/modules/codec/avcodec/audio.c
++++ b/modules/codec/avcodec/audio.c
+@@ -271,9 +271,9 @@ int InitAudioDec( vlc_object_t *obj )
+     p_dec->pf_flush  = Flush;
+ 
+     /* XXX: Writing input format makes little sense. */
+-    if( avctx->profile != FF_PROFILE_UNKNOWN )
++    if( avctx->profile != AV_PROFILE_UNKNOWN )
+         p_dec->fmt_in.i_profile = avctx->profile;
+-    if( avctx->level != FF_LEVEL_UNKNOWN )
++    if( avctx->level != AV_LEVEL_UNKNOWN )
+         p_dec->fmt_in.i_level = avctx->level;
+ 
+     return VLC_SUCCESS;
+diff --git a/modules/codec/avcodec/avcommon_compat.h b/modules/codec/avcodec/avcommon_compat.h
+index 8ab6910..f266cd1 100644
+--- a/modules/codec/avcodec/avcommon_compat.h
++++ b/modules/codec/avcodec/avcommon_compat.h
+@@ -76,7 +76,7 @@
+ # define AV_CODEC_CAP_SMALL_LAST_FRAME CODEC_CAP_SMALL_LAST_FRAME
+ #endif
+ #ifndef AV_INPUT_BUFFER_MIN_SIZE
+-# define AV_INPUT_BUFFER_MIN_SIZE FF_MIN_BUFFER_SIZE
++# define AV_INPUT_BUFFER_MIN_SIZE 4096
+ #endif
+ #ifndef  FF_MAX_B_FRAMES
+ # define  FF_MAX_B_FRAMES 16 // FIXME: remove this
+diff --git a/modules/codec/avcodec/encoder.c b/modules/codec/avcodec/encoder.c
+index be53cec..12abe99 100644
+--- a/modules/codec/avcodec/encoder.c
++++ b/modules/codec/avcodec/encoder.c
+@@ -484,30 +484,30 @@ int InitVideoEnc( vlc_object_t *p_this )
+     psz_val = var_GetString( p_enc, ENC_CFG_PREFIX "aac-profile" );
+     /* libavcodec uses faac encoder atm, and it has issues with
+      * other than low-complexity profile, so default to that */
+-    p_sys->i_aac_profile = FF_PROFILE_AAC_LOW;
++    p_sys->i_aac_profile = AV_PROFILE_AAC_LOW;
+     if( psz_val && *psz_val )
+     {
+         if( !strncmp( psz_val, "main", 4 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_MAIN;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_MAIN;
+         else if( !strncmp( psz_val, "low", 3 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_LOW;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_LOW;
+         else if( !strncmp( psz_val, "ssr", 3 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_SSR;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_SSR;
+         else if( !strncmp( psz_val, "ltp", 3 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_LTP;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_LTP;
+ /* These require libavcodec with libfdk-aac */
+         else if( !strncmp( psz_val, "hev2", 4 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_HE_V2;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_HE_V2;
+         else if( !strncmp( psz_val, "hev1", 4 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_HE;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_HE;
+         else if( !strncmp( psz_val, "ld", 2 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_LD;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_LD;
+         else if( !strncmp( psz_val, "eld", 3 ) )
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_ELD;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_ELD;
+         else
+         {
+             msg_Warn( p_enc, "unknown AAC profile requested, setting it to low" );
+-            p_sys->i_aac_profile = FF_PROFILE_AAC_LOW;
++            p_sys->i_aac_profile = AV_PROFILE_AAC_LOW;
+         }
+     }
+     free( psz_val );
+diff --git a/modules/codec/avcodec/vaapi.c b/modules/codec/avcodec/vaapi.c
+index e203baa..f2f9560 100644
+--- a/modules/codec/avcodec/vaapi.c
++++ b/modules/codec/avcodec/vaapi.c
+@@ -100,9 +100,9 @@ static int GetVaProfile(AVCodecContext *ctx, const es_format_t *fmt,
+         count = 18;
+         break;
+     case AV_CODEC_ID_HEVC:
+-        if (ctx->profile == FF_PROFILE_HEVC_MAIN)
++        if (ctx->profile == AV_PROFILE_HEVC_MAIN)
+             i_profile = VAProfileHEVCMain;
+-        else if (ctx->profile == FF_PROFILE_HEVC_MAIN_10)
++        else if (ctx->profile == AV_PROFILE_HEVC_MAIN_10)
+         {
+             i_profile = VAProfileHEVCMain10;
+             i_vlc_chroma = VLC_CODEC_VAAPI_420_10BPP;
+@@ -116,10 +116,10 @@ static int GetVaProfile(AVCodecContext *ctx, const es_format_t *fmt,
+         count = 5;
+         break;
+     case AV_CODEC_ID_VP9:
+-        if (ctx->profile == FF_PROFILE_VP9_0)
++        if (ctx->profile == AV_PROFILE_VP9_0)
+             i_profile = VAProfileVP9Profile0;
+ #if VA_CHECK_VERSION( 0, 39, 0 )
+-        else if (ctx->profile == FF_PROFILE_VP9_2)
++        else if (ctx->profile == AV_PROFILE_VP9_2)
+         {
+             i_profile = VAProfileVP9Profile2;
+             i_vlc_chroma = VLC_CODEC_VAAPI_420_10BPP;
+diff --git a/modules/codec/avcodec/video.c b/modules/codec/avcodec/video.c
+index 8524f57..81bf482 100644
+--- a/modules/codec/avcodec/video.c
++++ b/modules/codec/avcodec/video.c
+@@ -624,9 +624,9 @@ static int InitVideoDecCommon( decoder_t *p_dec )
+     p_dec->pf_flush  = Flush;
+ 
+     /* XXX: Writing input format makes little sense. */
+-    if( p_context->profile != FF_PROFILE_UNKNOWN )
++    if( p_context->profile != AV_PROFILE_UNKNOWN )
+         p_dec->fmt_in.i_profile = p_context->profile;
+-    if( p_context->level != FF_LEVEL_UNKNOWN )
++    if( p_context->level != AV_LEVEL_UNKNOWN )
+         p_dec->fmt_in.i_level = p_context->level;
+     return VLC_SUCCESS;
+ }
+@@ -1431,8 +1431,9 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
+         /* Hack to force display of still pictures */
+         p_pic->b_force = p_sys->b_first_frame;
+         p_pic->i_nb_fields = 2 + frame->repeat_pict;
+-        p_pic->b_progressive = !frame->interlaced_frame;
+-        p_pic->b_top_field_first = frame->top_field_first;
++        p_pic->b_progressive = !(frame->flags & AV_FRAME_FLAG_INTERLACED);
++        p_pic->b_top_field_first = (frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST) ? 1 : 0;;
++
+ 
+         if (DecodeSidedata(p_dec, frame, p_pic))
+             i_pts = VLC_TICK_INVALID;
+-- 
+2.31.1
+

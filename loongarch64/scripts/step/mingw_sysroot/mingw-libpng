@@ -4,18 +4,20 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-libpng
-export PACKAGE_VERSION=1.6.50
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-libpng/1.6.50/
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.50
-tar xvf ${DOWNLOADDIR}/libpng-1.6.50.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libpng-1.6.50
-	
-	if [ ! -f configure ]; then
-		autoreconf -ifv
-	fi
-	 ./configure ${COMMON_CONFIG} --enable-static  --enable-malloc0returnsnull
-	CC="${MINGW_HOST}-gcc" CXX="${MINGW_HOST}-g++" make -j${JOBS}
-        make DESTDIR=${MINGW_SYSROOT_DIR} install
-	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
+export PACKAGE_VERSION=1.6.52
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-libpng/1.6.52/
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.52
+tar xvf ${DOWNLOADDIR}/libpng-1.6.52.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libpng-1.6.52
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${MINGW_HOST}-gcc" CXX="${MINGW_HOST}-g++" \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross_${INSTALL_ARCH_NAME}.cmake \
+		      -DCMAKE_INSTALL_LIBDIR=/mingw/lib \
+       		      -DCMAKE_INSTALL_PREFIX=/mingw  -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
+        rm -f  ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/libpng-1.6.50
+rm -rf ${BUILD_DIRECTORY}/libpng-1.6.52

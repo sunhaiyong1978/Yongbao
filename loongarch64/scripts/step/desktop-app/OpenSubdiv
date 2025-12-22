@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=OpenSubdiv
-export PACKAGE_VERSION=3_6_1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenSubdiv/3_6_1/
-rm -rf ${BUILD_DIRECTORY}/OpenSubdiv-3_6_1
-tar xvf ${DOWNLOADDIR}/OpenSubdiv-3_6_1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OpenSubdiv-3_6_1
+export PACKAGE_VERSION=3_7_0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenSubdiv/3_7_0/
+rm -rf ${BUILD_DIRECTORY}/OpenSubdiv-3_7_0
+tar xvf ${DOWNLOADDIR}/OpenSubdiv-3_7_0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenSubdiv-3_7_0
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/OpenSubdiv-3_6_1
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OpenSubdiv-3_6_1
+rm -rf ${BUILD_DIRECTORY}/OpenSubdiv-3_7_0

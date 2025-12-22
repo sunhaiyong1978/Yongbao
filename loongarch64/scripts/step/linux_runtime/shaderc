@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=shaderc
-export PACKAGE_VERSION=2025.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/shaderc/2025.4/
-rm -rf ${BUILD_DIRECTORY}/shaderc-2025.4
-tar xvf ${DOWNLOADDIR}/shaderc-2025.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/shaderc-2025.4
+export PACKAGE_VERSION=2025.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/shaderc/2025.5/
+rm -rf ${BUILD_DIRECTORY}/shaderc-2025.5
+tar xvf ${DOWNLOADDIR}/shaderc-2025.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/shaderc-2025.5
 	tar xvf ${DOWNLOADDIR}/SPIRV-Tools-$(get_package_version "SPIRV-Tools").tar.gz -C third_party/
 	mv third_party/SPIRV-Tools-$(get_package_version "SPIRV-Tools") third_party/spirv-tools
 	
@@ -30,7 +30,7 @@ pushd ${BUILD_DIRECTORY}/shaderc-2025.4
         popd
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/shaderc-2025.4
+rm -rf ${BUILD_DIRECTORY}/shaderc-2025.5
 
 echo "#!/bin/bash -e
 qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/glslc \"\$@\"" \

@@ -1,0 +1,33 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=docbook-4.3
+export PACKAGE_VERSION=zip
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/docbook-4.3/zip/
+export PATH=${HOST_TOOLS_DIR}/bin:${PATH}
+rm -rf ${BUILD_DIRECTORY}/docbook-dtd-4.3
+mkdir -pv ${BUILD_DIRECTORY}/docbook-dtd-4.3
+pushd ${BUILD_DIRECTORY}/docbook-dtd-4.3
+    unzip ${DOWNLOADDIR}/docbook-4.3.zip
+    sed -i -e '/ISO 8879/d' \
+           -e '/gml/d' docbook.cat
+    install -v -d ${PREFIX}/share/sgml/docbook/sgml-dtd-4.3
+    install -v docbook.cat ${PREFIX}/share/sgml/docbook/sgml-dtd-4.3/catalog
+    cp -v -af *.dtd *.mod *.dcl ${PREFIX}/share/sgml/docbook/sgml-dtd-4.3
+
+    install-catalog --add ${PREFIX}/etc/sgml/sgml-docbook-dtd-4.3.cat \
+        ${PREFIX}/share/sgml/docbook/sgml-dtd-4.3/catalog
+
+    install-catalog --add ${PREFIX}/etc/sgml/sgml-docbook-dtd-4.3.cat \
+        ${PREFIX}/etc/sgml/sgml-docbook.cat
+
+cat >> ${PREFIX}/share/sgml/docbook/sgml-dtd-4.3/catalog << "EOF"
+PUBLIC "-//OASIS//DTD DocBook V4.4//EN" "docbook.dtd"
+PUBLIC "-//OASIS//DTD DocBook V4.3//EN" "docbook.dtd"
+PUBLIC "-//OASIS//DTD DocBook V4.2//EN" "docbook.dtd"
+PUBLIC "-//OASIS//DTD DocBook V4.1//EN" "docbook.dtd"
+PUBLIC "-//OASIS//DTD DocBook V4.0//EN" "docbook.dtd"
+EOF
+popd
+rm -rf ${BUILD_DIRECTORY}/docbook-dtd-4.3

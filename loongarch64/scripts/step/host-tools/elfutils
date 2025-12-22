@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=elfutils
-export PACKAGE_VERSION=0.193
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/elfutils/0.193/
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.193
-tar xvf ${DOWNLOADDIR}/elfutils-0.193.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elfutils-0.193
+export PACKAGE_VERSION=0.194
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/elfutils/0.194/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.194
+tar xvf ${DOWNLOADDIR}/elfutils-0.194.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.194
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/elfutils-0.193
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF}  --disable-debuginfod --enable-libdebuginfod=dummy --enable-maintainer-mode
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.193
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.194

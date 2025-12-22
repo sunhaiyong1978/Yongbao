@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=258.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd/258.1/
-rm -rf ${BUILD_DIRECTORY}/systemd-258.1
-tar xvf ${DOWNLOADDIR}/systemd-258.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-258.1
+export PACKAGE_VERSION=258.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/systemd/258.2/
+rm -rf ${BUILD_DIRECTORY}/systemd-258.2
+tar xvf ${DOWNLOADDIR}/systemd-258.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-258.2
 	
 	sed -i -e 's/GROUP="render"/GROUP="video"/' \
            -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
@@ -26,4 +26,4 @@ pushd ${BUILD_DIRECTORY}/systemd-258.1
 		eval ${NINJA_AND_INSTALL}
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-258.1
+rm -rf ${BUILD_DIRECTORY}/systemd-258.2

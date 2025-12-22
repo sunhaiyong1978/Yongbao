@@ -8,7 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/openssl/3.6.0/
 rm -rf ${BUILD_DIRECTORY}/openssl-3.6.0
 tar xvf ${DOWNLOADDIR}/openssl-3.6.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/openssl-3.6.0
-	./Configure --prefix=${CROSSTOOLS_DIR} \
+	./Configure --prefix=${HOST_TOOLS_DIR} \
 				--libdir=lib64 shared zlib linux-generic64
 	eval ${MAKE_AND_INSTALL}
 popd 

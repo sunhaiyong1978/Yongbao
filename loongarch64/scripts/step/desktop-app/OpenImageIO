@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=OpenImageIO
-export PACKAGE_VERSION=3.1.6.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenImageIO/3.1.6.2/
-rm -rf ${BUILD_DIRECTORY}/OpenImageIO-3.1.6.2
-tar xvf ${DOWNLOADDIR}/OpenImageIO-3.1.6.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/OpenImageIO-3.1.6.2
+export PACKAGE_VERSION=3.1.8.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/OpenImageIO/3.1.8.0/
+rm -rf ${BUILD_DIRECTORY}/OpenImageIO-3.1.8.0
+tar xvf ${DOWNLOADDIR}/OpenImageIO-3.1.8.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/OpenImageIO-3.1.8.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/OpenImageIO-3.1.6.2
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/OpenImageIO-3.1.6.2
+rm -rf ${BUILD_DIRECTORY}/OpenImageIO-3.1.8.0

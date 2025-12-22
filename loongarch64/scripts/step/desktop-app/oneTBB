@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=oneTBB
-export PACKAGE_VERSION=2022.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/oneTBB/2022.2.0/
-rm -rf ${BUILD_DIRECTORY}/oneTBB-2022.2.0
-tar xvf ${DOWNLOADDIR}/oneTBB-2022.2.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/oneTBB-2022.2.0
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/oneTBB/2022.2.0/patches/0001-oneTBB-add-loongarch64-for-not-use-fcf-protection-op.patch 
-	 
+export PACKAGE_VERSION=2022.3.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/oneTBB/2022.3.0/
+rm -rf ${BUILD_DIRECTORY}/oneTBB-2022.3.0
+tar xvf ${DOWNLOADDIR}/oneTBB-2022.3.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/oneTBB-2022.3.0
+        
 	mkdir cross-build
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CXXFLAGS="${CXXFLAGS} -Wno-error=stringop-overflow -Wno-error=array-bounds" \
@@ -23,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/oneTBB-2022.2.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/oneTBB-2022.2.0
+rm -rf ${BUILD_DIRECTORY}/oneTBB-2022.3.0

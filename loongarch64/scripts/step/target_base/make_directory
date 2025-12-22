@@ -53,6 +53,7 @@ echo "vapigen = '${CROSS_TARGET}-vapigen'" >> meson-cross.txt
 echo "glib-compile-resources = '${CROSS_TARGET}-glib-compile-resources'" >> meson-cross.txt
 echo "glib-compile-schemas = '${CROSS_TARGET}-glib-compile-schemas'" >> meson-cross.txt
 echo "gdbus-codegen = 'gdbus-codegen'" >> meson-cross.txt
+echo "wayland-scanner = '${CROSS_TARGET}-wayland-scanner'" >> meson-cross.txt
 echo "rust = 'rustc'" >> meson-cross.txt
 echo "exe_wrapper = 'qemu-${ARCH_NAME}'" >> meson-cross.txt
 echo "[built-in options]" >> meson-cross.txt

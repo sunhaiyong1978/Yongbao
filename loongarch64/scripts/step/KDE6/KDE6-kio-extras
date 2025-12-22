@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=KDE6-kio-extras
-export PACKAGE_VERSION=25.08.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kio-extras/25.08.2/
-rm -rf ${BUILD_DIRECTORY}/kio-extras-25.08.2
-tar xvf ${DOWNLOADDIR}/kio-extras-25.08.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/kio-extras-25.08.2
-        patch -Np1 -i ${SYSDIR}/files/KDE6/KDE6-kio-extras/25.08.2/patches/0001-kio-extras-25.04.0-fix-extern-C-error.patch 
+export PACKAGE_VERSION=25.08.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/KDE6-kio-extras/25.08.3/
+rm -rf ${BUILD_DIRECTORY}/kio-extras-25.08.3
+tar xvf ${DOWNLOADDIR}/kio-extras-25.08.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/kio-extras-25.08.3
+        patch -Np1 -i ${SYSDIR}/files/KDE6/KDE6-kio-extras/25.08.3/patches/0001-kio-extras-25.04.0-fix-extern-C-error.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/kio-extras-25.08.2
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/kio-extras-25.08.2
+rm -rf ${BUILD_DIRECTORY}/kio-extras-25.08.3

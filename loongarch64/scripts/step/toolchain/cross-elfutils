@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-elfutils
-export PACKAGE_VERSION=0.193
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-elfutils/0.193/
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.193
-tar xvf ${DOWNLOADDIR}/elfutils-0.193.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elfutils-0.193
+export PACKAGE_VERSION=0.194
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-elfutils/0.194/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.194
+tar xvf ${DOWNLOADDIR}/elfutils-0.194.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.194
         
 	for config_i in $(find -name "config.sub")
 	do
@@ -66,4 +66,4 @@ pushd ${BUILD_DIRECTORY}/elfutils-0.193
 	fi
 	make DESTDIR=${TOOLCHAIN_INSTALL_DIR}/elfutils install-strip
 popd 
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.193
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.194

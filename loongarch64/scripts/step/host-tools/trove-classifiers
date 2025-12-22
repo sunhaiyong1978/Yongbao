@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=trove-classifiers
-export PACKAGE_VERSION=2025.9.11.17
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/trove-classifiers/2025.9.11.17/
-rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.9.11.17
-tar xvf ${DOWNLOADDIR}/trove_classifiers-2025.9.11.17.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/trove_classifiers-2025.9.11.17
+export PACKAGE_VERSION=2025.12.1.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/trove-classifiers/2025.12.1.14/
+rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.12.1.14
+tar xvf ${DOWNLOADDIR}/trove_classifiers-2025.12.1.14.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/trove_classifiers-2025.12.1.14
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user trove-classifiers
 popd 
-rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.9.11.17
+rm -rf ${BUILD_DIRECTORY}/trove_classifiers-2025.12.1.14

@@ -5,8 +5,3 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gtk4
 export PACKAGE_VERSION=
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gtk4//
-if [ -f ${SYSROOT_DIR}/usr/bin/wayland-scanner ]; then
-	mv ${SYSROOT_DIR}/usr/bin/wayland-scanner ${SYSROOT_DIR}/usr/bin/wayland-scanner.orig
-	echo "qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/wayland-scanner.orig \"\$@\"" > ${SYSROOT_DIR}/usr/bin/wayland-scanner
-	chmod +x ${SYSROOT_DIR}/usr/bin/wayland-scanner
-fi

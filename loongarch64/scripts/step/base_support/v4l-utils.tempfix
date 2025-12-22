@@ -15,7 +15,7 @@ qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/${bin_file}.orig \"\$@\"" > ${SYSROOT_D
         fi
 done
 
-for bin_file in moc uic rcc
+for bin_file in moc uic rcc qmltyperegistrar qmlcachegen
 do
         if [ -f ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file} ]; then
                 mv ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}{,-qt6}

@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xdotool
-export PACKAGE_VERSION=3.20211022.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xdotool/3.20211022.1/
-rm -rf ${BUILD_DIRECTORY}/xdotool-3.20211022.1
-tar xvf ${DOWNLOADDIR}/xdotool-3.20211022.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xdotool-3.20211022.1
+export PACKAGE_VERSION=4.20251130.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xdotool/4.20251130.1/
+rm -rf ${BUILD_DIRECTORY}/xdotool-4.20251130.1
+tar xvf ${DOWNLOADDIR}/xdotool-4.20251130.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xdotool-4.20251130.1
 	
 	sed -i "s@installpc post-install@installpc@g" Makefile
 	CC=${CROSS_TARGET}-gcc make -j${JOBS} PREFIX=/usr INSTALLLIB=/usr/lib64
 	CC=${CROSS_TARGET}-gcc make PREFIX=/usr INSTALLLIB=/usr/lib64 DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/xdotool-3.20211022.1
+rm -rf ${BUILD_DIRECTORY}/xdotool-4.20251130.1

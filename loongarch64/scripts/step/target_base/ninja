@@ -3,14 +3,14 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=ninja
-export PACKAGE_VERSION=1.13.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/ninja/1.13.1/
-rm -rf ${BUILD_DIRECTORY}/ninja-1.13.1
-tar xvf ${DOWNLOADDIR}/ninja-1.13.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ninja-1.13.1
+export PACKAGE_VERSION=1.13.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/ninja/1.13.2/
+rm -rf ${BUILD_DIRECTORY}/ninja-1.13.2
+tar xvf ${DOWNLOADDIR}/ninja-1.13.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ninja-1.13.2
     CXX="${CROSS_TARGET}-g++" AR="${CROSS_TARGET}-ar" \
     ${HOST_TOOLS_DIR}/bin/python3 configure.py
     ninja
     install -vm755 ninja ${SYSROOT_DIR}/usr/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/ninja-1.13.1
+rm -rf ${BUILD_DIRECTORY}/ninja-1.13.2
