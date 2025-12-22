@@ -7,12 +7,14 @@ declare NEW_BASE_DIR="${PWD}"
 
 declare FORCE_CREATE=FALSE
 declare ARCHIVE_MODE="squashfs"
+declare ARCHIVE_COMP_FORMAT="xz"
 declare OVERLAY_NAME=""
 declare KERNEL_CREATE=TRUE
 declare KERNEL_ONLY=FALSE
+declare ALL_IN_ONE=FALSE
 declare WORLD_PARM=""
 
-while getopts 'fkm:wh' OPT; do
+while getopts 'fkam:c:wh' OPT; do
     case $OPT in
         f)
             FORCE_CREATE=TRUE
@@ -20,9 +22,15 @@ while getopts 'fkm:wh' OPT; do
         k)
             KERNEL_ONLY=TRUE
             ;;
+	a)
+	    ALL_IN_ONE=TRUE
+	    ;;
 	m)
             ARCHIVE_MODE=$OPTARG
             ;;
+	c)
+	    ARCHIVE_COMP_FORMAT=$OPTARG
+	    ;;
 	w)
 	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
 	    NEW_BASE_DIR="${BASE_DIR}"
@@ -43,8 +51,10 @@ while getopts 'fkm:wh' OPT; do
             echo "选项："
             echo "    -h: 显示当前帮助信息。"
             echo "    -f: 将原有目录进行重命名，并重新进行目标系统的打包工作。"
-            echo "    -k: 对内核进行打包工作,指定该参数后“[目录名]”将视作内核的标记名。"
-            echo "    -m <模式名> 设置打包模式，目前可用的打包模式名有tar和squashfs。"
+            echo "    -k: 对内核进行打包工作,指定该参数后“[目录名]”中不在overlaydir_strip中的将视作内核的标记名，不指定任何“[目录名]”的情况下将对所有找到的内核进行打包。"
+	    echo "    -a: 指定该参数后，对所有要处理的 “[目录名]” 中的文件合并到一起，以备进行下一步的处理。"
+            echo "    -m <模式名>: 设置打包模式，目前可用的打包模式名有 squashfs、tar、merge 和 rawdisk 。"
+	    echo "    -c <压缩格式>: 设置打包时使用的压缩格式，目前可以指定的压缩格式有 gzip、xz、zstd、lz4 和 lzo。"
 	    echo "    -w: 强制在主线环境中进行打包，不指定该参数将使用 current_branch 指定的分支环境中进行打包，若不存在 current_branch 文件则默认对主线环境进行打包。"
 
             exit 0
@@ -76,16 +86,46 @@ fi
 
 
 case "x${ARCHIVE_MODE}" in
-	xtar | xsquashfs)
+	xsquashfs | xtar | xrawdisk | xmerge | xvdisk)
 		;;
 	*)
-		echo "打包模式指定错误，目前只支持tar和squashfs模式。"
+		echo "${ARCHIVE_MODE} 打包模式指定错误，目前只支持 squashfs 、 tar 、 merge 和 rawdisk 模式。"
 		exit 1
 		;;
 esac
 
+case "x${ARCHIVE_MODE}" in
+        xsquashfs | xtar )
+		case "x${ARCHIVE_COMP_FORMAT}" in
+			xgzip | xxz | xzstd | xlz4 | xlzo )
+				;;
+			*)
+				echo "${ARCHIVE_COMP_FORMAT} 压缩格式指定错误，目前只支持 gzip、xz、zstd、lz4 和 lzo 格式。"
+				exit 1
+				;;
+		esac
+		;;
+	vdisk)
+		case "${ARCHIVE_COMP_FORMAT}" in
+			qcow2 | vdi | vhdx)
+				;;
+			*)
+				echo "${ARCHIVE_COMP_FORMAT} 格式指定错误，目前只支持 qcow2、vdi 、vhdx 格式。"
+				;;
+		esac
+		;;
+	*)
+		;;
+esac
+
+SAVE_ARCHIVE_MODE="${ARCHIVE_MODE}"
+
+if [ "x${ALL_IN_ONE}" == "xTRUE" ]; then
+	ARCHIVE_MODE="merge"
+fi
+
 if [ "x${1}" != "x" ]; then
-	OVERLAY_NAME="${1}"
+	OVERLAY_NAME_ALL="${1}"
 fi
 
 
@@ -142,8 +182,11 @@ if [ "x${ARCHIVE_MODE}" == "x" ]; then
 	fi
 fi
 
+if [ "x${ARCHIVE_MODE}" == "xmerge" ]; then
+	tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/build "clear_merge" "clearmerge" "none" "${DISTRO_NAME}" "${DISTRO_VERSION}" "${DISTRO_ARCH}"
+fi
 
-if [ "x${OVERLAY_NAME}" == "x" ]; then
+if [ "x${OVERLAY_NAME_ALL}" == "x" ]; then
 	if [ "x${KERNEL_CREATE}" == "xTRUE" ]; then
 		KERNEL_VERSION=$(cat ${NEW_TARGET_SYSDIR}/common_files/linux-kernel.version)
 		if [ "x${KERNEL_VERSION}" != "x" ]; then
@@ -151,11 +194,17 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 			if [ "x$?" == "x0" ] && [ "x${KERNEL_LIST}" != "x" ]; then
 				for kernel_dir in $(ls ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION})
 				do
-					echo "打包 ${kernel_dir} 内核..."
+					echo "正在处理 ${kernel_dir} 内核..."
 					if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-						tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/img "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/img "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						if [ "x${ALL_IN_ONE}" == "xTRUE" ]; then
+							tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/merge_boot "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						fi
 					else
-						tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/img "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/img "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						if [ "x${ALL_IN_ONE}" == "xTRUE" ]; then
+							tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${kernel_dir}/merge_boot "kernel_${kernel_dir}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						fi
 					fi
 				done
 			else
@@ -182,7 +231,7 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 				if [ -f ${NEW_BASE_DIR}/workbase/overlaydir/${i}.released ]; then
 					RELEASE_SUFF=".update"
 				fi
-				echo "制作 ${i}${RELEASE_SUFF} 打包文件..."
+				echo "正在处理 ${i}${RELEASE_SUFF} 中的文件..."
 				if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} ]; then
 	
 					STEP_NAME=""
@@ -194,19 +243,19 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 					fi
 
 					if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-						tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/${i}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 						for j in $(cat ${NEW_BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
 						do
 							if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
-								tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+								tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 							fi
 						done
 					else
-						tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+						tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 						for j in $(cat ${NEW_BASE_DIR}/workbase/overlaydir/${i}.split | awk -F' ' '{ print $1 }' | sort | uniq)
 						do
 							if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j ]; then
-								tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+								tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/$i${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
 							fi
 						done
 					fi
@@ -218,75 +267,127 @@ if [ "x${OVERLAY_NAME}" == "x" ]; then
 			echo "没有发现可以用来打包的系统目录，请检查${NEW_BASE_DIR}/workbase/overlaydir_strip目录是否存在，你可以通过strip_os.sh脚本生成该目录。"
 			exit 1
 		fi
+		YONGBAO_MERGE_NAME="merge_all";
 	fi
 else
-	if [ "x${KERNEL_ONLY}" == "xTRUE" ]; then
-		KERNEL_VERSION=$(cat ${NEW_TARGET_SYSDIR}/common_files/linux-kernel.version)
-		if [ "x${KERNEL_VERSION}" != "x" ]; then
-			if [ -d ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} ]; then
-				echo "打包 ${OVERLAY_NAME} 内核..."
+# 	for OVERLAY_NAME in $(echo ${OVERLAY_NAME_ALL} | tr ',' ' ')
+# 	do
+# 		if [ "x${KERNEL_ONLY}" == "xTRUE" ]; then
+# 			KERNEL_VERSION=$(cat ${NEW_TARGET_SYSDIR}/common_files/linux-kernel.version)
+# 			if [ "x${KERNEL_VERSION}" != "x" ]; then
+# 				if [ -d ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} ]; then
+# 					echo "打包 ${OVERLAY_NAME} 内核..."
+# 					if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
+# 						tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+# 					else
+# 						tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+# 					fi
+# 				else
+# 					echo "没有发现 ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} 目录，不能对${OVERLAY_NAME} 内核进行打包。"
+# # 		        	        exit 6
+# 	        		fi
+# 			else
+# 				echo "没有发现构建内核版本的信息，无法打包内核，请确认是否完成内核的编译。"
+# 				exit 7
+# 			fi
+# 			exit 0
+# 		fi
+# 	done
+
+	YONGBAO_MERGE_NAME="merge";
+	for OVERLAY_NAME in $(echo ${OVERLAY_NAME_ALL} | tr ',' ' ')
+	do
+		if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} ]; then
+			RELEASE_SUFF=""
+			if [ -f ${NEW_BASE_DIR}/workbase/overlaydir/${i}.released ]; then
+				RELEASE_SUFF=".update"
+			fi
+			echo "正在处理 ${OVERLAY_NAME}${RELEASE_SUFF} 中的文件..."
+			if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} ]; then
+
+				STEP_NAME=""
+				if [ -f ${NEW_BASE_DIR}/env/${OVERLAY_NAME}.info ]; then
+					STEP_NAME=$(grep -r "^${OVERLAY_NAME}_NAME=" ${NEW_BASE_DIR}/env/${OVERLAY_NAME}.info | tail -n1 | awk -F'=' '{ print $2 }')
+				fi
+				if [ "x${STEP_NAME}" == "x" ]; then
+					STEP_NAME=${OVERLAY_NAME}
+				fi
+
 				if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-					tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					if [ -f ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split ]; then
+						for j in $(cat ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split | awk -F' ' '{ print $1 }' | sort | uniq)
+						do
+							if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j ]; then
+								tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							fi
+						done
+					fi
 				else
-					tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+					if [ -f ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split ]; then
+						for j in $(cat ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split | awk -F' ' '{ print $1 }' | sort | uniq)
+						do
+							if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j ]; then
+								tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							fi
+						done
+					fi
 				fi
-			else
-				echo "没有发现 ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} 目录，无法继续打包内核。"
-		                exit 6
-        		fi
+				YONGBAO_MERGE_NAME="${YONGBAO_MERGE_NAME}_${OVERLAY_NAME}"
+			fi
 		else
-			echo "没有发现构建内核版本的信息，无法打包内核，请确认是否完成内核的编译。"
-			exit 7
-		fi
-		exit 0
-	fi
-
-	if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME} ]; then
-		RELEASE_SUFF=""
-		if [ -f ${NEW_BASE_DIR}/workbase/overlaydir/${i}.released ]; then
-			RELEASE_SUFF=".update"
-		fi
-		echo "制作 ${OVERLAY_NAME}${RELEASE_SUFF} 打包文件..."
-		if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} ]; then
-
-			STEP_NAME=""
-			if [ -f ${NEW_BASE_DIR}/env/${OVERLAY_NAME}.info ]; then
-				STEP_NAME=$(grep -r "^${OVERLAY_NAME}_NAME=" ${NEW_BASE_DIR}/env/${OVERLAY_NAME}.info | tail -n1 | awk -F'=' '{ print $2 }')
-			fi
-			if [ "x${STEP_NAME}" == "x" ]; then
-				STEP_NAME=${OVERLAY_NAME}
-			fi
-
-			if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
-				tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
-				if [ -f ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split ]; then
-					for j in $(cat ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split | awk -F' ' '{ print $1 }' | sort | uniq)
-					do
-						if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j ]; then
-							tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+			if [ "x${KERNEL_ONLY}" == "xTRUE" ]; then
+				KERNEL_VERSION=$(cat ${NEW_TARGET_SYSDIR}/common_files/linux-kernel.version)
+				if [ "x${KERNEL_VERSION}" != "x" ]; then
+					if [ -d ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} ]; then
+						echo "正在处理 ${OVERLAY_NAME} 内核..."
+						if [ "x${FORCE_CREATE}" == "xTRUE" ]; then
+							tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							if [ "x${ALL_IN_ONE}" == "xTRUE" ]; then
+								tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/merge_boot "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							fi
+						else
+							tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/img "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							if [ "x${ALL_IN_ONE}" == "xTRUE" ]; then
+								tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME}/merge_boot "kernel_${OVERLAY_NAME}" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+							fi
 						fi
-					done
+						YONGBAO_MERGE_NAME="${YONGBAO_MERGE_NAME}_${OVERLAY_NAME}"
+					else
+						echo "即没有在 ${NEW_BASE_DIR}/workbase/overlaydir_strip 中没有发现 ${OVERLAY_NAME}${RELEASE_SUFF} 目录，也没有发现 ${NEW_TARGET_SYSDIR}/dist/os/linux-kernel/${KERNEL_VERSION}/${OVERLAY_NAME} 目录，不能对指定的 ${OVERLAY_NAME} 进行打包。"
+		        		fi
+				else
+					echo "没有在 ${NEW_BASE_DIR}/workbase/overlaydir_strip 中没有发现 ${OVERLAY_NAME}${RELEASE_SUFF} 目录，也没有发现任何构建内核版本的信息，无法打包 ${OVERLAY_NAME} ，请确认是否完成内核的编译。"
 				fi
 			else
-				tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF} "${STEP_NAME}${RELEASE_SUFF}" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
-				if [ -f ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split ]; then
-					for j in $(cat ${NEW_BASE_DIR}/workbase/overlaydir/${OVERLAY_NAME}.split | awk -F' ' '{ print $1 }' | sort | uniq)
-					do
-						if [ -d ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j ]; then
-							tools/pack_archive_dir.sh ${WORLD_PARM} ${NEW_BASE_DIR}/workbase/overlaydir_strip/${OVERLAY_NAME}${RELEASE_SUFF}.$j "${STEP_NAME}${RELEASE_SUFF}.$j" ${ARCHIVE_MODE} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
-						fi
-					done
-				fi
+				echo "${NEW_BASE_DIR}/workbase/overlaydir_strip 中没有发现 ${OVERLAY_NAME}${RELEASE_SUFF} 目录，跳过。"
 			fi
 		fi
-	else
-		echo "${NEW_BASE_DIR}/workbase/overlaydir_strip 中没有发现 ${OVERLAY_NAME}${RELEASE_SUFF} 目录，跳过。"
-	fi
 
-#	if [ "x${OVERLAY_NAME}" != "x" ]; then
-#		if [ "x${i}" != "x${OVERLAY_NAME}" ]; then
-#			continue
+#		if [ "x${OVERLAY_NAME}" != "x" ]; then
+#			if [ "x${i}" != "x${OVERLAY_NAME}" ]; then
+#				continue
+#			fi
 #		fi
-#	fi
+	done
 fi
 
+
+if [ "x${ALL_IN_ONE}" == "xTRUE" ]; then
+	ARCHIVE_MODE=${SAVE_ARCHIVE_MODE}
+
+	case "x${ARCHIVE_MODE}" in
+		xsquashfs | xtar | xrawdisk | xvdisk)
+			tools/pack_archive_dir.sh ${WORLD_PARM} -f ${NEW_TARGET_SYSDIR}/dist/merge/img "${YONGBAO_MERGE_NAME}_custom" ${ARCHIVE_MODE} ${ARCHIVE_COMP_FORMAT} ${DISTRO_NAME} ${DISTRO_VERSION} ${DISTRO_ARCH}
+			;;
+		xmerge)
+			echo "合并后的目录在 ${NEW_TARGET_SYSDIR}/dist/merge/img "
+			;;
+		*)
+			echo "${ARCHIVE_MODE} 打包模式指定错误，目前只支持 squashfs 、 tar 、 merge 和 rawdisk 模式。"
+			exit 1
+			;;
+	esac
+
+fi
