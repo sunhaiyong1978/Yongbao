@@ -4,10 +4,11 @@ export BASE_DIR="${PWD}"
 
 declare UPDATE_MODE=FALSE
 declare KERNEL_ONLY=FALSE
+declare DISTRO_ARCHIVE_MODE="dir"
 declare DISTRO_LABEL=""
 declare WORLD_PARM=""
 
-while getopts 'ukwl:h' OPT; do
+while getopts 'ukwl:m:h' OPT; do
     case $OPT in
         u)
             UPDATE_MODE=TRUE
@@ -17,6 +18,9 @@ while getopts 'ukwl:h' OPT; do
             ;;
 	l)
 	    DISTRO_LABEL=$OPTARG
+	    ;;
+	m)
+	    DISTRO_ARCHIVE_MODE=$OPTARG
 	    ;;
 	w)
 	    NEW_TARGET_SYSDIR="${BASE_DIR}/workbase"
@@ -58,6 +62,8 @@ if [ "x${WORLD_PARM}" == "x" ]; then
 		RELEASE_BUILD_MODE=0
 	fi
 fi
+
+HOST_TOOLS_DIR=${NEW_TARGET_SYSDIR}/host-tools
 
 if [ "x${1}" == "x" ]; then
 #	echo "错误：必须指定一个目录。"
@@ -348,7 +354,182 @@ if [ "x${KERNEL_ONLY}" != "xTRUE" ]; then
 		iconv -t GBK -o ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.GBK.txt ${LIVE_DIRECTORY}/images/update/${DISTRO_NAME}_${DISTRO_VERSION}-update-release-info.txt
 	fi
 
-	echo "Live USB系统导出完成，存放在 ${LIVE_DIRECTORY} , 准备一个第一分区为VFAT格式空分区的U盘，将 ${LIVE_DIRECTORY} 目录中所有内容复制到U盘的第一分区中，该U盘即可在支持UEFI的机器上作为LiveUSB启动。"
-else
-	echo "Live USB系统内核部分导出完成，存放在 ${LIVE_DIRECTORY} 。"
+# 	echo "Live USB系统导出完成，存放在 ${LIVE_DIRECTORY} , 准备一个第一分区为VFAT格式空分区的U盘，将 ${LIVE_DIRECTORY} 目录中所有内容复制到U盘的第一分区中，该U盘即可在支持UEFI的机器上作为LiveUSB启动。"
+# else
+# 	echo "Live USB系统内核部分导出完成，存放在 ${LIVE_DIRECTORY} 。"
 fi
+
+
+
+function umount_temp_rawdisk
+{
+        sudo umount -R ${NEW_TARGET_SYSDIR}/temp/rawdisk/
+        if [ "x$?" != "x0" ]; then
+                echo "卸载 ${NEW_TARGET_SYSDIR}/temp/rawdisk/ 错误！"
+                echo "sudo umount -R ${NEW_TARGET_SYSDIR}/temp/rawdisk/"
+                exit -2
+        fi
+        sync
+}
+
+function convert_to_rawdisk
+{
+#	convert_to_rawdisk "${ARCHIVE_DIR}"
+
+	RAWDISK_SOURCE_DIR=${1}
+
+	pushd ${RAWDISK_SOURCE_DIR} > /dev/null
+		mkdir -p ${NEW_TARGET_SYSDIR}/temp/rawdisk/
+		while mount | grep "on ${NEW_TARGET_SYSDIR}/temp/rawdisk/ type " > /dev/null
+		do
+			echo "卸载已挂载的目录 ${NEW_TARGET_SYSDIR}/temp/rawdisk ..."
+			umount_temp_rawdisk
+		done
+		mkdir -p ${NEW_TARGET_SYSDIR}/dist/system/rawdisk/
+		ARCHIVE_DIR_USESPACE_DU="$(du -lBM -s . | awk -F'M' '{ print $1 }')"
+		ARCHIVE_DIR_USESPACE_COUNT=$(expr ${ARCHIVE_DIR_USESPACE_DU} + \( \( \( ${ARCHIVE_DIR_USESPACE_DU} / 100 \) \* 8 \) + 52 \))
+		if [ -f ${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.raw ]; then
+			rm -f ${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.raw
+		fi
+		echo "正在创建虚拟磁盘文件(${ARCHIVE_DIR_USESPACE_COUNT}M)..."
+		dd if=/dev/zero of=${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.raw bs=1M count=${ARCHIVE_DIR_USESPACE_COUNT} 1>/dev/null
+		echo "完成。"
+		echo "开始格式化为ext4文件系统..."
+		/sbin/mkfs.ext4 -E root_owner=$(id -u):$(id -g) ${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.raw 1>/dev/null
+		echo "完成。"
+		echo -n "开始复制文件到虚拟磁盘文件中，请耐心等待..."
+		sudo mount ${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.raw ${NEW_TARGET_SYSDIR}/temp/rawdisk/ 2>&1 1>/dev/null
+		cp -a . ${NEW_TARGET_SYSDIR}/temp/rawdisk/
+		echo "完成。"
+		umount_temp_rawdisk
+		echo "${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.raw 文件创建完成。"
+	popd > /dev/null
+}
+
+function convert_to_vdisk
+{
+# 	convert_to_vdisk "${LIVE_DIRECTORY}" "${FORMAT}"
+
+	RAWDISK_SOURCE_DIR="${1}"
+	VDISK_FORMAT="${2}"
+
+	case "${VDISK_FORMAT}" in
+		qcow2)
+			VDISK_CONVERT_FORMAT_STR="qcow2 -c"
+			VDISK_CONVERT_SUFF="qcow2"
+			;;
+		vdi)
+			VDISK_CONVERT_FORMAT_STR="vdi"
+			VDISK_CONVERT_SUFF="vdi"
+			;;
+		vhdx)
+			VDISK_CONVERT_FORMAT_STR="vhdx"
+			VDISK_CONVERT_SUFF="vhdx"
+			;;
+		*)
+			echo "不支持 ${VDISK_FORMAT} 磁盘文件格式，将使用默认的 qcow2 格式。"
+			VDISK_CONVERT_FORMAT_STR="qcow2 -c"
+			VDISK_CONVERT_SUFF="qcow2"
+			;;
+	esac
+
+	convert_to_rawdisk "${1}"
+
+	echo "正在创建 ${VDISK_FORMAT} 格式的磁盘文件..."
+	${HOST_TOOLS_DIR}/bin/qemu-img convert -f raw -O ${VDISK_CONVERT_FORMAT_STR} ${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.raw ${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.${VDISK_CONVERT_SUFF} -p
+	if [ "x$?" == "x0" ]; then
+		echo "${VDISK_FORMAT} 磁盘文件创建成功：${NEW_TARGET_SYSDIR}/dist/system/rawdisk/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.${VDISK_CONVERT_SUFF}"
+	else
+		echo "${VDISK_FORMAT} 磁盘文件创建失败。"
+	fi
+}
+
+
+case "x${DISTRO_ARCHIVE_MODE}" in
+	xdir)
+		if [ "x${KERNEL_ONLY}" != "xTRUE" ]; then
+			echo "Live USB系统导出完成，存放在 ${LIVE_DIRECTORY} , 准备一个第一分区为VFAT格式空分区的U盘，将 ${LIVE_DIRECTORY} 目录中所有内容复制到U盘的第一分区中，该U盘即可在支持UEFI的机器上作为LiveUSB启动。"
+		else
+			echo "Live USB系统内核部分导出完成，存放在 ${LIVE_DIRECTORY} 。"
+		fi
+		;;
+	xtar*)
+		ARCHIVE_TAR_FORMAT="--zstd"
+		ARCHIVE_TAR_SUFF="zst"
+		case "${DISTRO_ARCHIVE_MODE}" in
+			tar.gz )
+                                ARCHIVE_TAR_FORMAT="--gzip"
+				ARCHIVE_TAR_SUFF="gz"
+				;;
+			tar.xz )
+                                ARCHIVE_TAR_FORMAT="--xz"
+				ARCHIVE_TAR_SUFF="xz"
+				;;
+			tar | tar.zst)
+                                ARCHIVE_TAR_FORMAT="--zstd"
+				ARCHIVE_TAR_SUFF="zst"
+				;;
+			tar.lzma)
+                                ARCHIVE_TAR_FORMAT="--lzma"
+				ARCHIVE_TAR_SUFF="lzma"
+				;;
+			tar.lz4)
+                                ARCHIVE_TAR_FORMAT="--lzip"
+				ARCHIVE_TAR_SUFF="lz4"
+				;;
+			tar.lzo)
+                                ARCHIVE_TAR_FORMAT="--lzop"
+				ARCHIVE_TAR_SUFF="lzo"
+				;;
+			*)
+				echo "尚未支持“${DISTRO_ARCHIVE_MODE}”的创建方式。"
+				exit 5
+				;;
+		esac
+		mkdir -p ${NEW_TARGET_SYSDIR}/dist/system/tar/
+		echo -n "开始进行压缩..."
+		tar --checkpoint=2000 --checkpoint-action=dot --xattrs-include='*' --owner=root --group=root ${ARCHIVE_TAR_FORMAT} -caf ${NEW_TARGET_SYSDIR}/dist/system/tar/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.tar.${ARCHIVE_TAR_SUFF} ${LIVE_DIRECTORY}/*
+		echo "完成！"
+		echo "正在生成校验文件..."
+		pushd ${NEW_TARGET_SYSDIR}/dist/system/tar/ >/dev/null
+			md5sum ${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.tar.${ARCHIVE_TAR_SUFF} > ${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.tar.${ARCHIVE_TAR_SUFF}.md5sum
+		popd > /dev/null
+		echo "Live 系统压缩文件存放在: ${NEW_TARGET_SYSDIR}/dist/system/tar/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.tar.${ARCHIVE_TAR_SUFF}"
+		echo "Live 系统压缩文件md5校验文件存放在: ${NEW_TARGET_SYSDIR}/dist/system/tar/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.tar.${ARCHIVE_TAR_SUFF}.md5sum"
+		;;
+	xiso)
+		mkdir -p ${NEW_TARGET_SYSDIR}/dist/system/iso/
+		${HOST_TOOLS_DIR}/bin/xorriso -as mkisofs -iso-level 3 -full-iso9660-filenames -volid "${DISTRO_NAME}-${DISTRO_VERSION}" -no-emul-boot -boot-load-size 4 -boot-info-table --grub2-boot-info -uid 0 -gid 0 -output ${NEW_TARGET_SYSDIR}/dist/system/iso/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.iso ${LIVE_DIRECTORY}/
+		echo "正在生成校验文件..."
+		pushd ${NEW_TARGET_SYSDIR}/dist/system/iso/ >/dev/null
+			md5sum ${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.iso > ${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.iso.md5sum
+		popd > /dev/null
+		echo "Live 系统ISO文件存放在: ${NEW_TARGET_SYSDIR}/dist/system/iso/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.iso"
+		echo "Live 系统ISO文件md5校验文件存放在: ${NEW_TARGET_SYSDIR}/dist/system/iso/${DISTRO_NAME}-${DISTRO_VERSION}-$(date +%Y%m%d).${DISTRO_ARCH}.iso.md5sum"
+		;;
+	xrawdisk)
+		convert_to_rawdisk "${LIVE_DIRECTORY}"
+# 		echo "尚未支持"
+		;;
+	xvdisk*)
+		case "${DISTRO_ARCHIVE_MODE}" in
+			vdisk.qcow2 | vdisk )
+				convert_to_vdisk "${LIVE_DIRECTORY}" "qcow2"
+				;;
+			vdisk.vdi )
+				convert_to_vdisk "${LIVE_DIRECTORY}" "vdi"
+				;;
+			vdisk.vhdx)
+				convert_to_vdisk "${LIVE_DIRECTORY}" "vhdx"
+				;;
+			*)
+				echo "尚未支持“${DISTRO_ARCHIVE_MODE}”格式的虚拟磁盘创建。"
+				exit 3
+				;;
+		esac
+		;;
+	*)
+		echo "不支持 ${DISTRO_ARCHIVE_MODE} 打包模式，请设置 dir 、tar 、iso 、rawdisk 其中指一 。"
+		exit 3
+		;;
+esac
