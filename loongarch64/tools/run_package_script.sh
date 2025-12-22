@@ -70,12 +70,14 @@ fi
 
 echo -n "正在执行${3}..."
 TMP_RUN="$(replace_arch_parm "$(cat ${PACKAGE_FILE})")"
-echo "${TMP_RUN}" > ${NEW_TARGET_SYSDIR}/temp/TEMP-run.sh
+TEMP_RUN_DATE_SUFF="$(date +%s%N)"
+echo "${TMP_RUN}" > ${NEW_TARGET_SYSDIR}/temp/TEMP-run_${TEMP_RUN_DATE_SUFF}.sh
 pushd ${NEW_BASE_DIR} > /dev/null
-bash -e -x ${NEW_TARGET_SYSDIR}/temp/TEMP-run.sh
+bash -e -x ${NEW_TARGET_SYSDIR}/temp/TEMP-run_${TEMP_RUN_DATE_SUFF}.sh
 popd > /dev/null
 #bash -e -x ${PACKAGE_FILE}
 if [ "x$?" == "x0" ]; then
+	rm ${NEW_TARGET_SYSDIR}/temp/TEMP-run_${TEMP_RUN_DATE_SUFF}.sh
 	echo "完成。"
 	exit 0
 else
