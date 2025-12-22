@@ -769,8 +769,8 @@ function default_set_conf
 # if [ -f ${NEW_TARGET_SYSDIR}/set_env.conf ]; then
 # 	source ${NEW_TARGET_SYSDIR}/set_env.conf
 # fi
-if [ -f ${NEW_TARGET_SYSDIR}/package_env.conf ]; then
-	source ${NEW_TARGET_SYSDIR}/package_env.conf
+if [ -f ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf ]; then
+	source ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 fi
 
 # if [ -f ${NEW_TARGET_SYSDIR}/package_unset.conf ]; then
