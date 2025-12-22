@@ -31,6 +31,7 @@ declare ONLY_BUILD=0
 declare REQUIRES_BUILD=0
 declare GROUP_IN_BUILD=0
 declare SINGLE_PACKAGE=0
+declare SINGLE_PACKAGE_TAR="none"
 declare FORCE_ALL_DOWNLOAD=0
 declare EXPORT_STEP=0
 declare DATA_SUFF=""
@@ -43,6 +44,7 @@ declare AUTO_SET_OVERLAY_DIR=0
 declare SET_OVERLAY_DIR=""
 declare AUTO_SET_PARENT_DIR=0
 declare SET_PARENT_DIR=""
+declare USER_SET_PARENT_DIR=""
 declare OPT_SET_PARENT_DIR=""
 declare OPT_SET_OVERLAY_DIR=""
 declare BUILD_PACKAGE_CHECK=0
@@ -54,7 +56,7 @@ declare CROSSTOOLS_DIR_EXT=""
 declare BUILD_ERROR_LIMITE=1
 declare BUILD_ERROR_COUNT=1
 
-while getopts 'fao:rgsde:xi:S:O:C:K:tpwch' OPT; do
+while getopts 'fao:rgsP:de:xi:S:O:C:K:tpwch' OPT; do
     case $OPT in
         f)
             FORCE_BUILD=1
@@ -75,6 +77,9 @@ while getopts 'fao:rgsde:xi:S:O:C:K:tpwch' OPT; do
 	s)
 	    SINGLE_PACKAGE=1
 	    ;;
+	P)
+	    SINGLE_PACKAGE_TAR=$OPTARG
+	    ;;
         d)
             FORCE_ALL_DOWNLOAD=1
             ;;
@@ -91,7 +96,7 @@ while getopts 'fao:rgsde:xi:S:O:C:K:tpwch' OPT; do
 	    SET_OVERLAY_DIR=$OPTARG
 	    ;;
 	O)
-	    SET_PARENT_DIR=$OPTARG
+	    USER_SET_PARENT_DIR=$OPTARG
 	    ;;
 	C)
 	    SET_CROSSTOOLS_DIR=$OPTARG
@@ -165,6 +170,7 @@ while getopts 'fao:rgsde:xi:S:O:C:K:tpwch' OPT; do
             echo "    -d: 强制编译前先检查并下载需要的软件源码包及资源文件。"
             echo "    -o <标记,标记,...>: 设置编译标记参数（符合标记参数的软件包才会进行编译）"
             echo "    -s: 软件包会在workbase/packages目录里对应名称的目录中安装一份文件。"
+            echo "    -P <tar> : 该参数仅在 -s 参数设置时有效，对在workbase/packages目录里安装的软件包进行打包，指定打包格式支持tar。"
             echo "    -r: 根据指定的编译步骤或软件包，搜寻依赖的相关软件包和步骤组一起进行编译。"
             echo "    -g: 根据指定的编译步骤或软件包，搜寻依赖的相关软件包和步骤组，然后从组中的第一个步骤开始进行编译直到指定的编译步骤或软件包为止。"
             echo "    -f: 强制执行指定的编译步骤。该参数必须指定编译步骤或软件包才有效。"
@@ -178,7 +184,7 @@ while getopts 'fao:rgsde:xi:S:O:C:K:tpwch' OPT; do
             echo "    -t: 对构建过程中编译的软件判断当构建目标架构与当前架构相同时进行编译测试过程（需要软件包脚本目录中存在 check 后缀名的测试定义文件）。"
 	    echo "    -p: 在构建过程中对需要下载软件包时使用proxy.set文件中的设置。"
 	    echo "    -w: 强制使用主线环境中的构建，不指定该参数将使用 current_branch 中指定的分支环境中进行构建，若不存在 current_branch 文件则默认使用主线环境构建。"
-	    echo "    -c: 构建过程按照上一次分析产生的步骤进行，单独使用该参数等同于使用 -i ${NEW_TARGET_SYSDIR}/step.index ，注意该参数不与 -o -r -g -i 参数共用。"
+	    echo "    -c: 构建过程按照上一次分析产生的步骤进行，单独使用该参数等同于使用 -i ${NEW_TARGET_SYSDIR}/step.index ，注意该参数不与 -o -r -g -i -s 参数共用。"
 	    echo "    -K <错误数>: 指定在构建过程中出现错误的步骤数上限，当达到该指定数时构建过程终止并现实构建错误步骤，若未达到指定错误步骤上限将继续构建后续步骤，在构建结束后打印存在错误的步骤列表。不指定该参数将按照默认的上限进行处理，默认上限为1，即遇到错误步骤即停止。"
 	    echo "        错误数: 0，不设上限，表示无论多少错误数都不会停止构建过程，直到构建完成为止，构建结束后打印错误步骤。"
 	    echo "        错误数: 1，出现错误步骤即立刻停止构建过程，显示相关的信息。"
@@ -219,13 +225,20 @@ SOURCE_STEP_FILE="${NEW_BASE_DIR}/step"
 
 export BUILD_PACKAGE_CHECK=${BUILD_PACKAGE_CHECK}
 
-if [ "x${USE_PREV_INDEX_FILE}" == "x1" ]; then
-	if [ "x${SET_STEP_FILE##*.}" != "xindex" ]; then
-		if [ -f ${NEW_TARGET_SYSDIR}/step.index.temp ]; then
-			SET_STEP_FILE=${NEW_TARGET_SYSDIR}/step.index
-		else
-			echo "没有发现上次执行时保留下来的分析文件 ${NEW_TARGET_SYSDIR}/step.index，无法按照上次的步骤进行构建，请进行一次常规的构建分析后再使用 -c 参数。"
-			exit 126
+
+export YONGBAO_BUILD_UUID="$(date +%s%N)"
+# echo "YONGBAO_BUILD_UUID: ${YONGBAO_BUILD_UUID}"
+
+
+if [ "x${SINGLE_PACKAGE}" != "x1" ]; then
+	if [ "x${USE_PREV_INDEX_FILE}" == "x1" ]; then
+		if [ "x${SET_STEP_FILE##*.}" != "xindex" ]; then
+			if [ -f ${NEW_TARGET_SYSDIR}/step.index.temp ]; then
+				SET_STEP_FILE=${NEW_TARGET_SYSDIR}/step.index
+			else
+				echo "没有发现上次执行时保留下来的分析文件 ${NEW_TARGET_SYSDIR}/step.index，无法按照上次的步骤进行构建，请进行一次常规的构建分析后再使用 -c 参数。"
+				exit 126
+			fi
 		fi
 	fi
 fi
@@ -251,6 +264,22 @@ if [ ! -f "${SOURCE_STEP_FILE}" ]; then
 	echo "没有发现脚本文件，请检查当前目录是否存在 ${SOURCE_STEP_FILE} 文件。"
 	exit 127
 fi
+
+if [ "x${SINGLE_PACKAGE_TAR}" != "xnone" ] && [ "x${SINGLE_PACKAGE_TAR}" != "x" ]; then
+	if [ "x${SINGLE_PACKAGE}" != "x1" ]; then
+		echo "-P 参数仅在设置 -s 参数时才有效果。"
+		exit 125
+	fi
+	case ${SINGLE_PACKAGE_TAR} in
+		tar | none)
+			;;
+		*)
+			echo "-P 参数仅支持设置：tar 、none"
+			exit 125
+			;;
+	esac
+fi
+
 
 function set_build_env
 {
@@ -312,7 +341,7 @@ function get_all_set_env_expr
 		esac
 		FINAL_ENV_VALUE=""
 		GET_ENV_VALUE=""
-		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
+		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/temp/set_env_${YONGBAO_BUILD_UUID}.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
 		if [ "x${GET_ENV_VALUE}" != "x" ] || [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
 			if [ "x${GET_ENV_VALUE}" != "x" ]; then
 # 		                USE_ENV[${USE_ENV_COUNT}]="${i}=${GET_ENV_VALUE}"
@@ -410,7 +439,7 @@ function test_filter_str
 	esac
 	FILTER_STR="$(cat ${FILTER_FILE} | grep "^${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
 
-	GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
+	GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/temp/set_env_${YONGBAO_BUILD_UUID}.conf | grep "^export YONGBAO_SET_ENV_${TEST_KEY}=" | awk -F'=' '{ print $2 }')"
 
 	if [ "x${TEST_VALUE}" == "x" ] && [ "x${GET_ENV_VALUE}" == "x" ]; then
 		case "x${TEST_KEY}" in
@@ -586,15 +615,15 @@ function set_version_index_form_opt
 
 function get_unset_env_for_package
 {
-	echo "" > ${NEW_TARGET_SYSDIR}/package_unset.conf
+	echo "" > ${NEW_TARGET_SYSDIR}/temp/package_unset_${YONGBAO_BUILD_UUID}.conf
 
-	for i in $(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_" | awk -F' YONGBAO_SET_ENV_' '{ print $2 }')
+	for i in $(cat ${NEW_TARGET_SYSDIR}/temp/set_env_${YONGBAO_BUILD_UUID}.conf | grep "^export YONGBAO_SET_ENV_" | awk -F' YONGBAO_SET_ENV_' '{ print $2 }')
 	do
 		if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter ]; then
 #			echo "test_filter_form_opt %${i} ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter"
 #			echo "$(test_filter_form_opt "%${i}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter" )"
 			if [ "x$(test_filter_form_opt "%${i}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter" )" == "x1" ]; then
-				echo "unset YONGBAO_SET_ENV_$(echo ${i} | awk -F'=' '{ print $1 }')" >> ${NEW_TARGET_SYSDIR}/package_unset.conf
+				echo "unset YONGBAO_SET_ENV_$(echo ${i} | awk -F'=' '{ print $1 }')" >> ${NEW_TARGET_SYSDIR}/temp/package_unset_${YONGBAO_BUILD_UUID}.conf
 			fi
 		fi
 	done
@@ -632,27 +661,27 @@ function get_all_can_set_env_str
         done
 
 
-	echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
+	echo "" > ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 
         for i in ${SET_ENV[*]}
         do
 		FINAL_ENV_VALUE=""
 		GET_ENV_VALUE=""
-		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/set_env.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
+		GET_ENV_VALUE="$(cat ${NEW_TARGET_SYSDIR}/temp/set_env_${YONGBAO_BUILD_UUID}.conf | grep "^export YONGBAO_SET_ENV_${i}=" | awk -F'=' '{ print $2 }')"
 		if [ "x${DEFAULT_ENV[${TEMP_COUNT}]}" != "x" ]; then
 			if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
 				if [ "x${GET_ENV_VALUE}" != "x" ]; then
 # 			                USE_ENV[${USE_ENV_COUNT}]=${GET_ENV_VALUE}
-# 					echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+# 					echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 					FINAL_ENV_VALUE="${GET_ENV_VALUE}"
 				else
 # 					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
-# 					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+# 					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 					FINAL_ENV_VALUE="${DEFAULT_ENV[${TEMP_COUNT}]:1}"
 				fi
 			else
 # 				USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
-# 				echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+# 				echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 				FINAL_ENV_VALUE="${DEFAULT_ENV[${TEMP_COUNT}]}"
 			fi
 		fi
@@ -683,7 +712,7 @@ function get_all_can_set_env_str
 		esac
 		if [ "x${FINAL_ENV_VALUE}" != "x" ]; then
 			USE_ENV[${USE_ENV_COUNT}]="${FINAL_ENV_VALUE}"
-			echo "export YONGBAO_SET_ENV_${i}=${FINAL_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+			echo "export YONGBAO_SET_ENV_${i}=${FINAL_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 		fi
         	((USE_ENV_COUNT++))
         	((TEMP_COUNT++))
@@ -696,11 +725,11 @@ function get_all_can_set_env_str
 #				if [ "x${DEFAULT_ENV[${TEMP_COUNT}]:0:1}" == "x?" ]; then
 #					if [ "x${USE_ENV[${USE_ENV_COUNT}]}" == "x" ]; then
 #						USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]:1}
-#						echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+#						echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]:1}" >> ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 #					fi
 #				else
 #					USE_ENV[${USE_ENV_COUNT}]=${DEFAULT_ENV[${TEMP_COUNT}]}
-#					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
+#					echo "export YONGBAO_SET_ENV_${i}=${DEFAULT_ENV[${TEMP_COUNT}]}" >> ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 #				fi
 #			fi
 #        		((USE_ENV_COUNT++))
@@ -734,9 +763,9 @@ function get_can_set_status_file
 
 function format_package_env_to_string
 {
-	# echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/package_env.conf
-	if [ -f ${NEW_TARGET_SYSDIR}/package_env.conf ]; then
-		echo "$(grep "^export YONGBAO_SET_ENV_" ${NEW_TARGET_SYSDIR}/package_env.conf | sed "s/export YONGBAO_SET_ENV_//g" | sed -z "s@\n@,@g" | sed "s@,\$@@g")"
+	# echo "export YONGBAO_SET_ENV_${i}=${GET_ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
+	if [ -f ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf ]; then
+		echo "$(grep "^export YONGBAO_SET_ENV_" ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf | sed "s/export YONGBAO_SET_ENV_//g" | sed -z "s@\n@,@g" | sed "s@,\$@@g")"
 	else
 		echo ""
 	fi
@@ -1022,32 +1051,37 @@ function overlay_mount
 	fi
 
 	if [ "x${SINGLE_PACKAGE}" == "x1" ]; then
-		if [ -f ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME} ] || [ -L ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME} ]; then
-			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}{,.bak$(date +%Y%m%d%H%M%S)}
+		if [ -f ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV} ] || [ -L ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV} ]; then
+			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}{,.bak$(date +%Y%m%d%H%M%S)}
 		fi
-		if [ -d ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST ]; then
-			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST{,.bak$(date +%Y%m%d%H%M%S)}
+		if [ -d ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST ]; then
+			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST{,.bak$(date +%Y%m%d%H%M%S)}
 		fi
-		if [ -d ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST.${DATA_SUFF} ]; then
-			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST.${DATA_SUFF}{,.bak$(date +%Y%m%d%H%M%S)}
+		if [ -d ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST.${DATA_SUFF} ]; then
+			mv ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST.${DATA_SUFF}{,.bak$(date +%Y%m%d%H%M%S)}
 		fi
-		mkdir -p ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST.${DATA_SUFF}
-		ln -sf DEST.${DATA_SUFF} ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST
+		mkdir -p ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST.${DATA_SUFF}
+		mkdir -p ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/.workerdir
+		ln -sf DEST.${DATA_SUFF} ${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST
 		sync
 
 	        if ([ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f ${SCRIPTS_DIR}/step/${1}/overlay_temp_fix_run ]) || [ -f ${SCRIPTS_DIR}/step/${1}/${PACKAGE_NAME}.tempfix ]; then
 #		if [ "x${OVERLAY_TEMP_FIX}" == "x1" ] && [ -f ${SCRIPTS_DIR}/step/${1}/overlay_temp_fix_run ]; then
-			sudo mount -t overlay overlay -o index=off,lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+# 			sudo mount -t overlay overlay -o index=off,lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+			sudo mount -t overlay overlay -o index=off,lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 			if [ "x$?" != "x0" ]; then
 				echo "挂载sysroot错误！"
-				echo "sudo mount -t overlay overlay -o index=off,lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+# 				echo "sudo mount -t overlay overlay -o index=off,lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+				echo "sudo mount -t overlay overlay -o index=off,lowerdir=${NEW_TARGET_SYSDIR}/temp/temp_overlay/${1}/${PACKAGE_NAME}.change:${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 				exit -2
 			fi
 		else
-			sudo mount -t overlay overlay -o index=off,lowerdir=${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+# 			sudo mount -t overlay overlay -o index=off,lowerdir=${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
+			sudo mount -t overlay overlay -o index=off,lowerdir=${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/.workerdir ${NEW_TARGET_SYSDIR}/sysroot
 			if [ "x$?" != "x0" ]; then
 				echo "挂载sysroot错误！"
-				echo "sudo mount -t overlay overlay -o index=off,lowerdir=${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+# 				echo "sudo mount -t overlay overlay -o index=off,lowerdir=${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/overlaydir/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
+				echo "sudo mount -t overlay overlay -o index=off,lowerdir=${USE_OVERLAY_DIR}${LOWERDIR_LIST},upperdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/DEST,workdir=${NEW_TARGET_SYSDIR}/packages/${1}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}/.workerdir ${NEW_TARGET_SYSDIR}/sysroot"
 				exit -2
 			fi
 		fi
@@ -1828,27 +1862,28 @@ function step_to_index
 
 function cp_file_and_sources
 {
-	if [ -f ${NEW_BASE_DIR}/downloads/sources/files.list ]; then
+	if [ -f ${NEW_BASE_DIR}/downloads/sources/files.${YONGBAO_BUILD_UUID}.list ]; then
 		mkdir -p ${NEW_TARGET_SYSDIR}/downloads/files/
 		if [ "x${1}" == "x" ]; then
 			echo -n "复制所需的源码包文件..."
 		fi
-		for cp_file in $(cat ${NEW_BASE_DIR}/downloads/sources/files.list | sort | uniq)
+		for cp_file in $(cat ${NEW_BASE_DIR}/downloads/sources/files.${YONGBAO_BUILD_UUID}.list | sort | uniq)
 		do
 			cp ${NEW_BASE_DIR}/downloads/sources/files/${cp_file} ${NEW_TARGET_SYSDIR}/downloads/files/
 		done
 		if [ "x${1}" == "x" ]; then
 			echo "完成。"
 		fi
+		rm -f ${NEW_BASE_DIR}/downloads/sources/files.${YONGBAO_BUILD_UUID}.list
 	fi
-	if [ -f ${NEW_BASE_DIR}/downloads/sources/resources.list ]; then
+	if [ -f ${NEW_BASE_DIR}/downloads/sources/resources.${YONGBAO_BUILD_UUID}.list ]; then
 		mkdir -p ${NEW_TARGET_SYSDIR}/files/
 		if [ "x${1}" == "x" ]; then
 			echo -n "复制所需的资源文件..."
 		fi
 		cp -a ${NEW_BASE_DIR}/files/step/* ${NEW_TARGET_SYSDIR}/files/
 		pushd ${NEW_BASE_DIR}/downloads/files/step > /dev/null
-			for cp_file in $(cat ${NEW_BASE_DIR}/downloads/sources/resources.list | sort | uniq)
+			for cp_file in $(cat ${NEW_BASE_DIR}/downloads/sources/resources.${YONGBAO_BUILD_UUID}.list | sort | uniq)
 			do
 				cp --parents ${cp_file} ${NEW_TARGET_SYSDIR}/files/
 			done
@@ -1856,6 +1891,7 @@ function cp_file_and_sources
 		if [ "x${1}" == "x" ]; then
 			echo "完成。"
 		fi
+		rm -f ${NEW_BASE_DIR}/downloads/sources/resources.${YONGBAO_BUILD_UUID}.list
 	fi
 
 }
@@ -2045,8 +2081,41 @@ function test_watch_step
 	return
 }
 
+function get_package_version
+{
+	if [ -f ${SCRIPTS_DIR}/step/${1}/${2}.info ]; then
+		echo "$(cat ${SCRIPTS_DIR}/step/${1}/${2}.info | awk -F'|' '{ print $2 }')"
+	else
+		echo "unknown"
+	fi
+}
+
+
+function packagedir_to_pack
+{
+# packagedir_to_pack "${NEW_TARGET_SYSDIR}/packages/${STEP_STAGE}/${PACKAGE_NAME}${PACKAGE_SET_ENV}" "DEST.${DATA_SUFF}" "${ORIG_OVERLAY_DIR}" "${PACKAGE_NAME}" "${PACKAGE_VERSION}" "$([[ "${PACKAGE_SET_ENV}" == "" ]] && echo "loongarch64" || echo "$(echo "${PACKAGE_SET_ENV}" | sed "s@^_@@g")")"
+# 	echo "Add ${1}" >> ${NEW_TARGET_SYSDIR}/temp/cover_package.txt
+	if [ -d ${1}/${2}.strip ]; then
+		mv ${1}/${2}.strip{,.$(date +%Y%m%d%H%M%S)}
+	fi
+	echo -n "清理独立软件包目录 ${1}/${2} ..."
+	cp -a ${1}/${2} ${1}/${2}.strip
+
+# 	echo "tools/strip_step.sh ${WORLD_PARM} ${3} ${1}/${2}.strip"  >> ${NEW_TARGET_SYSDIR}/temp/cover_package.txt
+
+# 	echo "tools/strip_step.sh ${WORLD_PARM} ${3} ${1}/${2}.strip  > ${1}/${2}.strip.single_strip.log 2>&1 || true"  >> ${NEW_TARGET_SYSDIR}/temp/cover_package.txt
+# 	echo "tools/final_step.sh ${WORLD_PARM} ${3} ${1}/${2}.strip  > ${1}/${2}.strip.single_final_fix.log 2>&1 || true"  >> ${NEW_TARGET_SYSDIR}/temp/cover_package.txt
+
+	tools/strip_step.sh ${WORLD_PARM} ${3} ${1}/${2}.strip  > ${1}/${2}.strip.single_strip.log 2>&1 || true
+	tools/final_step.sh ${WORLD_PARM} ${3} ${1}/${2}.strip  > ${1}/${2}.strip.single_final_fix.log 2>&1 || true
+	echo "完成。"
+	echo "进行打包 ..."
+	tools/pack_archive_dir.sh ${WORLD_PARM} -f -n "${4}-${5}.${6}"  ${1}/${2}.strip "${3}" "pkg" "${SINGLE_PACKAGE_TAR}"
+}
+
 
 mkdir -p ${NEW_TARGET_SYSDIR}
+mkdir -p ${NEW_TARGET_SYSDIR}/temp
 
 declare -a USE_SET_ENV
 declare USE_SET_ENV_COUNT=0
@@ -2054,14 +2123,14 @@ declare USE_SET_ENV_COUNT=0
 USE_SET_ENV=($(set_build_env "" "${OPT_SET_ENV}"))
 USE_SET_ENV_COUNT=${#USE_SET_ENV[@]}
 
-echo -n "" > ${NEW_TARGET_SYSDIR}/set_env.conf
+echo -n "" > ${NEW_TARGET_SYSDIR}/temp/set_env_${YONGBAO_BUILD_UUID}.conf
 for set_env in ${USE_SET_ENV[*]}
 do
 	ENV_KEY=$(echo ${set_env} | awk -F'=' '{ print $1 }')
 	ENV_VALUE=$(echo ${set_env} | awk -F'=' '{ print $2 }')
-	echo "export YONGBAO_SET_ENV_${ENV_KEY}=${ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/set_env.conf
+	echo "export YONGBAO_SET_ENV_${ENV_KEY}=${ENV_VALUE}" >> ${NEW_TARGET_SYSDIR}/temp/set_env_${YONGBAO_BUILD_UUID}.conf
 done
-echo "" > ${NEW_TARGET_SYSDIR}/package_env.conf
+echo "" > ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
 
 
 create_date_suff
@@ -2286,10 +2355,12 @@ echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 # STEP_FILE="${NEW_TARGET_SYSDIR}/step.index"
 STEP_FILE="${INDEX_STEP_FILE}"
 
-if [ "x${USE_PREV_INDEX_FILE}" != "x1" ]; then
-	cp ${INDEX_STEP_FILE} ${NEW_TARGET_SYSDIR}/step.index.temp
+if [ "x${SINGLE_PACKAGE}" != "x1" ]; then
+	if [ "x${USE_PREV_INDEX_FILE}" != "x1" ]; then
+		cp ${INDEX_STEP_FILE} ${NEW_TARGET_SYSDIR}/step.index.temp
+	fi
+	STEP_FILE="${NEW_TARGET_SYSDIR}/step.index.temp"
 fi
-STEP_FILE="${NEW_TARGET_SYSDIR}/step.index.temp"
 
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_begin_run_save
 echo -n "" > ${NEW_TARGET_SYSDIR}/logs/step_final_run_save
@@ -2306,6 +2377,7 @@ touch ${NEW_TARGET_SYSDIR}/logs/info_pool
 # cat ${STEP_FILE} | awk -F'|' '{ print $1 }' | while read line
 cat ${STEP_FILE} | grep -v "^#" | while read line_all
 do
+	SET_PARENT_DIR="${USER_SET_PARENT_DIR}"
 	if [ "x${AUTO_SET_OVERLAY_DIR}" == "x1" ]; then
 		SET_OVERLAY_DIR=""
 		AUTO_SET_OVERLAY_DIR=0
@@ -2318,7 +2390,12 @@ do
 	PACKAGE_INDEX=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $1 }')
 	STEP_STAGE=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $2 }')
 	PACKAGE_NAME=$(echo "${line}" | sed "s@ *step@@g" | awk -F'/' '{ print $3 }')
+	PACKAGE_VERSION=$(get_package_version "${STEP_STAGE}" "${PACKAGE_NAME}")
 	PACKAGE_GIT_COMMIT=""
+
+	if [ "x${SINGLE_PACKAGE}" == "x1" ] && [ "x${PACKAGE_NAME}" == "xfinal_run" ]; then
+		continue;
+	fi
 
 	if [ -f ${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter ]; then
 # 		test_filter_form_opt "${PACKAGE_ALL_OPT}" "${SCRIPTS_DIR}/step/${STEP_STAGE}/${PACKAGE_NAME}.parmfilter"
@@ -2344,6 +2421,10 @@ do
 		else
 			PACKAGE_GIT_COMMIT=""
 		fi
+	fi
+
+	if [ "x${PACKAGE_VERSION}" == "xgit" ] || [ "x${PACKAGE_VERSION}" == "xgit-default" ]; then
+		PACKAGE_VERSION="git$([[ "${PACKAGE_GIT_COMMIT}" == "" ]] && echo "" || echo "_$(echo ${PACKAGE_GIT_COMMIT} | sed "s@COMMIT=@@g" | cut -c1-8)")"
 	fi
 
 	OPT_SET_PARENT_DIR="$(set_parent_dir_form_opt "${PACKAGE_ALL_OPT}")"
@@ -2475,7 +2556,11 @@ do
 		fi
 
 		if [ "x${OPT_SET_PARENT_DIR}" != "x" ]; then
-			echo "${PACKAGE_NAME} 设置了临时上级目录: ${OPT_SET_PARENT_DIR} 。"
+			if [ "x${SET_PARENT_DIR}" != "x" ]; then
+				echo "虽然 ${PACKAGE_NAME} 设有临时上级目录: ${OPT_SET_PARENT_DIR} ，但用户指定了上级目录，本次将采用用户指定的目录 ${SET_PARENT_DIR} 。"
+			else
+				echo "${PACKAGE_NAME} 设置了临时上级目录: ${OPT_SET_PARENT_DIR} 。"
+			fi
 		fi
 	else
 		echo -e "\r准备执行 ${STEP_STAGE} 组中的完成脚本...\033[0K"
@@ -2518,7 +2603,11 @@ do
 	fi
 	
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
-		echo -n "制作${STEP_STAGE}组中的${PACKAGE_NAME}软件包..."
+		if [ "x${PACKAGE_VERSION}" != "xNULL" ]; then
+			echo -n "制作${STEP_STAGE}组中的${PACKAGE_NAME} - ${PACKAGE_VERSION} 软件包..."
+		else
+			echo -n "制作${STEP_STAGE}组中的${PACKAGE_NAME}软件包..."
+		fi
 	else
 		echo -n "执行${STEP_STAGE}组中的完成脚本..."
 	fi
@@ -2544,7 +2633,7 @@ do
 			x0)
 				echo "* ${STEP_STAGE}/${PACKAGE_NAME} $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${SET_OVERLAY_DIR}")" >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				echo "    错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
-				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} "  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${SET_PARENT_DIR}" == "" ]] && echo "$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")" || echo " -O ${SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} "  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				if [ "${SET_OVERLAY_DIR}" != "" ] || [ "${OPT_SET_OVERLAY_DIR}" != "" ] || [ "${ORIG_OVERLAY_DIR}" != "" ]; then
 					overlay_umount
 				fi
@@ -2555,14 +2644,14 @@ do
 				echo -e "${SCRIPT_FILE}  $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${SET_OVERLAY_DIR}") \e[31m制作错误!\e[0m"
 				echo -e "错误日志请查看 \e[31m ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log \e[0m 文件。"
 				REBUILD_ENV=$(format_package_env_to_string)
-				echo -e "进入构建环境进行调试使用命令： \e[32m tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} \e[0m"
+				echo -e "进入构建环境进行调试使用命令： \e[32m tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${SET_PARENT_DIR}" == "" ]] && echo "$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")" || echo " -O ${SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} \e[0m"
 				exit 1
 				;;
 			*)
 				((BUILD_ERROR_COUNT--))
 				echo "* ${STEP_STAGE}/${PACKAGE_NAME} $([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " 指定交叉工具链目录: ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " 指定上级挂载目录: ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " 指定安装目录: ${OPT_SET_OVERLAY_DIR}")" || echo " 指定安装目录: ${SET_OVERLAY_DIR}")" >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				echo "    错误日志请查看 ${NEW_TARGET_SYSDIR}/logs/${STATUS_LOG_FILE}.log 文件。"  >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
-				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} " >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
+				echo "    进入构建环境进行调试使用命令： tools/enter_package_env.sh ${WORLD_PARM}$([[ "${REBUILD_ENV}" == "" ]] && echo "" || echo " -e ${REBUILD_ENV}")$([[ "${SET_CROSSTOOLS_DIR}" == "" ]] && echo "" || echo " -C ${SET_CROSSTOOLS_DIR}")$([[ "${SET_PARENT_DIR}" == "" ]] && echo "$([[ "${OPT_SET_PARENT_DIR}" == "" ]] && echo "" || echo " -O ${OPT_SET_PARENT_DIR}")" || echo " -O ${SET_PARENT_DIR}")$([[ "${SET_OVERLAY_DIR}" == "" ]] && echo "$([[ "${OPT_SET_OVERLAY_DIR}" == "" ]] && echo "" || echo " -S ${OPT_SET_OVERLAY_DIR}")" || echo " -S ${SET_OVERLAY_DIR}") ${STEP_STAGE}/${PACKAGE_NAME} " >> ${NEW_TARGET_SYSDIR}/logs/build_error.log
 				if [ "x${BUILD_ERROR_COUNT}" == "x0" ]; then
 					echo -e "\e[31m错误数量达到限制，构建过程停止。\e[0m"
 					echo -e "\e[31m本次编译存在以下错误步骤，请检查。\e[0m"
@@ -2638,6 +2727,11 @@ do
 	fi
 
 	echo -e "\e[032m完成！\e[0m"
+
+	if [ "x${PACKAGE_NAME}" != "xfinal_run" ] && [ "x${SINGLE_PACKAGE}" == "x1" ] && ( [ "x${SINGLE_PACKAGE_TAR}" != "xnone" ] && [ "x${SINGLE_PACKAGE_TAR}" != "" ] ) ; then
+# 		packagedir_to_pack "${NEW_TARGET_SYSDIR}/packages/${STEP_STAGE}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}" "DEST.${DATA_SUFF}" "${ORIG_OVERLAY_DIR}" "${PACKAGE_NAME}" "${PACKAGE_VERSION}" "$([[ "${PACKAGE_SET_ENV}" == "" ]] && echo "${ARCH_NAME}" || echo "${PACKAGE_SET_ENV}")"
+		packagedir_to_pack "${NEW_TARGET_SYSDIR}/packages/${STEP_STAGE}/${PACKAGE_NAME}${PACKAGE_SET_ENV}/${PACKAGE_VERSION}" "DEST.${DATA_SUFF}" "${ORIG_OVERLAY_DIR}" "${PACKAGE_NAME}" "${PACKAGE_VERSION}" "$([[ "${PACKAGE_SET_ENV}" == "" ]] && echo "${ARCH_NAME}" || echo "${PACKAGE_SET_ENV}" | sed "s@^_@@g")"
+	fi
 
 	create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}" "${PACKAGE_INDEX}"
 
@@ -2722,8 +2816,10 @@ do
 		fi
 	fi
 	echo "" >> ${NEW_TARGET_SYSDIR}/logs/build_log
-# 	echo "sed -i \"\\#^${line_all}\$#d\" ${STEP_FILE}"
-	sed -i "\\#^${line_all}\$#d" ${STEP_FILE}
+	if [ "${STEP_FILE}" == "${NEW_TARGET_SYSDIR}/step.index.temp" ]; then
+# 		echo "sed -i \"\\#^${line_all}\$#d\" ${STEP_FILE}"
+		sed -i "\\#^${line_all}\$#d" ${STEP_FILE}
+	fi
 done
 
 if [ "x$?" == "x0" ]; then
@@ -2750,7 +2846,11 @@ else
 	exit
 fi
 
-rm -f ${NEW_TARGET_SYSDIR}/step.index.temp
+if [ "x${SINGLE_PACKAGE}" != "x1" ]; then
+	rm -f ${NEW_TARGET_SYSDIR}/step.index.temp
+fi
+rm -f ${NEW_TARGET_SYSDIR}/temp/package_env_${YONGBAO_BUILD_UUID}.conf
+rm -f ${NEW_TARGET_SYSDIR}/temp/set_env_${YONGBAO_BUILD_UUID}.conf
 
 echo "编译制作过程完成。" >> ${NEW_TARGET_SYSDIR}/logs/build_log
 echo "------------$(date)-------------" >> ${NEW_TARGET_SYSDIR}/logs/build_log
