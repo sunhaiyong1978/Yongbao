@@ -1,6 +1,8 @@
 MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
 INSTALL_ARCH_NAME="mingw64ucrt"
 INSTALL_ARCH_NAME=$(archname_to_name "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
+export LINUX_FAMILY_NAME=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "LINUX_FAMILY_NAME" "${MINGW_HOST}")
+export LINUX_CPU_NAME=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "LINUX_CPU_NAME" "${MINGW_HOST}")
 
 export MINGW_HOST INSTALL_ARCH_NAME
 
