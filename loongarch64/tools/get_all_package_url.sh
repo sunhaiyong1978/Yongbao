@@ -199,6 +199,15 @@ function get_pkg_old_version
 # }
 
 
+echo "YONGBAO_BUILD_UUID: ${YONGBAO_BUILD_UUID}"
+if [ "x${YONGBAO_BUILD_UUID}" == "x" ]; then
+	DOWNLOAD_SOURCES_FILES_LIST="files.list"
+	DOWNLOAD_SOURCES_RESOURCES_LIST="resources.list"
+else
+	DOWNLOAD_SOURCES_FILES_LIST="files.${YONGBAO_BUILD_UUID}.list"
+	DOWNLOAD_SOURCES_RESOURCES_LIST="resources.${YONGBAO_BUILD_UUID}.list"
+fi
+
 mkdir -p ${NEW_BASE_DIR}/downloads/sources/{files,hash}
 mkdir -p ${NEW_BASE_DIR}/downloads/sources/git
 FAIL_COUNT=1
@@ -226,8 +235,8 @@ else
 	STEP_ARRAY="$(cat ${INDEX_FILE} | grep -v "^#" | awk -F' ' '{ print $2 }' | sed "s@step/@@g" | awk -F'|' '{ print $1 }' | uniq)"
 fi
 
-echo -n "" > ${NEW_BASE_DIR}/downloads/sources/files.list.tmp
-echo -n "" > ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp
+echo -n "" > ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_FILES_LIST}.tmp
+echo -n "" > ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 
 for i in ${STEP_ARRAY}
 do
@@ -273,7 +282,7 @@ do
 							echo "在主线环境中发现 $i 所需的源码包，进行复制。"
 							cp -a ${BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} ${NEW_BASE_DIR}/downloads/sources/files/
 							cp -a ${BASE_DIR}/downloads/sources/hash/${SAVE_FILENAME}.hash ${NEW_BASE_DIR}/downloads/sources/hash/
-							echo "${SAVE_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/files.list.tmp
+							echo "${SAVE_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_FILES_LIST}.tmp
 							IS_DOWNLOADED=1
 						fi
 					fi
@@ -307,7 +316,7 @@ do
 								fi
 								if [ "x$?" != "x0" ]; then
 									echo "${URL} 与 ${REPLACE_REAL_URL} 均下载失败！"
-									echo "下载 ${URL} ( 提换下载地址：${REPLACE_REAL_URL} ) 均下载失败！" >> logs/download_fail.log
+									echo "下载 ${URL} ( 替换下载地址：${REPLACE_REAL_URL} ) 均下载失败！" >> logs/download_fail.log
 									((FAIL_COUNT++))
 									continue;
 								fi
@@ -319,7 +328,7 @@ do
 					fi
 					IS_DOWNLOADED=0
 				fi
-				echo "${SAVE_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/files.list.tmp
+				echo "${SAVE_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_FILES_LIST}.tmp
 			fi
 			;;
 		GIT)
@@ -360,7 +369,12 @@ do
 #  				echo "${BASE_DIR}/tools/git_test.sh ${WORLD_PARM} -d \"${NEW_BASE_DIR}/downloads/sources/files/\" \"${PKG_NAME}\" \"${PKG_VERSION}\" \"${URL}\" \"${PKG_GIT_BRANCH}\" \"${PKG_GIT_COMMIT}\" \"${PKG_GIT_UPDATE_MODE}\""
 #  				echo "${BASE_DIR}/tools/git_test.sh ${WORLD_PARM} -d \"${NEW_BASE_DIR}/downloads/sources/files/\" \"${PKG_NAME}\" \"${PKG_VERSION}\" \"${URL}\" \"${PKG_GIT_BRANCH}|${PKG_GIT_COMMIT}|${PKG_GIT_UPDATE_MODE}|${PKG_GIT_SUBMODULE}|${PKG_GIT_FORMAT}\""
 				if [ "x$(${BASE_DIR}/tools/git_test.sh ${WORLD_PARM} -d "${NEW_BASE_DIR}/downloads/sources/files/" "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}|${PKG_GIT_COMMIT}|${PKG_GIT_UPDATE_MODE}|${PKG_GIT_SUBMODULE}|${PKG_GIT_FORMAT}")" == "x1" ]; then
-					echo "删除之前克隆的仓库文件，以便进行新的克隆..."
+					if [ "x${PKG_GIT_UPDATE_MODE}" == "x手工" ]; then
+						echo "发现 $i 所需源码包可能存在变更git仓库信息的内容，需要重新克隆到 ${NEW_BASE_DIR}/downloads/sources/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz"
+					else
+						echo "根据设置，发现 $i 所需源码包已经满足 ${PKG_GIT_UPDATE_MODE} 的更新要求，需要重新克隆到 ${NEW_BASE_DIR}/downloads/sources/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz"
+					fi
+					echo "删除 $i 之前克隆的仓库文件，以便进行新的克隆..."
 					if [ -f ${NEW_BASE_DIR}/downloads/sources/hash/${PKG_NAME}-${PKG_VERSION}.gitinfo.hash ]; then
 						rm -f ${NEW_BASE_DIR}/downloads/sources/hash/${PKG_NAME}-${PKG_VERSION}.gitinfo.hash
 					fi
@@ -376,11 +390,7 @@ do
 					if [ -d ${NEW_BASE_DIR}/downloads/sources/resource_git/${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}_git ]; then
 						rm -rf ${NEW_BASE_DIR}/downloads/sources/resource_git/${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}_git
 					fi
-					if [ "x${PKG_GIT_UPDATE_MODE}" == "x手工" ]; then
-						echo "发现 $i 所需源码包可能存在变更git仓库信息的内容，需要重新克隆到 ${NEW_BASE_DIR}/downloads/sources/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ..."
-					else
-						echo "根据设置，发现 $i 所需源码包已经满足 ${PKG_GIT_UPDATE_MODE} 的更新要求，需要重新克隆到 ${NEW_BASE_DIR}/downloads/sources/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ..."
-					fi
+					echo "开始克隆..."
 					${BASE_DIR}/tools/git_clone.sh ${WORLD_PARM} -d "${NEW_BASE_DIR}/downloads/sources/files/" "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}" "${PKG_GIT_FORMAT}"
 					if [ "x$?" != "x0" ]; then
 						echo "${URL} 克隆失败！"
@@ -404,7 +414,7 @@ do
 					echo "$i 所需源码包已下载。"
 				fi
 			else
-				echo "删除之前克隆的仓库文件，以便进行新的克隆..."
+				echo "删除 $i 之前克隆的仓库文件，以便进行新的克隆..."
 				if [ -f ${NEW_BASE_DIR}/downloads/sources/hash/${PKG_NAME}-${PKG_VERSION}.gitinfo.hash ]; then
 					rm -f ${NEW_BASE_DIR}/downloads/sources/hash/${PKG_NAME}-${PKG_VERSION}.gitinfo.hash
 				fi
@@ -442,7 +452,7 @@ do
 					continue;
 				fi
 			fi
-			echo "${PKG_NAME}-${PKG_VERSION}_git.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/files.list.tmp
+			echo "${PKG_NAME}-${PKG_VERSION}_git.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_FILES_LIST}.tmp
 			;;
 		FILE)
 			if [ -f ${NEW_BASE_DIR}/sources/files/${SAVE_FILENAME} ]; then
@@ -452,7 +462,7 @@ do
 				NO_FILE="${NO_FILE}
 ${i} 没有找到所需的文件${URL##*/}，请检查。"
 			fi
-			echo "${SAVE_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/files.list.tmp
+			echo "${SAVE_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_FILES_LIST}.tmp
 			;;
 		*)
 			echo "$i:		${URL%%/*}"
@@ -526,7 +536,7 @@ ${i} 没有下载路径，请检查。"
 								continue;
 							fi
 						fi
-						echo "${i}/${PKG_VERSION}/files/${PKG_NAME}-${RESOURCES_FILENAME}_git.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp
+						echo "${i}/${PKG_VERSION}/files/${PKG_NAME}-${RESOURCES_FILENAME}_git.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 					else
 						if [ "x${GIT_ONLY}" == "xFALSE" ]; then
 							if [ "x${FORCE_DOWN}" == "xFALSE" ] && [ -f ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME} ] && [ -f ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/hash/${RESOURCES_FILENAME}.hash ]; then
@@ -539,7 +549,7 @@ ${i} 没有下载路径，请检查。"
 										mkdir -p ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/{files,hash}/
 										cp -a ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME} ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/
 										cp -a ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/hash/${RESOURCES_FILENAME}.hash ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/hash/
-										echo "${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp
+										echo "${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 #										continue;
 										IS_DOWNLOADED=1
 									fi
@@ -563,7 +573,7 @@ ${i} 没有下载路径，请检查。"
 											wget -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
 											if [ "x$?" != "x0" ]; then
 												echo "${RESOURCES_URL} 与 ${REPLACE_REAL_RESOURCES_URL} 均下载失败！"
-												echo "下载 ${i} 的资源文件 ${RESOURCES_URL} ( 提换下载地址：${REPLACE_REAL_RESOURCES_URL} ) 均下载失败！" >> logs/download_fail.log
+												echo "下载 ${i} 的资源文件 ${RESOURCES_URL} ( 替换下载地址：${REPLACE_REAL_RESOURCES_URL} ) 均下载失败！" >> logs/download_fail.log
 												((FAIL_COUNT++))
 												continue;
 											fi
@@ -576,7 +586,7 @@ ${i} 没有下载路径，请检查。"
 								IS_DOWNLOADED=0
 							fi
 						fi
-						echo "${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp
+						echo "${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 					fi
 					;;
 				*)
@@ -622,7 +632,7 @@ ${i} 没有下载路径，请检查。"
 									mkdir -p ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir
 									cp -a ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/
 									cp -a ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/hash/${LIST_NAME}.hash ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/hash/
-									echo "${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp
+									echo "${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 									IS_DOWNLOADED=1
 #									continue;
 								fi
@@ -644,7 +654,7 @@ ${i} 没有下载路径，请检查。"
 										wget -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
 										if [ "x$?" != "x0" ]; then
 											echo "从 ${LIST_URL} 与 ${REPLACE_REAL_LIST_URL} 下载资源组文件 ${LIST_FILENAME} 均失败！"
-											echo "${i} 从 ${LIST_URL} ( 提换下载地址：${REPLACE_REAL_LIST_URL} ) 下载资源组文件 ${LIST_FILENAME} 均失败！" >> logs/download_fail.log
+											echo "${i} 从 ${LIST_URL} ( 替换下载地址：${REPLACE_REAL_LIST_URL} ) 下载资源组文件 ${LIST_FILENAME} 均失败！" >> logs/download_fail.log
 											((FAIL_COUNT++))
 											continue;
 										fi
@@ -665,33 +675,33 @@ ${i} 没有下载路径，请检查。"
 							;;
 					esac
 				fi
-#				echo "${i}/${PKG_VERSION}/${LIST_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp
-				echo "${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp
+#				echo "${i}/${PKG_VERSION}/${LIST_FILENAME}" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
+				echo "${i}/${PKG_VERSION}/files/${LIST_NAME}_dir.tar.gz" >> ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 			done
 			echo "已完成${i}需要下载的资源文件。"
 		fi
 	fi
 
 #	if [ -d ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ ] && [ "x$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f)" != "x" ]; then
-#		echo "$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
+#		echo "$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/ -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 #	fi
 #	if [ -d ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files ] && [ "x$(find ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f)" != "x" ]; then
-#		echo "$(find ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/downloads/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/resources.list.tmp
+#		echo "$(find ${BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files -maxdepth 1 ! -name "*.package_list" ! -name "*.listfile" ! -name "*.url" -type f | sed "s@${BASE_DIR}/downloads/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp
 #	fi
 #	if [ -d ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/patches ] && [ "x$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/patches -maxdepth 1 -type f)" != "x" ]; then
 #		echo "$(find ${BASE_DIR}/files/step/${i}/${PKG_VERSION}/patches -maxdepth 1 -type f | sed "s@${BASE_DIR}/files/step/@@g")" >> ${BASE_DIR}/downloads/sources/patches.list.tmp
 #	fi
 done
 
-if [ -f ${NEW_BASE_DIR}/downloads/sources/files.list.tmp ]; then
-	mv ${NEW_BASE_DIR}/downloads/sources/files.list{.tmp,}
+if [ -f ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_FILES_LIST}.tmp ]; then
+	mv ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_FILES_LIST}{.tmp,}
 fi
-if [ -f ${NEW_BASE_DIR}/downloads/sources/resources.list.tmp ]; then
-	mv ${NEW_BASE_DIR}/downloads/sources/resources.list{.tmp,}
+if [ -f ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}.tmp ]; then
+	mv ${NEW_BASE_DIR}/downloads/sources/${DOWNLOAD_SOURCES_RESOURCES_LIST}{.tmp,}
 fi
-if [ -f ${NEW_BASE_DIR}/downloads/sources/patches.list.tmp ]; then
-	mv ${NEW_BASE_DIR}/downloads/sources/patches.list{.tmp,}
-fi
+# if [ -f ${NEW_BASE_DIR}/downloads/sources/patches.list.tmp ]; then
+# 	mv ${NEW_BASE_DIR}/downloads/sources/patches.list{.tmp,}
+# fi
 
 if [ "x${NO_FILE}" != "x警告：" ]; then
 	echo "${NO_FILE}"
