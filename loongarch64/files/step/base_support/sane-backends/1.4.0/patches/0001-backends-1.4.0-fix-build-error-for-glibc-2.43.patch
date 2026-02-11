@@ -1,0 +1,25 @@
+From 803f39064b07cd5f9809c00f04fa51253464dd44 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 28 Jan 2026 01:12:30 +0000
+Subject: [PATCH] backends 1.4.0 fix build error for glibc 2.43
+
+---
+ backend/gphoto2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/backend/gphoto2.c b/backend/gphoto2.c
+index 758829a..a4cce7c 100644
+--- a/backend/gphoto2.c
++++ b/backend/gphoto2.c
+@@ -586,7 +586,7 @@ get_info (void)
+ 	  folder_list[n] = strdup (val);
+ 	  if (strchr ((const char *) folder_list[n], ' '))
+ 	    {
+-	      *strchr ((const char *) folder_list[n], ' ') = '\0';
++	      *strchr ((char *) folder_list[n], ' ') = '\0';
+ 	    }
+ 	}
+       if (n == 0)
+-- 
+2.31.1
+

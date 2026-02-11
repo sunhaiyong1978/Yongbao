@@ -3,24 +3,24 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=librsvg
-export PACKAGE_VERSION=2.61.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/librsvg/2.61.3/
-rm -rf ${BUILD_DIRECTORY}/librsvg-2.61.3
-tar xvf ${DOWNLOADDIR}/librsvg-2.61.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/librsvg-2.61.3
-    patch -Np1 -i ${SYSDIR}/files/base_support/librsvg/2.61.3/patches/0001-librsvg-2.59.91-fix-for-cross-build.patch 
+export PACKAGE_VERSION=2.61.90
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/librsvg/2.61.90/
+rm -rf ${BUILD_DIRECTORY}/librsvg-2.61.90
+tar xvf ${DOWNLOADDIR}/librsvg-2.61.90.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/librsvg-2.61.90
+    patch -Np1 -i ${SYSDIR}/files/base_support/librsvg/2.61.90/patches/0001-librsvg-2.59.91-fix-for-cross-build.patch 
 	 
     mkdir cross-prebuild
     pushd cross-prebuild
-	meson ${MESON_CONFIG} -Dtriplet=${CROSS_TARGET} -Dintrospection=disabled -Dpixbuf-loader=disabled ..
+	meson ${MESON_CONFIG} -Dtriplet=${CROSS_TARGET} -Dintrospection=disabled -Dpixbuf-loader=disabled -Ddocs=disabled ..
 	RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" ninja
 	DESTDIR=${SYSROOT_DIR} ninja install
     popd
     mkdir cross-build
     pushd cross-build
-	meson ${MESON_CONFIG} -Dtriplet=${CROSS_TARGET} ..
+	meson ${MESON_CONFIG} -Dtriplet=${CROSS_TARGET} -Ddocs=disabled ..
 	RUSTFLAGS="$RUSTFLAGS -C linker=${CROSS_TARGET}-gcc" ninja
 	DESTDIR=${SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/librsvg-2.61.3
+rm -rf ${BUILD_DIRECTORY}/librsvg-2.61.90

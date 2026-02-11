@@ -1,0 +1,57 @@
+From aef3c927da2c4c1634d8917c5ec0d839b13ed8b5 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 26 Jan 2026 13:10:41 +0000
+Subject: [PATCH] m4 1.4.20 fix build error for glibc 2.43
+
+---
+ lib/stdlib.in.h | 4 ----
+ lib/string.in.h | 2 --
+ lib/wchar.in.h  | 4 ----
+ 3 files changed, 10 deletions(-)
+
+diff --git a/lib/stdlib.in.h b/lib/stdlib.in.h
+index 1342db4..5787510 100644
+--- a/lib/stdlib.in.h
++++ b/lib/stdlib.in.h
+@@ -237,10 +237,6 @@ _GL_INLINE_HEADER_BEGIN
+ 
+ /* Declarations for ISO C N3322.  */
+ #if defined __GNUC__ && __GNUC__ >= 15 && !defined __clang__
+-_GL_EXTERN_C void *bsearch (const void *__key,
+-                            const void *__base, size_t __nmemb, size_t __size,
+-                            int (*__compare) (const void *, const void *))
+-  _GL_ATTRIBUTE_NONNULL_IF_NONZERO (2, 3) _GL_ARG_NONNULL ((5));
+ _GL_EXTERN_C void qsort (void *__base, size_t __nmemb, size_t __size,
+                          int (*__compare) (const void *, const void *))
+   _GL_ATTRIBUTE_NONNULL_IF_NONZERO (1, 2) _GL_ARG_NONNULL ((4));
+diff --git a/lib/string.in.h b/lib/string.in.h
+index e764221..5cca6af 100644
+--- a/lib/string.in.h
++++ b/lib/string.in.h
+@@ -237,8 +237,6 @@ _GL_EXTERN_C int strncmp (const char *__s1, const char *__s2, size_t __n)
+   _GL_ATTRIBUTE_NONNULL_IF_NONZERO (1, 3)
+   _GL_ATTRIBUTE_NONNULL_IF_NONZERO (2, 3);
+ # ifndef __cplusplus
+-_GL_EXTERN_C void *memchr (const void *__s, int __c, size_t __n)
+-  _GL_ATTRIBUTE_NONNULL_IF_NONZERO (1, 3);
+ _GL_EXTERN_C void *memrchr (const void *__s, int __c, size_t __n)
+   _GL_ATTRIBUTE_NONNULL_IF_NONZERO (1, 3);
+ # endif
+diff --git a/lib/wchar.in.h b/lib/wchar.in.h
+index 8836ed1..a6761de 100644
+--- a/lib/wchar.in.h
++++ b/lib/wchar.in.h
+@@ -297,10 +297,6 @@ _GL_EXTERN_C int wmemcmp (const wchar_t *__s1, const wchar_t *__s2, size_t __n)
+ _GL_EXTERN_C int wcsncmp (const wchar_t *__s1, const wchar_t *__s2, size_t __n)
+   _GL_ATTRIBUTE_NONNULL_IF_NONZERO (1, 3)
+   _GL_ATTRIBUTE_NONNULL_IF_NONZERO (2, 3);
+-# ifndef __cplusplus
+-_GL_EXTERN_C wchar_t *wmemchr (const wchar_t *__s, wchar_t __wc, size_t __n)
+-  _GL_ATTRIBUTE_NONNULL_IF_NONZERO (1, 3);
+-# endif
+ _GL_EXTERN_C wchar_t *wmemset (wchar_t *__s, wchar_t __wc, size_t __n)
+   _GL_ATTRIBUTE_NONNULL_IF_NONZERO (1, 3);
+ #endif
+-- 
+2.31.1
+

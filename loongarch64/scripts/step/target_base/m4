@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/m4/1.4.20/
 rm -rf ${BUILD_DIRECTORY}/m4-1.4.20
 tar xvf ${DOWNLOADDIR}/m4-1.4.20.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/m4-1.4.20
-	
+	patch -Np1 -i ${SYSDIR}/files/target_base/m4/1.4.20/patches/0001-m4-1.4.20-fix-build-error-for-glibc-2.43.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}

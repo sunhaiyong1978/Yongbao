@@ -1,0 +1,20 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=forcheck-Python3
+export PACKAGE_VERSION=3.14.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-Python3/3.14.3/
+rm -rf ${BUILD_DIRECTORY}/Python-3.14.3
+tar xvf ${DOWNLOADDIR}/Python-3.14.3.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.14.3
+	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
+	CFLAGS="${CFLAGS} -fPIC" LDFLAGS="${LDFLAGS} -lutil"
+	./configure --prefix=${PREFIX}/${LINUX_HOST} --with-platlibdir=lib \
+	            --disable-shared --with-system-expat --with-system-ffi \
+	            --with-ensurepip=yes --enable-optimizations \
+	            ac_cv_broken_sem_getvalue=yes
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/Python-3.14.3

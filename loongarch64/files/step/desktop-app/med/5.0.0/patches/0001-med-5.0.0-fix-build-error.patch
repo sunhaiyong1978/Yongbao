@@ -1,0 +1,25 @@
+From 80310446a96676578d55632a3a1e8370f9e2384e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 31 Jan 2026 04:46:52 +0000
+Subject: [PATCH] med 5.0.0 fix build error.
+
+---
+ include/med_hdfi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/med_hdfi.h b/include/med_hdfi.h
+index 71ffe58..4951570 100644
+--- a/include/med_hdfi.h
++++ b/include/med_hdfi.h
+@@ -409,7 +409,7 @@ typedef medvisitorfunc mediteratorfunc;
+ 
+ extern MEDC_EXPORT
+ med_err _MEDvisit(const med_idt fid, const char * const srcpath, const char * const dstpath,
+-		  medvisitorfunc);
++		  herr_t (*func)());
+ extern MEDC_EXPORT
+ med_err _MEDiterate(const med_idt fid, herr_t (*func)(), void * itdatas );
+ 
+-- 
+2.31.1
+

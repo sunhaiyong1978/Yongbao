@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fcitx5
-export PACKAGE_VERSION=5.1.16
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5/5.1.16/
-rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.16
-tar xvf ${DOWNLOADDIR}/fcitx5-5.1.16.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fcitx5-5.1.16
+export PACKAGE_VERSION=5.1.17
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5/5.1.17/
+rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.17
+tar xvf ${DOWNLOADDIR}/fcitx5-5.1.17.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fcitx5-5.1.17
 	cp ${RESOURCEDIR}/files/* src/modules/spell/
         
         mkdir cross-build
@@ -23,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/fcitx5-5.1.16
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.16
+rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.17

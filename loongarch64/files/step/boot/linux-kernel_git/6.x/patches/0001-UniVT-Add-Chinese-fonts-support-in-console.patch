@@ -1,6 +1,6 @@
-From 2d59f769d695708872986d32136dfc0287a92ec7 Mon Sep 17 00:00:00 2001
+From 72cff46ec4a4769617a7f7b10fd4796681cdf8a7 Mon Sep 17 00:00:00 2001
 From: Sun Haiyong <sunhaiyong@zdbr.net>
-Date: Mon, 9 Jun 2025 02:41:11 +0000
+Date: Tue, 13 Jan 2026 05:49:34 +0000
 Subject: [PATCH] UniVT: Add Chinese fonts support in console
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -17,29 +17,29 @@ Content-Transfer-Encoding: 8bit
  create mode 100644 lib/fonts/font_utf8x16.c
 
 diff --git a/include/linux/font.h b/include/linux/font.h
-index 81caffd51..e2d5a07ac 100644
+index fd8625cd7..e9370c984 100644
 --- a/include/linux/font.h
 +++ b/include/linux/font.h
-@@ -35,6 +35,7 @@ struct font_desc {
- #define FONT6x10_IDX	10
+@@ -36,6 +36,7 @@ struct font_desc {
  #define TER16x32_IDX	11
  #define FONT6x8_IDX	12
-+#define UTF8x16_IDX	13
+ #define TER10x18_IDX	13
++#define UTF8x16_IDX	14
  
  extern const struct font_desc	font_vga_8x8,
  			font_vga_8x16,
-@@ -48,7 +49,8 @@ extern const struct font_desc	font_vga_8x8,
- 			font_mini_4x6,
+@@ -50,7 +51,8 @@ extern const struct font_desc	font_vga_8x8,
  			font_6x10,
  			font_ter_16x32,
--			font_6x8;
-+			font_6x8,
+ 			font_6x8,
+-			font_ter_10x18;
++			font_ter_10x18,
 +			font_utf8_8x16;
  
  /* Find a font with a specific name */
  
 diff --git a/lib/fonts/Kconfig b/lib/fonts/Kconfig
-index ae59b5b4e..23ec1de9c 100644
+index 7d03823e4..1aaf777b3 100644
 --- a/lib/fonts/Kconfig
 +++ b/lib/fonts/Kconfig
 @@ -44,6 +44,16 @@ config FONT_8x16
@@ -59,8 +59,8 @@ index ae59b5b4e..23ec1de9c 100644
  config FONT_6x11
  	bool "Mac console 6x11 font (not supported by all drivers)" if FONTS
  	depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE || DRM_PANIC
-@@ -142,6 +152,7 @@ config FONT_AUTOSELECT
- 	depends on !FONT_10x18
+@@ -154,6 +164,7 @@ config FONT_AUTOSELECT
+ 	depends on !FONT_TER10x18
  	depends on !FONT_TER16x32
  	depends on !FONT_6x8
 +	depends on !FONT_UTF8x16
@@ -68,11 +68,11 @@ index ae59b5b4e..23ec1de9c 100644
  
  endif # FONT_SUPPORT
 diff --git a/lib/fonts/Makefile b/lib/fonts/Makefile
-index e16f68492..e2bb3ce70 100644
+index 30a85a429..b6081826d 100644
 --- a/lib/fonts/Makefile
 +++ b/lib/fonts/Makefile
-@@ -16,6 +16,7 @@ font-objs-$(CONFIG_FONT_MINI_4x6)  += font_mini_4x6.o
- font-objs-$(CONFIG_FONT_6x10)      += font_6x10.o
+@@ -17,6 +17,7 @@ font-objs-$(CONFIG_FONT_6x10)      += font_6x10.o
+ font-objs-$(CONFIG_FONT_TER10x18)  += font_ter10x18.o
  font-objs-$(CONFIG_FONT_TER16x32)  += font_ter16x32.o
  font-objs-$(CONFIG_FONT_6x8)       += font_6x8.o
 +font-objs-$(CONFIG_FONT_UTF8x16)   += font_utf8x16.o
@@ -135278,10 +135278,10 @@ index 000000000..e37fc553f
 +};
 +EXPORT_SYMBOL(font_utf8_8x16);
 diff --git a/lib/fonts/fonts.c b/lib/fonts/fonts.c
-index 47e34950b..b17b0f536 100644
+index a7f118b30..6c4bb2859 100644
 --- a/lib/fonts/fonts.c
 +++ b/lib/fonts/fonts.c
-@@ -60,6 +60,9 @@ static const struct font_desc *fonts[] = {
+@@ -63,6 +63,9 @@ static const struct font_desc *fonts[] = {
  #ifdef CONFIG_FONT_6x8
  	&font_6x8,
  #endif

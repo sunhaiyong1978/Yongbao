@@ -9,7 +9,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-gcc-glibc/1
 rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0
 tar xvf ${DOWNLOADDIR}/gcc-15.2.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc-15.2.0
-	
+	patch -Np1 -i ${SYSDIR}/files/cross-toolchains/linux-gcc-glibc/15.2.0/patches/0001-gcc-15.2.0-fix-build-error-for-glibc-2.43.patch 
+	 
 	case "${ARCH_NAME}" in
 		"loongarch64")
 			ABI_STRING="--with-abi=lp64"
@@ -27,6 +28,8 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 			ABI_STRING="--with-abi=${ARCH_ABI}"
 			;;
 	esac
+
+
 	mkdir -p tools-build-all
 	pushd tools-build-all
 		../configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \
@@ -43,7 +46,7 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 		${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-gcc -dumpspecs > specs
 		CUSTOM_LIB_PATH="${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}/lib${LIB_SUFF}"
 		sed -i "/^\*link:/,/^$/ {
-			/--build-id/ s|\(--build-id[^ ]*\)|\1 -rpath-link=${CUSTOM_LIB_PATH//\//\\/} |;
+			/--build-id/ s|\(--build-id[^ ]*\)|\1 -rpath-link=${CUSTOM_LIB_PATH//\//\\/} -rpath=${CUSTOM_LIB_PATH//\//\\/} |;
 			}" specs
 		mv specs $(dirname $(${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-gcc -print-libgcc-file-name))/specs
 	popd

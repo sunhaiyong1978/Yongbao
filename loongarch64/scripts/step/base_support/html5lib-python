@@ -5,11 +5,12 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=html5lib-python
 export PACKAGE_VERSION=1.1
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/html5lib-python/1.1/
-rm -rf ${BUILD_DIRECTORY}/html5lib-python-1.1
-tar xvf ${DOWNLOADDIR}/html5lib-python-1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/html5lib-python-1.1
-	
-	_PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py build
-        _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/python3 setup.py install --optimize=1 --root=${SYSROOT_DIR} --prefix=/usr
+rm -rf ${BUILD_DIRECTORY}/html5lib-1.1
+tar xvf ${DOWNLOADDIR}/html5lib-1.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/html5lib-1.1
+	patch -Np1 -i ${SYSDIR}/files/base_support/html5lib-python/1.1/patches/0001-html5lib-1.1-fix-for-python-14.patch 
+	 
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
+        CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ _PYTHON_HOST_PLATFORM=linux-loongarch64 _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --ignore-installed --no-user html5lib --root=${SYSROOT_DIR} --prefix=/usr
 popd 
-rm -rf ${BUILD_DIRECTORY}/html5lib-python-1.1
+rm -rf ${BUILD_DIRECTORY}/html5lib-1.1

@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/autogen/5.18.16/
 rm -rf ${BUILD_DIRECTORY}/autogen-5.18.16
 tar xvf ${DOWNLOADDIR}/autogen-5.18.16.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/autogen-5.18.16
+    patch -Np1 -i ${SYSDIR}/files/target_base/autogen/5.18.16/patches/0001-autogen-5.18.16-fix-build-error-for-glibc-2.43.patch 
+	 
     sed -i "/_guile_versions_to_search/s@\"2.2@\"3.0 2.2@g" configure
     sed -i "s@203000@308000@g" agen5/guile-iface.h
     sed -i -e "/exe=\`cd/s@exe=.*\$2@exe=/usr/bin/\$2@g" build-aux/run-ag.sh

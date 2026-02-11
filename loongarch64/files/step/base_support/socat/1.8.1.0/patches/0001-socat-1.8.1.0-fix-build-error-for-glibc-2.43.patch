@@ -1,0 +1,25 @@
+From 29c19b732ad69042a058123e017d506f459940ca Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 28 Jan 2026 09:49:15 +0000
+Subject: [PATCH] socat 1.8.1.0 fix build error for glibc 2.43
+
+---
+ filan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/filan.c b/filan.c
+index 101940a..9f7d630 100644
+--- a/filan.c
++++ b/filan.c
+@@ -1112,7 +1112,7 @@ static int printtime(FILE *outfile, time_t time) {
+    } else {
+       fputc('\t', outfile);
+       s = asctime(localtime(&time));
+-      if (strchr(s, '\n'))  *strchr(s, '\n') = '\0';
++      if (strchr(s, '\n'))  *(char *)strchr(s, '\n') = '\0';
+       fputs(s, outfile);
+    }
+    return 0;
+-- 
+2.31.1
+

@@ -1,0 +1,22 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=expect
+export PACKAGE_VERSION=5.45.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/expect/5.45.4/
+rm -rf ${BUILD_DIRECTORY}/expect5.45.4
+tar xvf ${DOWNLOADDIR}/expect5.45.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/expect5.45.4
+	
+	autoreconf -ifv
+	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-implicit-int -std=gnu17" \
+	./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} \
+	            --with-tcl=${PREFIX}/lib${LIB_SUFF} \
+		    --with-tclinclude=${PREFIX}/include \
+	            --enable-shared
+	make -j${JOBS}
+	make TCLSH_PROG=${PREFIX}/bin/tclsh install
+	ln -svf expect5.45.4/libexpect5.45.4.so ${PREFIX}/lib${LIB_SUFF}
+popd 
+rm -rf ${BUILD_DIRECTORY}/expect5.45.4

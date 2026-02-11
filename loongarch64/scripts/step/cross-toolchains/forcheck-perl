@@ -1,0 +1,27 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=forcheck-perl
+export PACKAGE_VERSION=5.42.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-perl/5.42.0/
+rm -rf ${BUILD_DIRECTORY}/perl-5.42.0
+tar xvf ${DOWNLOADDIR}/perl-5.42.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/perl-5.42.0
+    export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
+    sed -i "s@/usr/include@${PREFIX}/${LINUX_HOST}/include@g" ext/Errno/Errno_pm.PL
+    CC=${LINUX_HOST}-gcc \
+    CFLAGS="-D_LARGEFILE64_SOURCE" ./configure.gnu --prefix=${PREFIX}/${LINUX_HOST} \
+    	             -Dprivlib=${PREFIX}/${LINUX_HOST}/lib/perl5/5.4x/core_perl \
+	             -Darchlib=${PREFIX}/${LINUX_HOST}/lib/perl5/5.4x/core_perl \
+	             -Dsitelib=${PREFIX}/${LINUX_HOST}/lib/perl5/5.4x/site_perl \
+	             -Dsitearch=${PREFIX}/${LINUX_HOST}/lib/perl5/5.4x/site_perl \
+	             -Dvendorlib=${PREFIX}/${LINUX_HOST}/lib/perl5/5.4x/vendor_perl \
+	             -Dvendorarch=${PREFIX}/${LINUX_HOST}/lib/perl5/5.4x/vendor_perl
+    sed -i "/^#define I_GDBM_NDBM/d" config.h
+    sed -i "/^#define I_GDBMNDBM/d" config.h
+    DEFAULT_CHECK_OPTION="test"
+    eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/perl-5.42.0

@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=mpv
-export PACKAGE_VERSION=0.40.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/mpv/0.40.0/
-rm -rf ${BUILD_DIRECTORY}/mpv-0.40.0
-tar xvf ${DOWNLOADDIR}/mpv-0.40.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mpv-0.40.0
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/mpv/0.40.0/patches/0001-mpv-0.40.0-fix-for-ffmpeg-8.patch 
-	 
+export PACKAGE_VERSION=0.41.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/mpv/0.41.0/
+rm -rf ${BUILD_DIRECTORY}/mpv-0.41.0
+tar xvf ${DOWNLOADDIR}/mpv-0.41.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mpv-0.41.0
+	
 	mkdir cross-build
 	pushd cross-build
 		 meson ${MESON_CONFIG}  \
@@ -19,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/mpv-0.40.0
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mpv-0.40.0
+rm -rf ${BUILD_DIRECTORY}/mpv-0.41.0

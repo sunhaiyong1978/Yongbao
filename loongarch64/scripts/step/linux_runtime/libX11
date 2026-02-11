@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/libX11-1.8.12
 	fi
 	 ./configure ${COMMON_CONFIG} --with-keysymdefdir=${LINUX_SYSROOT_DIR}/usr/include/X11 --enable-malloc0returnsnull
 	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${LINUX_SYSROOT_DIR} install
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

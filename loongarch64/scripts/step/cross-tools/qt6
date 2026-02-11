@@ -4,12 +4,12 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.9.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.9.3/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.9.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
-	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.9.3/patches/0001-fix-filename-too-long-error-for-use-ninja.patch 
+export PACKAGE_VERSION=6.10.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/qt6/6.10.2/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.10.2
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.10.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.10.2
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/qt6/6.10.2/patches/0001-qtwebengine-fix-filename-too-long-error-for-use-ninj.patch 
 	 
 
 
@@ -21,7 +21,7 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
 		      -DICU_ROOT=${HOST_TOOLS_DIR} \
 		      -DQT_FEATURE_system_freetype=OFF \
 		      -DQT_BUILD_EXAMPLES_AS_EXTERNAL=ON \
-		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat\;qtopcua \
+		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat\;qtopcua\;qtlottie \
 		      ..
 		eval ${MAKE_AND_INSTALL}
 	popd
@@ -37,4 +37,4 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
 		popd
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.9.3
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.10.2

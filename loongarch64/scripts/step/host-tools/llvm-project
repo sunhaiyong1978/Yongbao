@@ -3,45 +3,35 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=21.1.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/llvm-project/21.1.7/
-export CROSS_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_TARGET})" "x86_64-unknown-linux-gnu")
-export CROSS_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "loongarch64-unknown-linux-gnu")
-export CROSS_HOST_RUNTIME_SYSROOT_DIR=$(archname_to_anyparm "$(get_user_set_env host "x86_64")" "RUNTIME_SYSROOT_DIR" "/usr/lib/x86_64/sys-root")
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.7.src
-tar xvf ${DOWNLOADDIR}/llvm-project-21.1.7.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-21.1.7.src
-
+export PACKAGE_VERSION=21.1.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/llvm-project/21.1.8/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
+tar xvf ${DOWNLOADDIR}/llvm-project-21.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
+	
 pushd llvm
-    mkdir -p host-build
-    pushd host-build
-        export PKG_CONFIG_SYSROOT_DIR=""
-	export PKG_CONFIG_PATH=""
-        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${CROSSTOOLS_DIR}/host-llvm-project \
+    mkdir -p native-build
+    pushd native-build
+	LDFLAGS="${LDFLAGS} -lutil" \
+        PKG_CONFIG_SYSROOT_DIR="" \
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${HOST_TOOLS_DIR} \
                  -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" \
-		 -DLLVM_LIBDIR_SUFFIX=64 \
+                 -DLLVM_LIBDIR_SUFFIX=64 \
                  -DBUILD_SHARED_LIBS:BOOL=OFF   -DCMAKE_BUILD_TYPE=Release  \
                  -DCMAKE_C_FLAGS="-DNDEBUG" -DCMAKE_CXX_FLAGS="-DNDEBUG" \
+                 -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
 		 -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
                  -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON  \
                  -DLLVM_LINK_LLVM_DYLIB:BOOL=ON  \
                  -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON   \
-		 -DLLVM_ENABLE_PROJECTS='llvm;clang;lld' \
-		 -DLLVM_INCLUDE_RUNTIMES:BOOL=ON \
-		 -DLLVM_ENABLE_RUNTIMES="libunwind;libcxxabi;libcxx;compiler-rt" \
-		 -DLLVM_RUNTIME_TARGETS="${CROSS_HOST};${CROSS_TARGET}" \
-		 -DLLVM_BUILTIN_TARGETS="${CROSS_HOST};${CROSS_TARGET}" \
-		 -DBUILTINS_${CROSS_TARGET}_CMAKE_SYSROOT=${SYSROOT_DIR} \
-		 -DRUNTIMES_${CROSS_TARGET}_CMAKE_SYSROOT=${SYSROOT_DIR} \
-		 -DBUILTINS_${CROSS_HOST}_CMAKE_SYSROOT=${SYSROOT_DIR}${CROSS_HOST_RUNTIME_SYSROOT_DIR} \
-		 -DRUNTIMES_${CROSS_HOST}_CMAKE_SYSROOT=${SYSROOT_DIR}${CROSS_HOST_RUNTIME_SYSROOT_DIR} \
-		 -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_HOST} \
-		 -DLLVM_HOST_TRIPLE=${CROSS_HOST} \
-		 -DRUNTIMES_${CROSS_TARGET}_Python3_EXECUTABLE=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
-                 -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF
+                 -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
+		 -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=ON \
+		 -DLLVM_ENABLE_PROJECTS='llvm;clang;lld;lldb'
         ninja
         ninja install
+
+	LLVM_DIST_VERSION="$(${CROSSTOOLS_DIR}/bin/llvm-config --version)"
+	save_package_version host-tools_llvm-project "${LLVM_DIST_VERSION}"
 popd
-cp -a ${HOST_TOOLS_DIR}/bin/bindgen ${CROSSTOOLS_DIR}/host-llvm-project/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.7.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.8.src

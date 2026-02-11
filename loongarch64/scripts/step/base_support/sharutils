@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/sharutils-4.15.2
     sed -i '/program_name/s/^/extern /' src/*opts.h
     sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
     echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
-    ./configure ${COMMON_CONFIG}
+    CFLAGS="${CFLAGS} -std=gnu17" ./configure ${COMMON_CONFIG}
     eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/sharutils-4.15.2

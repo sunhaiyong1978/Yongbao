@@ -1,0 +1,48 @@
+From 32b7c850b4267ebbb528037f77a4cf514b394061 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 29 Jan 2026 14:21:21 +0000
+Subject: [PATCH] virglrenderer 1.2.0 fix build error for glibc 2.43
+
+---
+ src/mesa/compat/c11/threads_posix.h | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/src/mesa/compat/c11/threads_posix.h b/src/mesa/compat/c11/threads_posix.h
+index 45cb607..fe69997 100644
+--- a/src/mesa/compat/c11/threads_posix.h
++++ b/src/mesa/compat/c11/threads_posix.h
+@@ -51,7 +51,6 @@ Configuration macro:
+ #include <pthread.h>
+ 
+ /*---------------------------- macros ----------------------------*/
+-#define ONCE_FLAG_INIT PTHREAD_ONCE_INIT
+ #ifdef INIT_ONCE_STATIC_INIT
+ #define TSS_DTOR_ITERATIONS PTHREAD_DESTRUCTOR_ITERATIONS
+ #else
+@@ -66,7 +65,6 @@ typedef pthread_cond_t  cnd_t;
+ typedef pthread_t       thrd_t;
+ typedef pthread_key_t   tss_t;
+ typedef pthread_mutex_t mtx_t;
+-typedef pthread_once_t  once_flag;
+ 
+ 
+ /*
+@@ -88,15 +86,6 @@ impl_thrd_routine(void *p)
+ }
+ 
+ 
+-/*--------------- 7.25.2 Initialization functions ---------------*/
+-// 7.25.2.1
+-static inline void
+-call_once(once_flag *flag, void (*func)(void))
+-{
+-    pthread_once(flag, func);
+-}
+-
+-
+ /*------------- 7.25.3 Condition variable functions -------------*/
+ // 7.25.3.1
+ static inline int
+-- 
+2.31.1
+

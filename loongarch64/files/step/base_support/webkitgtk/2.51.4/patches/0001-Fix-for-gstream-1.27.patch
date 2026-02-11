@@ -1,0 +1,46 @@
+From be2a38a5b61491824191b79a6a20b420b8179c0e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 7 Jan 2026 10:01:23 +0000
+Subject: [PATCH] Fix for gstream 1.27.
+
+---
+ .../graphics/gstreamer/GStreamerCommon.h      | 23 -------------------
+ 1 file changed, 23 deletions(-)
+
+diff --git a/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h b/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h
+index 2bbc4d6..a18a51c 100644
+--- a/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h
++++ b/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h
+@@ -58,29 +58,6 @@ using TrackIDHashMap = HashMap<TrackID, MappedArg, WTF::IntHash<TrackID>, WTF::U
+ #define GST_CHECK_VERSION_FULL(major, minor, micro, nano) \
+     (GST_CHECK_VERSION(major, minor, micro) && (GST_VERSION_NANO >= nano))
+ 
+-#if !GST_CHECK_VERSION_FULL(1, 27, 2, 1)
+-inline bool gst_check_version(guint major, guint minor, guint micro)
+-{
+-    guint currentMajor, currentMinor, currentMicro, currentNano;
+-    gst_version(&currentMajor, &currentMinor, &currentMicro, &currentNano);
+-
+-    if (currentMajor < major)
+-        return false;
+-    if (currentMajor > major)
+-        return true;
+-
+-    if (currentMinor < minor)
+-        return false;
+-    if (currentMinor > minor)
+-        return true;
+-
+-    if (currentMicro < micro)
+-        return false;
+-
+-    return true;
+-}
+-#endif
+-
+ #define GST_VIDEO_CAPS_TYPE_PREFIX  "video/"_s
+ #define GST_AUDIO_CAPS_TYPE_PREFIX  "audio/"_s
+ #define GST_TEXT_CAPS_TYPE_PREFIX   "text/"_s
+-- 
+2.31.1
+

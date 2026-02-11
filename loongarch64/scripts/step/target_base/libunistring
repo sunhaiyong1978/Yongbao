@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libunistring/1.4.1/
 rm -rf ${BUILD_DIRECTORY}/libunistring-1.4.1
 tar xvf ${DOWNLOADDIR}/libunistring-1.4.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libunistring-1.4.1
-	
+	patch -Np1 -i ${SYSDIR}/files/target_base/libunistring/1.4.1/patches/0001-gnulib-fix-build-error-for-glibc-2.43.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}

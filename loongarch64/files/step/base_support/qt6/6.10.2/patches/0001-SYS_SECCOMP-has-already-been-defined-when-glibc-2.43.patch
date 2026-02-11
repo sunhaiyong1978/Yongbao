@@ -1,0 +1,28 @@
+From a575e5210c851a320c7637c38516298b0b7ead3c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 28 Jan 2026 06:30:30 +0000
+Subject: [PATCH] SYS_SECCOMP has already been defined when glibc >= 2.43
+
+---
+ .../chromium/sandbox/linux/system_headers/linux_seccomp.h     | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
+index 9763823..26a2836 100644
+--- a/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
++++ b/qtwebengine/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
+@@ -223,7 +223,11 @@ struct seccomp_notif_addfd {
+ #endif
+ 
+ #ifndef SYS_SECCOMP
++#if defined(__GLIBC__) && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 43))
++// SYS_SECCOMP has already been defined when glibc >= 2.43
++#else
+ #define SYS_SECCOMP                   1
+ #endif
++#endif
+ 
+ #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_LINUX_SECCOMP_H_
+-- 
+2.31.1
+

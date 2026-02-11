@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=SDL_ttf
-export PACKAGE_VERSION=release-3.2.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SDL_ttf/release-3.2.2/
+export PACKAGE_VERSION=3.2.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/SDL_ttf/3.2.2/
 rm -rf ${BUILD_DIRECTORY}/SDL_ttf-release-3.2.2
-tar xvf ${DOWNLOADDIR}/SDL_ttf-release-3.2.2.tar.gz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/SDL_ttf-3.2.2.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/SDL_ttf-release-3.2.2
         
 	mkdir cross-build

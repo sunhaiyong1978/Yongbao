@@ -4,15 +4,15 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=mingw-gettext
-export PACKAGE_VERSION=0.26
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gettext/0.26/
-rm -rf ${BUILD_DIRECTORY}/gettext-0.26
-tar xvf ${DOWNLOADDIR}/gettext-0.26.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gettext-0.26
+export PACKAGE_VERSION=1.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/mingw-gettext/1.0/
+rm -rf ${BUILD_DIRECTORY}/gettext-1.0
+tar xvf ${DOWNLOADDIR}/gettext-1.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gettext-1.0
 	sed -i "s@ gnulib-tests @ @g" gettext-tools/Makefile.in
 	./configure ${COMMON_CONFIG} --enable-shared --enable-threads=win32 --enable-static --without-emacs --disable-openmp
 	make -j${JOBS}
         make DESTDIR=${MINGW_SYSROOT_DIR} install
 	rm -f ${MINGW_SYSROOT_DIR}/mingw/lib/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gettext-0.26
+rm -rf ${BUILD_DIRECTORY}/gettext-1.0

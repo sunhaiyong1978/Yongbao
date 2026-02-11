@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/gmp-6.3.0
 	ABI=${GMP_ABI} ./configure --build=${CROSS_HOST} --host=${LINUX_HOST} \
                 --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --enable-cxx
 	make -j${JOBS}
+	run_step_package_check check
 	make DESTDIR=${LINUX_SYSROOT_DIR} install
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

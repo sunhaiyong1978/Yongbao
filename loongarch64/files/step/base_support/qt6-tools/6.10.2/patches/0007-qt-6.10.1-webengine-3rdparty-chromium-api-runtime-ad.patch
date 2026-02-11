@@ -1,0 +1,60 @@
+From 841cd94c83650164d77494c04e3b4ee614ba1644 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 19 Jan 2026 01:52:43 +0000
+Subject: [PATCH 7/8] qt 6.10.1 webengine 3rdparty chromium api runtime add
+ loongarch64 support.
+
+---
+ .../extensions/api/runtime/chrome_runtime_api_delegate.cc   | 4 ++++
+ .../3rdparty/chromium/extensions/common/api/runtime.json    | 6 ++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/chrome/browser/extensions/api/runtime/chrome_runtime_api_delegate.cc b/qtwebengine/src/3rdparty/chromium/chrome/browser/extensions/api/runtime/chrome_runtime_api_delegate.cc
+index 244313bdc9..9594ca3aa5 100644
+--- a/qtwebengine/src/3rdparty/chromium/chrome/browser/extensions/api/runtime/chrome_runtime_api_delegate.cc
++++ b/qtwebengine/src/3rdparty/chromium/chrome/browser/extensions/api/runtime/chrome_runtime_api_delegate.cc
+@@ -311,6 +311,8 @@ bool ChromeRuntimeAPIDelegate::GetPlatformInfo(PlatformInfo* info) {
+     info->arch = extensions::api::runtime::PlatformArch::kMips;
+   } else if (strcmp(arch, "mips64el") == 0) {
+     info->arch = extensions::api::runtime::PlatformArch::kMips64;
++  } else if (strcmp(arch, "loongarch64") == 0) {
++    info->arch = extensions::api::runtime::PlatformArch::kLoongarch64;
+   } else {
+     NOTREACHED();
+   }
+@@ -326,6 +328,8 @@ bool ChromeRuntimeAPIDelegate::GetPlatformInfo(PlatformInfo* info) {
+     info->nacl_arch = extensions::api::runtime::PlatformNaclArch::kMips;
+   } else if (strcmp(nacl_arch, "mips64") == 0) {
+     info->nacl_arch = extensions::api::runtime::PlatformNaclArch::kMips64;
++  } else if (strcmp(nacl_arch, "loongarch64") == 0) {
++    info->nacl_arch = extensions::api::runtime::PlatformNaclArch::kLoongarch64;
+   } else {
+     NOTREACHED();
+   }
+diff --git a/qtwebengine/src/3rdparty/chromium/extensions/common/api/runtime.json b/qtwebengine/src/3rdparty/chromium/extensions/common/api/runtime.json
+index 723850ef9a..8ea579f6c6 100644
+--- a/qtwebengine/src/3rdparty/chromium/extensions/common/api/runtime.json
++++ b/qtwebengine/src/3rdparty/chromium/extensions/common/api/runtime.json
+@@ -98,7 +98,8 @@
+             {"name": "x86-32", "description": "Specifies the processer architecture as x86-32."},
+             {"name": "x86-64", "description": "Specifies the processer architecture as x86-64."},
+             {"name": "mips", "description": "Specifies the processer architecture as mips."},
+-            {"name": "mips64", "description": "Specifies the processer architecture as mips64."}
++            {"name": "mips64", "description": "Specifies the processer architecture as mips64."},
++            {"name": "loongarch64", "description": "Specifies the processer architecture as loongarch64."}
+          ],
+         "description": "The machine's processor architecture."
+       },
+@@ -111,7 +112,8 @@
+           {"name": "x86-32", "description": "Specifies the native client architecture as x86-32."},
+           {"name": "x86-64", "description": "Specifies the native client architecture as x86-64."},
+           {"name": "mips", "description": "Specifies the native client architecture as mips."},
+-          {"name": "mips64", "description": "Specifies the native client architecture as mips64."}
++          {"name": "mips64", "description": "Specifies the native client architecture as mips64."},
++          {"name": "loongarch64", "description": "Specifies the native client architecture as loongarch64."}
+         ]
+       },
+       {
+-- 
+2.31.1
+

@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/virglrenderer/irglrendere
 rm -rf ${BUILD_DIRECTORY}/virglrenderer-virglrenderer-1.2.0
 tar xvf ${DOWNLOADDIR}/virglrenderer-virglrenderer-1.2.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/virglrenderer-virglrenderer-1.2.0
-	
+	patch -Np1 -i ${SYSDIR}/files/simulate/virglrenderer/irglrenderer-1.2.0/patches/0001-virglrenderer-1.2.0-fix-build-error-for-glibc-2.43.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		 meson ${MESON_CONFIG}  \

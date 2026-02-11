@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/links/2.30/
 rm -rf ${BUILD_DIRECTORY}/links-2.30
 tar xvf ${DOWNLOADDIR}/links-2.30.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/links-2.30
-	
+	patch -Np1 -i ${SYSDIR}/files/target_base/links/2.30/patches/0001-links-2.30-fix-build-error-for-glibc-2.43.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}

@@ -1,0 +1,43 @@
+From 84d5bb9cbf60b3ff6cf4ad0827582412c1766c7e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 28 Jan 2026 08:40:43 +0000
+Subject: [PATCH] libbpf fix build error for glibc 2.43
+
+---
+ tools/lib/bpf/libbpf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index dd3b2f5..4a75cc1 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8247,7 +8247,7 @@ static int kallsyms_cb(unsigned long long sym_addr, char sym_type,
+ 	struct extern_desc *ext;
+ 	char *res;
+ 
+-	res = strstr(sym_name, ".llvm.");
++	res = strstr((char *)sym_name, ".llvm.");
+ 	if (sym_type == 'd' && res)
+ 		ext = find_extern_by_name_with_len(obj, sym_name, res - sym_name);
+ 	else
+@@ -11576,7 +11576,7 @@ static int avail_kallsyms_cb(unsigned long long sym_addr, char sym_type,
+ 		 */
+ 		char sym_trim[256], *psym_trim = sym_trim, *sym_sfx;
+ 
+-		if (!(sym_sfx = strstr(sym_name, ".llvm.")))
++		if (!(sym_sfx = strstr((char *)sym_name, ".llvm.")))
+ 			return 0;
+ 
+ 		/* psym_trim vs sym_trim dance is done to avoid pointer vs array
+@@ -12164,7 +12164,7 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
+ 
+ 			if (s[0] == ':')
+ 				s++;
+-			next_path = strchr(s, ':');
++			next_path = strchr((char *)s, ':');
+ 			seg_len = next_path ? next_path - s : strlen(s);
+ 			if (!seg_len)
+ 				continue;
+-- 
+2.31.1
+

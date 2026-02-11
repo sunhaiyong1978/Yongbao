@@ -9,6 +9,7 @@ rm -rf ${BUILD_DIRECTORY}/med-5.0.0
 tar xvf ${DOWNLOADDIR}/med-5.0.0.tar.bz2 -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/med-5.0.0
         patch -Np1 -i ${SYSDIR}/files/desktop-app/med/5.0.0/patches/hdf5-1.14.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/med/5.0.0/patches/0001-med-5.0.0-fix-build-error.patch 
 	 
 	mkdir cross-build
 	pushd cross-build

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=ncurses
-export PACKAGE_VERSION=6.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/ncurses/6.5/
-rm -rf ${BUILD_DIRECTORY}/ncurses-6.5
-tar xvf ${DOWNLOADDIR}/ncurses-6.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ncurses-6.5
+export PACKAGE_VERSION=6.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/ncurses/6.6/
+rm -rf ${BUILD_DIRECTORY}/ncurses-6.6
+tar xvf ${DOWNLOADDIR}/ncurses-6.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ncurses-6.6
 	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} \
 	            --host=${CROSS_TARGET} --with-shared --without-debug \
 	            --without-normal --enable-pc-files --without-ada \
@@ -27,6 +27,6 @@ pushd ${BUILD_DIRECTORY}/ncurses-6.5
 	ln -sfv libncurses.so      ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libcurses.so
 	rm -fv ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libncurses++w.a
 popd 
-rm -rf ${BUILD_DIRECTORY}/ncurses-6.5
+rm -rf ${BUILD_DIRECTORY}/ncurses-6.6
 cp -v ${SYSROOT_DIR}/usr/bin/ncursesw6-config ${CROSSTOOLS_DIR}/bin/
 sed -i "s@-L\$libdir@@g" ${CROSSTOOLS_DIR}/bin/ncursesw6-config

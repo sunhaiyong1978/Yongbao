@@ -17,7 +17,8 @@ pushd ${BUILD_DIRECTORY}/aalib-1.4.0
                 autoreconf -ifv
         fi
 	sed -i -e '/AM_PATH_AALIB,/s/AM_PATH_AALIB/[&]/' aalib.m4
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CFLAGS="${CFLAGS} -Wno-return-mismatch" ./configure ${COMMON_CONFIG} --with-ncurses=/usr --enable-malloc0returnsnull
+	sed -i 's/stdscr->_max\([xy]\) + 1/getmax\1(stdscr)/' src/aacurses.c
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CFLAGS="${CFLAGS} -Wno-return-mismatch -std=gnu17" ./configure ${COMMON_CONFIG} --with-ncurses=${SYSROOT_DIR}/usr --enable-malloc0returnsnull
         make -j${JOBS} CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

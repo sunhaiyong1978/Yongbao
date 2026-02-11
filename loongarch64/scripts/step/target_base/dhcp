@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/dhcp-4.4.3-P1
 		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
 	done
 	
-	CFLAGS="${CFLAGS:--g -O2} -Wall -fno-strict-aliasing \
+	CFLAGS="${CFLAGS:--g -O2} -std=gnu17 -Wall -fno-strict-aliasing \
         -D_PATH_DHCLIENT_SCRIPT='\"/usr/sbin/dhclient-script\"' \
         -D_PATH_DHCPD_CONF='\"/etc/dhcp/dhcpd.conf\"' \
         -D_PATH_DHCLIENT_CONF='\"/etc/dhcp/dhclient.conf\"'" \

@@ -1,0 +1,22 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=ruby3
+export PACKAGE_VERSION=3.4.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/ruby3/3.4.8/
+rm -rf ${BUILD_DIRECTORY}/ruby-3.4.8
+tar xvf ${DOWNLOADDIR}/ruby-3.4.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ruby-3.4.8
+        
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+        ./configure --prefix=${PREFIX}/ruby3 --libdir=${PREFIX}/lib${LIB_SUFF} --without-baseruby
+        eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/ruby-3.4.8

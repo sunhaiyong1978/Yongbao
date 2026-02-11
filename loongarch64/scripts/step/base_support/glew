@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=glew
-export PACKAGE_VERSION=2.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/glew/2.2.0/
-rm -rf ${BUILD_DIRECTORY}/glew-2.2.0
-tar xvf ${DOWNLOADDIR}/glew-2.2.0.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glew-2.2.0
+export PACKAGE_VERSION=2.3.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/glew/2.3.1/
+rm -rf ${BUILD_DIRECTORY}/glew-2.3.1
+tar xvf ${DOWNLOADDIR}/glew-2.3.1.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glew-2.3.1
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -15,7 +15,8 @@ pushd ${BUILD_DIRECTORY}/glew-2.2.0
 
     sed -i "s@ -s @ @g" Makefile
     make -j${JOBS} CC="${CROSS_TARGET}-gcc" LD="${CROSS_TARGET}-gcc" \
-         STRIP="${CROSS_TARGET}-strip"
-    make PKGDIR=/usr/lib64/pkgconfig DESTDIR=${SYSROOT_DIR} install
+         STRIP="${CROSS_TARGET}-strip" \
+	GLEW_PREFIX=/usr GLEW_DEST=/usr
+    make PKGDIR=/usr/lib64/pkgconfig GLEW_PREFIX=/usr GLEW_DEST=/usr DESTDIR=${SYSROOT_DIR} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/glew-2.2.0
+rm -rf ${BUILD_DIRECTORY}/glew-2.3.1

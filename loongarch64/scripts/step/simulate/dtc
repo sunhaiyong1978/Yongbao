@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/dtc/1.7.2/
 rm -rf ${BUILD_DIRECTORY}/dtc-1.7.2
 tar xvf ${DOWNLOADDIR}/dtc-1.7.2.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dtc-1.7.2
+	patch -Np1 -i ${SYSDIR}/files/simulate/dtc/1.7.2/patches/0001-dtc-1.7.2-fix-build-error-for-glibc-2.43.patch 
+	 
 	PYTHON=${CROSS_TARGET}-python3 make PREFIX=/usr LIBDIR=/usr/lib64 CC=${CROSS_TARGET}-gcc -j${JOBS}
 	PYTHON=${CROSS_TARGET}-python3 make PREFIX=/usr LIBDIR=/usr/lib64 DESTDIR=${SYSROOT_DIR} install
 popd 

@@ -4,15 +4,24 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=mesa
-export PACKAGE_VERSION=25.3.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/mesa/25.3.1/
-rm -rf ${BUILD_DIRECTORY}/mesa-25.3.1
-tar xvf ${DOWNLOADDIR}/mesa-25.3.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mesa-25.3.1
+export PACKAGE_VERSION=25.3.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/mesa/25.3.4/
+rm -rf ${BUILD_DIRECTORY}/mesa-25.3.4
+tar xvf ${DOWNLOADDIR}/mesa-25.3.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mesa-25.3.4
     
     tar xf ${RESOURCEDIR}/files/mesa-DirectX-Headers_git.tar.gz -C subprojects/
     mv subprojects/{mesa-DirectX-Headers_git,DirectX-Headers-1.0}
 
+
+    case "${ARCH_NAME}" in
+	i686)
+		VK_DRIVERS="amd, broadcom, freedreno, intel, intel_hasvk, panfrost, swrast, virtio, imagination, microsoft-experimental, asahi, gfxstream"
+		;;
+	*)
+		VK_DRIVERS="amd, broadcom, freedreno, intel, intel_hasvk, panfrost, swrast, virtio, imagination, microsoft-experimental, nouveau, asahi, gfxstream"
+		;;
+    esac
 
     mkdir cross-build
     pushd cross-build
@@ -21,11 +30,11 @@ pushd ${BUILD_DIRECTORY}/mesa-25.3.1
               -Dplatforms=x11,wayland \
               -Dglx=dri -Dopengl=true -Degl=enabled -Dglvnd=enabled -Dllvm-orcjit=true \
               -Dgles2=enabled \
-              -Dlibunwind=disabled -Dvulkan-drivers="amd, broadcom, freedreno, intel, intel_hasvk, panfrost, swrast, virtio, imagination, microsoft-experimental, nouveau, asahi, gfxstream" \
+              -Dlibunwind=disabled -Dvulkan-drivers="${VK_DRIVERS}" \
               -Dvideo-codecs="vc1dec,h264dec,h264enc,h265dec,h265enc,av1dec,av1enc,vp9dec" \
               -Dllvm=enabled -Dshared-llvm=enabled -Ddraw-use-llvm=true -Dgallium-d3d12-video=auto -Dshader-cache-max-size=8G -Dglx-direct=true -Dvulkan-layers=overlay \
               ..
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/mesa-25.3.1
+rm -rf ${BUILD_DIRECTORY}/mesa-25.3.4

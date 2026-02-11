@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/capi20
 	fi
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
+	run_step_package_check check
         make DESTDIR=${LINUX_SYSROOT_DIR} install
 	rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 

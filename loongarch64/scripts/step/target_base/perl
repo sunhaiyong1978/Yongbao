@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/perl-5.42.0
 	             -Dvendorarch=/usr/lib${LIB_SUFF}/perl5/5.4x/vendor_perl \
 	             -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 \
 	             -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads \
-	             -Dusecrosscompile -Dusedevel
+	             -Dusecrosscompile
 	cp ${RESOURCEDIR}/perl-5.x-${ARCH_NAME}-config.sh ./config.sh
 	sed -i "/^cc=/s@'cc'@'${CROSS_TARGET}-gcc'@g" config.sh
 	sed -i "/^ld=/s@'cc'@'${CROSS_TARGET}-gcc'@g" config.sh

@@ -1,0 +1,84 @@
+From bbcf0df07ed4646b1d4f446f19cfe8d47fc33a2c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 3 Feb 2026 11:57:57 +0000
+Subject: [PATCH] krb5 1.22.2 fix build error for glibc 2.43
+
+---
+ src/lib/krb5/ccache/ccbase.c                 | 4 ++--
+ src/lib/krb5/os/expand_path.c                | 3 ++-
+ src/lib/krb5/os/locate_kdc.c                 | 2 +-
+ src/plugins/preauth/pkinit/pkinit_identity.c | 2 +-
+ src/plugins/preauth/pkinit/pkinit_matching.c | 2 +-
+ 5 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/src/lib/krb5/ccache/ccbase.c b/src/lib/krb5/ccache/ccbase.c
+index 696b681..9fc7d10 100644
+--- a/src/lib/krb5/ccache/ccbase.c
++++ b/src/lib/krb5/ccache/ccbase.c
+@@ -201,8 +201,8 @@ krb5_cc_register(krb5_context context, const krb5_cc_ops *ops,
+ krb5_error_code KRB5_CALLCONV
+ krb5_cc_resolve (krb5_context context, const char *name, krb5_ccache *cache)
+ {
+-    char *pfx, *cp;
+-    const char *resid;
++    char *pfx;
++    const char *resid, *cp;
+     unsigned int pfxlen;
+     krb5_error_code err;
+     const krb5_cc_ops *ops;
+diff --git a/src/lib/krb5/os/expand_path.c b/src/lib/krb5/os/expand_path.c
+index 5cbccf0..6569b88 100644
+--- a/src/lib/krb5/os/expand_path.c
++++ b/src/lib/krb5/os/expand_path.c
+@@ -454,7 +454,8 @@ k5_expand_path_tokens_extra(krb5_context context, const char *path_in,
+ {
+     krb5_error_code ret;
+     struct k5buf buf;
+-    char *tok_begin, *tok_end, *tok_val, **extra_tokens = NULL, *path;
++    const char *tok_begin, *tok_end;
++    char *tok_val, **extra_tokens = NULL, *path;
+     const char *path_left;
+     size_t nargs = 0, i;
+     va_list ap;
+diff --git a/src/lib/krb5/os/locate_kdc.c b/src/lib/krb5/os/locate_kdc.c
+index d1df04a..b877c5d 100644
+--- a/src/lib/krb5/os/locate_kdc.c
++++ b/src/lib/krb5/os/locate_kdc.c
+@@ -223,7 +223,7 @@ parse_uri_if_https(const char *host_or_uri, k5_transport *transport,
+         *transport = HTTPS;
+         *host = host_or_uri + 8;
+ 
+-        cp = strchr(*host, '/');
++        cp = (char *)strchr(*host, '/');
+         if (cp != NULL) {
+             *cp = '\0';
+             *uri_path = cp + 1;
+diff --git a/src/plugins/preauth/pkinit/pkinit_identity.c b/src/plugins/preauth/pkinit/pkinit_identity.c
+index 0dcfcfc..af6ae32 100644
+--- a/src/plugins/preauth/pkinit/pkinit_identity.c
++++ b/src/plugins/preauth/pkinit/pkinit_identity.c
+@@ -479,7 +479,7 @@ process_option_ca_crl(krb5_context context,
+ 
+     pkiDebug("%s: processing catype %s, value '%s'\n",
+              __FUNCTION__, catype2string(catype), value);
+-    residual = strchr(value, ':');
++    residual = (char *)strchr(value, ':');
+     if (residual == NULL) {
+         pkiDebug("No type given for '%s'\n", value);
+         return EINVAL;
+diff --git a/src/plugins/preauth/pkinit/pkinit_matching.c b/src/plugins/preauth/pkinit/pkinit_matching.c
+index 0ea072c..b3c8df1 100644
+--- a/src/plugins/preauth/pkinit/pkinit_matching.c
++++ b/src/plugins/preauth/pkinit/pkinit_matching.c
+@@ -262,7 +262,7 @@ parse_rule_component(krb5_context context,
+     char err_buf[128];
+     int ret;
+     struct keyword_desc *kw, *nextkw;
+-    char *nk;
++    const char *nk;
+     int found_next_kw = 0;
+     char *value = NULL;
+     size_t len;
+-- 
+2.31.1
+

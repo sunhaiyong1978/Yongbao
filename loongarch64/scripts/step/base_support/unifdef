@@ -8,8 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/unifdef/2.12/
 rm -rf ${BUILD_DIRECTORY}/unifdef-2.12
 tar xvf ${DOWNLOADDIR}/unifdef-2.12.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/unifdef-2.12
-    make prefix="/usr" CC=${CROSS_TARGET}-gcc
-    make prefix="/usr" CC=${CROSS_TARGET}-gcc DESTDIR=${PWD}/dest install
+    make prefix="/usr" CC=${CROSS_TARGET}-gcc CFLAGS="${CFLAGS} -std=gnu17"
+    make prefix="/usr" CC=${CROSS_TARGET}-gcc CFLAGS="${CFLAGS} -std=gnu17" DESTDIR=${PWD}/dest install
     cp -av dest/usr/bin/* ${SYSROOT_DIR}/usr/bin/
     cp -av dest/usr/share/man/man* ${SYSROOT_DIR}/usr/share/man/
 popd 

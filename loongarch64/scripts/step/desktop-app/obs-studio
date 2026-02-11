@@ -3,34 +3,23 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=obs-studio
-export PACKAGE_VERSION=32.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/obs-studio/32.0.2/
-rm -rf ${BUILD_DIRECTORY}/obs-studio-32.0.2
-tar xvf ${DOWNLOADDIR}/obs-studio-32.0.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/obs-studio-32.0.2
-	tar xvf ${RESOURCEDIR}/files/obs-studio-obs-browser_git.tar.gz
-	mv obs-studio-obs-browser_git/* plugins/obs-browser/
-	tar xvf ${RESOURCEDIR}/files/obs-studio-obs-websocket_git.tar.gz
-	mv obs-studio-obs-websocket_git/* plugins/obs-websocket/
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/obs-studio/32.0.2/patches/0001-obs-studio-fix-for-gcc-15.patch 
-	 
-	sed -i "/legacy_check/d" plugins/obs-websocket/CMakeLists.txt
-        mkdir cross-build
-        pushd cross-build
-                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-		CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations -Wno-error=calloc-transposed-args -Wno-error=deprecated-declarations" \
-		CXXFLAGS="${CXXFLAGS} -Wno-error=stringop-overflow -Wno-error=calloc-transposed-args -Wno-error=deprecated-declarations" \
-                cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
-                      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 \
-                      -DBUILD_SHARED_LIBS=ON \
-		      -DENABLE_BROWSER=OFF \
-		      -DENABLE_NEW_MPEGTS_OUTPUT=OFF \
-		      -DENABLE_AJA=0 \
-		      -DLINUX_PORTABLE=OFF \
-		      -DENABLE_RNNOISE=OFF -DENABLE_NVENC=OFF \
-                      -Wno-dev ..
-                eval ${NINJA_AND_INSTALL}
-        popd
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/obs-studio/git-default/
+rm -rf ${BUILD_DIRECTORY}/obs-studio-git-default_git
+tar xvf ${DOWNLOADDIR}/obs-studio-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/obs-studio-git-default_git
+        
+	mkdir cross-build
+	pushd cross-build
+        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
+       		      -DCMAKE_INSTALL_PREFIX=/usr \
+		      -DBUILD_SHARED_LIBS=ON \
+		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+		      -DENABLE_BROWSER=OFF -DENABLE_NEW_MPEGTS_OUTPUT=OFF -DENABLE_AJA=0 -DLINUX_PORTABLE=OFF -DENABLE_RNNOISE=OFF -DENABLE_NVENC=OFF -DOBS_VERSION_OVERRIDE=33.0.0git -Wno-dev ..
+		eval ${MAKE_AND_INSTALL}
+	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/obs-studio-32.0.2
+rm -rf ${BUILD_DIRECTORY}/obs-studio-git-default_git

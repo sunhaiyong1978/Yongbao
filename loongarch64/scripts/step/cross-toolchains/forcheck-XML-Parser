@@ -1,0 +1,18 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=forcheck-XML-Parser
+export PACKAGE_VERSION=2.47
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-XML-Parser/2.47/
+rm -rf ${BUILD_DIRECTORY}/XML-Parser-2.47
+tar xvf ${DOWNLOADDIR}/XML-Parser-2.47.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/XML-Parser-2.47
+	
+	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
+	CC=${LINUX_HOST}-gcc \
+	${PREFIX}/${LINUX_HOST}/bin/perl Makefile.PL
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/XML-Parser-2.47

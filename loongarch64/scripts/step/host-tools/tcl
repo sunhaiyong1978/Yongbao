@@ -1,0 +1,21 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=tcl
+export PACKAGE_VERSION=8.6.14
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/tcl/8.6.14/
+rm -rf ${BUILD_DIRECTORY}/tcl8.6.14
+tar xvf ${DOWNLOADDIR}/tcl8.6.14-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/tcl8.6.14
+    TCL_VERSION="${PACKAGE_VERSION%\.*}"
+    SRCDIR=$(pwd)
+    pushd unix
+	    ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF}
+	    make -j${JOBS}
+	    make install
+	    make install-private-headers
+	    ln -sfv tclsh${TCL_VERSION} ${PREFIX}/bin/tclsh
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/tcl8.6.14

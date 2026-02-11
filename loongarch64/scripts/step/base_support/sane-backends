@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/sane-backends/1.4.0/
 rm -rf ${BUILD_DIRECTORY}/backends-1.4.0-c7e4b5e35e3d614d2b1181d760a717bfc395a203
 tar xvf ${DOWNLOADDIR}/sane-backends-1.4.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/backends-1.4.0-c7e4b5e35e3d614d2b1181d760a717bfc395a203
-        
+        patch -Np1 -i ${SYSDIR}/files/base_support/sane-backends/1.4.0/patches/0001-backends-1.4.0-fix-build-error-for-glibc-2.43.patch 
+	 
 	echo ${PACKAGE_VERSION} > .tarball-version
         for config_i in $(find -name "config.sub")
         do

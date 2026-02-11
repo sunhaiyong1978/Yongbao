@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-gdb
-export PACKAGE_VERSION=16.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gdb/16.3/
-rm -rf ${BUILD_DIRECTORY}/gdb-16.3
-tar xvf ${DOWNLOADDIR}/gdb-16.3.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gdb-16.3
+export PACKAGE_VERSION=17.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-gdb/17.1/
+rm -rf ${BUILD_DIRECTORY}/gdb-17.1
+tar xvf ${DOWNLOADDIR}/gdb-17.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gdb-17.1
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -67,4 +67,4 @@ pushd ${BUILD_DIRECTORY}/gdb-16.3
 	make DESTDIR=${TOOLCHAIN_INSTALL_DIR}/gdb install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gdb-16.3
+rm -rf ${BUILD_DIRECTORY}/gdb-17.1

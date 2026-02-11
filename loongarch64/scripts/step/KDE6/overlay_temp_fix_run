@@ -49,6 +49,10 @@ for kf6_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name
 		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/QGpgmeQt6/QGpgmeQt6Config.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/xapian/xapian-config.cmake \
+		${SYSROOT_DIR}/usr/share/cmake/opentime/OpenTimeTargets-release.cmake \
+		${SYSROOT_DIR}/usr/share/cmake/opentimelineio/OpenTimelineIOTargets-release.cmake \
+                ${SYSROOT_DIR}/usr/lib64/cmake/PySide6/PySide6Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/PySide6/PySide6Config.abi3.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/Imath/ImathTargets-release.cmake
 do
 	if [ -f ${kf6_file} ]; then
@@ -64,7 +68,7 @@ do
 done
 
 
-for kf6_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+for kf6_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") $(find ${SYSROOT_DIR}/usr/share/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
 do
 	if [ -f ${kf6_file} ]; then
 		sed -i.orig "s@_IMPORT_PREFIX \"/usr\"@_IMPORT_PREFIX \"${SYSROOT_DIR}/usr\"@g" ${kf6_file}
@@ -112,7 +116,7 @@ do
 	fi
 done
 
-for fix_file in $(grep -rl "INTERFACE_INCLUDE_DIRECTORIES " $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+for fix_file in $(grep -rl "INTERFACE_INCLUDE_DIRECTORIES " $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") $(find ${SYSROOT_DIR}/usr/share/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
 do
 	if [ -f ${fix_file} ]; then
 		sed -i.orig -e "/INTERFACE_INCLUDE_DIRECTORIES /s@ \"/usr@ \"${SYSROOT_DIR}/usr@g" \
@@ -121,7 +125,7 @@ do
 	fi
 done
 
-for bin_file in lrelease qsb
+for bin_file in lrelease qsb qtpaths qdbuscpp2xml qdbusxml2cpp
 do
         if [ -f ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file} ]; then
                 mv ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}{,.orig}
@@ -129,4 +133,14 @@ do
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}.orig \"\$@\"" > ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}
                 chmod +x ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}
         fi
+done
+
+for bin_file in moc uic rcc qmltyperegistrar qmlcachegen qtwaylandscanner cmake_automoc_parser
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file} ]; then
+		mv ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}{,-qt6}
+		echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}-qt6 \"\$@\"" > ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}
+		chmod +x ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}
+	fi
 done

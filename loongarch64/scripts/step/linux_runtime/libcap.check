@@ -1,0 +1,1 @@
+make -j${JOBS} CROSS_COMPILE="${LINUX_HOST}-" BUILD_CC="gcc" GOLANG=no prefix=/usr lib=lib${LIB_SUFF} CFLAGS="${CFLAGS} ${TEST_LDFLAGS}" LDFLAGS="${TEST_LDFLAGS}" test

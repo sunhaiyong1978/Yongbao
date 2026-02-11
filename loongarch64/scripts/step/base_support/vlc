@@ -3,17 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=vlc
-export PACKAGE_VERSION=3.0.22
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/vlc/3.0.22/
-rm -rf ${BUILD_DIRECTORY}/vlc-3.0.22
-tar xvf ${DOWNLOADDIR}/vlc-3.0.22.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vlc-3.0.22
-    patch -Np1 -i ${SYSDIR}/files/base_support/vlc/3.0.22/patches/0001-vlc-3.0.22-fix-for-ffmpeg-8.patch 
-	 
-    CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-chromecast
+export PACKAGE_VERSION=3.0.23
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/vlc/3.0.23/
+rm -rf ${BUILD_DIRECTORY}/vlc-3.0.23
+tar xvf ${DOWNLOADDIR}/vlc-3.0.23.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vlc-3.0.23
+    
+    CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG} --disable-chromecast --disable-gst-decode
     make -j${JOBS} -C compat
     make -j${JOBS} -C src
     make -C src DESTDIR=${SYSROOT_DIR} install
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/vlc-3.0.22
+rm -rf ${BUILD_DIRECTORY}/vlc-3.0.23

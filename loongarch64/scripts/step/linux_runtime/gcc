@@ -9,7 +9,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/gcc/15.2.0/
 rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0
 tar xvf ${DOWNLOADDIR}/gcc-15.2.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gcc-15.2.0
-	
+	patch -Np1 -i ${SYSDIR}/files/linux_runtime/gcc/15.2.0/patches/0001-gcc-15.2.0-fix-build-error-for-glibc-2.43.patch 
+	 
 	CFLAGS_FOR_TARGET="${CFLAGS}"
 	CXXFLAGS_FOR_TARGET="${CXXFLAGS}"
 	LDFLAGS_FOR_TARGET="${LDFLAGS}"

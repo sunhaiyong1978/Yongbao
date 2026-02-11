@@ -1,0 +1,44 @@
+From 9488dbe392e98b607dc13e7d88dec98c3f20b919 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 19 Jan 2026 01:47:07 +0000
+Subject: [PATCH 3/8] qt 6.10.1 webengine chromium add some define for
+ loongarch64.
+
+---
+ .../chromium/build/linux/sysroot_scripts/install-sysroot.py | 2 +-
+ .../chromium/build/linux/sysroot_scripts/sysroots.json      | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
+index b1f6b17afd..cf80c95c64 100755
+--- a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
++++ b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/install-sysroot.py
+@@ -37,7 +37,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ SRC_DIR = os.path.dirname(os.path.dirname(os.path.dirname(SCRIPT_DIR)))
+ 
+ VALID_ARCHS = ("amd64", "i386", "armhf", "arm64", "mipsel", "mips64el",
+-               "ppc64el")
++               "ppc64el", "loong64")
+ 
+ ARCH_TRANSLATIONS = {
+     "x64": "amd64",
+diff --git a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json
+index 2aade5a608..0a59f97ccf 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json
++++ b/qtwebengine/src/3rdparty/chromium/build/linux/sysroot_scripts/sysroots.json
+@@ -23,6 +23,12 @@
+         "Tarball": "debian_bullseye_i386_sysroot.tar.xz",
+         "URL": "https://commondatastorage.googleapis.com/chrome-linux-sysroot"
+     },
++    "bullseye_loong64": {
++        "Key": "20221105T211506Z-0",
++        "Sha1Sum": "6f27b4f65d8e190864e7c18fa281ffb418cf2e43",
++        "SysrootDir": "debian_bullseye_loong64-sysroot",
++        "Tarball": "debian_bullseye_loong64_sysroot.tar.xz"
++    },
+     "bullseye_mips64el": {
+         "Sha256Sum": "2b5e7783121b184b5847ee9ab24da09763b593d312ef91a619f12f03569dad02",
+         "SysrootDir": "debian_bullseye_mips64el-sysroot",
+-- 
+2.31.1
+

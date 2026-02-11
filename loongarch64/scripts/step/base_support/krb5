@@ -3,11 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=krb5
-export PACKAGE_VERSION=1.22.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/krb5/1.22.1/
-rm -rf ${BUILD_DIRECTORY}/krb5-1.22.1
-tar xvf ${DOWNLOADDIR}/krb5-1.22.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/krb5-1.22.1
+export PACKAGE_VERSION=1.22.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/krb5/1.22.2/
+rm -rf ${BUILD_DIRECTORY}/krb5-1.22.2
+tar xvf ${DOWNLOADDIR}/krb5-1.22.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/krb5-1.22.2
+    patch -Np1 -i ${SYSDIR}/files/base_support/krb5/1.22.2/patches/0001-krb5-1.22.2-fix-build-error-for-glibc-2.43.patch 
+	 
     pushd src
         cp -a -f $(automake --print-libdir)/config.{sub,guess} config/
         ./configure ${COMMON_CONFIG} --runstatedir=/run \
@@ -21,4 +23,4 @@ pushd ${BUILD_DIRECTORY}/krb5-1.22.1
     cp -v ${SYSROOT_DIR}/usr/bin/krb5-config ${CROSSTOOLS_DIR}/bin/krb5-config
     sed -i "s@-L\$libdir@@g" ${CROSSTOOLS_DIR}/bin/krb5-config
 popd 
-rm -rf ${BUILD_DIRECTORY}/krb5-1.22.1
+rm -rf ${BUILD_DIRECTORY}/krb5-1.22.2

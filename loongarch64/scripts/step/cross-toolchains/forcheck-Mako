@@ -1,0 +1,17 @@
+source env/cross-toolchains/config
+source env/distro.info
+source env/function.sh
+source env/cross-toolchains/custom
+export STEP_BUILDNAME=cross-toolchains
+export STEP_PACKAGENAME=forcheck-Mako
+export PACKAGE_VERSION=1.3.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-Mako/1.3.10/
+rm -rf ${BUILD_DIRECTORY}/mako-1.3.10
+tar xvf ${DOWNLOADDIR}/mako-1.3.10.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mako-1.3.10
+	
+	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
+	${PREFIX}/${LINUX_HOST}/bin/python3 setup.py build
+        ${PREFIX}/${LINUX_HOST}/bin/python3 setup.py install
+popd 
+rm -rf ${BUILD_DIRECTORY}/mako-1.3.10

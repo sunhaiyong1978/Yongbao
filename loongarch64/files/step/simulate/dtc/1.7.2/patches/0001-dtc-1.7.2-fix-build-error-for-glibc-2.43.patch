@@ -1,0 +1,40 @@
+From 6e9350268710d7b1a073493b0ccaf73f65effa96 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 29 Jan 2026 14:57:11 +0000
+Subject: [PATCH] dtc 1.7.2 fix build error for glibc 2.43
+
+---
+ fdtput.c             | 2 +-
+ libfdt/fdt_overlay.c | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fdtput.c b/fdtput.c
+index c2fecf4..dabbabe 100644
+--- a/fdtput.c
++++ b/fdtput.c
+@@ -232,7 +232,7 @@ static int create_node(char **blob, const char *node_name)
+ 	int node = 0;
+ 	char *p;
+ 
+-	p = strrchr(node_name, '/');
++	p = (strrchr)(node_name, '/');
+ 	if (!p) {
+ 		report_error(node_name, -1, -FDT_ERR_BADPATH);
+ 		return -1;
+diff --git a/libfdt/fdt_overlay.c b/libfdt/fdt_overlay.c
+index 28b667f..5f8aa62 100644
+--- a/libfdt/fdt_overlay.c
++++ b/libfdt/fdt_overlay.c
+@@ -409,7 +409,8 @@ static int overlay_fixup_phandle(void *fdt, void *fdto, int symbols_off,
+ 		const char *fixup_str = value;
+ 		uint32_t path_len, name_len;
+ 		uint32_t fixup_len;
+-		char *sep, *endptr;
++		const char *sep;
++		char *endptr;
+ 		int poffset, ret;
+ 
+ 		fixup_end = memchr(value, '\0', len);
+-- 
+2.31.1
+

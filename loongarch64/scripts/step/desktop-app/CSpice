@@ -1,0 +1,28 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=CSpice
+export PACKAGE_VERSION=git-default
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/CSpice/git-default/
+rm -rf ${BUILD_DIRECTORY}/CSpice-git-default_git
+tar xvf ${DOWNLOADDIR}/CSpice-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/CSpice-git-default_git
+        
+        mkdir cross-build
+        pushd cross-build
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
+                      -DCMAKE_INSTALL_PREFIX=/usr \
+                      -DSPICE_BUILD_SHARED_LIBRARY=OFF \
+                       -Wno-dev ..
+                make -j${JOBS}
+		mkdir -p ${SYSROOT_DIR}/usr/include/cspice
+		cp -a ../include/*.h ${SYSROOT_DIR}/usr/include/cspice/
+		cp -a ../include/linux/*.h ${SYSROOT_DIR}/usr/include/cspice/
+		cp -a libspice.a ${SYSROOT_DIR}/usr/lib64/libcspice.a
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/CSpice-git-default_git

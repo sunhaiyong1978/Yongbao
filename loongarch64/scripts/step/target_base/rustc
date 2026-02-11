@@ -3,15 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.91.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.91.1/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.91.1-src
-tar xvf ${DOWNLOADDIR}/rustc-1.91.1-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.91.1-src
-    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.91.1/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
+export PACKAGE_VERSION=1.93.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/rustc/1.93.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.93.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.93.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.93.0-src
+    patch -Np1 -i ${SYSDIR}/files/target_base/rustc/1.93.0/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
 	 
     export CFLAGS="$(echo ${CFLAGS} | sed "s@ -g\( \|$\)@@g")"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed "s@ -g\( \|$\)@@g")"
+    TARGET_PKG_CONFIG_SYSROOT_DIR=${PKG_CONFIG_SYSROOT_DIR} \
     PKG_CONFIG_SYSROOT_DIR="" \
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
                 --host=${CROSS_TARGET} --target=${CROSS_TARGET} \
@@ -22,15 +23,17 @@ pushd ${BUILD_DIRECTORY}/rustc-1.91.1-src
 		--set=target.${CROSS_TARGET}.cxx="${CROSS_TARGET}-g++" \
                 --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler
     export CARGO_TARGET_$(echo ${CROSS_TARGET^^} | tr '-' '_')_RUSTFLAGS="$RUSTFLAGS -C link-args=-lz -C link-args=-lzstd -C link-args=-lLLVM -Ccode-model=large"
+    TARGET_PKG_CONFIG_SYSROOT_DIR=${PKG_CONFIG_SYSROOT_DIR} \
     PKG_CONFIG_SYSROOT_DIR="" \
     make -j${JOBS} \
          $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
          $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64
+    TARGET_PKG_CONFIG_SYSROOT_DIR=${PKG_CONFIG_SYSROOT_DIR} \
     PKG_CONFIG_SYSROOT_DIR="" \
     make -j${JOBS} \
          $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
          $(echo ${CROSS_TARGET^^} | tr '-' '_')_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          DESTDIR=${SYSROOT_DIR}/ install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.91.1-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.93.0-src
 rm -f ${SYSROOT_DIR}/usr/lib/rustlib/manifest-*

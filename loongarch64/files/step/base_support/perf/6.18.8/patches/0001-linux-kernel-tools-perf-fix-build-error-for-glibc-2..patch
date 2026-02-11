@@ -1,0 +1,288 @@
+From 2962363fb310c3191b12e2ade70ccf8c8050d7e7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 28 Jan 2026 09:21:47 +0000
+Subject: [PATCH] linux kernel tools perf fix build error for glibc 2.43
+
+---
+ tools/perf/arch/loongarch/util/header.c | 4 ++--
+ tools/perf/builtin-diff.c               | 2 +-
+ tools/perf/builtin-list.c               | 2 +-
+ tools/perf/util/bpf-event.c             | 3 ++-
+ tools/perf/util/demangle-java.c         | 2 +-
+ tools/perf/util/evlist.c                | 3 ++-
+ tools/perf/util/hwmon_pmu.c             | 4 ++--
+ tools/perf/util/jitdump.c               | 2 +-
+ tools/perf/util/metricgroup.c           | 4 ++--
+ tools/perf/util/print-events.c          | 6 +++---
+ tools/perf/util/session.c               | 2 +-
+ tools/perf/util/strlist.c               | 2 +-
+ tools/perf/util/time-utils.c            | 4 ++--
+ tools/perf/util/tp_pmu.c                | 2 +-
+ tools/perf/util/trace-event-info.c      | 2 +-
+ tools/perf/util/units.c                 | 2 +-
+ 16 files changed, 24 insertions(+), 22 deletions(-)
+
+diff --git a/tools/perf/arch/loongarch/util/header.c b/tools/perf/arch/loongarch/util/header.c
+index 0c6d823..3f08b12 100644
+--- a/tools/perf/arch/loongarch/util/header.c
++++ b/tools/perf/arch/loongarch/util/header.c
+@@ -28,12 +28,12 @@ static char *_get_field(const char *line)
+ {
+ 	char *line2, *nl;
+ 
+-	line2 = strrchr(line, ' ');
++	line2 = (char *)strrchr(line, ' ');
+ 	if (!line2)
+ 		return NULL;
+ 
+ 	line2++;
+-	nl = strrchr(line, '\n');
++	nl = (char *)strrchr(line, '\n');
+ 	if (!nl)
+ 		return NULL;
+ 
+diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+index 53d5ea4..a680c83 100644
+--- a/tools/perf/builtin-diff.c
++++ b/tools/perf/builtin-diff.c
+@@ -241,7 +241,7 @@ static int setup_compute(const struct option *opt, const char *str,
+ 		return 0;
+ 	}
+ 
+-	option = strchr(str, ':');
++	option = (char *)strchr(str, ':');
+ 	if (option) {
+ 		unsigned len = option++ - str;
+ 
+diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+index caf4227..710f36e 100644
+--- a/tools/perf/builtin-list.c
++++ b/tools/perf/builtin-list.c
+@@ -674,7 +674,7 @@ int cmd_list(int argc, const char **argv)
+ 		else if (strcmp(argv[i], "pfm") == 0)
+ 			print_libpfm_events(&print_cb, ps);
+ #endif
+-		else if ((sep = strchr(argv[i], ':')) != NULL) {
++		else if ((sep = (char *)strchr(argv[i], ':')) != NULL) {
+ 			char *old_pmu_glob = default_ps.pmu_glob;
+ 			char *old_event_glob = default_ps.event_glob;
+ 
+diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+index 2298cd3..3673d1b 100644
+--- a/tools/perf/util/bpf-event.c
++++ b/tools/perf/util/bpf-event.c
+@@ -733,7 +733,8 @@ kallsyms_process_symbol(void *data, const char *_name,
+ 			char type __maybe_unused, u64 start)
+ {
+ 	char disp[KSYM_NAME_LEN];
+-	char *module, *name;
++	const char *module;
++	char *name;
+ 	unsigned long id;
+ 	int err = 0;
+ 
+diff --git a/tools/perf/util/demangle-java.c b/tools/perf/util/demangle-java.c
+index ddf33d5..c3cb327 100644
+--- a/tools/perf/util/demangle-java.c
++++ b/tools/perf/util/demangle-java.c
+@@ -158,7 +158,7 @@ char *
+ java_demangle_sym(const char *str, int flags)
+ {
+ 	char *buf, *ptr;
+-	char *p;
++	const char *p;
+ 	size_t len, l1 = 0;
+ 
+ 	if (!str)
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 80d8387..ef22d72 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1936,7 +1936,8 @@ static int evlist__parse_control_fifo(const char *str, int *ctl_fd, int *ctl_fd_
+ 
+ int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close)
+ {
+-	char *comma = NULL, *endptr = NULL;
++	const char *comma = NULL;
++	char *endptr = NULL;
+ 
+ 	*ctl_fd_close = false;
+ 
+diff --git a/tools/perf/util/hwmon_pmu.c b/tools/perf/util/hwmon_pmu.c
+index 5c27256..2006ee7 100644
+--- a/tools/perf/util/hwmon_pmu.c
++++ b/tools/perf/util/hwmon_pmu.c
+@@ -186,7 +186,7 @@ bool parse_hwmon_filename(const char *filename,
+ 		pr_debug3("hwmon_pmu: not a hwmon file '%s'\n", filename);
+ 		return false;
+ 	}
+-	elem = bsearch(&fn_type, hwmon_type_strs + 1, ARRAY_SIZE(hwmon_type_strs) - 1,
++	elem = (const char **)bsearch(&fn_type, hwmon_type_strs + 1, ARRAY_SIZE(hwmon_type_strs) - 1,
+ 		       sizeof(hwmon_type_strs[0]), hwmon_strcmp);
+ 	if (!elem) {
+ 		pr_debug3("hwmon_pmu: not a hwmon type '%s' in file name '%s'\n",
+@@ -206,7 +206,7 @@ bool parse_hwmon_filename(const char *filename,
+ 		fn_item = fn_type;
+ 		*alarm = true;
+ 	}
+-	elem = bsearch(fn_item, hwmon_item_strs + 1, ARRAY_SIZE(hwmon_item_strs) - 1,
++	elem = (const char **)bsearch(fn_item, hwmon_item_strs + 1, ARRAY_SIZE(hwmon_item_strs) - 1,
+ 		       sizeof(hwmon_item_strs[0]), hwmon_strcmp);
+ 	if (!elem) {
+ 		pr_debug3("hwmon_pmu: not a hwmon item '%s' in file name '%s'\n",
+diff --git a/tools/perf/util/jitdump.c b/tools/perf/util/jitdump.c
+index b062b1f..28d32e3 100644
+--- a/tools/perf/util/jitdump.c
++++ b/tools/perf/util/jitdump.c
+@@ -754,7 +754,7 @@ jit_inject(struct jit_buf_desc *jd, const char *path)
+ static int
+ jit_detect(const char *mmap_name, pid_t pid, struct nsinfo *nsi, bool *in_pidns)
+  {
+-	char *p;
++	const char *p;
+ 	char *end = NULL;
+ 	pid_t pid2;
+ 
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 595b831..5189315 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -376,7 +376,7 @@ static bool match_metric_or_groups(const char *metric_or_groups, const char *sou
+ 	if (!strncasecmp(metric_or_groups, sought, len) &&
+ 	    (metric_or_groups[len] == 0 || metric_or_groups[len] == ';'))
+ 		return true;
+-	m = strchr(metric_or_groups, ';');
++	m = strchr((char *)metric_or_groups, ';');
+ 	return m && match_metric_or_groups(m + 1, sought);
+ }
+ 
+@@ -443,7 +443,7 @@ static int encode_metric_id(struct strbuf *sb, const char *x)
+ 	int ret = 0;
+ 
+ 	for (; *x; x++) {
+-		c = strchr(code_characters, *x);
++		c = strchr((char *)code_characters, *x);
+ 		if (c) {
+ 			ret = strbuf_addch(sb, '!');
+ 			if (ret)
+diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
+index 4153124..f731413 100644
+--- a/tools/perf/util/print-events.c
++++ b/tools/perf/util/print-events.c
+@@ -86,7 +86,7 @@ void print_sdt_events(const struct print_callbacks *print_cb, void *print_state)
+ 
+ 	strlist__for_each_entry(sdt_name, sdtlist) {
+ 		bool show_detail = false;
+-		char *bid = strchr(sdt_name->s, '@');
++		char *bid = strchr((char *)sdt_name->s, '@');
+ 		char *evt_name = NULL;
+ 
+ 		if (bid)
+@@ -97,7 +97,7 @@ void print_sdt_events(const struct print_callbacks *print_cb, void *print_state)
+ 		} else {
+ 			next_sdt_name = strlist__next(sdt_name);
+ 			if (next_sdt_name) {
+-				char *bid2 = strchr(next_sdt_name->s, '@');
++				char *bid2 = strchr((char *)next_sdt_name->s, '@');
+ 
+ 				if (bid2)
+ 					*bid2 = '\0';
+@@ -271,7 +271,7 @@ void print_symbol_events(const struct print_callbacks *print_cb, void *print_sta
+ 	}
+ 
+ 	strlist__for_each_entry(nd, evt_name_list) {
+-		char *alias = strstr(nd->s, " OR ");
++		char *alias = strstr((char *)nd->s, " OR ");
+ 
+ 		if (alias) {
+ 			*alias = '\0';
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 09af486..80a0a05 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -2487,7 +2487,7 @@ int map__set_kallsyms_ref_reloc_sym(struct map *map, const char *symbol_name, u6
+ 		return -ENOMEM;
+ 	}
+ 
+-	bracket = strchr(ref->name, ']');
++	bracket = strchr((char *)ref->name, ']');
+ 	if (bracket)
+ 		*bracket = '\0';
+ 
+diff --git a/tools/perf/util/strlist.c b/tools/perf/util/strlist.c
+index 8a868cb..ea482df 100644
+--- a/tools/perf/util/strlist.c
++++ b/tools/perf/util/strlist.c
+@@ -144,7 +144,7 @@ static int strlist__parse_list(struct strlist *slist, const char *s, const char
+ 	char *sep;
+ 	int err;
+ 
+-	while ((sep = strchr(s, ',')) != NULL) {
++	while ((sep = (char *)strchr(s, ',')) != NULL) {
+ 		*sep = '\0';
+ 		err = strlist__parse_list_entry(slist, s, subst_dir);
+ 		*sep = ',';
+diff --git a/tools/perf/util/time-utils.c b/tools/perf/util/time-utils.c
+index 1b91ccd..d43c457 100644
+--- a/tools/perf/util/time-utils.c
++++ b/tools/perf/util/time-utils.c
+@@ -325,7 +325,7 @@ static int percent_comma_split(struct perf_time_interval *ptime_buf, int num,
+ }
+ 
+ static int one_percent_convert(struct perf_time_interval *ptime_buf,
+-			       const char *ostr, u64 start, u64 end, char *c)
++			       const char *ostr, u64 start, u64 end, const char *c)
+ {
+ 	char *str;
+ 	int len = strlen(ostr), ret;
+@@ -358,7 +358,7 @@ static int one_percent_convert(struct perf_time_interval *ptime_buf,
+ int perf_time__percent_parse_str(struct perf_time_interval *ptime_buf, int num,
+ 				 const char *ostr, u64 start, u64 end)
+ {
+-	char *c;
++	const char *c;
+ 
+ 	/*
+ 	 * ostr example:
+diff --git a/tools/perf/util/tp_pmu.c b/tools/perf/util/tp_pmu.c
+index eddb980..c2be8c9 100644
+--- a/tools/perf/util/tp_pmu.c
++++ b/tools/perf/util/tp_pmu.c
+@@ -192,7 +192,7 @@ bool tp_pmu__have_event(struct perf_pmu *pmu __maybe_unused, const char *name)
+ 	char *dup_name, *colon;
+ 	int id;
+ 
+-	colon = strchr(name, ':');
++	colon = strchr((char *)name, ':');
+ 	if (colon == NULL)
+ 		return false;
+ 
+diff --git a/tools/perf/util/trace-event-info.c b/tools/perf/util/trace-event-info.c
+index c875567..06b5045 100644
+--- a/tools/perf/util/trace-event-info.c
++++ b/tools/perf/util/trace-event-info.c
+@@ -482,7 +482,7 @@ char *tracepoint_id_to_name(u64 config)
+ static struct tracepoint_path *tracepoint_name_to_path(const char *name)
+ {
+ 	struct tracepoint_path *path = zalloc(sizeof(*path));
+-	char *str = strchr(name, ':');
++	char *str = strchr((char *)name, ':');
+ 
+ 	if (path == NULL || str == NULL) {
+ 		free(path);
+diff --git a/tools/perf/util/units.c b/tools/perf/util/units.c
+index 4c6a86e..0bbacf5 100644
+--- a/tools/perf/util/units.c
++++ b/tools/perf/util/units.c
+@@ -12,7 +12,7 @@ unsigned long parse_tag_value(const char *str, struct parse_tag *tags)
+ 	struct parse_tag *i = tags;
+ 
+ 	while (i->tag) {
+-		char *s = strchr(str, i->tag);
++		const char *s = strchr(str, i->tag);
+ 
+ 		if (s) {
+ 			unsigned long int value;
+-- 
+2.31.1
+

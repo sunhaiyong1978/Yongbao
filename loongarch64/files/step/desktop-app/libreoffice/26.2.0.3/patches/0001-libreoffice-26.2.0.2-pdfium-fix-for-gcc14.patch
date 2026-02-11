@@ -1,0 +1,123 @@
+From 476964a0c0c8f85eded9d93a2031b00bd8f7e3d1 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 2 Feb 2026 06:34:58 +0000
+Subject: [PATCH] libreoffice 26.2.0.2 pdfium fix for gcc14
+
+---
+ .../pdfium/0001-pdfium-fix-for-gcc14.patch.1    | 90 +++++++++++++++++++
+ external/pdfium/UnpackedTarball_pdfium.mk     |  2 +
+ 2 files changed, 92 insertions(+)
+ create mode 100644 external/pdfium/0001-pdfium-fix-for-gcc14.patch.1
+
+diff --git a/external/pdfium/0001-pdfium-fix-for-gcc14.patch.1 b/external/pdfium/0001-pdfium-fix-for-gcc14.patch.1
+new file mode 100644
+index 0000000..ba610b4
+--- /dev/null
++++ b/external/pdfium/0001-pdfium-fix-for-gcc14.patch.1
+@@ -0,0 +1,90 @@
++From d6102b66bc67f10e6c2003b87bfd79ffae1e8265 Mon Sep 17 00:00:00 2001
++From: Sun Haiyong <sunhaiyong@zdbr.net>
++Date: Mon, 2 Feb 2026 06:32:38 +0000
++Subject: [PATCH] pdfium fix for gcc14
++
++---
++ core/fpdfapi/page/cpdf_psengine.cpp   |  2 +-
++ core/fxcrt/css/cfx_cssdeclaration.cpp |  2 +-
++ core/fxcrt/fx_extension.h             | 10 +++++-----
++ core/fxcrt/fx_system.cpp              |  4 ++--
++ 4 files changed, 9 insertions(+), 9 deletions(-)
++
++diff --git a/core/fpdfapi/page/cpdf_psengine.cpp b/core/fpdfapi/page/cpdf_psengine.cpp
++index 10482ef..c7728e2 100644
++--- a/core/fpdfapi/page/cpdf_psengine.cpp
+++++ b/core/fpdfapi/page/cpdf_psengine.cpp
++@@ -76,7 +76,7 @@ constexpr PDF_PSOpName kPsOpNames[] = {
++ // Round half up is a nearest integer round with half-way numbers always rounded
++ // up. Example: -5.5 rounds to -5.
++ float RoundHalfUp(float f) {
++-  if (isnan(f)) {
+++  if (std::isnan(f)) {
++     return 0;
++   }
++   if (f > std::numeric_limits<float>::max() - 0.5f) {
++diff --git a/core/fxcrt/css/cfx_cssdeclaration.cpp b/core/fxcrt/css/cfx_cssdeclaration.cpp
++index 7ace32c..e4e2396 100644
++--- a/core/fxcrt/css/cfx_cssdeclaration.cpp
+++++ b/core/fxcrt/css/cfx_cssdeclaration.cpp
++@@ -37,7 +37,7 @@ std::optional<CFX_CSSNumber> ParseCSSNumber(WideStringView view) {
++ 
++   size_t nUsedLen = 0;
++   float value = FXSYS_wcstof(view, &nUsedLen);
++-  if (nUsedLen == 0 || !isfinite(value)) {
+++  if (nUsedLen == 0 || !std::isfinite(value)) {
++     return std::nullopt;
++   }
++   view = view.Substr(nUsedLen);
++diff --git a/core/fxcrt/fx_extension.h b/core/fxcrt/fx_extension.h
++index 8f5b54e..3bef5aa 100644
++--- a/core/fxcrt/fx_extension.h
+++++ b/core/fxcrt/fx_extension.h
++@@ -131,17 +131,17 @@ pdfium::span<const char> FXSYS_ToUTF16BE(uint32_t unicode,
++ // All NaNs are treated as equal to each other and greater than infinity.
++ template <typename T>
++ bool FXSYS_SafeEQ(const T& lhs, const T& rhs) {
++-  return (isnan(lhs) && isnan(rhs)) ||
++-         (!isnan(lhs) && !isnan(rhs) && lhs == rhs);
+++  return (std::isnan(lhs) && std::isnan(rhs)) ||
+++         (!std::isnan(lhs) && !std::isnan(rhs) && lhs == rhs);
++ }
++ 
++ template <typename T>
++ bool FXSYS_SafeLT(const T& lhs, const T& rhs) {
++-  if (isnan(lhs) && isnan(rhs)) {
+++  if (std::isnan(lhs) && std::isnan(rhs)) {
++     return false;
++   }
++-  if (isnan(lhs) || isnan(rhs)) {
++-    return isnan(lhs) < isnan(rhs);
+++  if (std::isnan(lhs) || std::isnan(rhs)) {
+++    return std::isnan(lhs) < std::isnan(rhs);
++   }
++   return lhs < rhs;
++ }
++diff --git a/core/fxcrt/fx_system.cpp b/core/fxcrt/fx_system.cpp
++index d5c00af..72b6203 100644
++--- a/core/fxcrt/fx_system.cpp
+++++ b/core/fxcrt/fx_system.cpp
++@@ -99,7 +99,7 @@ STR_T FXSYS_IntToStr(T value, STR_T str, int radix) {
++ }  // namespace
++ 
++ int FXSYS_roundf(float f) {
++-  if (isnan(f)) {
+++  if (std::isnan(f)) {
++     return 0;
++   }
++   if (f < static_cast<float>(std::numeric_limits<int>::min())) {
++@@ -112,7 +112,7 @@ int FXSYS_roundf(float f) {
++ }
++ 
++ int FXSYS_round(double d) {
++-  if (isnan(d)) {
+++  if (std::isnan(d)) {
++     return 0;
++   }
++   if (d < static_cast<double>(std::numeric_limits<int>::min())) {
++-- 
++2.31.1
++
+diff --git a/external/pdfium/UnpackedTarball_pdfium.mk b/external/pdfium/UnpackedTarball_pdfium.mk
+index 2f85731..5bb7047 100644
+--- a/external/pdfium/UnpackedTarball_pdfium.mk
++++ b/external/pdfium/UnpackedTarball_pdfium.mk
+@@ -30,6 +30,8 @@ endif
+ pdfium_patches += ofz451333752.patch
+ pdfium_patches += extractpatterns.patch
+ 
++pdfium_patches += 0001-pdfium-fix-for-gcc14.patch.1
++
+ $(eval $(call gb_UnpackedTarball_UnpackedTarball,pdfium))
+ 
+ $(eval $(call gb_UnpackedTarball_set_tarball,pdfium,$(PDFIUM_TARBALL)))
+-- 
+2.31.1
+

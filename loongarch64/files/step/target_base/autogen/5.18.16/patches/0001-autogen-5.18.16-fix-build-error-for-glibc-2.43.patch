@@ -1,0 +1,79 @@
+From 891066cd22a873667438868df011584eb207760c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 27 Jan 2026 06:59:09 +0000
+Subject: [PATCH] autogen 5.18.16 fix build error for glibc 2.43
+
+---
+ autoopts/file.c   | 2 +-
+ autoopts/save.c   | 4 ++--
+ autoopts/stack.c  | 2 +-
+ getdefs/getdefs.c | 4 ++--
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/autoopts/file.c b/autoopts/file.c
+index 14efe8f..1ae558e 100644
+--- a/autoopts/file.c
++++ b/autoopts/file.c
+@@ -58,7 +58,7 @@ check_existence(teOptFileType ftype, tOptions * pOpts, tOptDesc * pOD)
+     default:
+     case FTYPE_MODE_MAY_EXIST:
+     {
+-        char * p = strrchr(fname, DIRCH);
++        char * p = strrchr((char *)fname, DIRCH);
+         size_t l;
+ 
+         if (p == NULL)
+diff --git a/autoopts/save.c b/autoopts/save.c
+index 8b1fba9..6e02acd 100644
+--- a/autoopts/save.c
++++ b/autoopts/save.c
+@@ -129,7 +129,7 @@ find_file_name(tOptions * opts, int * p_free_name)
+          *  Strip off the last component, stat the remaining string and
+          *  that string must name a directory
+          */
+-        dirchp = strrchr(res, DIRCH);
++        dirchp = strrchr((char *)res, DIRCH);
+         if (dirchp == NULL) {
+             stBuf.st_mode = S_IFREG;
+             break; /* found directory -- viz.,  "." */
+@@ -809,7 +809,7 @@ optionSaveFile(tOptions * opts)
+ 
+         if (dir == NULL)
+             break;
+-        temp_str = strchr(dir, '>');
++        temp_str = strchr((char *)dir, '>');
+         if (temp_str == NULL)
+             break;
+         if (temp_str[1] == '>')
+diff --git a/autoopts/stack.c b/autoopts/stack.c
+index 39a328a..1634476 100644
+--- a/autoopts/stack.c
++++ b/autoopts/stack.c
+@@ -81,7 +81,7 @@ optionUnstackArg(tOptions * opts, tOptDesc * od)
+          */
+         for (i = 0, dIdx = 0, ct = arg_list->useCt; --ct >= 0; i++) {
+             char const * pzSrc = arg_list->apzArgs[ i ];
+-            char *       pzEq  = strchr(pzSrc, '=');
++            char *       pzEq  = strchr((char *)pzSrc, '=');
+             int          res;
+ 
+ 
+diff --git a/getdefs/getdefs.c b/getdefs/getdefs.c
+index 3124cb0..4998476 100644
+--- a/getdefs/getdefs.c
++++ b/getdefs/getdefs.c
+@@ -516,9 +516,9 @@ compar_defname(const void * p1, const void * p2)
+ static int
+ compar_text(const void * p1, const void * p2)
+ {
+-    char * pz1 = strstr(*(char const * const *)p1, zNameTag);
++    char * pz1 = strstr((char *)(char const * const *)p1, zNameTag);
+     char * pe1;
+-    char * pz2 = strstr(*(char const * const *)p2, zNameTag);
++    char * pz2 = strstr((char *)(char const * const *)p2, zNameTag);
+     char * pe2;
+     int    res;
+ 
+-- 
+2.31.1
+

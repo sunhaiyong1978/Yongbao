@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=qBittorrent
-export PACKAGE_VERSION=release-5.1.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qBittorrent/release-5.1.4/
+export PACKAGE_VERSION=5.1.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/qBittorrent/5.1.4/
 rm -rf ${BUILD_DIRECTORY}/qBittorrent-release-5.1.4
-tar xvf ${DOWNLOADDIR}/qBittorrent-release-5.1.4.tar.gz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/qBittorrent-5.1.4.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/qBittorrent-release-5.1.4
         
 	mkdir cross-build

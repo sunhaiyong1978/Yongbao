@@ -1,0 +1,43 @@
+From 0cf428c17580e097e8e263a00743230b4bf3e3a7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 2 Feb 2026 03:00:47 +0000
+Subject: [PATCH] libreoffice 26.2.0.2 fix link miss dlsyms function.
+
+---
+ drawinglayer/Library_drawinglayer.mk | 6 ++++++
+ vcl/Library_vcl.mk                   | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drawinglayer/Library_drawinglayer.mk b/drawinglayer/Library_drawinglayer.mk
+index 6997bd2..dbf73d2 100644
+--- a/drawinglayer/Library_drawinglayer.mk
++++ b/drawinglayer/Library_drawinglayer.mk
+@@ -61,6 +61,12 @@ $(eval $(call gb_Library_use_custom_headers,drawinglayer,\
+     officecfg/registry \
+ ))
+ 
++ifeq ($(OS), $(filter LINUX %BSD SOLARIS, $(OS)))
++$(eval $(call gb_Library_add_libs,drawinglayer,\
++    -lm -ldl \
++))
++endif
++
+ ifeq ($(OS),WNT)
+ $(eval $(call gb_Library_use_system_win32_libs,drawinglayer,\
+ 	gdi32 \
+diff --git a/vcl/Library_vcl.mk b/vcl/Library_vcl.mk
+index 1452533..d555abc 100644
+--- a/vcl/Library_vcl.mk
++++ b/vcl/Library_vcl.mk
+@@ -670,7 +670,7 @@ endif # USING_X11
+ 
+ ifeq ($(OS), $(filter LINUX %BSD SOLARIS, $(OS)))
+ $(eval $(call gb_Library_add_libs,vcl,\
+-	-lm $(UNIX_DLAPI_LIBS) \
++	-lm -ldl $(UNIX_DLAPI_LIBS) \
+ ))
+ endif
+ 
+-- 
+2.31.1
+

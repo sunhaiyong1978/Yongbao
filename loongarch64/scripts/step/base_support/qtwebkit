@@ -19,6 +19,7 @@ pushd ${BUILD_DIRECTORY}/qtwebkit-git-default_git
         pushd cross-build
                 CC="${CROSS_TARGET}-gcc -fpermissive" CXX="${CROSS_TARGET}-g++ -fpermissive" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+		      -DRuby_EXECUTABLE=${HOST_TOOLS_DIR}/ruby3/bin/ruby \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
                       -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DPORT=Qt \

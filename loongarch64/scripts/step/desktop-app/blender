@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=blender
-export PACKAGE_VERSION=5.0.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/5.0.0/
-rm -rf ${BUILD_DIRECTORY}/blender-5.0.0
-tar xvf ${DOWNLOADDIR}/blender-5.0.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/blender-5.0.0
+export PACKAGE_VERSION=5.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/5.0.1/
+rm -rf ${BUILD_DIRECTORY}/blender-5.0.1
+tar xvf ${DOWNLOADDIR}/blender-5.0.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/blender-5.0.1
         
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER \"${CROSSTOOLS_DIR}/bin/wayland-scanner\")@g" build_files/cmake/platform/platform_unix.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc@g" build_files/cmake/macros.cmake
@@ -44,4 +44,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/oslc \"\$@\"" > o
 	rm -v ${SYSROOT_DIR}/usr/share/blender/*/python/bin/*
 	rm -r ${SYSROOT_DIR}/usr/share/blender/*/python/lib64/python$(cat ${COMMON_DIR}/Python3.version)/config-$(cat ${COMMON_DIR}/Python3.version)-*
 popd 
-rm -rf ${BUILD_DIRECTORY}/blender-5.0.0
+rm -rf ${BUILD_DIRECTORY}/blender-5.0.1
