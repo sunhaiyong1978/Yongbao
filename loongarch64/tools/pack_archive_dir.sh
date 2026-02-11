@@ -31,7 +31,7 @@ while getopts 'fwn:h' OPT; do
 	    ARCHIVE_PKG_SET_NAME=$OPTARG
 	    ;;
         h|?)
-            echo "用法: `basename $0` [选项] 需打包目录 打包方式 发行版名称 发行版版本 架构名称"
+            echo "用法: `basename $0` [选项] 需打包目录 打包方式 文件格式 发行版名称 发行版版本 架构名称"
 	    echo ""
             echo "选项："
             echo "    -h: 显示当前帮助信息。"
@@ -362,8 +362,10 @@ if [ -d ${ARCHIVE_DIR} ]; then
 			;;
 		clearmerge)
 			echo "删除 ${NEW_TARGET_SYSDIR}/dist/merge/img/ 目录，并重建。"
-			chmod a+w -R ${NEW_TARGET_SYSDIR}/dist/merge/img/
-			rm -rf ${NEW_TARGET_SYSDIR}/dist/merge/img/
+			if [ -d ${NEW_TARGET_SYSDIR}/dist/merge/img/ ]; then
+				chmod a+w -R ${NEW_TARGET_SYSDIR}/dist/merge/img/
+				rm -rf ${NEW_TARGET_SYSDIR}/dist/merge/img/
+			fi
 			mkdir -p ${NEW_TARGET_SYSDIR}/dist/merge/img/
 			;;
 		*)
