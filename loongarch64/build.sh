@@ -2498,14 +2498,14 @@ do
 # 				TEST_WATCH_PACKAGE=0
 				if [ "x${TEST_WATCH_PACKAGE}" == "x0" ]; then
 					if [ "x${SHOW_PACKAGE_OPT}" == "x" ]; then
-						echo -n -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包已完成制作。\033[0K"
+						echo -n -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包已完成制作。\033[0K"
 					else
 						echo -n -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包 ${SHOW_PACKAGE_OPT} 已完成制作。\033[0K"
 					fi
 					create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}" "${PACKAGE_INDEX}"
 					continue;
 				else
-					echo -e "\r\e[033m${STEP_STAGE}组中的${PACKAGE_NAME}因相关步骤的重构而要重新执行。\e[0m\033[0K"
+					echo -e "\r\e[033m${STEP_STAGE} 组中的 ${PACKAGE_NAME} 因相关步骤的重构而要重新执行。\e[0m\033[0K"
 				fi
 			else
 				if [ ! -d ${NEW_TARGET_SYSDIR}/status/update/${STEP_STAGE}/ ]; then
@@ -2525,10 +2525,10 @@ do
 							create_os_run "${SCRIPT_FILE}" "${STEP_STAGE}" "${PACKAGE_NAME}" "${PACKAGE_INDEX}"
 							continue;
 						else
-							echo -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包因相关步骤的重构而要重新执行。\033[0K"
+							echo -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包因相关步骤的重构而要重新执行。\033[0K"
 						fi
 					else
-						echo -e "\r${STEP_STAGE}组中的${PACKAGE_NAME}软件包制作步骤文件内容发生变化，需要重新执行。\033[0K"
+						echo -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包制作步骤文件内容发生变化，需要重新执行。\033[0K"
 					fi
 				else
 					echo -e "\r${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包制作步骤文件内容发生变化，需要重新执行。\033[0K"
@@ -2604,12 +2604,12 @@ do
 	
 	if [ "x${PACKAGE_NAME}" != "xfinal_run" ]; then
 		if [ "x${PACKAGE_VERSION}" != "xNULL" ]; then
-			echo -n "制作${STEP_STAGE}组中的${PACKAGE_NAME} - ${PACKAGE_VERSION} 软件包..."
+			echo -n "制作 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} - ${PACKAGE_VERSION} 软件包..."
 		else
-			echo -n "制作${STEP_STAGE}组中的${PACKAGE_NAME}软件包..."
+			echo -n "制作 ${STEP_STAGE} 组中的 ${PACKAGE_NAME} 软件包..."
 		fi
 	else
-		echo -n "执行${STEP_STAGE}组中的完成脚本..."
+		echo -n "执行 ${STEP_STAGE} 组中的完成脚本..."
 	fi
 
 	STATUS_LOG_FILE="${STATUS_FILE}"
