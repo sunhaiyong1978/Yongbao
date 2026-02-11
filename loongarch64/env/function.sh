@@ -664,10 +664,15 @@ function run_step_package_check
 		if [ ! -f ${NEW_TARGET_SYSDIR}/../scripts/step/${STEP_BUILDNAME}/${STEP_PACKAGENAME}.check ]; then
 			case "x${1}" in
 				"xcheck")
-					make check
+# 					make LDFLAGS="${LDFLAGS} ${TEST_LDFLAGS}" -j${JOBS} check
+					make -j${JOBS} check
 					;;
 				"xtests")
-					make tests
+# 					make LDFLAGS="${LDFLAGS} ${TEST_LDFLAGS}" -j${JOBS} tests
+					make -j${JOBS} tests
+					;;
+				"xtest")
+					make -j${JOBS} test
 					;;
 				"xninja")
 					ninja check
