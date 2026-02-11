@@ -10,13 +10,14 @@ export CROSS_HOST="$(echo $MACHTYPE | sed "s/$(echo $MACHTYPE | cut -d- -f2)/cro
 export HOST_ARCH_NAME="$(echo $MACHTYPE | cut -d- -f1)"
 export CROSSTOOLS_DIR="${SYSDIR}/cross-tools"
 export HOST_TOOLS_DIR="${SYSDIR}/host-tools"
+export DEFAULT_CHECK_OPTION=""
 export JOBS=$[ ( $(LC_ALL=C free -g | grep "^Mem:" | awk -F' ' '{ print $2 }') / 4 ) + 1 ]
 export PATH=${CROSSTOOLS_DIR}/bin:${HOST_TOOLS_DIR}/bin:/usr/bin:/bin
 export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
 export ARCH_BIT=64
-export CFLAGS="-O3 -std=gnu17"
+export CFLAGS="-O3"
 export CXXFLAGS="-O3"
 export RUN_TARGET_ARCH=${HOST_ARCH_NAME}
 export CROSS_TOOLS_PREFIX=${SYSDIR}/cross-toolchains
@@ -24,7 +25,7 @@ export PREFIX=${CROSS_TOOLS_PREFIX}
 export MINGW_HOST=x86_64-w64-mingw32
 export X86_64_HOST=x86_64-unknown-linux-gnu
 export X86_HOST=i686-unknown-linux-gnu
-export MAKE_AND_INSTALL="make -j${JOBS} && make install"
+export MAKE_AND_INSTALL="make -j${JOBS} && run_step_package_check ${DEFAULT_CHECK_OPTION} && make install"
 export YONGBAO_TARGET_ARCH=loongarch64
 export YONGBAO_TARGET_ARCH_NAME=loongarch
 export TARGET_ABI=lp64
