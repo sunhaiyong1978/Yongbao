@@ -27,6 +27,9 @@
 %step/host-tools/guile|
 %step/host-tools/sqlite|
 %step/host-tools/perl|
+%step/host-tools/File-ShareDir-Install|
+%step/host-tools/File-ShareDir|
+%step/host-tools/Class-Inspector|
 %step/host-tools/XML-Parser|
 %step/host-tools/URI|
 %step/host-tools/libffi|
@@ -42,6 +45,7 @@
 %step/host-tools/Mako|
 %step/host-tools/packaging|
 %step/host-tools/python-zstandard|
+%step/host-tools/pygobject|
 %step/host-tools/pcre2|
 %step/host-tools/glib|
 %step/host-tools/gobject-introspection|
@@ -49,19 +53,15 @@
 %step/cross-tools/gobject-introspection|
 %step/cross-tools/vala|
 %step/host-tools/libxml2|nouse
-%step/cross-tools/llvm-project|g_opt;!llvm_git
-%step/cross-tools/llvm-project_git|g_opt;llvm_git
-%step/cross-tools/SPIRV-LLVM-Translator|f_opt;!llvm_git
-%step/cross-tools/SPIRV-LLVM-Translator_git|f_opt;llvm_git
 %step/host-tools/NULL|
 %step/cross-tools/NULL|
 %step/bootstrap/rust-bootstrap|g_opt
 %step/bootstrap/go-bootstrap|g_opt
-%step/cross-tools/golang|f_opt+golang
 %step/host-tools/NULL|
 %step/host-tools/lua|
 %step/host-tools/libyaml|
 %step/host-tools/ruby|
+%step/host-tools/openssl|
 %step/host-tools/cmake|
 %step/host-tools/libgcrypt|f_host-tools_libgcrypt_bad
 %step/host-tools/ncurses|
@@ -85,6 +85,7 @@
 %step/host-tools/trove-classifiers|
 %step/host-tools/tomli|
 %step/host-tools/hatchling|
+%step/host-tools/vcs_versioning|
 %step/host-tools/setuptools-scm|
 %step/host-tools/hatch-fancy-pypi-readme|
 %step/host-tools/hatch-vcs|
@@ -161,13 +162,11 @@
 %step/host-tools/docbook-xml-4.5|
 %step/host-tools/docbook-5.0.1|
 %step/host-tools/docbook-5.1|
-%step/host-tools/openssl|f_opt
 %step/host-tools/libpsl|f_opt
 %step/host-tools/nghttp2|f_opt
 %step/host-tools/curl|f_opt
 %step/host-tools/libxmlb|f_opt
 %step/host-tools/libfyaml|f_opt
-%step/host-tools/appstream|f_opt
 %step/host-tools/nettle|
 %step/host-tools/rdfind|
 %step/host-tools/chai|
@@ -219,8 +218,13 @@
 %step/host-tools/patchelf|
 %step/host-tools/pipewire|
 %step/host-tools/NULL|
-%step/host-tools/llvm-project|
+%step/host-tools/llvm-project|f_opt
+%step/host-tools/SPIRV-LLVM-Translator|f_opt
+%step/host-tools/compat-llvm-project|f_opt
+%step/host-tools/NULL|
 %step/host-tools/pixman|
+%step/host-tools/appstream|f_opt
+%step/host-tools/libglvnd|f_opt
 %step/host-tools/NULL|
 %step/cross-tools/NULL|
 %step/cross-tools/grub|
@@ -232,11 +236,16 @@
 %step/cross-tools/help2man|
 %step/cross-tools/qemu-wrapper|
 %step/cross-tools/NULL|
+%step/host-tools/tcl|
+%step/host-tools/graphviz|
+%step/host-tools/NULL|
+%step/cross-tools/NULL|
+%step/cross-tools/golang|f_opt+golang
+%step/host-tools/rustc|f_opt
+%step/cross-tools/rustc|f_opt
 %step/host-tools/ocaml|f_opt+ocaml
 %step/host-tools/dune|f_opt+ocaml
 %step/cross-tools/ocaml|f_opt+ocaml
-%step/host-tools/NULL|
-%step/cross-tools/NULL|
 %step/target_base/man-pages|
 %step/target_base/iana-etc|
 %step/target_base/tzdata|
@@ -298,6 +307,7 @@
 %step/target_base/patch|
 %step/target_base/libpsl|
 %step/target_base/curl|
+%step/target_base/libunistring|
 %step/target_base/libidn2|
 %step/target_base/cmake|
 %step/target_base/Python|
@@ -386,7 +396,6 @@
 %step/target_base/fontconfig|
 %step/target_base/fribidi|
 %step/target_base/nettle|
-%step/target_base/libunistring|
 %step/target_base/gc|
 %step/target_base/guile|
 %step/target_base/libtasn1|
@@ -405,8 +414,6 @@
 %step/target_base/llvm-project_git|g_opt;llvm_git
 %step/target_base/llvm_runtimes_git|g_opt;llvm_git
 %step/target_base/NULL|g_opt
-%step/cross-tools/rustc|f_opt
-%step/target_base/rustc|f_opt
 %step/target_base/dhcp|
 %step/target_base/busybox|
 %step/target_base/libksba|
@@ -435,12 +442,12 @@
 %step/target_base/final_run|
 %step/host-tools/rust-bindgen|f_opt
 %step/host-tools/cargo-c|f_opt
+%step/host-tools/puccinialin|f_opt
 %step/host-tools/maturin|f_opt
 %step/host-tools/rpds-py|f_opt
 %step/host-tools/cbindgen|f_opt
 %step/host-tools/qemu|
 %step/host-tools/Python3_13|
-%step/host-tools/tcl|
 %step/host-tools/expect|
 %step/host-tools/dejagnu|
 %step/host-tools/ruby3|
@@ -776,6 +783,8 @@
 %step/base_support/rsync|g_opt
 %step/base_support/cscope|g_opt
 %step/base_support/lit|g_opt
+%step/base_support/opencv|g_opt
+%step/base_support/gavl|g_opt
 %step/base_support/frei0r|g_opt
 %step/base_support/potrace|g_opt
 %step/base_support/orc|g_opt
@@ -815,6 +824,7 @@
 %step/base_support/toml|g_opt
 %step/base_support/typogrify|g_opt
 %step/base_support/Pygments|g_opt
+%step/base_support/parameterized|g_opt
 %step/base_support/gi-docgen|g_opt
 %step/base_support/unifdef|g_opt
 %step/base_support/libyuv|g_opt
@@ -842,7 +852,6 @@
 %step/base_support/libshout|g_opt
 %step/base_support/twolame|g_opt
 %step/base_support/wavpack|g_opt
-%step/base_support/opencv|g_opt
 %step/base_support/libltc|g_opt
 %step/base_support/gst-plugins-good|g_opt
 %step/base_support/gst-plugins-bad|g_opt
@@ -851,6 +860,7 @@
 %step/base_support/gst-plugins-ugly|g_opt
 %step/base_support/hyphen|g_opt
 %step/base_support/woff2|g_opt
+%step/base_support/hidapi|g_opt
 %step/base_support/libmanette|g_opt
 %step/base_support/flite|g_opt;f_base_support_flite_bad
 %step/base_support/webkitgtk|g_opt
@@ -916,6 +926,7 @@
 %step/base_support/appdirs|g_opt
 %step/base_support/diskcache|g_opt
 %step/base_support/fancy|g_opt
+%step/base_support/vcs_versioning|g_opt
 %step/base_support/setuptools-scm|g_opt
 %step/base_support/hatch-fancy-pypi-readme|g_opt
 %step/base_support/hatch-vcs|g_opt
@@ -939,6 +950,7 @@
 %step/cross-tools/qt6|g_opt
 %step/base_support/qt6-tools|g_opt
 %step/base_support/qt6|g_opt
+%step/base_support/qt6-webengine|g_opt
 %step/base_support/KDE6-extra-cmake-modules|g_opt
 %step/base_support/xcb-imdkit|g_opt
 %step/base_support/gst-plugins-good|g_opt
@@ -963,7 +975,7 @@
 %step/base_support/open-iscsi|g_opt
 %step/base_support/udisks|g_opt
 %step/base_support/perf|g_opt
-%step/base_support/strace|g_opt
+%step/base_support/strace|g_opt;f_base_support_strace_bad
 %step/base_support/ostree|g_opt
 %step/base_support/flatpak|g_opt
 %step/base_support/umockdev|g_opt
@@ -1048,7 +1060,7 @@
 %step/base_support/SDL_ttf|g_opt
 %step/base_support/libva-utils|g_opt
 %step/base_support/gtksourceview4|g_opt
-%step/host-tools/pyside6|g_opt
+%step/cross-tools/pyside6|g_opt
 %step/base_support/shiboken6|g_opt
 %step/base_support/pyside6|g_opt
 %step/base_support/python-build|g_opt
@@ -1168,6 +1180,7 @@
 %step/KDE6/KDE6-kded|g_opt+KDE6
 %step/KDE6/KDE6-kio|g_opt+KDE6
 %step/KDE6/KDE6-kdeclarative|g_opt+KDE6
+%step/KDE6/KDE6-kirigami|g_opt+KDE6
 %step/KDE6/KDE6-kcmutils|g_opt+KDE6
 %step/KDE6/KDE6-syndication|g_opt+KDE6
 %step/KDE6/KDE6-knewstuff|g_opt+KDE6
@@ -1184,7 +1197,6 @@
 %step/KDE6/libdmtx|g_opt+KDE6
 %step/KDE6/zxing-cpp|g_opt+KDE6
 %step/KDE6/KDE6-prison|g_opt+KDE6
-%step/KDE6/KDE6-kirigami|g_opt+KDE6
 %step/KDE6/KDE6-qqc2-desktop-style|g_opt+KDE6
 %step/KDE6/KDE6-kholidays|g_opt+KDE6
 %step/KDE6/KDE6-purpose|g_opt+KDE6
@@ -1199,7 +1211,6 @@
 %step/KDE6/OpenTimelineIO|g_opt+KDE6
 %step/KDE6/KDE6-kdenlive|g_opt+KDE6
 %step/KDE6/KDSoap|g_opt+KDE6
-%step/KDE6/kdsoap-ws-discovery-client|g_opt+KDE6
 %step/KDE6/qcoro|g_opt+KDE6
 %step/KDE6/KDE6-ktexttemplate|g_opt+KDE6
 %step/KDE6/KDE6-khelpcenter|g_opt+KDE6
@@ -1252,7 +1263,6 @@
 %step/KDE6/KDE6-messagelib|g_opt+KDE6
 %step/KDE6/KDE6-akonadi-calendar|g_opt+KDE6
 %step/KDE6/KDE6-kontactinterface|g_opt+KDE6
-%step/KDE6/KDE6-akonadi-notes|g_opt+KDE6
 %step/KDE6/KDE6-calendarsupport|g_opt+KDE6
 %step/KDE6/kdiagram|g_opt+KDE6
 %step/KDE6/KDE6-elisa|g_opt+KDE6
@@ -1343,6 +1353,7 @@
 %step/KDE6/oxygen-icons|g_opt+KDE6
 %step/KDE6/libfakekey|g_opt+KDE6
 %step/KDE6/KDE6-kdeconnect-kde|g_opt+KDE6
+%step/KDE6/kquickimageeditor|g_opt+KDE6
 %step/KDE6/KDE6-spectacle|g_opt+KDE6
 %step/KDE6/yb-default-select|g_opt+KDE6
 %step/KDE6/NULL|g_opt+KDE6
@@ -1530,6 +1541,7 @@
 %step/desktop-app/libspnav|g_opt+desk-app;design
 %step/desktop-app/alembic|g_opt+desk-app;design
 %step/desktop-app/PyOpenGL|g_opt+desk-app;design
+%step/desktop-app/ceres-solver|g_opt+desk-app;design
 %step/desktop-app/blender|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/cairomm|g_opt+desk-app;design
@@ -1544,7 +1556,7 @@
 %step/desktop-app/gegl|g_opt+desk-app;design
 %step/desktop-app/gexiv2|g_opt+desk-app;design
 %step/desktop-app/libmypaint|g_opt+desk-app;design
-%step/desktop-app/mypaint-brushes-1|g_opt+desk-app;design
+%step/desktop-app/mypaint-brushes|g_opt+desk-app;design
 %step/desktop-app/gimp|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
@@ -1571,7 +1583,7 @@
 %step/cross-tools/unixODBC|g_opt+desk-app;design
 %step/desktop-app/unixODBC|g_opt+desk-app;design
 %step/desktop-app/nng|g_opt+desk-app;design
-%step/desktop-app/kicad|g_opt+desk-app;design
+%step/desktop-app/kicad|g_opt+desk-app;design;f_desktop-app_kicad_bad
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;game
 %step/desktop-app/qqwing|g_opt+desk-app;game
@@ -1752,7 +1764,6 @@
 %step/linux_runtime/popt|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/json-c|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/cryptsetup|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
-%step/linux_runtime/systemd|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libusb|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libpcap|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libsndfile|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
@@ -1802,6 +1813,7 @@
 %step/linux_runtime/libvorbis|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libdv|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/lame|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/libidn2|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libpsl|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/nghttp2|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/gsettings-desktop-schemas|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
@@ -1809,6 +1821,7 @@
 %step/linux_runtime/libsoup-2|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libsoup|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/curl|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
+%step/linux_runtime/systemd|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/libproxy|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/glib-networking|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
 %step/linux_runtime/orc|g_opt;linux_runtime,chromium,wine;%target=?x86_64;%OVERLAY=x86_64_runtime
@@ -1984,7 +1997,6 @@
 %step/linux_runtime/popt|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/json-c|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/cryptsetup|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
-%step/linux_runtime/systemd|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libusb|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libpcap|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libsndfile|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
@@ -2034,6 +2046,7 @@
 %step/linux_runtime/libvorbis|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libdv|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/lame|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/libidn2|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libpsl|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/nghttp2|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/gsettings-desktop-schemas|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
@@ -2041,6 +2054,7 @@
 %step/linux_runtime/libsoup-2|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libsoup|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/curl|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
+%step/linux_runtime/systemd|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/libproxy|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/glib-networking|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
 %step/linux_runtime/orc|g_opt;i686_runtime,wine32;%target=i686;%OVERLAY=i686_runtime
@@ -2142,7 +2156,7 @@
 %step/simulate/latx|emu
 %step/simulate/box64|emu
 %step/simulate/box64-la|emu
-%step/simulate/lata|emu
+%step/simulate/lata|emu;f_simulate_lata_bad
 %step/simulate/NULL|emu
 %step/simulate/NULL|emu
 %step/simulate/wine_wow|emu;wine+mingw;%target=?x86_64;%target_mingw64=?mingw64ucrt;%target_mingw32=?mingw32;%PARENT=ORIG,x86_64_runtime,mingw_sysroot
@@ -2164,6 +2178,7 @@
 %step/toolchain/compat_glibc_generic|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/compat_glibc_x86_64|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/musl|g_opt+host-dist;%compat=?0;%host=?;%vendor=
+%step/toolchain/compat_musl_generic|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/mingw-w64|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/libxcrypt|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/gcc-libc|g_opt+host-dist;%compat=?0;%host=?;%vendor=;!gcc_git
@@ -2187,6 +2202,7 @@
 %step/toolchain/compat_glibc_generic|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/compat_glibc_x86_64|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/musl|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
+%step/toolchain/compat_musl_generic|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/mingw-w64|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/libxcrypt|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/gcc-libc|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?;!gcc_git
