@@ -12,7 +12,7 @@ export CROSSTOOLS_DIR="${SYSDIR}/cross-tools"
 export HOST_TOOLS_DIR="${SYSDIR}/host-tools"
 export DEFAULT_CHECK_OPTION=""
 export JOBS=$[ ( $(LC_ALL=C free -g | grep "^Mem:" | awk -F' ' '{ print $2 }') / 4 ) + 1 ]
-export PATH=${CROSSTOOLS_DIR}/bin:${HOST_TOOLS_DIR}/bin:/usr/bin:/bin
+export PATH=${HOST_TOOLS_DIR}/bin:/usr/bin:/bin
 export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
@@ -30,6 +30,7 @@ export MAKE_AND_INSTALL="make -j${JOBS} && make DESTDIR=${SYSROOT_DIR} install &
 export MESON_CONFIG="--prefix=/usr --libdir=/usr/lib${LIB_SUFF} --sysconfdir=/etc --localstatedir=/var --libexecdir=/usr/libexec --buildtype=release \
 			--cross-file ${COMMON_DIR}/meson-cross.txt"
 export NINJA_AND_INSTALL="CC=${CROSS_TARGET}-gcc ninja && DESTDIR=${SYSROOT_DIR} ninja install"
+export PATH=${CROSSTOOLS_DIR}/bin:${PATH}
 export ARCH_NAME=loongarch64
 export ARCH_FAMILY=loongarch
 export ARCH_ABI=lp64d

@@ -12,7 +12,7 @@ export CROSSTOOLS_DIR="${SYSDIR}/cross-tools"
 export HOST_TOOLS_DIR="${SYSDIR}/host-tools"
 export DEFAULT_CHECK_OPTION=""
 export JOBS=$[ ( $(LC_ALL=C free -g | grep "^Mem:" | awk -F' ' '{ print $2 }') / 4 ) + 1 ]
-export PATH=${CROSSTOOLS_DIR}/bin:${HOST_TOOLS_DIR}/bin:/usr/bin:/bin
+export PATH=${HOST_TOOLS_DIR}/bin:/usr/bin:/bin
 export CROSS_TARGET="loongarch64-unknown-linux-gnu"
 export MABI="lp64d"
 export LIB_SUFF="64"
@@ -22,7 +22,7 @@ export CXXFLAGS="-O3"
 export RUN_TARGET_ARCH=${HOST_ARCH_NAME}
 export PREFIX=${HOST_TOOLS_DIR}
 export COMMON_CONFIG="--prefix=${PREFIX} --libdir=${PREFIX}/lib64"
-export PKG_CONFIG_PATH="${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig"
+export PKG_CONFIG_PATH="${HOST_TOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig"
 export MAKE_AND_INSTALL="make -j${JOBS} &&  make install"
 export LIB_SUFF=64
 export TARGET_LIB_SUFF=64
