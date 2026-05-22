@@ -14,10 +14,12 @@ pushd ${BUILD_DIRECTORY}/rpcsvc-proto-1.4.4
     done
 
     ./configure --sysconfdir=/etc
+    check_gnu_Makefile
     make -j${JOBS}
     make -C rpcsvc DESTDIR=${SYSROOT_DIR} install
     make distclean
     ./configure ${COMMON_CONFIG}
+    check_gnu_Makefile
     make -j${JOBS} -C rpcgen
     make -C rpcgen DESTDIR=${SYSROOT_DIR} install
 popd 

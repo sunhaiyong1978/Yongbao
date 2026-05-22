@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=cryptsetup
-export PACKAGE_VERSION=2.8.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/cryptsetup/2.8.4/
-rm -rf ${BUILD_DIRECTORY}/cryptsetup-2.8.4
-tar xvf ${DOWNLOADDIR}/cryptsetup-2.8.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cryptsetup-2.8.4
+export PACKAGE_VERSION=2.8.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/cryptsetup/2.8.6/
+rm -rf ${BUILD_DIRECTORY}/cryptsetup-2.8.6
+tar xvf ${DOWNLOADDIR}/cryptsetup-2.8.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cryptsetup-2.8.6
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -17,9 +17,6 @@ pushd ${BUILD_DIRECTORY}/cryptsetup-2.8.4
 		autoreconf -ifv
 	fi
 	 ./configure ${COMMON_CONFIG} --with-tmpfilesdir=/usr/lib/tmpfiles.d --enable-malloc0returnsnull
-	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
-	run_step_package_check check
-        make DESTDIR=${SYSROOT_DIR} install
-	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/cryptsetup-2.8.4
+rm -rf ${BUILD_DIRECTORY}/cryptsetup-2.8.6

@@ -1,0 +1,32 @@
+From 10d55f60e7b87226a051bf7969d8819a2b8fb2e9 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 14 Apr 2026 06:48:57 +0000
+Subject: [PATCH 1/2] Add clang and rust loongarch64 define to Makefile.config.
+
+---
+ tools/perf/Makefile.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 15fbba9..1340744 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -27,6 +27,7 @@ CFLAGS += -fno-strict-aliasing
+ ifeq ($(CC_NO_CLANG), 0)
+   CLANG_TARGET_FLAGS_arm	:= arm-linux-gnueabi
+   CLANG_TARGET_FLAGS_arm64	:= aarch64-linux-gnu
++  CLANG_TARGET_FLAGS_loongarch	:= loongarch64-linux-gnu
+   CLANG_TARGET_FLAGS_m68k	:= m68k-linux-gnu
+   CLANG_TARGET_FLAGS_mips	:= mipsel-linux-gnu
+   CLANG_TARGET_FLAGS_powerpc	:= powerpc64le-linux-gnu
+@@ -1167,6 +1168,7 @@ ifndef NO_RUST
+   ifneq ($(CROSS_COMPILE),)
+     RUST_TARGET_FLAGS_arm	:= arm-unknown-linux-gnueabi
+     RUST_TARGET_FLAGS_arm64	:= aarch64-unknown-linux-gnu
++    RUST_TARGET_FLAGS_loongarch	:= loongarch64-unknown-linux-gnu
+     RUST_TARGET_FLAGS_m68k	:= m68k-unknown-linux-gnu
+     RUST_TARGET_FLAGS_mips	:= mipsel-unknown-linux-gnu
+     RUST_TARGET_FLAGS_powerpc	:= powerpc64le-unknown-linux-gnu
+-- 
+2.31.1
+

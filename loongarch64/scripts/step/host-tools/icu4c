@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=icu4c
-export PACKAGE_VERSION=78.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/78.2/
-rm -rf ${BUILD_DIRECTORY}/icu-release-78.2
-tar xvf ${DOWNLOADDIR}/icu4c-78.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/icu-release-78.2
+export PACKAGE_VERSION=78.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/icu4c/78.3/
+rm -rf ${BUILD_DIRECTORY}/icu-release-78.3
+tar xvf ${DOWNLOADDIR}/icu4c-78.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/icu-release-78.3
     for config_i in $(find -name "config.sub")
     do
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/icu-release-78.2
     cp -av ${HOST_TOOLS_DIR}/sbin/{gensprep,icupkg} ${HOST_TOOLS_DIR}/bin/
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/icu-release-78.2
+rm -rf ${BUILD_DIRECTORY}/icu-release-78.3

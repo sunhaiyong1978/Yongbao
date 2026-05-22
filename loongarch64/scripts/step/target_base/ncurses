@@ -13,8 +13,7 @@ pushd ${BUILD_DIRECTORY}/ncurses-6.6
 	            --without-normal --enable-pc-files --without-ada \
 	            --with-pkg-config-libdir=/usr/lib${LIB_SUFF}/pkgconfig --enable-widec \
 	            --disable-stripping
-	make -j${JOBS}
-	make DESTDIR=${SYSROOT_DIR} install
+	eval ${MAKE_AND_INSTALL}
 	
 	for lib in ncurses form panel menu ; do
 	    rm -vf                    ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/lib${lib}.so

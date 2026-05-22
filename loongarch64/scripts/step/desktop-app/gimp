@@ -3,5 +3,28 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=gimp
-export PACKAGE_VERSION=3.1.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gimp/3.1.4/
+export PACKAGE_VERSION=3.2.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gimp/3.2.4/
+rm -rf ${BUILD_DIRECTORY}/gimp-3.2.4
+tar xvf ${DOWNLOADDIR}/gimp-3.2.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gimp-3.2.4
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/gimp/3.2.4/patches/0001-gimp-3.2.4-tools-in-build-gimp.py-fix-for-cross-buil.patch 
+	 
+	sed -i "/build_by_default/s@true@false@g" gimp-data/images/meson.build
+	sed -i "s@<<QEMU_SHELL>>@qemu-${ARCH_NAME}@g" tools/in-build-gimp.py
+	mkdir cross-build
+	pushd cross-build
+		CC_FOR_BUILD=${CROSS_TARGET}-gcc \
+		VALAC_FOR_BUILD=loongarch64-unknown-linux-gnu-valac \
+		meson ${MESON_CONFIG} -Dcan-crosscompile-gir=true \
+                      ..
+		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+		sed -i "s@COMMAND = ${PWD}/plug-ins/file-bmp/generate-huffman@COMMAND = qemu-${ARCH_NAME} ${PWD}/plug-ins/file-bmp/generate-huffman@g" build.ninja
+		sed -i "s@COMMAND = ${PWD}/gimp-data/tools/colorsvg2png@COMMAND = qemu-${ARCH_NAME} ${PWD}/gimp-data/tools/colorsvg2png@g" build.ninja
+		sed -i "s@COMMAND = ${PWD}/tools/gen-languages@COMMAND = qemu-${ARCH_NAME} ${PWD}/tools/gen-languages@g" build.ninja
+		eval ${NINJA_AND_INSTALL}
+	popd
+	convert https://www.gimp.org/news/2026/03/14/gimp-3-2-released/gimp-3.2-splash.jpg ${SYSROOT_DIR}/usr/share/gimp/3.0/images/gimp-splash.png
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/gimp-3.2.4

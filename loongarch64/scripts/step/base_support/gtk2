@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/gtk+-2.24.33
         ../configure ${COMMON_CONFIG} --disable-introspection \
                      ac_cv_func_httpGetAuthString=yes ac_cv_func_mmap_fixed_mapped=yes \
                      ac_cv_header_cups_cups_h=yes
+	check_gnu_Makefile
 	make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install-exec
     popd
@@ -27,6 +28,7 @@ pushd ${BUILD_DIRECTORY}/gtk+-2.24.33
                      ac_cv_func_httpGetAuthString=yes ac_cv_func_mmap_fixed_mapped=yes \
                      ac_cv_header_cups_cups_h=yes
         sed -i "/SRC_SUBDIRS/s@ demos@ @g" Makefile
+	check_gnu_Makefile
         make -j${JOBS} INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
              INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
              INTROSPECTION_MAKEFILE=${SYSROOT_DIR}/usr/share/gobject-introspection-1.0/Makefile.introspection

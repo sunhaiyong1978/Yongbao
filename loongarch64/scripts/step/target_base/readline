@@ -13,6 +13,7 @@ pushd ${BUILD_DIRECTORY}/readline-8.3
 	cp -a -f $(automake --print-libdir)/config.{sub,guess} ./support/
 	./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --build=${CROSS_HOST} --host=${CROSS_TARGET} \
 				--disable-static --with-curses
+	check_gnu_Makefile
 	make -j${JOBS} SHLIB_LIBS="-lncursesw"
 	make SHLIB_LIBS="-lncursesw" DESTDIR=${SYSROOT_DIR} install
 popd 

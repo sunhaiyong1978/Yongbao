@@ -1,0 +1,21 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=graphviz
+export PACKAGE_VERSION=14.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/graphviz/14.1.5/
+rm -rf ${BUILD_DIRECTORY}/graphviz-14.1.5
+tar xvf ${DOWNLOADDIR}/graphviz-14.1.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/graphviz-14.1.5
+    
+    mkdir -p native-build
+    pushd native-build
+	CC="gcc" CXX="g++" \
+        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DENABLE_RUBY=OFF \
+	      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+              -DCMAKE_BUILD_TYPE=Release ..
+	eval ${MAKE_AND_INSTALL}
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/graphviz-14.1.5

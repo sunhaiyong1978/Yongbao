@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/libcaca-0.99.beta19
         fi
 	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" \
 	PYTHON=${CROSS_TARGET}-python3 ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
+	check_gnu_Makefile
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS} \
 	RUBY_SITEARCHDIR=$(ruby -r rbconfig -e 'print RbConfig::CONFIG["sitearchdir"]' | sed -e "s@${HOST_TOOLS_DIR}@/usr@g" -e "s@$(uname -m)@${ARCH_NAME}@g") \
 	RUBY_SITELIBDIR=$(ruby -r rbconfig -e 'print RbConfig::CONFIG["sitelibdir"]' | sed "s@${HOST_TOOLS_DIR}@/usr@g") \

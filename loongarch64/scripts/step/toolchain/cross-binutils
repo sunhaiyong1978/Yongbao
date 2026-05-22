@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-binutils
-export PACKAGE_VERSION=2.45.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.45.1/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.45.1
-tar xvf ${DOWNLOADDIR}/binutils-2.45.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.45.1
+export PACKAGE_VERSION=2.46.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-binutils/2.46.0/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.46.0
+tar xvf ${DOWNLOADDIR}/binutils-2.46.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.46.0
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${CROSS_TARGET})" "${ARCH_ABI}")
@@ -57,7 +57,7 @@ pushd ${BUILD_DIRECTORY}/binutils-2.45.1
         ../configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} --host=${COMPAT_HOST} --target=${COMPAT_TARGET} \
                      --with-sysroot=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target --enable-nls \
 		     --enable-targets=all \
-                     --enable-64-bit-bfd --disable-shared --disable-gprofng 
+                     --enable-64-bit-bfd --disable-shared --disable-gprofng --disable-werror
         make -j${JOBS} configure-host LIBS="${LIBS} -lzstd -lpthread"
         make -j${JOBS}
 
@@ -67,4 +67,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.45.1
         make DESTDIR=${TOOLCHAIN_INSTALL_DIR}/binutils install-strip
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.45.1
+rm -rf ${BUILD_DIRECTORY}/binutils-2.46.0

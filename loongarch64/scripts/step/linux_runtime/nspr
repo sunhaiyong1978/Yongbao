@@ -4,17 +4,19 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=nspr
-export PACKAGE_VERSION=4.38.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/nspr/4.38.2/
-rm -rf ${BUILD_DIRECTORY}/nspr-4.38.2
-tar xvf ${DOWNLOADDIR}/nspr-4.38.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/nspr-4.38.2
+export PACKAGE_VERSION=4.39
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/nspr/4.39/
+rm -rf ${BUILD_DIRECTORY}/nspr-4.39
+tar xvf ${DOWNLOADDIR}/nspr-4.39.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/nspr-4.39
     pushd nspr
     
+    sed -i "s@ /usr/lib/libc.a@@g" pr/src/Makefile.in
     ./configure ${COMMON_CONFIG} \
                 --with-mozilla --with-pthreads --enable-64bit
+    check_gnu_Makefile
     make CC="gcc" CFLAGS="" -C config
     eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/nspr-4.38.2
+rm -rf ${BUILD_DIRECTORY}/nspr-4.39

@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xdg-user-dirs
-export PACKAGE_VERSION=0.19
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xdg-user-dirs/0.19/
-rm -rf ${BUILD_DIRECTORY}/xdg-user-dirs-0.19
-tar xvf ${DOWNLOADDIR}/xdg-user-dirs-0.19.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xdg-user-dirs-0.19
-	patch -Np1 -i ${SYSDIR}/files/base_support/xdg-user-dirs/0.19/patches/0001-xdg-user-dirs-0.19-fix-systemd-user-dir-for-cross-bu.patch 
+export PACKAGE_VERSION=0.20
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xdg-user-dirs/0.20/
+rm -rf ${BUILD_DIRECTORY}/xdg-user-dirs-0.20
+tar xvf ${DOWNLOADDIR}/xdg-user-dirs-0.20.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xdg-user-dirs-0.20
+	patch -Np1 -i ${SYSDIR}/files/base_support/xdg-user-dirs/0.20/patches/0001-xdg-user-dirs-0.20-fix-systemd-dir-for-cross-build.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/xdg-user-dirs-0.19
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/xdg-user-dirs-0.19
+rm -rf ${BUILD_DIRECTORY}/xdg-user-dirs-0.20

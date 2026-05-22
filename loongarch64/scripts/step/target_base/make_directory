@@ -54,10 +54,11 @@ echo "glib-compile-resources = '${CROSS_TARGET}-glib-compile-resources'" >> meso
 echo "glib-compile-schemas = '${CROSS_TARGET}-glib-compile-schemas'" >> meson-cross.txt
 echo "gdbus-codegen = 'gdbus-codegen'" >> meson-cross.txt
 echo "wayland-scanner = '${CROSS_TARGET}-wayland-scanner'" >> meson-cross.txt
+echo "cmake = 'cmake'" >> meson-cross.txt
 echo "rust = 'rustc'" >> meson-cross.txt
 echo "exe_wrapper = 'qemu-${ARCH_NAME}'" >> meson-cross.txt
 echo "[built-in options]" >> meson-cross.txt
-echo "rust_args = '--target ${CROSS_TARGET}'" >> meson-cross.txt
+echo "rust_args = '--target ${CROSS_TARGET} --sysroot=${CROSSTOOLS_DIR}'" >> meson-cross.txt
 echo "[properties]" >> meson-cross.txt
 echo "skip_sanity_check = true" >> meson-cross.txt
 echo "needs_exe_wrapper = true" >> meson-cross.txt
@@ -92,18 +93,18 @@ find_program(GPERF_EXECUTABLE gperf)
 find_program(Gperf_EXECUTABLE gperf)
 find_program(DOXYGEN_EXECUTABLE doxygen)
 find_program(gzip_EXECUTABLE gzip)
-find_program(Ruby_EXECUTABLE ${CROSSTOOLS_DIR}/bin/ruby)
+find_program(Ruby_EXECUTABLE ${HOST_TOOLS_DIR}/bin/ruby)
 find_program(WaylandScanner_EXECUTABLE ${CROSSTOOLS_DIR}/bin/wayland-scanner)
 find_program(UPDATE_MIME_DATABASE_EXECUTABLE ${CROSSTOOLS_DIR}/bin/update-mime-database)
+find_program(LIBXML2_XMLLINT_EXECUTABLE ${HOST_TOOLS_DIR}/bin/xmllint)
 find_program(PERL_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-perl)
-find_program(PYTHON3_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
-find_program(PYTHON_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
-find_program(Python3_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
-find_program(Python_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
-find_program(_PYTHON3_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
-find_program(_PYTHON_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
-find_program(_Python3_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
-find_program(_Python_EXECUTABLE ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3)
+
+set(Python3_ROOT_DIR ${SYSROOT_DIR})
+set(ENV{_PYTHON_SYSCONFIGDATA_NAME} _sysconfigdata__linux_${CROSS_TARGET})
+find_program(PYTHON3_EXECUTABLE ${HOST_TOOLS_DIR}/bin/python3)
+find_program(Python3_EXECUTABLE ${HOST_TOOLS_DIR}/bin/python3)
+
+set(CMAKE_UNAME ${CROSSTOOLS_DIR}/bin/cross-uname)
 set(INTROSPECTION_SCANNER ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner)
 set(INTROSPECTION_COMPILER ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler)
 EOF

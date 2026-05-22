@@ -8,10 +8,16 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/zsh/5.9/
 rm -rf ${BUILD_DIRECTORY}/zsh-5.9
 tar xvf ${DOWNLOADDIR}/zsh-5.9.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/zsh-5.9
-    cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
-    ./configure --build=${CROSS_HOST} --host=${CROSS_TARGET} \
-                --prefix=/usr --sysconfdir=/etc/zsh \
-                --enable-etcdir=/etc/zsh
-    eval ${MAKE_AND_INSTALL}
+	patch -Np1 -i ${SYSDIR}/files/base_support/zsh/5.9/patches/0007-zsh-configure-c99.patch 
+	 
+	for config_i in $(find -name "config.sub")
+	do
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+	done
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --sysconfdir=/etc/zsh --enable-etcdir=/etc/zsh --enable-malloc0returnsnull
+	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/zsh-5.9

@@ -6,5 +6,7 @@ target=!mingw32
 host=!mingw32
 host=!x86_64
 target=!x86_64
+host=!loongarch64-musl
+target=!loongarch64-musl
 compat=1
 target_compat=1

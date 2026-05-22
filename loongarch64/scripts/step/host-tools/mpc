@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=mpc
-export PACKAGE_VERSION=1.3.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/mpc/1.3.1/
-rm -rf ${BUILD_DIRECTORY}/mpc-1.3.1
-tar xvf ${DOWNLOADDIR}/mpc-1.3.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mpc-1.3.1
+export PACKAGE_VERSION=1.4.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/mpc/1.4.1/
+rm -rf ${BUILD_DIRECTORY}/mpc-1.4.1
+tar xvf ${DOWNLOADDIR}/mpc-1.4.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mpc-1.4.1
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/mpc-1.3.1
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} --with-gmp=${PREFIX}
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/mpc-1.3.1
+rm -rf ${BUILD_DIRECTORY}/mpc-1.4.1

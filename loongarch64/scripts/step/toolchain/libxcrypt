@@ -45,6 +45,7 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.5.2
     fi
 
 
+    CC="${COMPAT_TARGET}-gcc -fno-link-libatomic" \
     ./configure  --prefix=/usr --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
                  --libdir=/usr/lib${LIB_SUFF}  --disable-werror
     make -j${JOBS}

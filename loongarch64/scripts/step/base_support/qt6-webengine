@@ -1,0 +1,73 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=qt6-webengine
+export PACKAGE_VERSION=6.11.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6-webengine/6.11.0/
+rm -rf ${BUILD_DIRECTORY}/qtwebengine-everywhere-src-6.11.0
+tar xvf ${DOWNLOADDIR}/qtwebengine-everywhere-src-6.11.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qtwebengine-everywhere-src-6.11.0
+	export PATH=${CROSSTOOLS_DIR}/qt6/bin:${PATH}
+        patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-qt6-6.11.0-webengine-configure-add-loongarch64-suppo.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0002-qt-6.11.0-webengine-fix-loongarch64-define-because-c.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0003-qt-6.11.0-webengine-chromium-add-some-define-for-loo.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0004-qt-6.11.0-webengine-fix-chromium-boringssl-openssl-t.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0005-qtwebengine-6.11.0-crashpad-add-support-for-loongarc.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0006-qtwebengine-6.11.0-open-lsx-option-for-loongarch64.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0007-qt-6.11.0-webengine-3rdparty-chromium-api-runtime-ad.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0008-qt-6.11.0-webengine-3rdparty-chromium-enable-swiftsh.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-qtwebengine-6.11.0-use-statx-for-sandbox-add-loongar.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-qtwebengine-fix-filename-too-long-error-for-use-ninj.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-qtwebengine-src-3rdparty-gn-config-add-loongarch64-d.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-qtwebengine-6.11.0-chromium-skia-remove-lsx-support-.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-qtwebengine-6.9.0-chromium-third_party-blink-remove-.patch 
+	patch -Np2 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-SYS_SECCOMP-has-already-been-defined-when-glibc-2.43.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-qtwebengine-6.11.0-fix-build-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-fix-sigsys_handlers.cc-build-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/qt6-webengine/6.11.0/patches/0001-chromium-third_party-blink-renderer-add-cxxflags-Wno.patch 
+	 
+	sed -i "/unset PKG_CONFIG_PATH/s@unset PKG_CONFIG_PATH@export PKG_CONFIG_PATH=\\\\\"${CROSSTOOLS_DIR}/lib/pkgconfig:${CROSSTOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib64/pkgconfig:${HOST_TOOLS_DIR}/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig\\\\\"@g" cmake/QtToolchainHelpers.cmake
+	sed -i "/v8_enable_webassembly/s@=false@=true@g" src/pdf/CMakeLists.txt
+
+	sed -i "s@llvm-10.0@llvm-16.0@g" src/3rdparty/chromium/third_party/swiftshader/src/Reactor/BUILD.gn
+
+	cp -a ${SYSROOT_DIR}/usr/include/{math,stdlib}.h ${SYSROOT_DIR}/usr/local/include/
+
+        mkdir -pv cross-build
+        pushd cross-build
+                cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+		      -DCMAKE_C_COMPILER="${CROSS_TARGET}-gcc" -DCMAKE_CXX_COMPILER="${CROSS_TARGET}-g++" \
+		      -DCMAKE_CXX_FLAGS="${CXXFLAGS} -Wno-c++11-narrowing" \
+                      -DPython_EXECUTABLE=${HOST_TOOLS_DIR}/bin/python3 \
+                      -DPython3_EXECUTABLE=${HOST_TOOLS_DIR}/bin/python3 \
+                      -DPYTHON_EXECUTABLE=${HOST_TOOLS_DIR}/bin/python3 \
+                      -DPYTHON3_EXECUTABLE=${HOST_TOOLS_DIR}/bin/python3 \
+                      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
+                      -DCMAKE_INSTALL_PREFIX=/usr \
+                      -DINSTALL_BINDIR=/usr/lib64/qt6/bin \
+                      -DINSTALL_ARCHDATADIR=/usr/lib64/qt6 \
+                      -DINSTALL_LIBDIR=/usr/lib64 \
+                      -DINSTALL_QMLDIR=/usr/lib64/qml \
+                      -DINSTALL_SYSCONFDIR=/etc/xdg \
+                      -DINSTALL_PLUGINSDIR=/usr/lib64/qt6/plugins \
+                      -DINSTALL_QMLDIR=/usr/lib64/qt6/qml \
+                      -DINSTALL_DATADIR=/usr/share/qt6 \
+                      -DINSTALL_DOCDIR=/usr/share/doc/qt6 \
+                      -DINSTALL_TRANSLATIONSDIR=/usr/share/qt6/translations \
+                      -DINSTALL_INCLUDEDIR=/usr/include/qt6 \
+                      -DINSTALL_IMPORTDIR=/usr/lib64/qt6/imports \
+                      -DINSTALL_MKSPECSDIR=/usr/lib64/qt6/mkspecs \
+                      -DBUILD_SHARED_LIBS=ON \
+		      -DQT_HOST_PATH=${CROSSTOOLS_DIR}/qt6 -DQT_FORCE_BUILD_TOOLS=ON \
+		      -DPKG_CONFIG_HOST_EXECUTABLE=/usr/bin/pkg-config \
+		      -DFEATURE_webengine_system_ffmpeg:BOOL=ON  -DFEATURE_webengine_vaapi:BOOL=ON -DFEATURE_webengine_extensions:BOOL=ON -DFEATURE_webengine_printing_and_pdf:BOOL=ON -DFEATURE_webengine_proprietary_codecs:BOOL=ON -DFEATURE_webengine_webrtc:BOOL=ON -DFEATURE_webengine_webrtc_pipewire:BOOL=ON -DFEATURE_webengine_system_minizip:BOOL=OFF \
+		      -DQT_FEATURE_use_lld_linker:BOOL=OFF \
+		      -DFEATURE_qtpdf_build:BOOL=ON -DFEATURE_pdf_v8:BOOL=ON \
+		      -DQT_GENERATE_SBOM=OFF -DQT_BUILD_EXAMPLES=ON \
+                      -Wno-dev ..
+                eval ${MAKE_AND_INSTALL}
+        popd
+        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/qtwebengine-everywhere-src-6.11.0

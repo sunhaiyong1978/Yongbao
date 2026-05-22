@@ -17,8 +17,6 @@ pushd ${BUILD_DIRECTORY}/lxinput-0.3.5
 		autoreconf -ifv
 	fi
 	 ./configure ${COMMON_CONFIG} --enable-gtk3
-	make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/lxinput-0.3.5

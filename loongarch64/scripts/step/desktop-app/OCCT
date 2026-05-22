@@ -16,6 +16,7 @@ pushd ${BUILD_DIRECTORY}/OCCT-7_9_3
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
                       -DCMAKE_INSTALL_PREFIX=/usr \
                       -DBUILD_SHARED_LIBS=ON \
+		      -DUSE_RAPIDJSON=ON \
 		      -DUSE_TK=True -DUSE_TBB=True -DUSE_VTK=True -DINSTALL_VTK=False -D3RDPARTY_VTK_LIBRARY_DIR=${SYSROOT_DIR}/usr/lib64 -D3RDPARTY_VTK_INCLUDE_DIR=${SYSROOT_DIR}/usr/include -DINSTALL_DIR_LIB=lib64 -DINSTALL_DIR_CMAKE=lib${LIB_SUFF}/cmake/opencascade \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}

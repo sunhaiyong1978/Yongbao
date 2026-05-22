@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-elfutils
-export PACKAGE_VERSION=0.194
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-elfutils/0.194/
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.194
-tar xvf ${DOWNLOADDIR}/elfutils-0.194.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/elfutils-0.194
+export PACKAGE_VERSION=0.195
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-elfutils/0.195/
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.195
+tar xvf ${DOWNLOADDIR}/elfutils-0.195.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/elfutils-0.195
         
 	for config_i in $(find -name "config.sub")
 	do
@@ -55,7 +55,7 @@ pushd ${BUILD_DIRECTORY}/elfutils-0.194
 	PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools/bin:${PATH}
 
 	
-	LDFLAGS="${STATIC_STR}" \
+	LDFLAGS="${STATIC_STR}" CFLAGS="${CFLAGS} -Wno-error=unused-but-set-variable" \
 	./configure --prefix=${CROSS_TOOLCHAIN_PREFIX}/cross-tools --build=${CROSS_HOST} \
 		--host=${COMPAT_HOST} --target=${COMPAT_TARGET} \
 		--disable-debuginfod --enable-libdebuginfod=dummy --enable-maintainer-mode \
@@ -66,4 +66,4 @@ pushd ${BUILD_DIRECTORY}/elfutils-0.194
 	fi
 	make DESTDIR=${TOOLCHAIN_INSTALL_DIR}/elfutils install-strip
 popd 
-rm -rf ${BUILD_DIRECTORY}/elfutils-0.194
+rm -rf ${BUILD_DIRECTORY}/elfutils-0.195

@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=Markdown
-export PACKAGE_VERSION=3.10.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Markdown/3.10.1/
-rm -rf ${BUILD_DIRECTORY}/markdown-3.10.1
-tar xvf ${DOWNLOADDIR}/markdown-3.10.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/markdown-3.10.1
+export PACKAGE_VERSION=3.10.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/Markdown/3.10.2/
+rm -rf ${BUILD_DIRECTORY}/markdown-3.10.2
+tar xvf ${DOWNLOADDIR}/markdown-3.10.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/markdown-3.10.2
 	
 	${HOST_TOOLS_DIR}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${HOST_TOOLS_DIR}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user Markdown
 popd 
-rm -rf ${BUILD_DIRECTORY}/markdown-3.10.1
+rm -rf ${BUILD_DIRECTORY}/markdown-3.10.2

@@ -16,6 +16,7 @@ pushd ${BUILD_DIRECTORY}/lua-5.4.8
     LUA_VERSION_RELEASE=$(grep "^R=" Makefile | awk -F'=' '{ print $2 }' | tr -d ' ' | awk -F'.' '{ print $2 }')
     make TO_LIB="liblua.so liblua.so.${LUA_VERSION} liblua.so.${LUA_VERSION}.${LUA_VERSION_RELEASE}" \
          INSTALL_TOP=${SYSROOT_DIR}/usr \
+	 INSTALL_INC=${SYSROOT_DIR}/usr/include/lua \
          INSTALL_LIB=${SYSROOT_DIR}/usr/lib64 \
          INSTALL_MAN=${SYSROOT_DIR}/usr/share/man/man1 install
     ln -sf liblua.so.${LUA_VERSION}.${LUA_VERSION_RELEASE} ${SYSROOT_DIR}/usr/lib64/liblua.so.${LUA_VERSION}

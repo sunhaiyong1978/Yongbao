@@ -20,14 +20,20 @@ pushd ${BUILD_DIRECTORY}/gcc_git-git-default_git
 		             --with-mpfr-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
 		             --with-gmp-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} --with-mpc-lib=${CROSSTOOLS_DIR}/lib${LIB_SUFF} \
 		             --enable-__cxa_atexit --enable-threads=posix --with-system-zlib \
-		             --enable-libstdcxx-time --enable-checking=release \
+		             --enable-libstdcxx-time --enable-checking=release --disable-multilib \
 			     --enable-linker-build-id --with-linker-hash-style=gnu --enable-gnu-unique-object --enable-initfini-array --enable-gnu-indirect-function \
-		             --disable-multilib \
-			     --with-simd=lsx \
 		             --enable-languages=c,c++,fortran,objc,obj-c++,lto,ada
 		make -j${JOBS}
 		make install-strip
 		ln -sf ${CROSS_TARGET}-gcc ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-cc
+
+		rm -fv $(dirname $(realpath $(${CROSS_TARGET}-gcc -print-file-name=libssp.a)))/libssp*
+		${CROSS_TARGET}-gcc -dumpspecs > specs
+		CUSTOM_LIB_PATH="${SYSROOT_DIR}/lib${LIB_SUFF}"
+		sed -i "/^\*link:/,/^$/ {
+/--build-id/ s|\(--build-id[^ ]*\)|\1 -rpath-link=${CUSTOM_LIB_PATH//\//\\/}|;
+}" specs
+		mv specs $(dirname $(${CROSS_TARGET}-gcc -print-libgcc-file-name))/specs
 	popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc_git-git-default_git

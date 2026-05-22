@@ -17,9 +17,7 @@ pushd ${BUILD_DIRECTORY}/npth-1.8
                 autoreconf -ifv
         fi
         ./configure ${COMMON_CONFIG} --enable-install-npth-config --enable-malloc0returnsnull
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	eval ${MAKE_AND_INSTALL}
 	cp -a ${SYSROOT_DIR}/usr/bin/npth-config ${CROSSTOOLS_DIR}/bin/
 	sed -i "/^prefix/s@=\/usr@=${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/npth-config
 	sed -i "/^libs/s@-L\/usr@-L${SYSROOT_DIR}\/usr@g" ${CROSSTOOLS_DIR}/bin/npth-config

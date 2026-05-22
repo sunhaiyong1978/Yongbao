@@ -1,0 +1,27 @@
+From edd23b19f5b79a21888e58519e453c63e25bfea0 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 18 Apr 2026 03:56:08 +0000
+Subject: [PATCH] remove absolute directory to linker.
+
+---
+ contrib/gcc/fbmngplay/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/gcc/fbmngplay/Makefile b/contrib/gcc/fbmngplay/Makefile
+index 27ad8db..713b9a3 100644
+--- a/contrib/gcc/fbmngplay/Makefile
++++ b/contrib/gcc/fbmngplay/Makefile
+@@ -15,8 +15,8 @@ SOURCES = fbmngplay.c
+ PROGRAMS =  fbmngplay fbmngplay.static
+ OBJECTS = fbmngplay.o messages.o mng.o console.o
+ 
+-LDFLAGS =  -L/usr/lib 
+-LIBSS = /usr/lib/libmng-mini.a /usr/lib/libz.a -lm
++LDFLAGS =
++LIBSS =
+ LIBSD = -lmng -lz -lm
+ 
+ CFLAGS = -Os -Wall -Wmissing-prototypes -Wstrict-prototypes -D_REENTRANT
+-- 
+2.31.1
+

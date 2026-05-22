@@ -1,0 +1,19 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=libidn2
+export PACKAGE_VERSION=2.3.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libidn2/2.3.8/
+rm -rf ${BUILD_DIRECTORY}/libidn2-2.3.8
+tar xvf ${DOWNLOADDIR}/libidn2-2.3.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libidn2-2.3.8
+	
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG} --without-libunistring-prefix --enable-malloc0returnsnull
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/libidn2-2.3.8

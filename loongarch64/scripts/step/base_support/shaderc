@@ -3,16 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=shaderc
-export PACKAGE_VERSION=2026.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/shaderc/2026.1/
-rm -rf ${BUILD_DIRECTORY}/shaderc-2026.1
-tar xvf ${DOWNLOADDIR}/shaderc-2026.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/shaderc-2026.1
+export PACKAGE_VERSION=2026.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/shaderc/2026.2/
+rm -rf ${BUILD_DIRECTORY}/shaderc-2026.2
+tar xvf ${DOWNLOADDIR}/shaderc-2026.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/shaderc-2026.2
 	tar xvf ${DOWNLOADDIR}/SPIRV-Tools-$(get_package_version "SPIRV-Tools").tar.gz -C third_party/
 	mv third_party/SPIRV-Tools-$(get_package_version "SPIRV-Tools") third_party/spirv-tools
 	
-	tar xvf ${RESOURCEDIR}/files/glslang-15.1.0.tar.gz -C third_party/
-	mv third_party/glslang-15.1.0 third_party/glslang
+	tar xvf ${DOWNLOADDIR}/glslang-$(get_package_version "glslang").tar.gz -C third_party/
+	mv third_party/glslang-$(get_package_version "glslang") third_party/glslang
 
 	tar xvf ${DOWNLOADDIR}/SPIRV-Headers-$(get_package_version "SPIRV-Headers").tar.gz -C third_party/spirv-tools/external/
 	mv third_party/spirv-tools/external/SPIRV-Headers-$(get_package_version "SPIRV-Headers") third_party/spirv-tools/external/spirv-headers
@@ -30,7 +30,7 @@ pushd ${BUILD_DIRECTORY}/shaderc-2026.1
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/shaderc-2026.1
+rm -rf ${BUILD_DIRECTORY}/shaderc-2026.2
 
 echo "#!/bin/bash -e
 qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/glslc \"\$@\"" \

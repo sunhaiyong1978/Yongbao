@@ -10,7 +10,7 @@ tar xvf ${DOWNLOADDIR}/flac-1.5.0.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/flac-1.5.0
 	
 	autoreconf -ifv
-	./configure ${COMMON_CONFIG} --with-ogg-includes=${SYSROOT_DIR}/usr/include
+	./configure ${COMMON_CONFIG} --with-ogg-includes=${SYSROOT_DIR}/usr/include --with-ogg-libraries=${SYSROOT_DIR}/usr/lib${LIB_SUFF}
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/flac-1.5.0

@@ -3,17 +3,17 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=perf
-export PACKAGE_VERSION=6.18.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/perf/6.18.8/
-rm -rf ${BUILD_DIRECTORY}/linux-6.18.8
-tar xvf ${DOWNLOADDIR}/linux-6.18.8.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-6.18.8
-	patch -Np1 -i ${SYSDIR}/files/base_support/perf/6.18.8/patches/0001-libbpf-fix-build-error-for-glibc-2.43.patch 
-	patch -Np1 -i ${SYSDIR}/files/base_support/perf/6.18.8/patches/0001-linux-kernel-tools-perf-fix-build-error-for-glibc-2..patch 
+export PACKAGE_VERSION=7.0.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/perf/7.0.6/
+rm -rf ${BUILD_DIRECTORY}/linux-7.0.6
+tar xvf ${DOWNLOADDIR}/linux-7.0.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-7.0.6
+	patch -Np1 -i ${SYSDIR}/files/base_support/perf/7.0.6/patches/0001-Add-clang-and-rust-loongarch64-define-to-Makefile.co.patch 
+	patch -Np1 -i ${SYSDIR}/files/base_support/perf/7.0.6/patches/0002-perf-fix-build-error-for-glibc-2.43.patch 
 	 
 	pushd tools/perf
-		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- EXTRA_CFLAGS="-Wno-error=aggressive-loop-optimizations" NO_LIBTRACEEVENT=1
+		make -j${JOBS} ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- EXTRA_CFLAGS="-Wno-error=aggressive-loop-optimizations" NO_LIBTRACEEVENT=1 NO_SDT=1 NO_LIBNUMA=1 NO_LIBBABELTRACE=1 NO_CAPSTONE=1 NO_JVMTI=1 NO_LIBPFM4=1 NO_LIBDW=1 RUST_FLAGS="--sysroot=${CROSSTOOLS_DIR}"
 		cp -a perf ${SYSROOT_DIR}/usr/bin/
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-6.18.8
+rm -rf ${BUILD_DIRECTORY}/linux-7.0.6

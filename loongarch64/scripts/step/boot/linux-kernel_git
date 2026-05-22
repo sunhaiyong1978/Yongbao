@@ -3,27 +3,27 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=linux-kernel_git
-export PACKAGE_VERSION=6.x
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-kernel_git/6.x/
-rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git
-tar xvf ${DOWNLOADDIR}/linux_git-6.x_git.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
+export PACKAGE_VERSION=7.x
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-kernel_git/7.x/
+rm -rf ${BUILD_DIRECTORY}/linux_git-7.x_git
+tar xvf ${DOWNLOADDIR}/linux_git-7.x_git.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux_git-7.x_git
 	CONFIG_STR=$(get_user_set_env config "default")
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-UniVT-Double-tty-VT-screenbuf-for-univt.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0002-UniVT-Add-several-function-for-Univt.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0003-UniVT-Fix-charcount-limit.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0004-UniVT-Add-a-old_screen_size-variable-saves-the-origi.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0005-Univt-Add-support-for-writing-UTF-8-encoding.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0006-UniVT-Add-support-for-displaying-UTF-8-text.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0007-UniVT-Support-displaying-UTF-8-text-for-90-degree-ro.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0008-UniVT-Support-displaying-UTF-8-text-for-180-degree-r.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0009-UniVT-Support-displaying-UTF-8-text-for-270-degree-r.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-UniVT-Add-Chinese-fonts-support-in-console.patch 
-	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/6.x/patches/0001-remove-vc_uniscr_check-function-for-paste-selection.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0001-UniVT-Double-tty-VT-screenbuf-for-univt.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0002-UniVT-Add-several-function-for-Univt.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0003-UniVT-Fix-charcount-limit.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0004-UniVT-Add-a-old_screen_size-variable-saves-the-origi.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0005-Univt-Add-support-for-writing-UTF-8-encoding.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0006-UniVT-Add-support-for-displaying-UTF-8-text.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0007-UniVT-Support-displaying-UTF-8-text-for-90-degree-ro.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0008-UniVT-Support-displaying-UTF-8-text-for-180-degree-r.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0009-UniVT-Support-displaying-UTF-8-text-for-270-degree-r.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0001-UniVT-Add-Chinese-fonts-support-in-console.patch 
+	patch -Np1 -i ${SYSDIR}/files/boot/linux-kernel_git/7.x/patches/0001-remove-vc_uniscr_check-function-for-paste-selection.patch 
 	 
 	sed -i "s@mabi=lp64s@& -mcmodel=normal@g" arch/loongarch/Makefile
 	make mrproper
-	cp -af ${RESOURCEDIR}/linux-config-6.x_${CONFIG_STR} ./.config
+	cp -af ${RESOURCEDIR}/linux-config-7.x_${CONFIG_STR} ./.config
 	sed -i "/^CONFIG_LOCALVERSION/s@=\"\(.*\)\"@=\"_${CONFIG_STR}\"@g" .config
 	make ARCH=${ARCH_FAMILY} CROSS_COMPILE=${CROSS_TARGET}- olddefconfig
 	PKG_CONFIG_SYSROOT_DIR="" \
@@ -49,4 +49,4 @@ pushd ${BUILD_DIRECTORY}/linux_git-6.x_git
 	echo "${LINUX_KERNEL_VERSION}" > ${COMMON_DIR}/linux-kernel.version
 	echo "${LINUX_KERNEL_VERSION}" > ${COMMON_DIR}/linux.version
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux_git-6.x_git
+rm -rf ${BUILD_DIRECTORY}/linux_git-7.x_git

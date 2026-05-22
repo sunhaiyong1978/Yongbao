@@ -1,0 +1,24 @@
+From c6c2c718f2a28f8ed3d19affd8374bd102eee60e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 6 May 2026 06:31:00 +0000
+Subject: [PATCH] accountsservice 23.13.9 remove tests for cross build.
+
+---
+ meson.build | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index ce3d488..41f1281 100644
+--- a/meson.build
++++ b/meson.build
+@@ -232,7 +232,6 @@ if get_option('gtk_doc')
+   subdir('doc/libaccountsservice')
+ endif
+ 
+-subdir('tests')
+ 
+ configure_file(
+   output: 'config.h',
+-- 
+2.31.1
+

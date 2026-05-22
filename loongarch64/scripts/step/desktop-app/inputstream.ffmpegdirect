@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=inputstream.ffmpegdirect
-export PACKAGE_VERSION=22.1.2-Piers
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/inputstream.ffmpegdirect/22.1.2-Piers/
-rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.2-Piers
-tar xvf ${DOWNLOADDIR}/inputstream.ffmpegdirect-22.1.2-Piers.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.2-Piers
+export PACKAGE_VERSION=22.2.4-Piers
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/inputstream.ffmpegdirect/22.2.4-Piers/
+rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.2.4-Piers
+tar xvf ${DOWNLOADDIR}/inputstream.ffmpegdirect-22.2.4-Piers.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.2.4-Piers
         
 	mkdir cross-build
 	pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.2-Piers
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.1.2-Piers
+rm -rf ${BUILD_DIRECTORY}/inputstream.ffmpegdirect-22.2.4-Piers

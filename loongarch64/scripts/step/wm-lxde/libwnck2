@@ -12,6 +12,7 @@ pushd ${BUILD_DIRECTORY}/libwnck-2.31.0
     pushd cross-build
         ../configure ${COMMON_CONFIG} --program-suffix=-1 \
                 ac_cv_path_PKG_CONFIG=${CROSS_TARGET}-pkg-config --enable-introspection
+	check_gnu_Makefile
         make -j${JOBS} GETTEXT_PACKAGE=libwnck-1 \
              INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
              INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \

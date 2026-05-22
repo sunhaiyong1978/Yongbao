@@ -1,0 +1,25 @@
+From ea6ea6c11e7e2da6f91009cdd5f949719cad1785 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 14 Apr 2026 06:57:10 +0000
+Subject: [PATCH 2/2] perf fix build error for glibc 2.43.
+
+---
+ tools/perf/arch/loongarch/util/header.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/arch/loongarch/util/header.c b/tools/perf/arch/loongarch/util/header.c
+index 0c6d823..46f53a7 100644
+--- a/tools/perf/arch/loongarch/util/header.c
++++ b/tools/perf/arch/loongarch/util/header.c
+@@ -26,7 +26,7 @@
+ 
+ static char *_get_field(const char *line)
+ {
+-	char *line2, *nl;
++	const char *line2, *nl;
+ 
+ 	line2 = strrchr(line, ' ');
+ 	if (!line2)
+-- 
+2.31.1
+

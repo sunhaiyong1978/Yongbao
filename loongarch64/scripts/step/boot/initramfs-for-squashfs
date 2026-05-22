@@ -44,9 +44,8 @@ pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
 
 	for i in fs/fat/fat fs/fat/msdos fs/fat/vfat drivers/usb/storage/usb-storage drivers/usb/storage/uas
 	do
-		if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko.xz ]; then
-		        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko.xz lib/
-			unxz -d lib/*.ko.xz
+		if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko.zst ]; then
+		        cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko.zst lib/
 		else
 			if [ -f ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko ]; then
 		        	cp -a ${DIST_DIRECTORY}/os/linux-kernel/${LINUX_KERNEL_VERSION}/${CONFIG_STR}/img/usr/lib/modules/${LINUX_KERNEL_VERSION}_${CONFIG_STR}/kernel/${i}.ko lib/
@@ -55,6 +54,7 @@ pushd ${BUILD_DIRECTORY}/ISO-Build/Initramfs
 			fi
 		fi
 	done
+	unzstd -d lib/*.ko.zst
 
 
         mkdir -p lib/firmware/amdgpu

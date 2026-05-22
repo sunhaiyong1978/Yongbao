@@ -9,12 +9,14 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/sane-backends/1.4.0/
 rm -rf ${BUILD_DIRECTORY}/backends-1.4.0-c7e4b5e35e3d614d2b1181d760a717bfc395a203
 tar xvf ${DOWNLOADDIR}/sane-backends-1.4.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/backends-1.4.0-c7e4b5e35e3d614d2b1181d760a717bfc395a203
-        
+        patch -Np1 -i ${SYSDIR}/files/linux_runtime/sane-backends/1.4.0/patches/0001-backends-1.4.0-fix-build-error-for-glibc-2.43.patch 
+	 
 	echo ${PACKAGE_VERSION} > .tarball-version
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
         CFLAGS="${CFLAGS} -std=gnu17" ./configure ${COMMON_CONFIG} --enable-static --enable-malloc0returnsnull
+	check_gnu_Makefile
         CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
         make DESTDIR=${LINUX_SYSROOT_DIR} install
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la

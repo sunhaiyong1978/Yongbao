@@ -11,6 +11,7 @@ pushd ${BUILD_DIRECTORY}/alsa-tools-1.2.15
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ld10k1/
     sed -i.orig -e "s@envy24control@@g" -e "s@rmedigicontrol@@g" \
                 -e "s@seq@@g" -e "s@echomixer@@g" -e"s@qlo10k1@@g" Makefile
+    check_gnu_Makefile
     make -j${JOBS} configure CONFIGURE_ARGS="$COMMON_CONFIG"
     make DESTDIR=${SYSROOT_DIR} install
 popd 

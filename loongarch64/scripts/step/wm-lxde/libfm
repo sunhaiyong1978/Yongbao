@@ -17,8 +17,6 @@ pushd ${BUILD_DIRECTORY}/libfm-1.3.2
 		autoreconf -ifv
 	fi
 	CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG}  --enable-gtk3
-	make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install
-	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/libfm-1.3.2

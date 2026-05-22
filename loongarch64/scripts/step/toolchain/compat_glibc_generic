@@ -23,12 +23,11 @@ pushd ${BUILD_DIRECTORY}/glibc-2.36
     TARGET_CROSSTOOLCHAIN_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools"
     PATH=${TARGET_CROSSTOOLCHAIN_DIR}/bin:${PATH}
 
-    sed -i "s@5.15.0@4.15.0@g" sysdeps/unix/sysv/linux/loongarch/configure{,.ac}
     mkdir -p build
     pushd build
         BUILD_CC="gcc" \
-	CC="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
-        CXX="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI}" \
+	CC="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI} -mcmodel=medium" \
+        CXX="${TARGET_CROSSTOOLCHAIN_DIR}/bin/${COMPAT_TARGET}-gcc ${ARCH_MABI} -mcmodel=medium" \
         AS="${COMPAT_TARGET}-as" AR="${COMPAT_TARGET}-ar" RANLIB="${COMPAT_TARGET}-ranlib" \
         ../configure --prefix=/usr --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \

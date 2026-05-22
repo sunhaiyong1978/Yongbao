@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/autogen-5.18.16
 	            --without-libregex --disable-dependency-tracking \
 	            --with-libxml2-libs=${SYSROOT_DIR}/usr/lib${LIB_SUFF} \
 	            ag_cv_run_strcspn=yes
+	check_gnu_Makefile
 	make -j${JOBS} CC="${CROSS_TARGET}-gcc -Wno-error=dangling-pointer"
 	make CC="${CROSS_TARGET}-gcc -Wno-error=dangling-pointer" DESTDIR=${SYSROOT_DIR} install
 popd 

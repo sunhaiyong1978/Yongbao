@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=xorriso
-export PACKAGE_VERSION=1.5.6.pl02
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/xorriso/1.5.6.pl02/
-rm -rf ${BUILD_DIRECTORY}/xorriso-1.5.6
-tar xvf ${DOWNLOADDIR}/xorriso-1.5.6.pl02.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xorriso-1.5.6
+export PACKAGE_VERSION=1.5.8.pl01
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/xorriso/1.5.8.pl01/
+rm -rf ${BUILD_DIRECTORY}/xorriso-1.5.8
+tar xvf ${DOWNLOADDIR}/xorriso-1.5.8.pl01.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xorriso-1.5.8
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/xorriso-1.5.6
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/xorriso-1.5.6
+rm -rf ${BUILD_DIRECTORY}/xorriso-1.5.8

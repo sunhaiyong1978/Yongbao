@@ -1,3 +1,5 @@
+compat=0
+target_compat=0
 target=loongarch64-musl
 target=x86_64-musl
 host=loongarch64-musl

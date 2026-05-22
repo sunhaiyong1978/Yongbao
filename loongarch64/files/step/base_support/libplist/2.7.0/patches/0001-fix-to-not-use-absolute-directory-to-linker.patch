@@ -1,0 +1,25 @@
+From 542f17ce6425c5041380bcfd049855e6060225a6 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 17 Apr 2026 09:26:21 +0000
+Subject: [PATCH] fix to not use absolute directory to linker.
+
+---
+ configure          | 2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/configure b/configure
+index cf97a99..2867686 100755
+--- a/configure
++++ b/configure
+@@ -18385,7 +18385,7 @@ EOD`
+ 		then
+ 			# use the official shared library
+ 			ac_python_library=`echo "$ac_python_library" | sed "s/^lib//"`
+-			PYTHON_LIBS="-L$ac_python_libdir -l$ac_python_library"
++			PYTHON_LIBS=" -l$ac_python_library"
+ 		else
+ 			# old way: use libpython from python_configdir
+ 			ac_python_libdir=`$PYTHON -c \
+-- 
+2.31.1
+

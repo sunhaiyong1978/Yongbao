@@ -1,0 +1,25 @@
+From c7d7d88724fda71e94048e2848c313f69d5e5183 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 16 Apr 2026 11:38:50 +0000
+Subject: [PATCH] gnutls 3.8.12 remove -L$libdir at gnutls.pc for cross build.
+
+---
+ configure    | 2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/configure b/configure
+index 1bbf64e..f82b143 100755
+--- a/configure
++++ b/configure
+@@ -93852,7 +93852,7 @@ printf "%s\n" "#define DEFAULT_BLOCKLIST_FILE \"$with_default_blocklist_file\""
+ 
+ fi
+ 
+-LIBGNUTLS_LIBS="-L${libdir} -lgnutls $LIBS"
++LIBGNUTLS_LIBS=" -lgnutls $LIBS"
+ LIBGNUTLS_CFLAGS="-I${includedir}"
+ 
+ 
+-- 
+2.31.1
+

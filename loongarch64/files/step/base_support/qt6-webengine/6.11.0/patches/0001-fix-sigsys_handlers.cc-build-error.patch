@@ -1,0 +1,27 @@
+From cd5bb42d11909be23e8b0988221852d5a734b774 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 13 Apr 2026 12:52:31 +0000
+Subject: [PATCH] fix sigsys_handlers.cc build error.
+
+---
+ .../sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc      | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
+index 759f2b6492..b349b4200a 100644
+--- a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
++++ b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc
+@@ -226,8 +226,8 @@ intptr_t SIGSYSIoctlFailure(const struct arch_seccomp_data& args,
+         message,
+         "dev=0x%x,ino=%d,mode=0%o,nlink=%d,"
+         "uid=%d,gid=%d,rdev=0x%x,size=%d,blksize=%d,blocks=%d",
+-        stat_buf.st_dev, stat_buf.st_ino, stat_buf.st_mode, stat_buf.st_nlink,
+-        stat_buf.st_uid, stat_buf.st_gid, stat_buf.st_rdev, stat_buf.st_size,
++        0, stat_buf.st_ino, stat_buf.st_mode, stat_buf.st_nlink,
++        stat_buf.st_uid, stat_buf.st_gid, 0, stat_buf.st_size,
+         stat_buf.st_blksize, stat_buf.st_blocks);
+   } else {
+     // fstat failed, log the errno.
+-- 
+2.31.1
+

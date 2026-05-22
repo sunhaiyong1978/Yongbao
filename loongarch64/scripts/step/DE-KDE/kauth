@@ -16,6 +16,7 @@ pushd ${BUILD_DIRECTORY}/kauth-5.116.0
                       -DPKG_CONFIG_EXECUTABLE=${SYSDIR}/cross-tools/bin/${CROSS_TARGET}-pkg-config \
                       -DCMAKE_SYSROOT=${SYSDIR}/sysroot \
                       -DCMAKE_FIND_ROOT_PATH=${SYSDIR}/sysroot/usr \
+		      -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
                       -DGETTEXT_MSGFMT_EXECUTABLE=/bin/msgfmt \
                       -DGETTEXT_MSGMERGE_EXECUTABLE=/bin/msgmerge \
                       -DPython_EXECUTABLE=${CROSSTOOLS_DIR}/bin/python3 \

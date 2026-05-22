@@ -37,8 +37,8 @@ pushd ${BUILD_DIRECTORY}/glibc-2.43
     mkdir -p build
     pushd build
         BUILD_CC="gcc" \
-	CC="${CROSS_TARGET}-gcc ${ARCH_MABI}" \
-        CXX="${CROSS_TARGET}-gcc ${ARCH_MABI}" \
+	CC="${CROSS_TARGET}-gcc ${ARCH_MABI} -fno-link-libatomic" \
+        CXX="${CROSS_TARGET}-gcc ${ARCH_MABI} -fno-link-libatomic" \
         AS="${CROSS_TARGET}-as" AR="${CROSS_TARGET}-ar" RANLIB="${CROSS_TARGET}-ranlib" \
         ../configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \

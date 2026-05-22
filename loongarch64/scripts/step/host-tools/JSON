@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=JSON
-export PACKAGE_VERSION=4.10
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/JSON/4.10/
-rm -rf ${BUILD_DIRECTORY}/JSON-4.10
-tar xvf ${DOWNLOADDIR}/JSON-4.10.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/JSON-4.10
+export PACKAGE_VERSION=4.11
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/JSON/4.11/
+rm -rf ${BUILD_DIRECTORY}/JSON-4.11
+tar xvf ${DOWNLOADDIR}/JSON-4.11.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/JSON-4.11
 	
 	${HOST_TOOLS_DIR}/bin/perl Makefile.PL
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/JSON-4.10
+rm -rf ${BUILD_DIRECTORY}/JSON-4.11

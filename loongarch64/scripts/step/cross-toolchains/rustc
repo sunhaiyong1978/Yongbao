@@ -4,17 +4,22 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.93.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/rustc/1.93.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.93.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.93.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.93.0-src
+export PACKAGE_VERSION=1.95.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/rustc/1.95.0/
+if [ "x${LINUX_HOST}" == "x$(echo ${CROSS_HOST} | sed 's@cross@unknown@g')" ]; then
+	mkdir -p ${PREFIX}/${LINUX_HOST}/lib/rustlib/
+	cp -a ${HOST_TOOLS_DIR}/lib/rustlib/${LINUX_HOST} ${PREFIX}/${LINUX_HOST}/lib/rustlib
+else
+rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.95.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.95.0-src
 	
 	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
-	./configure --target=${LINUX_HOST},$(echo ${CROSS_HOST} | sed 's@cross@unknown@g') \
+	./configure --target=${LINUX_HOST} \
 	            --prefix=${PREFIX}/${LINUX_HOST} --sysconfdir=${PREFIX}/${LINUX_HOST}/etc \
-	            --local-rust-root=${CROSSTOOLS_DIR}/rust/usr/local \
-	            --enable-extended --enable-vendor --disable-docs --disable-dist-src --release-channel=dev \
+	            --local-rust-root=${HOST_TOOLS_DIR} \
+	            --enable-extended --enable-vendor --release-channel=dev \
+		    --disable-docs --disable-debug --disable-compiler-docs --disable-optimize-tests --disable-verbose-tests --disable-dist-src \
 		    --set=target.${LINUX_HOST}.linker="${LINUX_HOST}-gcc" \
 		    --set=target.${LINUX_HOST}.cc="${LINUX_HOST}-gcc" \
 		    --set=target.${LINUX_HOST}.cxx="${LINUX_HOST}-g++" \
@@ -24,6 +29,10 @@ pushd ${BUILD_DIRECTORY}/rustc-1.93.0-src
         make -j${JOBS}
         make -j${JOBS} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.93.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src
 
 save_package_version cross-toolchains_rustc "${PACKAGE_VERSION}-dev"
+
+
+
+fi

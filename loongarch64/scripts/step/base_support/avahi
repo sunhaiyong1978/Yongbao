@@ -30,8 +30,7 @@ return; \
                 --enable-core-docs --with-distro=none \
 		--with-systemdsystemunitdir=/usr/lib/systemd/system \
                 --with-dbus-system-address='unix:path=/run/dbus/system_bus_socket'
-                make -j${JOBS}
-                make DESTDIR=${SYSROOT_DIR} install
+		eval ${MAKE_AND_INSTALL}
 	popd
         mkdir cross-build
         pushd cross-build
@@ -41,6 +40,7 @@ return; \
 		--enable-compat-libdns_sd \
 		--with-systemdsystemunitdir=/usr/lib/systemd/system \
                 --with-dbus-system-address='unix:path=/run/dbus/system_bus_socket'
+		check_gnu_Makefile
                 make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
                      INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
                      VAPIGEN=${CROSS_TARGET}-vapigen

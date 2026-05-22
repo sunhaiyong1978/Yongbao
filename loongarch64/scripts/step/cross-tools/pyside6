@@ -1,0 +1,38 @@
+source env/cross-tools/config
+source env/distro.info
+source env/function.sh
+source env/cross-tools/custom
+export STEP_BUILDNAME=cross-tools
+export STEP_PACKAGENAME=pyside6
+export PACKAGE_VERSION=6.11.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/pyside6/6.11.0/
+rm -rf ${BUILD_DIRECTORY}/pyside-setup-everywhere-src-6.11.0
+tar xvf ${DOWNLOADDIR}/pyside-setup-everywhere-src-6.11.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pyside-setup-everywhere-src-6.11.0
+    patch -Np1 -i ${SYSDIR}/files/cross-tools/pyside6/6.11.0/patches/0001-Always-link-to-python-libraries.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/pyside6/6.11.0/patches/0001-Fix-installation.patch 
+	patch -Np1 -i ${SYSDIR}/files/cross-tools/pyside6/6.11.0/patches/0001-Revert-Modify-headers-installation-for-CMake-builds.patch 
+	 
+    pushd sources/shiboken6
+	sed -i "/shibokenmodule/d" CMakeLists.txt
+	mkdir -p native-build
+	pushd native-build
+		CC="gcc" CXX="g++" \
+		LLVM_INSTALL_DIR=${HOST_TOOLS_DIR}/compat/ \
+	        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBUILD_TESTS=OFF \
+        	      -DCMAKE_BUILD_TYPE=RELEASE ..
+	        eval ${MAKE_AND_INSTALL}
+	popd
+    popd
+    pushd sources/shiboken6_generator
+	mkdir -p native-build
+	pushd native-build
+		CC="gcc" CXX="g++" \
+		LLVM_INSTALL_DIR=${HOST_TOOLS_DIR}/compat/ \
+	        cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBUILD_TESTS=OFF -DSHIBOKEN_BUILD_TOOLS=ON \
+        	      -DCMAKE_BUILD_TYPE=RELEASE ..
+	        eval ${MAKE_AND_INSTALL}
+	popd
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/pyside-setup-everywhere-src-6.11.0

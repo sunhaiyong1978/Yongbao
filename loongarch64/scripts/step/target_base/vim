@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=vim
-export PACKAGE_VERSION=9.1.2131
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/vim/9.1.2131/
-rm -rf ${BUILD_DIRECTORY}/vim-9.1.2131
-tar xvf ${DOWNLOADDIR}/vim-9.1.2131.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/vim-9.1.2131
+export PACKAGE_VERSION=9.2.0475
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/vim/9.2.0475/
+rm -rf ${BUILD_DIRECTORY}/vim-9.2.0475
+tar xvf ${DOWNLOADDIR}/vim-9.2.0475.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/vim-9.2.0475
 	echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 cat > src/auto/config.cache << EOF
 	vim_cv_getcwd_broken=no
@@ -19,6 +19,7 @@ cat > src/auto/config.cache << EOF
 	ac_cv_small_wchar_t=no
 EOF
 	./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET}  --with-tlib=ncurses --enable-gui=no
+	check_gnu_Makefile
 	make -j${JOBS}
 	make DESTDIR=${SYSROOT_DIR} STRIP=${CROSS_TARGET}-strip install
 	ln -sfv vim ${SYSROOT_DIR}/usr/bin/vi
@@ -38,4 +39,4 @@ if (&term == "xterm") || (&term == "putty")
 endif
 EOF
 popd 
-rm -rf ${BUILD_DIRECTORY}/vim-9.1.2131
+rm -rf ${BUILD_DIRECTORY}/vim-9.2.0475

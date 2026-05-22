@@ -1,0 +1,25 @@
+From beb548f485be07a308b5d64ea71b2bffc1080a6c Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 14 Apr 2026 03:26:59 +0000
+Subject: [PATCH] chromium third_party blink renderer add cxxflags
+ -Wno-c++11-narrowing.
+
+---
+ src/3rdparty/chromium/third_party/blink/renderer/BUILD.gn | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/BUILD.gn b/src/3rdparty/chromium/third_party/blink/renderer/BUILD.gn
+index cf00e08b..1ea1dc85 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/BUILD.gn
++++ b/src/3rdparty/chromium/third_party/blink/renderer/BUILD.gn
+@@ -38,6 +38,7 @@ config("inside_blink") {
+   ]
+   if (is_clang || !is_win) {
+     cflags += [
++      "-Wno-c++11-narrowing",
+       "-Wno-unused-variable",
+     ]
+   } else {
+-- 
+2.31.1
+

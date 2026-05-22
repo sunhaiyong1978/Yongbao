@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=DE-KDE
 export STEP_PACKAGENAME=qtkeychain
-export PACKAGE_VERSION=0.15.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/qtkeychain/0.15.0/
-rm -rf ${BUILD_DIRECTORY}/qtkeychain-0.15.0
-tar xvf ${DOWNLOADDIR}/qtkeychain-0.15.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qtkeychain-0.15.0
+export PACKAGE_VERSION=0.16.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/DE-KDE/qtkeychain/0.16.0/
+rm -rf ${BUILD_DIRECTORY}/qtkeychain-0.16.0
+tar xvf ${DOWNLOADDIR}/qtkeychain-0.16.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qtkeychain-0.16.0
         
 	mkdir cross-build
 	pushd cross-build
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/qtkeychain-0.15.0
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qtkeychain-0.15.0
+rm -rf ${BUILD_DIRECTORY}/qtkeychain-0.16.0

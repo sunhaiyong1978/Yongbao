@@ -41,9 +41,9 @@ pushd ${BUILD_DIRECTORY}/mpfr-4.2.2
 
 
 	./configure --prefix=${INSTALL_PREFIX_DIR} --host=${COMPAT_TARGET} --build=${CROSS_HOST} \
-		--libdir=${INSTALL_PREFIX_DIR}/lib${LIB_SUFF}
+		--libdir=${INSTALL_PREFIX_DIR}/lib${LIB_SUFF} --enable-static --disable-shared
 	make -j${JOBS}
 	make DESTDIR=${INSTALL_DIST_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/mpfr-4.2.2
-rm -f ${INSTALL_DIST_DIR}/usr/lib${LIB_SUFF}/*.la
+rm -f ${INSTALL_DIST_DIR}/${INSTALL_PREFIX_DIR}/lib${LIB_SUFF}/*.la

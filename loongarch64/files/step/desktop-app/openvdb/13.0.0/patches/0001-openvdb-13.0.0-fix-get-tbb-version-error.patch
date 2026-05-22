@@ -1,0 +1,24 @@
+From 44678c7a639f34a8374b05009d8d9342d34179f7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 20 May 2026 02:25:04 +0000
+Subject: [PATCH] openvdb 13.0.0 fix get tbb version error.
+
+---
+ openvdb/openvdb/thread/Threading.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/openvdb/openvdb/thread/Threading.h b/openvdb/openvdb/thread/Threading.h
+index b339a85..399c4b0 100644
+--- a/openvdb/openvdb/thread/Threading.h
++++ b/openvdb/openvdb/thread/Threading.h
+@@ -6,6 +6,7 @@
+ #ifndef OPENVDB_THREAD_THREADING_HAS_BEEN_INCLUDED
+ #define OPENVDB_THREAD_THREADING_HAS_BEEN_INCLUDED
+ 
++#include <tbb/version.h>
+ #include <openvdb/version.h>
+ 
+ #ifndef __TBB_show_deprecation_message_task_H
+-- 
+2.31.1
+

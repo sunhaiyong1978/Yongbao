@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/gmp-6.3.0
 	export CFLAGS="${CFLAGS} -std=gnu17"
 	ABI=${GMP_ABI} ./configure --build=${CROSS_HOST} --host=${LINUX_HOST} \
                 --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --enable-cxx
+	check_gnu_Makefile
 	make -j${JOBS}
 	run_step_package_check check
 	make DESTDIR=${LINUX_SYSROOT_DIR} install

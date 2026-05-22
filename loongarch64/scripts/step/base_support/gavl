@@ -1,0 +1,23 @@
+source env/base_support/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=base_support
+export STEP_PACKAGENAME=gavl
+export PACKAGE_VERSION=2.0.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gavl/2.0.1/
+rm -rf ${BUILD_DIRECTORY}/gavl-2.0.1
+tar xvf ${DOWNLOADDIR}/gavl-2.0.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gavl-2.0.1
+	patch -Np1 -i ${SYSDIR}/files/base_support/gavl/2.0.1/patches/0001-gavl-2.0.1-fix-for-cross-build.patch 
+	 
+	for config_i in $(find -name "config.sub")
+	do
+		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+	done
+	if [ ! -f configure ]; then
+		autoreconf -ifv
+	fi
+	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/gavl-2.0.1

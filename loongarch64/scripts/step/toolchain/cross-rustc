@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=cross-rustc
-export PACKAGE_VERSION=1.93.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-rustc/1.93.0/
-rm -rf ${BUILD_DIRECTORY}/rustc-1.93.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.93.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.93.0-src
+export PACKAGE_VERSION=1.95.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/cross-rustc/1.95.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.95.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.95.0-src
     HOST_HOST=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
     HOST_TARGET=$(archname_to_triple "$(get_user_set_env target ${CROSS_TARGET})" "${CROSS_TARGET}")
     ARCH_ABI=$(archname_to_archabi "$(get_user_set_env target ${HOST_TARGET})" "${ARCH_ABI}")
@@ -21,29 +21,35 @@ pushd ${BUILD_DIRECTORY}/rustc-1.93.0-src
 
     PATH=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_HOST}/cross-tools/bin:${TOOLCHAIN_DIRECTORY}/cross-target/${HOST_TARGET}/cross-tools/bin:${PATH}
 
+    TARGET_PKG_CONFIG_SYSROOT_DIR=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
     PKG_CONFIG_SYSROOT_DIR="" \
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
-                --host=${COMPAT_HOST} \
-                --local-rust-root=${CROSSTOOLS_DIR} \
-                --enable-extended --enable-vendor --release-channel=stable \
+                --host=${HOST_HOST} \
+                --local-rust-root=${HOST_TOOLS_DIR} \
+		--enable-extended --enable-vendor --disable-docs --release-channel=dev \
                 --disable-codegen-tests --experimental-targets="" \
-		--enable-llvm-static-stdcpp --enable-cargo-native-static
+		--set=target.${HOST_HOST}.linker="${COMPAT_HOST}-gcc" \
+		--set=target.${HOST_HOST}.cc="${COMPAT_HOST}-gcc" \
+		--set=target.${HOST_HOST}.cxx="${COMPAT_HOST}-g++" \
+		--enable-llvm-static-stdcpp --enable-cargo-native-static --enable-profiler
+	export CARGO_TARGET_$(echo ${HOST_HOST^^} | tr '-' '_')_RUSTFLAGS="$RUSTFLAGS -C link-args=-lz -Ccode-model=medium"
+
+    TARGET_PKG_CONFIG_SYSROOT_DIR=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
     PKG_CONFIG_SYSROOT_DIR="" \
-    CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS="$RUSTFLAGS -C link-args=-lz" \
     make -j${JOBS} HOST_CC="gcc" CC="${COMPAT_HOST}-gcc" \
          HOST_CXX="g++" CXX="${COMPAT_HOST}-g++" \
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64
 
+    TARGET_PKG_CONFIG_SYSROOT_DIR=${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target \
     PKG_CONFIG_SYSROOT_DIR="" \
-    CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS="$RUSTFLAGS -C link-args=-lz" \
     make -j${JOBS} HOST_CC="gcc" CC="${COMPAT_HOST}-gcc" \
          HOST_CXX="g++" CXX="${COMPAT_HOST}-g++" \
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_INCLUDE_DIR=${SYSROOT_DIR}/usr/include \
          LOONGARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=${SYSROOT_DIR}/usr/lib64 \
          dist
 
-    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.93.0" | sed "s@-default@@g")/
-    find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.93.0" | sed "s@-default@@g")/ ';'
+    mkdir -pv ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.95.0" | sed "s@-default@@g")/
+    find build/dist -name "*.xz" -exec mv -v '{}' ${DIST_DIRECTORY}/host/${ARCH_NAME}/rust/$(echo "1.95.0" | sed "s@-default@@g")/ ';'
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.93.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src

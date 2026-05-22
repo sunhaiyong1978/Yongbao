@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=gnome-sudoku
-export PACKAGE_VERSION=49.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gnome-sudoku/49.4/
-rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-49.4
-tar xvf ${DOWNLOADDIR}/gnome-sudoku-49.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gnome-sudoku-49.4
+export PACKAGE_VERSION=50.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/gnome-sudoku/50.1/
+rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-50.1
+tar xvf ${DOWNLOADDIR}/gnome-sudoku-50.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gnome-sudoku-50.1
         
         mkdir cross-build
         pushd cross-build
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/gnome-sudoku-49.4
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-49.4
+rm -rf ${BUILD_DIRECTORY}/gnome-sudoku-50.1

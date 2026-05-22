@@ -12,6 +12,7 @@ pushd ${BUILD_DIRECTORY}/sgml-common-0.6.3
 	 
     autoreconf -ifv
     ./configure ${COMMON_CONFIG}
+    check_gnu_Makefile
     make -j${JOBS}
     make docdir=/usr/share/doc DESTDIR=${SYSROOT_DIR} install
 

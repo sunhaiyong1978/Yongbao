@@ -1,0 +1,25 @@
+From 0e77b01c62ff39064d3e1e7b8eea046a420d1ba2 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 20 May 2026 03:40:37 +0000
+Subject: [PATCH] xdg-user-dirs 0.20 fix systemd dir for cross build.
+
+---
+ data/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/data/meson.build b/data/meson.build
+index b863807..b57e69a 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -10,7 +10,7 @@ install_data('xdg-user-dirs.desktop',
+ )
+ 
+ if systemd_dep.found()
+-  systemd_user_unit_dir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir')
++  systemd_user_unit_dir = systemd_dep.get_variable(pkgconfig: 'systemd_user_unit_dir')
+ else
+   systemd_user_unit_dir = get_option('prefix') / 'lib' / 'systemd' / 'user'
+ endif
+-- 
+2.31.1
+

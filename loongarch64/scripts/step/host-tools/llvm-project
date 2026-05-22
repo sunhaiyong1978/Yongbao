@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=21.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/llvm-project/21.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-21.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
+export PACKAGE_VERSION=22.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/llvm-project/22.1.5/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-22.1.5.src
+tar xvf ${DOWNLOADDIR}/llvm-project-22.1.5.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-22.1.5.src
 	
 pushd llvm
     mkdir -p native-build
@@ -30,8 +30,8 @@ pushd llvm
         ninja
         ninja install
 
-	LLVM_DIST_VERSION="$(${CROSSTOOLS_DIR}/bin/llvm-config --version)"
+	LLVM_DIST_VERSION="$(${HOST_TOOLS_DIR}/bin/llvm-config --version)"
 	save_package_version host-tools_llvm-project "${LLVM_DIST_VERSION}"
 popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-22.1.5.src

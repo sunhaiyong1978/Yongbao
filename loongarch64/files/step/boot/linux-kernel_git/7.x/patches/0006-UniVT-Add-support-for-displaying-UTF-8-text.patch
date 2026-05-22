@@ -1,0 +1,119 @@
+From f77dd7b072224260d8afd59acb3b2eefe6795b60 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 6 May 2026 07:35:03 +0000
+Subject: [PATCH 6/9] UniVT: Add support for displaying UTF-8 text.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+增加支持显示UTF-8文字。
+---
+ drivers/video/fbdev/core/bitblit.c | 58 +++++++++++++++++++++++-------
+ 1 file changed, 46 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/video/fbdev/core/bitblit.c b/drivers/video/fbdev/core/bitblit.c
+index 84b6618ea..da3cb1ac9 100644
+--- a/drivers/video/fbdev/core/bitblit.c
++++ b/drivers/video/fbdev/core/bitblit.c
+@@ -96,17 +96,29 @@ static inline void bit_putcs_aligned(struct vc_data *vc, struct fb_info *info,
+ 	u32 idx = vc->vc_font.width >> 3;
+ 	const u8 *src;
+ 
++	int utf8_c = 0;
+ 	while (cnt--) {
+-		u16 ch = scr_readw(s++) & charmask;
+-
+-		if (ch >= charcnt)
+-			ch = 0;
+-		src = vc->vc_font.data + (unsigned int)ch * cellsize;
++		utf8_c = utf8_pos(vc, s);
++		if(((scr_readw(s) & charmask) == 0xff || (scr_readw(s) & charmask) == 0xfe ) &&  utf8_c != 0){
++			utf8_c -= 128;
++			if((scr_readw(s) & charmask) == 0xff){
++				src = vc->vc_font.data + (utf8_c * 32);
++			}else{
++				src = vc->vc_font.data + (utf8_c * 32 + 16);
++			}
++		}else{
++			u16 ch = scr_readw(s) & charmask;
++
++			if (ch >= charcnt)
++				ch = 0;
++			src = vc->vc_font.data + (unsigned int)ch * cellsize;
++		}
+ 
+ 		if (attr) {
+ 			update_attr(buf, src, attr, vc);
+ 			src = buf;
+ 		}
++		s++;
+ 
+ 		if (likely(idx == 1))
+ 			__fb_pad_aligned_buffer(dst, d_pitch, src, idx,
+@@ -135,17 +147,29 @@ static inline void bit_putcs_unaligned(struct vc_data *vc,
+ 	u32 idx = vc->vc_font.width >> 3;
+ 	const u8 *src;
+ 
++	int utf8_c = 0;
+ 	while (cnt--) {
+-		u16 ch = scr_readw(s++) & charmask;
+-
+-		if (ch >= charcnt)
+-			ch = 0;
+-		src = vc->vc_font.data + (unsigned int)ch * cellsize;
++		utf8_c = utf8_pos(vc, s);
++		if(((scr_readw(s) & charmask) == 0xff || (scr_readw(s) & charmask) == 0xfe ) && utf8_c != 0){
++			utf8_c -= 128;
++			if((scr_readw(s) & charmask) == 0xff){
++				src = vc->vc_font.data + (utf8_c * 32);
++			}else{
++				src = vc->vc_font.data + (utf8_c * 32 + 16);
++			}
++		}else{
++			u16 ch = scr_readw(s) & charmask;
++
++			if (ch >= charcnt)
++				ch = 0;
++			src = vc->vc_font.data + (unsigned int)ch * cellsize;
++		}
+ 
+ 		if (attr) {
+ 			update_attr(buf, src, attr, vc);
+ 			src = buf;
+ 		}
++		s++;
+ 
+ 		fb_pad_unaligned_buffer(dst, d_pitch, src, idx,
+ 					image->height, shift_high,
+@@ -276,7 +300,7 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
+ 	struct fb_cursor cursor;
+ 	struct fbcon_par *par = info->fbcon_par;
+ 	unsigned short charmask = vc->vc_hi_font_mask ? 0x1ff : 0xff;
+-	int w = DIV_ROUND_UP(vc->vc_font.width, 8), c;
++	int w = DIV_ROUND_UP(vc->vc_font.width, 8), c, c_extra;
+ 	int y = real_y(par->p, vc->state.y);
+ 	int attribute, use_sw = vc->vc_cursor_type & CUR_SW;
+ 	int err = 1;
+@@ -288,8 +312,18 @@ static void bit_cursor(struct vc_data *vc, struct fb_info *info, bool enable,
+ 		return;
+ 
+  	c = scr_readw((u16 *) vc->vc_pos);
++ 	c_extra = scr_readw((u16 *) vc->vc_pos + ( vc->vc_screenbuf_size >> 1));
+ 	attribute = get_attribute(info, c);
+-	src = vc->vc_font.data + ((c & charmask) * (w * vc->vc_font.height));
++	if(((c&charmask) == 0xff || (c & charmask) == 0xfe) && c_extra != 0){
++		c_extra -= 128;
++		if((c & charmask) == 0xff){
++			src = (char *) (vc->vc_font.data + (c_extra * 32));
++		}else{
++			src = (char *) (vc->vc_font.data + (c_extra * 32 + 16));
++		}
++	}else{
++		src = vc->vc_font.data + ((c & charmask) * (w * vc->vc_font.height));
++	}
+ 
+ 	if (par->cursor_state.image.data != (const char *)src ||
+ 	    par->cursor_reset) {
+-- 
+2.31.1
+

@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/ncurses-6.6
 	            --without-normal --enable-pc-files --without-ada --without-cxx \
 	            --with-pkg-config-libdir=/usr/lib${LIB_SUFF}/pkgconfig --enable-widec \
 	            --disable-stripping
+	check_gnu_Makefile
 	make -j${JOBS}
 	make DESTDIR=${LINUX_SYSROOT_DIR} install
 	

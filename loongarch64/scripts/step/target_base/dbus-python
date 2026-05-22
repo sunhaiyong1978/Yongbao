@@ -8,6 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/dbus-python/1.4.0/
 rm -rf ${BUILD_DIRECTORY}/dbus-python-1.4.0
 tar xvf ${DOWNLOADDIR}/dbus-python-1.4.0.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/dbus-python-1.4.0
+    patch -Np1 -i ${SYSDIR}/files/target_base/dbus-python/1.4.0/patches/0001-fix-PYTHON_LIBS-not-to-use-absolute-directory-to-lin.patch 
+	 
     autoreconf -ifv
     mkdir python3
     pushd python3

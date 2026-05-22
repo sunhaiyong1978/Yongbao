@@ -18,6 +18,7 @@ pushd ${BUILD_DIRECTORY}/libffi-3.5.2
                 autoreconf -ifv
         fi
 	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -mcmodel=medium" ./configure ${COMMON_CONFIG} --with-gcc-arch=native
+	check_gnu_Makefile
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS} all
         make DESTDIR=${SYSROOT_DIR} install
 	cp -a ${CROSS_TARGET}/.libs/libffi_convenience.a ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libffi_pic.a

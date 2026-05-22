@@ -14,16 +14,12 @@ pushd ${BUILD_DIRECTORY}/libdbusmenu-16.04.0
                 cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
 
-        mkdir cross-prebuild
-        pushd cross-prebuild
-                CFLAGS="${CFLAGS} -Wno-error" ../configure ${COMMON_CONFIG} --enable-introspection=no --disable-vala
-                eval ${MAKE_AND_INSTALL}
-        popd
 
         sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
         mkdir cross-build
         pushd cross-build
                 CFLAGS="${CFLAGS} -Wno-error" ../configure ${COMMON_CONFIG} --enable-introspection=yes
+		check_gnu_Makefile
                 make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
                      INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
                      VALA_API_GEN=${CROSS_TARGET}-vapigen

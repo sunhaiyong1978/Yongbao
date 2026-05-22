@@ -1,0 +1,24 @@
+From d1fb5f8842c06834d0a9dd7f6a240f7b2f9cadc7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 9 Apr 2026 11:12:32 +0000
+Subject: [PATCH] add sysroot for rust cross build.
+
+---
+ meson/query-rustc.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/meson/query-rustc.py b/meson/query-rustc.py
+index f97cb69..9be8612 100755
+--- a/meson/query-rustc.py
++++ b/meson/query-rustc.py
+@@ -83,6 +83,7 @@ if __name__ == "__main__":
+     rustc_cmd.extend(query_arg)
+     if args.target:
+         rustc_cmd.extend(['--target', args.target])
++        rustc_cmd.extend(['--sysroot', '<<SYSROOT_DIR>>'])
+ 
+     fd, dummy_out = tempfile.mkstemp()
+     os.close(fd)
+-- 
+2.31.1
+

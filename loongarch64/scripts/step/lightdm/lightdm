@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/lightdm-1.32.0
          ../configure ${COMMON_CONFIG} --libexecdir=/usr/lib/lightdm \
                      --sbindir=/usr/bin --disable-tests --with-greeter-user=lightdm \
                      --with-greeter-session=lightdm-gtk-greeter --enable-introspection
+	check_gnu_Makefile
         make -j${JOBS} INTROSPECTION_SCANNER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner \
              INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
              VAPIGEN=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-vapigen

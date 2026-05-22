@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=llvm-project
-export PACKAGE_VERSION=21.1.8
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/21.1.8/
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
-tar xvf ${DOWNLOADDIR}/llvm-project-21.1.8.src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
+export PACKAGE_VERSION=22.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/llvm-project/22.1.5/
+rm -rf ${BUILD_DIRECTORY}/llvm-project-22.1.5.src
+tar xvf ${DOWNLOADDIR}/llvm-project-22.1.5.src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/llvm-project-22.1.5.src
     
     pushd llvm
     mkdir cross-build
@@ -20,13 +20,14 @@ pushd ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
               -DLLVM_BUILD_RUNTIME:BOOL=ON -DLLVM_ENABLE_RTTI:BOOL=ON \
               -DLLVM_ENABLE_ZLIB:BOOL=ON -DLLVM_ENABLE_FFI:BOOL=ON \
               -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
-              -DLLVM_TABLEGEN:PATH=${CROSSTOOLS_DIR}/bin/llvm-tblgen \
-	      -DCLANG_TABLEGEN:PATH=${CROSSTOOLS_DIR}/bin/clang-tblgen \
+              -DLLVM_TABLEGEN:PATH=${HOST_TOOLS_DIR}/bin/llvm-tblgen \
+	      -DCLANG_TABLEGEN:PATH=${HOST_TOOLS_DIR}/bin/clang-tblgen \
 	      -DPython3_EXECUTABLE:PATH=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 \
               -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
               -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT:BOOL=ON \
               -DLLVM_INSTALL_TOOLCHAIN_ONLY:BOOL=OFF \
-	      -DLLVM_ENABLE_PROJECTS='llvm;clang;clang-tools-extra;lld;lldb;mlir;polly;pstl' \
+	      -DLLVM_ENABLE_PROJECTS='llvm;clang;clang-tools-extra;lld;lldb;mlir;polly' \
+	      -DLLDB_ENABLE_LUA=OFF \
               -DLLVM_HOST_TRIPLE=${CROSS_TARGET} \
 	      -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=ON \
               -DLLVM_DEFAULT_TARGET_TRIPLE=${CROSS_TARGET}
@@ -47,4 +48,4 @@ chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-llvm-config
 save_package_version target_base_llvm-project
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/llvm-project-21.1.8.src
+rm -rf ${BUILD_DIRECTORY}/llvm-project-22.1.5.src

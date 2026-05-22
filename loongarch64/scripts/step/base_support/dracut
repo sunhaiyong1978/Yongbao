@@ -10,6 +10,7 @@ tar xvf ${DOWNLOADDIR}/dracut-056.tar.xz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/dracut-056
     CC=${CROSS_TARGET}-gcc \
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib64
+    check_gnu_Makefile
     make -j${JOBS} CC=${CROSS_TARGET}-gcc
     make DESTDIR=${SYSROOT_DIR} install
 popd 

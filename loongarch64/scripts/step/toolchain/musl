@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=toolchain
 export STEP_PACKAGENAME=musl
-export PACKAGE_VERSION=1.2.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/musl/1.2.5/
-rm -rf ${BUILD_DIRECTORY}/musl-1.2.5
-tar xvf ${DOWNLOADDIR}/musl-1.2.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/musl-1.2.5
+export PACKAGE_VERSION=1.2.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/toolchain/musl/1.2.6/
+rm -rf ${BUILD_DIRECTORY}/musl-1.2.6
+tar xvf ${DOWNLOADDIR}/musl-1.2.6.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/musl-1.2.6
     
     if [ "x$(get_user_set_env target)" == "x" ]; then
         CROSS_TARGET=$(archname_to_triple "$(get_user_set_env host ${CROSS_HOST})" "${CROSS_HOST}")
@@ -45,7 +45,7 @@ pushd ${BUILD_DIRECTORY}/musl-1.2.5
 
 
 	INSTALL_DIST_DIR="${TARGET_CROSSTOOLCHAIN_DIR}/target"
-	make DESTDIR=${INSTALL_DIST_DIR} install-strip
+	make DESTDIR=${INSTALL_DIST_DIR} install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/musl-1.2.5
+rm -rf ${BUILD_DIRECTORY}/musl-1.2.6

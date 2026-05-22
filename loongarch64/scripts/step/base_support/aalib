@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/aalib/1.4rc5-default/
 rm -rf ${BUILD_DIRECTORY}/aalib-1.4.0
 tar xvf ${DOWNLOADDIR}/aalib-1.4rc5.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/aalib-1.4.0
-        
+        patch -Np1 -i ${SYSDIR}/files/base_support/aalib/1.4rc5-default/patches/0001-aalib-1.4.0-fix-for-gcc-15.patch 
+	 
         for config_i in $(find -name "config.sub")
         do
                 cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -18,9 +19,7 @@ pushd ${BUILD_DIRECTORY}/aalib-1.4.0
         fi
 	sed -i -e '/AM_PATH_AALIB,/s/AM_PATH_AALIB/[&]/' aalib.m4
 	sed -i 's/stdscr->_max\([xy]\) + 1/getmax\1(stdscr)/' src/aacurses.c
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CFLAGS="${CFLAGS} -Wno-return-mismatch -std=gnu17" ./configure ${COMMON_CONFIG} --with-ncurses=${SYSROOT_DIR}/usr --enable-malloc0returnsnull
-        make -j${JOBS} CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"
-        make DESTDIR=${SYSROOT_DIR} install
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" CFLAGS="${CFLAGS} -Wno-return-mismatch -Wno-implicit-int -std=gnu17" ./configure ${COMMON_CONFIG} --with-ncurses=${SYSROOT_DIR}/usr --enable-malloc0returnsnull
+	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/aalib-1.4.0

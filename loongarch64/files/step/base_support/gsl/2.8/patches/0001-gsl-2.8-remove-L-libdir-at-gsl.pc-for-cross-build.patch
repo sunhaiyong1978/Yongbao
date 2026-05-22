@@ -1,0 +1,39 @@
+From fa957ee3cbb1cb37b7b1bf13958e58d394683b5a Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 16 Apr 2026 11:23:35 +0000
+Subject: [PATCH] gsl 2.8 remove -L$libdir at gsl.pc for cross build.
+
+---
+ configure    | 2 +-
+ configure.ac | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index e96e6d2..f1951f7 100755
+--- a/configure
++++ b/configure
+@@ -13731,7 +13731,7 @@ fi
+ 
+ 
+ GSL_CFLAGS="-I$includedir"
+-GSL_LIBS="-L$libdir -lgsl"
++GSL_LIBS=" -lgsl"
+ LIBM=
+ case $host in
+ *-*-beos* | *-*-cegcc* | *-*-cygwin* | *-*-haiku* | *-*-pw32* | *-*-darwin*)
+diff --git a/configure.ac b/configure.ac
+index 0862290..f4a6147 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -124,7 +124,7 @@ AC_C_INLINE
+ AC_C_CHAR_UNSIGNED
+ 
+ GSL_CFLAGS="-I$includedir"
+-GSL_LIBS="-L$libdir -lgsl"
++GSL_LIBS=" -lgsl"
+ dnl macro from libtool - can be replaced with LT_LIB_M when we require libtool 2
+ LT_LIB_M
+ GSL_LIBM=$LIBM
+-- 
+2.31.1
+

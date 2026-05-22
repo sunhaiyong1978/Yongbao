@@ -3,22 +3,33 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=thunderbird
-export PACKAGE_VERSION=140.7.1esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/140.7.1esr/
-rm -rf ${BUILD_DIRECTORY}/thunderbird-140.7.1
-tar xvf ${DOWNLOADDIR}/thunderbird-140.7.1esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/thunderbird-140.7.1
+export PACKAGE_VERSION=140.10.2esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/140.10.2esr/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-140.10.2
+tar xvf ${DOWNLOADDIR}/thunderbird-140.10.2esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-140.10.2
     mkdir -pv mozbuild/l10n-central
     pushd mozbuild/l10n-central
         unzip ${RESOURCEDIR}/files/tip.zip
         mv comm-l10n-*/* ./
     popd
 
-    sed -i "/^MAX_PYTHON_VERSION_TO_CONSIDER/s@11@13@g" mach
 
-    export PATH=${HOST_TOOLS_DIR}/python3_13/bin:${PATH}
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.7.1esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+    find -name .cargo-checksum.json | \
+         xargs sed -ri 's|"[^"]*.gitmodules":"[^"]*",?||'
+
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.10.2esr/patches/firefox-140.9.0esr-glibc-2.43.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.10.2esr/patches/firefox-140.9.0esr-llvm_22-1.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.10.2esr/patches/firefox-140.9.0esr-python_3.14_fixes-1.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.10.2esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
 	 
+
+    sed -i "/assert_rust_compile(target/d" build/moz.configure/rust.configure
+
+    sed '/patch.crates-io/a glslopt={path="../third_party/rust/glslopt"}' \
+        -i comm/rust/Cargo.toml &&
+    sed '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' \
+        -i comm/rust/Cargo.lock
 
     cat > comm/third_party/botan/src/build-data/arch/loongarch64.txt << "EOF"
 family loongarch
@@ -27,41 +38,52 @@ wordsize 64
 EOF
 
     cat > mozconfig << "EOF"
-ac_add_options --enable-linker=lld
 ac_add_options --disable-necko-wifi
+
 ac_add_options --with-system-libvpx
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --with-system-webp
+
 ac_add_options --prefix=/usr
-ac_add_options --libdir=/usr/lib64
-ac_add_options --target=${CROSS_TARGET}
 ac_add_options --enable-application=comm/mail
-ac_add_options --enable-jit
+
 ac_add_options --disable-crashreporter
 ac_add_options --disable-updater
 ac_add_options --disable-debug
 ac_add_options --disable-debug-symbols
 ac_add_options --disable-tests
-ac_add_options --enable-optimize=-O2
+
+ac_add_options --enable-rust-simd
+
+ac_add_options --enable-strip
+ac_add_options --enable-install-strip
+
 ac_add_options --enable-official-branding
+
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
+ac_add_options --with-system-jpeg
+ac_add_options --with-system-png
 ac_add_options --with-system-zlib
+
 ac_add_options --without-wasm-sandboxed-libraries
-ac_add_options --with-system-webp
-ac_add_options --disable-strip
-ac_add_options --disable-jemalloc
-ac_add_options --disable-install-strip
+
+
+
+ac_add_options --libdir=/usr/lib64
+ac_add_options --target=${CROSS_TARGET}
 ac_add_options --with-sysroot=${SYSROOT_DIR}
+ac_add_options --disable-jemalloc
+ac_add_options --enable-jit
 
 unset MOZ_TELEMETRY_REPORTING
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/thunderbird-build-dir
 EOF
 
-    export RUSTFLAGS="$RUSTFLAGS -Ccode-model=large"
+    export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none
+    export RUSTFLAGS="$RUSTFLAGS -Ccode-model=medium --sysroot=${CROSSTOOLS_DIR}"
 
-    HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
-    CXXFLAGS="-fpermissive -Wnonnull -mno-lsx -mcmodel=medium" CFLAGS="-mno-lsx -mcmodel=medium" \
-    MOZBUILD_STATE_PATH=${PWD}/mozbuild \
-    ./mach configure
 
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
     CXXFLAGS="-fpermissive -Wnonnull -mno-lsx -mcmodel=medium" CFLAGS="-mno-lsx -mcmodel=medium" \
@@ -100,4 +122,4 @@ ln -sfv /usr/lib64/thunderbird/chrome/icons/default/default256.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/thunderbird-140.7.1
+rm -rf ${BUILD_DIRECTORY}/thunderbird-140.10.2

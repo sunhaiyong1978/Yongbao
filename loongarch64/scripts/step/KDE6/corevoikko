@@ -18,9 +18,7 @@ pushd libvoikko
                 autoreconf -ifv
         fi
         ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	eval ${MAKE_AND_INSTALL}
 popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/corevoikko-rel-libvoikko-4.3.3

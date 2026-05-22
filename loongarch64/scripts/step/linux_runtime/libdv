@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/libdv-1.0.0
         fi
          ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	sed -i "s@\./gasmoff@qemu-${QEMU_ARCH} \./gasmoff@g" libdv/Makefile
+	check_gnu_Makefile
         CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" make -j${JOBS}
         make DESTDIR=${LINUX_SYSROOT_DIR} install
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la

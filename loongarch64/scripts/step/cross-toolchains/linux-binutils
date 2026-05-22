@@ -4,21 +4,21 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-binutils
-export PACKAGE_VERSION=2.45.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-binutils/2.45.1/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.45.1
-tar xvf ${DOWNLOADDIR}/binutils-2.45.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.45.1
+export PACKAGE_VERSION=2.46.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-binutils/2.46.0/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.46.0
+tar xvf ${DOWNLOADDIR}/binutils-2.46.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.46.0
 	rm -rf gdb* libdecnumber readline sim
 	mkdir -p tools-build
 	pushd tools-build
     		CC=gcc AR=ar AS=as CFLAGS=$([[ $(gcc -dumpversion) -ge 13 ]] && echo "${CFLAGS} -Wno-error=dangling-pointer" || echo "${CFLAGS}") \
 		../configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \
 			     --with-sysroot=${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR} \
-	                     --target=${LINUX_HOST} 
+	                     --target=${LINUX_HOST}  --disable-werror
 	    	make -j${JOBS} configure-host
     		make -j${JOBS}
 		make install-strip
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.45.1
+rm -rf ${BUILD_DIRECTORY}/binutils-2.46.0

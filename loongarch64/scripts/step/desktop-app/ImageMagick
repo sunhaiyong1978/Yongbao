@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=ImageMagick
-export PACKAGE_VERSION=7.1.2-13
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/ImageMagick/7.1.2-13/
-rm -rf ${BUILD_DIRECTORY}/ImageMagick-7.1.2-13
-tar xvf ${DOWNLOADDIR}/ImageMagick-7.1.2-13.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ImageMagick-7.1.2-13
+export PACKAGE_VERSION=7.1.2-21
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/ImageMagick/7.1.2-21/
+rm -rf ${BUILD_DIRECTORY}/ImageMagick-7.1.2-21
+tar xvf ${DOWNLOADDIR}/ImageMagick-7.1.2-21.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ImageMagick-7.1.2-21
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -21,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/ImageMagick-7.1.2-13
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/ImageMagick-7.1.2-13
+rm -rf ${BUILD_DIRECTORY}/ImageMagick-7.1.2-21

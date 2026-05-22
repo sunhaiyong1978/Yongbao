@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/libpwquality-1.4.5
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
     ./configure ${COMMON_CONFIG} --with-securedir=/usr/lib/security \
                 --with-python-binary=${CROSS_TARGET}-python3
+    check_gnu_Makefile
     CC=${CROSS_TARGET}-gcc \
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
     make -j${JOBS}

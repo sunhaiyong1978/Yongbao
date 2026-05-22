@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ntfs-3g
-export PACKAGE_VERSION=2022.10.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ntfs-3g/2022.10.3/
-rm -rf ${BUILD_DIRECTORY}/ntfs-3g_ntfsprogs-2022.10.3
-tar xvf ${DOWNLOADDIR}/ntfs-3g_ntfsprogs-2022.10.3.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ntfs-3g_ntfsprogs-2022.10.3
+export PACKAGE_VERSION=2026.2.25
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ntfs-3g/2026.2.25/
+rm -rf ${BUILD_DIRECTORY}/ntfs-3g-2026.2.25
+tar xvf ${DOWNLOADDIR}/ntfs-3g_ntfsprogs-2026.2.25.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ntfs-3g-2026.2.25
     ./configure ${COMMON_CONFIG} --with-fuse=internal
+    check_gnu_Makefile
     make -j${JOBS}
     make LDCONFIG="" DESTDIR=${SYSROOT_DIR} install
     ln -sfv ../bin/ntfs-3g ${SYSROOT_DIR}/usr/sbin/mount.ntfs
@@ -17,4 +18,4 @@ pushd ${BUILD_DIRECTORY}/ntfs-3g_ntfsprogs-2022.10.3
 	mkdir -pv ${SYSROOT_DIR}/mnt/usb
 	chmod -v 777 ${SYSROOT_DIR}/mnt/usb
 popd 
-rm -rf ${BUILD_DIRECTORY}/ntfs-3g_ntfsprogs-2022.10.3
+rm -rf ${BUILD_DIRECTORY}/ntfs-3g-2026.2.25

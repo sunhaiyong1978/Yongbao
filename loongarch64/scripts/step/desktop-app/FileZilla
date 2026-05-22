@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=FileZilla
-export PACKAGE_VERSION=3.69.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/FileZilla/3.69.5/
-rm -rf ${BUILD_DIRECTORY}/filezilla-3.69.5
-tar xvf ${DOWNLOADDIR}/FileZilla_3.69.5_src.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/filezilla-3.69.5
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/FileZilla/3.69.5/patches/0001-filezilla-3.67.1-fix-build-error.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/FileZilla/3.69.5/patches/0001-remove-wx_config-add-host-parm.patch 
+export PACKAGE_VERSION=3.69.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/FileZilla/3.69.6/
+rm -rf ${BUILD_DIRECTORY}/filezilla-3.69.6
+tar xvf ${DOWNLOADDIR}/FileZilla_3.69.6_src.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/filezilla-3.69.6
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/FileZilla/3.69.6/patches/0001-filezilla-3.67.1-fix-build-error.patch 
+	patch -Np1 -i ${SYSDIR}/files/desktop-app/FileZilla/3.69.6/patches/0001-remove-wx_config-add-host-parm.patch 
 	 
 	for config_i in $(find -name "config.sub")
 	do
@@ -18,9 +18,9 @@ pushd ${BUILD_DIRECTORY}/filezilla-3.69.5
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --with-wx-prefix=${SYSROOT_DIR}/usr --with-pugixml=builtin ac_cv_path_xdgopen=/usr/bin/xdg-open --enable-malloc0returnsnull
+	CFLAGS="${CFLAGS} -Wno-int-conversion" ./configure ${COMMON_CONFIG} --with-wx-prefix=${SYSROOT_DIR}/usr --with-pugixml=builtin ac_cv_path_xdgopen=/usr/bin/xdg-open --enable-malloc0returnsnull
 	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/filezilla-3.69.5
+rm -rf ${BUILD_DIRECTORY}/filezilla-3.69.6

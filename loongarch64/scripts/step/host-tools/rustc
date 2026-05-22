@@ -1,0 +1,21 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=rustc
+export PACKAGE_VERSION=1.95.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/rustc/1.95.0/
+rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src
+tar xvf ${DOWNLOADDIR}/rustc-1.95.0-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.95.0-src
+	patch -Np1 -i ${SYSDIR}/files/host-tools/rustc/1.95.0/patches/0001-rust-1.80.0-fix-for-gcc-15.patch 
+	 
+	./configure --prefix=${HOST_TOOLS_DIR} --sysconfdir=${HOST_TOOLS_DIR}/etc \
+	            --local-rust-root=${CROSSTOOLS_DIR}/rust/usr/local \
+	            --enable-extended --enable-vendor --release-channel=dev \
+		    --disable-docs --disable-debug --disable-compiler-docs --disable-optimize-tests --disable-verbose-tests --disable-dist-src \
+	            --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler
+        make -j${JOBS} HOST_CC="gcc"
+        make -j${JOBS} HOST_CC="gcc" install
+popd 
+rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src

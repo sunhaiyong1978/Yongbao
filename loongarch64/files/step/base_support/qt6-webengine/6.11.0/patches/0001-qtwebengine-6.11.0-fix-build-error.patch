@@ -1,0 +1,290 @@
+From a73434aa536cf4ee158e83ecb800f63b056fe501 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 13 Apr 2026 12:47:25 +0000
+Subject: [PATCH] qtwebengine 6.11.0 fix build error.
+
+---
+ .../media/mojo/services/webrtc_video_perf_history.cc        | 2 ++
+ .../blink/renderer/core/css/css_unresolved_color_value.cc   | 6 ++++++
+ .../core/css/properties/css_color_function_parser.cc        | 1 +
+ .../core/html/track/vtt/vtt_cue_layout_algorithm.cc         | 1 +
+ .../blink/renderer/core/streams/miscellaneous_operations.cc | 2 ++
+ .../blink/renderer/core/streams/queue_with_sizes.cc         | 2 ++
+ .../blink/renderer/core/style/style_crossfade_image.cc      | 3 +++
+ .../third_party/blink/renderer/platform/graphics/color.cc   | 6 ++++++
+ .../third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp  | 2 ++
+ .../pdfium/core/fxcrt/css/cfx_cssdeclaration.cpp            | 2 ++
+ .../chromium/third_party/pdfium/core/fxcrt/fx_extension.h   | 2 ++
+ .../chromium/third_party/pdfium/fxjs/cjs_runtime.cpp        | 2 ++
+ .../chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp    | 2 ++
+ src/3rdparty/chromium/third_party/pdfium/fxjs/js_define.cpp | 2 ++
+ .../pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp           | 2 ++
+ .../third_party/pdfium/xfa/fxfa/parser/cxfa_measurement.cpp | 2 ++
+ .../linux/wayland/shared_screencast_stream.cc               | 4 ++++
+ .../modules/video_capture/linux/device_info_pipewire.cc     | 4 ++++
+ .../modules/video_capture/linux/video_capture_linux.cc      | 4 ++++
+ 19 files changed, 51 insertions(+)
+
+diff --git a/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc b/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc
+index d762848..e3ec613 100644
+--- a/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc
++++ b/src/3rdparty/chromium/media/mojo/services/webrtc_video_perf_history.cc
+@@ -5,6 +5,8 @@
+ #include "media/mojo/services/webrtc_video_perf_history.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include "base/format_macros.h"
+ #include "base/functional/bind.h"
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/css/css_unresolved_color_value.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/css/css_unresolved_color_value.cc
+index 9e22607..7aa7a17 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/css/css_unresolved_color_value.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/css/css_unresolved_color_value.cc
+@@ -2,6 +2,12 @@
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
++#include <cmath>
++using std::isnormal;
++using std::isinf;
++using std::signbit;
++using std::isfinite;
++
+ #include "third_party/blink/renderer/core/css/css_unresolved_color_value.h"
+ 
+ #include "base/memory/values_equivalent.h"
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc
+index 03919a8..61a147a 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/css/properties/css_color_function_parser.cc
+@@ -5,6 +5,7 @@
+ #include "third_party/blink/renderer/core/css/properties/css_color_function_parser.h"
+ 
+ #include <cmath>
++using std::isfinite;
+ 
+ #include "third_party/blink/public/mojom/use_counter/metrics/web_feature.mojom-shared.h"
+ #include "third_party/blink/renderer/core/css/css_color.h"
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc
+index ac53444..89cd548 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.cc
+@@ -5,6 +5,7 @@
+ #include "third_party/blink/renderer/core/html/track/vtt/vtt_cue_layout_algorithm.h"
+ 
+ #include <math.h>
++using std::isfinite;
+ 
+ #include "third_party/blink/renderer/core/frame/settings.h"
+ #include "third_party/blink/renderer/core/html/media/html_media_element.h"
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc
+index 1325859..6a8c76d 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/streams/miscellaneous_operations.cc
+@@ -8,6 +8,8 @@
+ #include "third_party/blink/renderer/core/streams/miscellaneous_operations.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include <optional>
+ 
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc
+index 52b040d..6a97591 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/streams/queue_with_sizes.cc
+@@ -5,6 +5,8 @@
+ #include "third_party/blink/renderer/core/streams/queue_with_sizes.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isfinite;
+ 
+ #include "third_party/blink/renderer/platform/bindings/exception_state.h"
+ #include "third_party/blink/renderer/platform/bindings/trace_wrapper_v8_reference.h"
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc
+index 5f23f31..7ceee21 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/style/style_crossfade_image.cc
+@@ -2,6 +2,9 @@
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
++#include <cmath>                                                                                                      
++using std::isnan;
++
+ #include "third_party/blink/renderer/core/style/style_crossfade_image.h"
+ 
+ #include "third_party/blink/renderer/core/css/css_crossfade_value.h"
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc b/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc
+index 20e33ab..e700e6d 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/color.cc
+@@ -26,6 +26,12 @@
+ #include "third_party/blink/renderer/platform/graphics/color.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnormal;
++using std::isinf;
++using std::signbit;
++using std::isfinite;
++using std::isnan;
+ 
+ #include <array>
+ #include <optional>
+diff --git a/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp b/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp
+index 1564518..e4baf38 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp
++++ b/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_psengine.cpp
+@@ -7,6 +7,8 @@
+ #include "core/fpdfapi/page/cpdf_psengine.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include <algorithm>
+ #include <functional>
+diff --git a/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/css/cfx_cssdeclaration.cpp b/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/css/cfx_cssdeclaration.cpp
+index 7ace32c..292ebb4 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/css/cfx_cssdeclaration.cpp
++++ b/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/css/cfx_cssdeclaration.cpp
+@@ -7,6 +7,8 @@
+ #include "core/fxcrt/css/cfx_cssdeclaration.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isfinite;
+ 
+ #include <array>
+ #include <utility>
+diff --git a/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/fx_extension.h b/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/fx_extension.h
+index 8f5b54e..06ad78b 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/fx_extension.h
++++ b/src/3rdparty/chromium/third_party/pdfium/core/fxcrt/fx_extension.h
+@@ -9,6 +9,8 @@
+ 
+ #include <ctype.h>
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ #include <time.h>
+ #include <wctype.h>
+ 
+diff --git a/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_runtime.cpp b/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_runtime.cpp
+index aaac4df..0540270 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_runtime.cpp
++++ b/src/3rdparty/chromium/third_party/pdfium/fxjs/cjs_runtime.cpp
+@@ -7,6 +7,8 @@
+ #include "fxjs/cjs_runtime.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include <algorithm>
+ 
+diff --git a/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp b/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp
+index 8085f96..420b65c 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp
++++ b/src/3rdparty/chromium/third_party/pdfium/fxjs/fx_date_helpers.cpp
+@@ -9,6 +9,8 @@
+ #include <math.h>
+ #include <time.h>
+ #include <wctype.h>
++#include <cmath>
++using std::isfinite;
+ 
+ #include <array>
+ #include <iterator>
+diff --git a/src/3rdparty/chromium/third_party/pdfium/fxjs/js_define.cpp b/src/3rdparty/chromium/third_party/pdfium/fxjs/js_define.cpp
+index aaa3556..0f70d5a 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/fxjs/js_define.cpp
++++ b/src/3rdparty/chromium/third_party/pdfium/fxjs/js_define.cpp
+@@ -8,6 +8,8 @@
+ 
+ #include <math.h>
+ #include <stdarg.h>
++#include <cmath>
++using std::isfinite;
+ 
+ #include <algorithm>
+ #include <limits>
+diff --git a/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp b/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp
+index ce2f676..345bcfc 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp
++++ b/src/3rdparty/chromium/third_party/pdfium/xfa/fgas/graphics/cfgas_gegraphics.cpp
+@@ -7,6 +7,8 @@
+ #include "xfa/fgas/graphics/cfgas_gegraphics.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isnan;
+ 
+ #include <array>
+ #include <iterator>
+diff --git a/src/3rdparty/chromium/third_party/pdfium/xfa/fxfa/parser/cxfa_measurement.cpp b/src/3rdparty/chromium/third_party/pdfium/xfa/fxfa/parser/cxfa_measurement.cpp
+index 617a5d8..59670d5 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/xfa/fxfa/parser/cxfa_measurement.cpp
++++ b/src/3rdparty/chromium/third_party/pdfium/xfa/fxfa/parser/cxfa_measurement.cpp
+@@ -7,6 +7,8 @@
+ #include "xfa/fxfa/parser/cxfa_measurement.h"
+ 
+ #include <math.h>
++#include <cmath>
++using std::isfinite;
+ 
+ #include "core/fxcrt/compiler_specific.h"
+ #include "core/fxcrt/fx_extension.h"
+diff --git a/src/3rdparty/chromium/third_party/webrtc/modules/desktop_capture/linux/wayland/shared_screencast_stream.cc b/src/3rdparty/chromium/third_party/webrtc/modules/desktop_capture/linux/wayland/shared_screencast_stream.cc
+index 02f5a56..9014fa8 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/modules/desktop_capture/linux/wayland/shared_screencast_stream.cc
++++ b/src/3rdparty/chromium/third_party/webrtc/modules/desktop_capture/linux/wayland/shared_screencast_stream.cc
+@@ -11,6 +11,10 @@
+ #include "modules/desktop_capture/linux/wayland/shared_screencast_stream.h"
+ 
+ #include <fcntl.h>
++#include <cmath>
++using std::isnormal;
++using std::isinf;
++using std::signbit;
+ #include <libdrm/drm_fourcc.h>
+ #include <pipewire/pipewire.h>
+ #include <spa/buffer/buffer.h>
+diff --git a/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc b/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc
+index 7eaf5fb..54cfaf3 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc
++++ b/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/device_info_pipewire.cc
+@@ -13,6 +13,10 @@
+ #include <cstdint>
+ #include <cstdlib>
+ #include <cstring>
++#include <cmath>
++using std::isnormal;
++using std::isinf;
++using std::signbit;
+ 
+ #include "modules/video_capture/device_info_impl.h"
+ #include "modules/video_capture/linux/pipewire_session.h"
+diff --git a/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/video_capture_linux.cc b/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/video_capture_linux.cc
+index 8ff7bee..a5ebc9e 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/video_capture_linux.cc
++++ b/src/3rdparty/chromium/third_party/webrtc/modules/video_capture/linux/video_capture_linux.cc
+@@ -14,6 +14,10 @@
+ #include "modules/video_capture/video_capture.h"
+ #include "modules/video_capture/video_capture_impl.h"
+ #include "modules/video_capture/video_capture_options.h"
++#include <cmath>
++using std::isnormal;
++using std::isinf;
++using std::signbit;
+ 
+ #if defined(WEBRTC_USE_PIPEWIRE)
+ #include "modules/video_capture/linux/video_capture_pipewire.h"
+-- 
+2.31.1
+

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ostree
-export PACKAGE_VERSION=2025.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ostree/2025.7/
-rm -rf ${BUILD_DIRECTORY}/libostree-2025.7
-tar xvf ${DOWNLOADDIR}/libostree-2025.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libostree-2025.7
+export PACKAGE_VERSION=2026.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ostree/2026.1/
+rm -rf ${BUILD_DIRECTORY}/libostree-2026.1
+tar xvf ${DOWNLOADDIR}/libostree-2026.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libostree-2026.1
         
         NOCONFIGURE=1 ./autogen.sh
 	sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/libostree-2025.7
 		    --with-systemdsystemunitdir=/usr/lib/systemd/system \
 		    --with-systemdsystemgeneratordir=/usr/lib/systemd/system-generators \
 		    BASH_COMPLETIONSDIR=/usr/share/bash-completion/completions
+	check_gnu_Makefile
         make -j${JOBS} INTROSPECTION_SCANNER=${CROSS_TARGET}-g-ir-scanner \
                    INTROSPECTION_COMPILER=${CROSS_TARGET}-g-ir-compiler \
 	           INTROSPECTION_SCANNER_ENV="" \
@@ -23,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/libostree-2025.7
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/libostree-2025.7
+rm -rf ${BUILD_DIRECTORY}/libostree-2026.1

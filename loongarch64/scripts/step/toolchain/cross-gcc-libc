@@ -99,7 +99,7 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 	if [ -f ${TOOLCHAIN_INSTALL_DIR}/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/bin/${COMPAT_TARGET}-gcc.exe ]; then
 		ln -sf ${COMPAT_TARGET}-gcc.exe ${TOOLCHAIN_INSTALL_DIR}/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/bin/${COMPAT_TARGET}-cc.exe
 	fi
-	rm -fv $(dirname $(realpath $(${TOOLCHAIN_INSTALL_DIR}/gcc/${CROSS_TOOLCHAIN_PREFIX}/cross-tools/bin/${COMPAT_TARGET}-gcc -print-file-name=libssp.a)))/libssp*
+	rm -fv ${CROSS_TOOLCHAIN_PREFIX}/cross-tools/target/usr/lib${LIB_SUFF}/libssp*
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/gcc-15.2.0

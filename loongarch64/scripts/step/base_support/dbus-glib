@@ -14,6 +14,7 @@ pushd ${BUILD_DIRECTORY}/dbus-glib-0.114
         done
 
 	./configure ${COMMON_CONFIG}
+	check_gnu_Makefile
 	make -j${JOBS} DBUS_BINDING_TOOL=/bin/dbus-binding-tool
 	make DESTDIR=${SYSROOT_DIR} install
 popd 

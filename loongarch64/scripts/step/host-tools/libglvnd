@@ -1,0 +1,20 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=libglvnd
+export PACKAGE_VERSION=1.7.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libglvnd/1.7.0/
+rm -rf ${BUILD_DIRECTORY}/libglvnd-v1.7.0
+tar xvf ${DOWNLOADDIR}/libglvnd-v1.7.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libglvnd-v1.7.0
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF}  \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/libglvnd-v1.7.0

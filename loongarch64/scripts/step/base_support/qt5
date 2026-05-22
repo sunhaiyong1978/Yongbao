@@ -32,8 +32,9 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.18
                 -dbus-linked -journald \
                 -skip qtwebengine \
                 -platform linux-${ARCH_NAME}-gnu-g++
+	check_gnu_Makefile
 	make -j${JOBS}
-        make INSTALL_ROOT=${SYSROOT_DIR} install
+	make INSTALL_ROOT=${SYSROOT_DIR} install
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.18

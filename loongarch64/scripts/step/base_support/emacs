@@ -11,6 +11,7 @@ pushd ${BUILD_DIRECTORY}/emacs-30.2
 	sed -i "s@)\$(libsrc)/make-docfile@) qemu-${ARCH_NAME} \$\(libsrc\)/make-docfile@g" src/Makefile.in
 	sed -i "/^emacs/s@= '\$(EMACS)'@= qemu-${ARCH_NAME} '\$(EMACS)'@g" lisp/Makefile.in
 	./configure ${COMMON_CONFIG} --with-dumping=none
+	check_gnu_Makefile
 	make -j${JOBS} actual-all
 	make DESTDIR=${SYSROOT_DIR} install
 popd 

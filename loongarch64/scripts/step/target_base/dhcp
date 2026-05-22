@@ -26,6 +26,7 @@ pushd ${BUILD_DIRECTORY}/dhcp-4.4.3-P1
             --with-srv6-lease-file=/var/lib/dhcpd/dhcpd6.leases     \
             --with-cli-lease-file=/var/lib/dhclient/dhclient.leases \
             --with-cli6-lease-file=/var/lib/dhclient/dhclient6.leases
+	check_gnu_Makefile
 	make -j${JOBS} BUILD_CC=gcc
 	make -C client DESTDIR=${SYSROOT_DIR} install
 	install -v -m755 client/scripts/linux ${SYSROOT_DIR}/usr/sbin/dhclient-script

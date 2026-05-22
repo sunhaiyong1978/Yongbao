@@ -1,0 +1,25 @@
+From b3f877bc088d015671482562024c411affeea57d Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 10 Apr 2026 06:46:13 +0000
+Subject: [PATCH] aalib 1.4.0 fix for gcc 15.
+
+---
+ src/aalib.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/aalib.h b/src/aalib.h
+index 63ead0d..e65774d 100644
+--- a/src/aalib.h
++++ b/src/aalib.h
+@@ -23,6 +23,8 @@
+ #ifndef __AALIB_INCLUDED__
+ #define __AALIB_INCLUDED__
+ #include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+-- 
+2.31.1
+

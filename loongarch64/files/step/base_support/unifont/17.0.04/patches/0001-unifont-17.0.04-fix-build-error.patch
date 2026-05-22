@@ -1,0 +1,25 @@
+From 390eeecbe76f113a7eb8e7b14c081e49ef8a26f7 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 23 Mar 2026 09:01:10 +0000
+Subject: [PATCH] unifont 17.0.04 fix build error.
+
+---
+ font/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/font/Makefile b/font/Makefile
+index fff10d7..04a2b6c 100644
+--- a/font/Makefile
++++ b/font/Makefile
+@@ -1412,7 +1412,7 @@ ttf-stamp: hex-stamp
+ 		FONTNAME="Unifont Sample" PSNAME="UnifontSample"
+ 	mv $(TTFSRC)/unifont_sample.ttf \
+ 		$(COMPILED_DIR)/unifont_sample-$(VERSION).ttf 
+-	rm $(TTFSRC)/unifont_sample.bdf
++	rm -f $(TTFSRC)/unifont_sample.bdf
+ 	# Third, make a version with T-source glyphs.
+ 	sort $(COPYLEFT) $(COMPILED_DIR)/unifont_t-$(VERSION).hex | \
+ 		grep -v "^FE0.:" > $(TTFSRC)/unifont_t.hex
+-- 
+2.31.1
+

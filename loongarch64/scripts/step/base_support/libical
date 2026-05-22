@@ -5,6 +5,8 @@ export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libical
 export PACKAGE_VERSION=3.0.20
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libical/3.0.20/
+EXTRA_PARM=-DLIBICAL_JAVA_BINDINGS=False
+
 rm -rf ${BUILD_DIRECTORY}/libical-3.0.20
 tar xvf ${DOWNLOADDIR}/libical-3.0.20.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libical-3.0.20
@@ -15,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/libical-3.0.20
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX=/usr \
-              -DSHARED_ONLY=yes -DICAL_BUILD_DOCS=false \
+              -DICAL_BUILD_DOCS=false -DLIBICAL_JAVA_BINDINGS=False \
               -DGOBJECT_INTROSPECTION=false \
               -DICAL_GLIB_VAPI=false ..
 	eval ${MAKE_AND_INSTALL}
@@ -25,7 +27,7 @@ pushd ${BUILD_DIRECTORY}/libical-3.0.20
         CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX=/usr \
-              -DSHARED_ONLY=yes -DICAL_BUILD_DOCS=false \
+              -DICAL_BUILD_DOCS=false -DLIBICAL_JAVA_BINDINGS=False \
               -DGObjectIntrospection_SCANNER=${CROSS_TARGET}-g-ir-scanner \
               -DGObjectIntrospection_COMPILER=${CROSS_TARGET}-g-ir-compiler \
               -DVAPIGEN=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-vapigen \

@@ -30,6 +30,16 @@ pushd ${BUILD_DIRECTORY}/gcc-15.2.0
 	esac
 
 
+	for file in $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h -o -name gnu-user.h)
+	do
+		cp -uv $file{,.orig}
+		sed -e "s@/lib\(64\)\?\(32\)\?/ld@${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}&@g" $file.orig > $file
+		rm $file.orig
+	done
+	sed -i.orig "/STANDARD_STARTFILE_PREFIX_1/s@\"/\" ABI_LIBDIR@\"${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}/\" ABI_LIBDIR@g" gcc/config/loongarch/linux.h
+	sed -i.orig "/ABI_GRLEN_SPEC/s@\"/lib\" ABI_GRLEN_SPEC@\"${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}/lib\" ABI_GRLEN_SPEC@g" gcc/config/loongarch/gnu-user.h
+
+
 	mkdir -p tools-build-all
 	pushd tools-build-all
 		../configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} --host=${CROSS_HOST} \

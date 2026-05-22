@@ -1,0 +1,38 @@
+From d65a704cc424533b38d3baa2cf716009a7e7575d Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 30 Apr 2026 08:26:01 +0000
+Subject: [PATCH] qt-creator 19.0.1 add loongarch64 support.
+
+---
+ src/libs/gocmdbridge/client/cmdbridgeclient.cpp | 1 +
+ src/plugins/lua/bindings/utils.cpp              | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/src/libs/gocmdbridge/client/cmdbridgeclient.cpp b/src/libs/gocmdbridge/client/cmdbridgeclient.cpp
+index 5561f3df..134fda12 100644
+--- a/src/libs/gocmdbridge/client/cmdbridgeclient.cpp
++++ b/src/libs/gocmdbridge/client/cmdbridgeclient.cpp
+@@ -1013,6 +1013,7 @@ Result<FilePath> Client::getCmdBridgePath(
+         {OsArch::OsArchAMD64, QStringLiteral("amd64")},
+         {OsArch::OsArchArm, QStringLiteral("arm")},
+         {OsArch::OsArchArm64, QStringLiteral("arm64")},
++        {OsArch::OsArchLoongArch64, QStringLiteral("loongarch64")},
+         {OsArch::OsArchUnknown, QStringLiteral("unknown")},
+     };
+ 
+diff --git a/src/plugins/lua/bindings/utils.cpp b/src/plugins/lua/bindings/utils.cpp
+index ab081d23..fc44a804 100644
+--- a/src/plugins/lua/bindings/utils.cpp
++++ b/src/plugins/lua/bindings/utils.cpp
+@@ -144,6 +144,8 @@ void setupUtilsModule()
+                     return "arm";
+                 case OsArchArm64:
+                     return "arm64";
++                case OsArchLoongArch64:
++                    return "loongarch64";
+                 default:
+                     return "unknown";
+                 }
+-- 
+2.31.1
+

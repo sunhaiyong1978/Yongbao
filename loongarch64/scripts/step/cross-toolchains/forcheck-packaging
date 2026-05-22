@@ -4,13 +4,13 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=forcheck-packaging
-export PACKAGE_VERSION=26.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-packaging/26.0/
-rm -rf ${BUILD_DIRECTORY}/packaging-26.0
-tar xvf ${DOWNLOADDIR}/packaging-26.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/packaging-26.0
+export PACKAGE_VERSION=26.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-packaging/26.2/
+rm -rf ${BUILD_DIRECTORY}/packaging-26.2
+tar xvf ${DOWNLOADDIR}/packaging-26.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/packaging-26.2
 	
 	${PREFIX}/${LINUX_HOST}/bin/pip3 wheel -w dist --no-build-isolation --no-deps ${PWD}
         ${PREFIX}/${LINUX_HOST}/bin/pip3 install --no-index --find-links dist --no-cache-dir --no-deps --force-reinstall --no-user packaging
 popd 
-rm -rf ${BUILD_DIRECTORY}/packaging-26.0
+rm -rf ${BUILD_DIRECTORY}/packaging-26.2

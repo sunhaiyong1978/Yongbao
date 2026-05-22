@@ -24,9 +24,7 @@ pushd ${BUILD_DIRECTORY}/RetroArch-1.22.2
 
         ./configure --prefix=/usr --sysconfdir=/etc \
                       --build=${CROSS_HOST} --host=${CROSS_TARGET}
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" make -j${JOBS}
-        make DESTDIR=${SYSROOT_DIR} install
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	eval ${MAKE_AND_INSTALL}
 
 	mkdir -p ${SYSROOT_DIR}/usr/share/retroarch/cores
 popd 

@@ -1,0 +1,33 @@
+From 4823fdb885e996a2e3adf5e38aec1f904ddc0116 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Sat, 11 Apr 2026 06:42:00 +0000
+Subject: [PATCH] qtwebengine src 3rdparty gn config add loongarch64 define.
+
+---
+ qtwebengine/src/3rdparty/gn/src/util/build_config.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/qtwebengine/src/3rdparty/gn/src/util/build_config.h b/qtwebengine/src/3rdparty/gn/src/util/build_config.h
+index d6f1d78880..b11761dc0f 100644
+--- a/qtwebengine/src/3rdparty/gn/src/util/build_config.h
++++ b/qtwebengine/src/3rdparty/gn/src/util/build_config.h
+@@ -176,12 +176,16 @@
+ #elif defined(__loongarch__)
+ #if defined(__LP64__)
+ #define ARCH_CPU_LOONG_FAMILY 1
++#define ARCH_CPU_LOONGARCH_FAMILY 1
+ #define ARCH_CPU_LOONG64 1
++#define ARCH_CPU_LOONGARCH64 1
+ #define ARCH_CPU_64_BITS 1
+ #define ARCH_CPU_LITTLE_ENDIAN 1
+ #else
+ #define ARCH_CPU_LOONG_FAMILY 1
++#define ARCH_CPU_LOONGARCH_FAMILY 1
+ #define ARCH_CPU_LOONG32 1
++#define ARCH_CPU_LOONGARCH32 1
+ #define ARCH_CPU_32_BITS 1
+ #define ARCH_CPU_LITTLE_ENDIAN 1
+ #endif
+-- 
+2.31.1
+

@@ -17,7 +17,8 @@ pushd ${BUILD_DIRECTORY}/wxWidgets-3.2.8
         if [ ! -f configure ]; then
                 autoreconf -ifv
         fi
-        ./configure ${COMMON_CONFIG} --enable-config  --with-liblzma --with-sdl --enable-stl --enable-printfposparam --enable-glcanvasegl
+        ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} \
+		    --build=${CROSS_HOST} --host=${CROSS_TARGET} --enable-config  --with-liblzma --with-sdl --enable-stl --enable-printfposparam --enable-glcanvasegl
         make -j${JOBS}
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la

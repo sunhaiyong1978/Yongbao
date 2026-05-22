@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=samba
-export PACKAGE_VERSION=4.23.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/samba/4.23.5/
-rm -rf ${BUILD_DIRECTORY}/samba-4.23.5
-tar xvf ${DOWNLOADDIR}/samba-4.23.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/samba-4.23.5
+export PACKAGE_VERSION=4.24.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/samba/4.24.1/
+rm -rf ${BUILD_DIRECTORY}/samba-4.24.1
+tar xvf ${DOWNLOADDIR}/samba-4.24.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/samba-4.24.1
         
         for config_i in $(find -name "config.sub")
         do
@@ -25,12 +25,13 @@ pushd ${BUILD_DIRECTORY}/samba-4.23.5
 	LDFLAGS="${LDFLAGS} -Wl,-rpath=/usr/lib${LIB_SUFF}/samba" \
 	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIB_SUFF} --with-piddir=/run/samba --with-pammodulesdir=/usr/lib/security \
 		    --enable-fhs --without-ad-dc --hostcc=gcc --with-system-mitkrb5 --disable-python --without-ldap --without-ads --enable-selftest \
-		    --with-sockets-dir=/run/samba --with-modulesdir=/usr/lib${LIB_SUFF}/samba --with-lockdir=/var/lib/samba/lock --with-statedir=/var/lib/samba --with-cachedir=/var/lib/samba
+		    --with-sockets-dir=/run/samba --with-modulesdir=/usr/lib${LIB_SUFF}/samba --with-lockdir=/var/lib/samba/lock --with-statedir=/var/lib/samba --with-cachedir=/var/lib/samba \
+		    --disable-rpath
 	DEFAULT_CHECK_OPTION="check"
         eval ${MAKE_AND_INSTALL}
         rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/samba-4.23.5
+rm -rf ${BUILD_DIRECTORY}/samba-4.24.1
 
 install -dvm 755 ${LINUX_SYSROOT_DIR}/usr/lib/cups/backend &&
 ln -v -sf /usr/bin/smbspool ${LINUX_SYSROOT_DIR}/usr/lib/cups/backend/smb

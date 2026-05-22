@@ -1,0 +1,25 @@
+From c91c2362302b67a7fe68b62a9fdb0793c2528b61 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 20 Apr 2026 08:54:40 +0000
+Subject: [PATCH] fix PYTHON_LIBS not to use absolute directory to linker.
+
+---
+ m4/ax_python_devel.m4 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/m4/ax_python_devel.m4 b/m4/ax_python_devel.m4
+index 0451cd4..fe5a6fd 100644
+--- a/m4/ax_python_devel.m4
++++ b/m4/ax_python_devel.m4
+@@ -269,7 +269,7 @@ EOD`
+ 		then
+ 			# use the official shared library
+ 			ac_python_library=`echo "$ac_python_library" | sed "s/^lib//"`
+-			PYTHON_LIBS="-L$ac_python_libdir -l$ac_python_library"
++			PYTHON_LIBS=" -l$ac_python_library"
+ 		else
+ 			# old way: use libpython from python_configdir
+ 			ac_python_libdir=`$PYTHON -c \
+-- 
+2.31.1
+

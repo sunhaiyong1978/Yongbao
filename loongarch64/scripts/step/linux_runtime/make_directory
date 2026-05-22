@@ -59,7 +59,7 @@ llvm-config = '${LINUX_HOST}-llvm-config'
 rust = 'rustc'
 exe_wrapper = 'qemu-${QEMU_ARCH}'
 [built-in options]
-rust_args = '--target ${LINUX_HOST}'
+rust_args = '--target ${LINUX_HOST} --sysroot=${CROSS_TOOLS_PREFIX}'
 [properties]
 skip_sanity_check = true
 needs_exe_wrapper = true

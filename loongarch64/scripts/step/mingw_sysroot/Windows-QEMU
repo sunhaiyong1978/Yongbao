@@ -4,11 +4,11 @@ source env/function.sh
 source env/mingw_sysroot/custom
 export STEP_BUILDNAME=mingw_sysroot
 export STEP_PACKAGENAME=Windows-QEMU
-export PACKAGE_VERSION=10.2.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/Windows-QEMU/10.2.0/
-rm -rf ${BUILD_DIRECTORY}/qemu-10.2.0
-tar xvf ${DOWNLOADDIR}/qemu-10.2.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qemu-10.2.0
+export PACKAGE_VERSION=11.0.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/mingw_sysroot/Windows-QEMU/11.0.0/
+rm -rf ${BUILD_DIRECTORY}/qemu-11.0.0
+tar xvf ${DOWNLOADDIR}/qemu-11.0.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qemu-11.0.0
     
     mkdir -p build
     pushd build
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/qemu-10.2.0
 	DESTDIR=${MINGW_SYSROOT_DIR} ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/qemu-10.2.0
+rm -rf ${BUILD_DIRECTORY}/qemu-11.0.0

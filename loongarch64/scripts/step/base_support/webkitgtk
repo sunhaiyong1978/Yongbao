@@ -3,15 +3,49 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=webkitgtk
-export PACKAGE_VERSION=2.51.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.51.4/
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.51.4
-tar xvf ${DOWNLOADDIR}/webkitgtk-2.51.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/webkitgtk-2.51.4
-    patch -Np1 -i ${SYSDIR}/files/base_support/webkitgtk/2.51.4/patches/0001-Fix-for-gstream-1.27.patch 
-	 
+export PACKAGE_VERSION=2.53.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.53.1/
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.53.1
+tar xvf ${DOWNLOADDIR}/webkitgtk-2.53.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webkitgtk-2.53.1
+    
 
-    sed -i "/GST_CHECK_VERSION/s@27@28@g"  Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.{h,cpp}
+
+    export JOBS=$(($(nproc)*1))
+
+if [ 0 == 1 ]; then
+    mkdir cross-build-4.1
+    pushd cross-build-4.1
+        WK_USE_CCACHE=NO \
+        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
+	      -DCMAKE_C_COMPILER="${CROSS_TARGET}-gcc" \
+	      -DCMAKE_CXX_COMPILER="${CROSS_TARGET}-g++" \
+	      -DCMAKE_C_FLAGS="-mlasx -flax-vector-conversions" \
+	      -DCMAKE_CXX_FLAGS="-mlasx -flax-vector-conversions" \
+              -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+               -DPERL_EXECUTABLE=${HOST_TOOLS_DIR}/bin/perl \
+              -DCMAKE_SKIP_RPATH=ON \
+              -DPORT=GTK \
+              -DUSE_GTK4=OFF \
+              -DLIB_INSTALL_DIR=/usr/lib64 \
+              -DENABLE_MINIBROWSER=OFF \
+              -DUSE_WPE_RENDERER=ON \
+              -DENABLE_BUBBLEWRAP_SANDBOX=OFF \
+              -DENABLE_INTROSPECTION=ON \
+	      -DUSE_SYSTEM_MALLOC=ON \
+	      -DUSE_LIBBACKTRACE=OFF -DENABLE_SPEECH_SYNTHESIS=OFF -DUSE_SYSTEM_SYSPROF_CAPTURE=OFF \
+              -Wno-dev -G Ninja ..
+        sed -i "s@ /usr\(.*\)\(g-ir-compiler\|g-ir-scanner\)@ ${CROSSTOOLS_DIR}\1${CROSS_TARGET}-\2@g" build.ninja
+        sed -i "s@${SYSROOT_DIR}/usr/bin/wayland-scanner@${CROSSTOOLS_DIR}/bin/wayland-scanner@g" build.ninja
+	sed -i "s@${SYSROOT_DIR}/usr/bin/gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+	sed -i "s@${HOST_TOOLS_DIR}/bin/gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
+        sed -i "s@${SYSROOT_DIR}/usr/bin/glib-compile-resources@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources@g" build.ninja
+        sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja                                                         
+        sed -i -e "s@\(${CROSSTOOLS_DIR}/\)\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja                                                         
+
+	eval ${NINJA_AND_INSTALL}
+    popd
+fi
 
     mkdir cross-build-6.0
     pushd cross-build-6.0
@@ -45,4 +79,4 @@ pushd ${BUILD_DIRECTORY}/webkitgtk-2.51.4
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.51.4
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.53.1
