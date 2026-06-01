@@ -3,10 +3,10 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mediainfo
-export PACKAGE_VERSION=26.01
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mediainfo/26.01/
+export PACKAGE_VERSION=26.05
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mediainfo/26.05/
 rm -rf ${BUILD_DIRECTORY}/MediaInfo
-tar xvf ${DOWNLOADDIR}/mediainfo_26.01.tar.xz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/mediainfo_26.05.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/MediaInfo
     pushd Project/GNU/CLI
             autoreconf -ifv

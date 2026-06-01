@@ -23,6 +23,11 @@ pushd ${BUILD_DIRECTORY}/glibc-2.28
     TARGET_CROSSTOOLCHAIN_DIR="${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools"
     PATH=${TARGET_CROSSTOOLCHAIN_DIR}/bin:${PATH}
 
+    for config_i in $(find -name "config.sub")
+    do
+	cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     mkdir -p build
     pushd build
         BUILD_CC="gcc" \

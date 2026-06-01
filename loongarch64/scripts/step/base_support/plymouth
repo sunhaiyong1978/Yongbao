@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=plymouth
-export PACKAGE_VERSION=24.004.60
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/plymouth/24.004.60/
-rm -rf ${BUILD_DIRECTORY}/plymouth-24.004.60
-tar xvf ${DOWNLOADDIR}/plymouth-24.004.60.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/plymouth-24.004.60
-	patch -Np1 -i ${SYSDIR}/files/base_support/plymouth/24.004.60/patches/0001-plymouth-fix-systemd-dir-for-cross-build.patch 
+export PACKAGE_VERSION=26.134.222
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/plymouth/26.134.222/
+rm -rf ${BUILD_DIRECTORY}/plymouth-26.134.222
+tar xvf ${DOWNLOADDIR}/plymouth-26.134.222.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/plymouth-26.134.222
+	patch -Np1 -i ${SYSDIR}/files/base_support/plymouth/26.134.222/patches/0001-plymouth-fix-systemd-dir-for-cross-build.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/plymouth-24.004.60
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/plymouth-24.004.60
+rm -rf ${BUILD_DIRECTORY}/plymouth-26.134.222

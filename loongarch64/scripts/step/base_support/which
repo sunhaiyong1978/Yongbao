@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=which
-export PACKAGE_VERSION=2.23
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/which/2.23/
-rm -rf ${BUILD_DIRECTORY}/which-2.23
-tar xvf ${DOWNLOADDIR}/which-2.23.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/which-2.23
+export PACKAGE_VERSION=2.25
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/which/2.25/
+rm -rf ${BUILD_DIRECTORY}/which-2.25
+tar xvf ${DOWNLOADDIR}/which-2.25.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/which-2.25
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/which-2.23
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/which-2.23
+rm -rf ${BUILD_DIRECTORY}/which-2.25

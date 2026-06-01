@@ -1,7 +1,9 @@
 
 step/boot/linux-kernel_git
-step/java_runtime/jdk
 step/java_runtime/jdk11
 step/java_runtime/jdk17
+step/java_runtime/jdk21
+step/java_runtime/jdk25
 step/java_runtime/jdk8
+step/simulate/liblasx2lsx
 step/target_base/valgrind

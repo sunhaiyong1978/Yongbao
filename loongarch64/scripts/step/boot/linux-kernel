@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=boot
 export STEP_PACKAGENAME=linux-kernel
-export PACKAGE_VERSION=7.0.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-kernel/7.0.6/
-rm -rf ${BUILD_DIRECTORY}/linux-7.0.6
-tar xvf ${DOWNLOADDIR}/linux-7.0.6.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/linux-7.0.6
+export PACKAGE_VERSION=7.0.10
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/boot/linux-kernel/7.0.10/
+rm -rf ${BUILD_DIRECTORY}/linux-7.0.10
+tar xvf ${DOWNLOADDIR}/linux-7.0.10.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/linux-7.0.10
 	CONFIG_STR=$(get_user_set_env config "default")
 	
 	make mrproper
@@ -36,4 +36,4 @@ pushd ${BUILD_DIRECTORY}/linux-7.0.6
 	echo "${LINUX_KERNEL_VERSION}" > ${COMMON_DIR}/linux-kernel.version
 	echo "${LINUX_KERNEL_VERSION}" > ${COMMON_DIR}/linux.version
 popd 
-rm -rf ${BUILD_DIRECTORY}/linux-7.0.6
+rm -rf ${BUILD_DIRECTORY}/linux-7.0.10

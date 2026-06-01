@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=util-linux
-export PACKAGE_VERSION=2.42
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/util-linux/2.42/
-rm -rf ${BUILD_DIRECTORY}/util-linux-2.42
-tar xvf ${DOWNLOADDIR}/util-linux-2.42.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/util-linux-2.42
+export PACKAGE_VERSION=2.42.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/util-linux/2.42.1/
+rm -rf ${BUILD_DIRECTORY}/util-linux-2.42.1
+tar xvf ${DOWNLOADDIR}/util-linux-2.42.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/util-linux-2.42.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/util-linux-2.42
 	 ./configure ${COMMON_CONFIG} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --disable-makeinstall-chown runstatedir=/run ADJTIME_PATH=/var/lib/hwclock/adjtime --with-systemdsystemunitdir=/usr/lib/systemd/system --with-sysusersdir=/usr/lib/sysusers.d --with-bashcompletiondir=/usr/share/bash-completion/completions --with-tmpfilesdir=/usr/lib/tmpfiles.d --disable-asciidoc --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/util-linux-2.42
+rm -rf ${BUILD_DIRECTORY}/util-linux-2.42.1

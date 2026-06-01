@@ -124,6 +124,6 @@ default_set_conf "x86_64-emu" "latx" "LATX x86_64 二进制翻译" "/usr/bin/x86
 default_set_conf "x86_64-emu" "latx_no_aot" "LATX x86_64 二进制翻译 (禁用AOT)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot"
 default_set_conf "x86_64-emu" "latx_no_kzt" "LATX x86_64 二进制翻译 (禁用库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_kzt"
 default_set_conf "x86_64-emu" "latx_no_aot_kzt" "LATX x86_64 二进制翻译 (禁用AOT和库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot_kzt"
-default_set_conf "x86_64-emu" "latx_64_lowmem" "LATX x86_64 二进制翻译 (低内存模式)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_lowmem"
+default_set_conf "x86_64-emu" "latx_64_lowmem" "LATX x86_64 二进制翻诀� (低内存模式)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_lowmem"
 default_set_conf "x86-emu" "latx" "LATX x86 二进制翻译" "/usr/bin/x86-emu" "/usr/bin/latx-i386"
 default_set_conf "x86-emu" "latx_32_lowmem" "LATX x86 二进制翻译 (低内存模式)" "/usr/bin/x86-emu" "/usr/bin/latx-i386_lowmem"

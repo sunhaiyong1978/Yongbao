@@ -2158,6 +2158,8 @@
 %step/simulate/box64-la|emu
 %step/simulate/lata|emu;f_simulate_lata_bad
 %step/simulate/NULL|emu
+%step/simulate/liblasx2lsx|emu
+%step/simulate/NULL|emu
 %step/simulate/NULL|emu
 %step/simulate/wine_wow|emu;wine+mingw;%target=?x86_64;%target_mingw64=?mingw64ucrt;%target_mingw32=?mingw32;%PARENT=ORIG,x86_64_runtime,mingw_sysroot
 %step/simulate/NULL|emu

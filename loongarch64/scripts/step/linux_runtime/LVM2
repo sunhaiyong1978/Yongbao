@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=LVM2
-export PACKAGE_VERSION=2.03.40
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/LVM2/2.03.40/
-rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.40
-tar xvf ${DOWNLOADDIR}/LVM2.2.03.40.tgz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/LVM2.2.03.40
+export PACKAGE_VERSION=2.03.41
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/LVM2/2.03.41/
+rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.41
+tar xvf ${DOWNLOADDIR}/LVM2.2.03.41.tgz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/LVM2.2.03.41
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/LVM2.2.03.40
 	 ./configure ${COMMON_CONFIG} --with-usrlibdir=/usr/lib${LIB_SUFF} --enable-cmdlib --enable-pkgconfig --enable-udev_sync ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.40
+rm -rf ${BUILD_DIRECTORY}/LVM2.2.03.41

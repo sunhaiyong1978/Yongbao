@@ -33,6 +33,11 @@ pushd ${BUILD_DIRECTORY}/make-4.3
 
     
 
+    for config_i in $(find -name "config.sub")
+    do
+	cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
     ./configure --prefix=${TOOLCHAIN_DIRECTORY}/cross-target/${COMPAT_TARGET}/cross-tools --build=${CROSS_HOST} --host=${CROSS_HOST}
     make -j${JOBS}
     make install

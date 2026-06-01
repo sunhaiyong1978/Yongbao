@@ -1,0 +1,4 @@
+# URL=http://download.documentfoundation.org/libreoffice/src/26.2.4/libreoffice-translations-<<<PACKAGE_VERSION>>>.tar.xz
+URL=https://mirrors.tuna.tsinghua.edu.cn/libreoffice/libreoffice/src/26.2.4/libreoffice-translations-<<<PACKAGE_VERSION>>>.tar.xz
+FILENAME=libreoffice-translations-<<<PACKAGE_VERSION>>>.tar.xz
+MODE=FILE

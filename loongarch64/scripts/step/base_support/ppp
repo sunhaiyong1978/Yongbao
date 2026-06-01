@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ppp
-export PACKAGE_VERSION=2.5.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ppp/2.5.2/
-rm -rf ${BUILD_DIRECTORY}/ppp-2.5.2
-tar xvf ${DOWNLOADDIR}/ppp-2.5.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ppp-2.5.2
+export PACKAGE_VERSION=2.5.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ppp/2.5.3/
+rm -rf ${BUILD_DIRECTORY}/ppp-2.5.3
+tar xvf ${DOWNLOADDIR}/ppp-2.5.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ppp-2.5.3
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/ppp-2.5.2
 	CFLAGS="${CFLAGS} -std=gnu17" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ppp-2.5.2
+rm -rf ${BUILD_DIRECTORY}/ppp-2.5.3

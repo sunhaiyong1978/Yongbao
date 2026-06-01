@@ -1,0 +1,15 @@
+diff --git a/arch/loongarch/kernel/cpu-probe.c b/arch/loongarch/kernel/cpu-probe.c
+index fedaa67..1bf0647 100644
+--- a/arch/loongarch/kernel/cpu-probe.c
++++ b/arch/loongarch/kernel/cpu-probe.c
+@@ -153,10 +153,6 @@ static void cpu_probe_common(struct cpuinfo_loongarch *c)
+ 		c->options |= LOONGARCH_CPU_CRYPTO;
+ 		elf_hwcap |= HWCAP_LOONGARCH_CRYPTO;
+ 	}
+-	if (config & CPUCFG2_PTW) {
+-		c->options |= LOONGARCH_CPU_PTW;
+-		elf_hwcap |= HWCAP_LOONGARCH_PTW;
+-	}
+ 	if (config & CPUCFG2_LSPW) {
+ 		c->options |= LOONGARCH_CPU_LSPW;
+ 		elf_hwcap |= HWCAP_LOONGARCH_LSPW;

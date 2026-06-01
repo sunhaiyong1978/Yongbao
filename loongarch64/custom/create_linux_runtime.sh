@@ -35,7 +35,9 @@ case "${CREATE_ARCH_NAME}" in
 		# -S <目录名> ，该参数指定编译的结果存放的目录，目录会创建在 workbase/overlay/ 目录中。
 		# -e target=<架构名>， 通过target指定创建的runtime所用架构。
 		# -K [0|1|数字] ，表示允许出错步骤的数量，0表示没有限制。
-		./build.sh -d -o f_opt,g_opt,linux_runtime -g -S ${CREATE_ARCH_NAME}_runtime -e target=${CREATE_ARCH_NAME} -K ${BUILD_ERROR_LIMITE} linux_runtime
+		# ./build.sh -d -o f_opt,g_opt,linux_runtime -g -S ${CREATE_ARCH_NAME}_runtime -e target=${CREATE_ARCH_NAME} -K ${BUILD_ERROR_LIMITE} linux_runtime
+		# ./build.sh -o f_opt,g_opt,linux_runtime,forcheck -g -S ${CREATE_ARCH_NAME}_runtime -e target=${CREATE_ARCH_NAME} -K ${BUILD_ERROR_LIMITE} linux_runtime
+		./build.sh -o f_opt,g_opt,linux_runtime -g -S ${CREATE_ARCH_NAME}_runtime -e target=${CREATE_ARCH_NAME} -K ${BUILD_ERROR_LIMITE} linux_runtime
 		echo "构建完成，下面开始进行二进制文件的strip，以减少文件体积..."
 		./strip_os.sh -f ${CREATE_ARCH_NAME}_runtime
 		echo "处理完成，runtime 存放在 workbase/overlay_strip/${CREATE_ARCH_NAME}_runtime ，可通过 ./pack_os.sh 脚本进行打包。"

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=lttng-ust
-export PACKAGE_VERSION=2.15.0-pre
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/lttng-ust/2.15.0-pre/
-rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.15.0-pre
-tar xvf ${DOWNLOADDIR}/lttng-ust-2.15.0-pre.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/lttng-ust-2.15.0-pre
+export PACKAGE_VERSION=2.15.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/lttng-ust/2.15.1/
+rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.15.1
+tar xvf ${DOWNLOADDIR}/lttng-ust-2.15.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lttng-ust-2.15.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/lttng-ust-2.15.0-pre
 	 ./configure ${COMMON_CONFIG} --disable-numa --disable-examples --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.15.0-pre
+rm -rf ${BUILD_DIRECTORY}/lttng-ust-2.15.1

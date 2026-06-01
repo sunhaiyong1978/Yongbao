@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libedit
-export PACKAGE_VERSION=20260508-3.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libedit/20260508-3.1/
-rm -rf ${BUILD_DIRECTORY}/libedit-20260508-3.1
-tar xvf ${DOWNLOADDIR}/libedit-20260508-3.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libedit-20260508-3.1
+export PACKAGE_VERSION=20260512-3.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libedit/20260512-3.1/
+rm -rf ${BUILD_DIRECTORY}/libedit-20260512-3.1
+tar xvf ${DOWNLOADDIR}/libedit-20260512-3.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libedit-20260512-3.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/libedit-20260508-3.1
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libedit-20260508-3.1
+rm -rf ${BUILD_DIRECTORY}/libedit-20260512-3.1

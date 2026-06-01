@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=less
-export PACKAGE_VERSION=692
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/less/692/
-rm -rf ${BUILD_DIRECTORY}/less-692
-tar xvf ${DOWNLOADDIR}/less-692.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/less-692
+export PACKAGE_VERSION=702
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/less/702/
+rm -rf ${BUILD_DIRECTORY}/less-702
+tar xvf ${DOWNLOADDIR}/less-702.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/less-702
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/less-692
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/less-692
+rm -rf ${BUILD_DIRECTORY}/less-702

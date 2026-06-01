@@ -3,13 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=qt6
-export PACKAGE_VERSION=6.11.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.11.0/
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.0
-tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.11.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.0
+export PACKAGE_VERSION=6.11.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/qt6/6.11.1/
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.1
+tar xvf ${DOWNLOADDIR}/qt-everywhere-src-6.11.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.1
 	export PATH=${CROSSTOOLS_DIR}/qt6/bin:${PATH}
-        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.11.0/patches/0001-qtquick3dphysics-6.10.1-PX_SIMD_DISABLED-add-loongar.patch 
+        patch -Np1 -i ${SYSDIR}/files/base_support/qt6/6.11.1/patches/0001-qtquick3dphysics-6.10.1-PX_SIMD_DISABLED-add-loongar.patch 
 	 
 
 	sed -i "s@\${QT_VERSION_MAJOR}@6@g" qtlottie/tools/lottietoqml/CMakeLists.txt
@@ -51,7 +51,7 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.0
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.0
+rm -rf ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.1
 
 cat > ${SYSROOT_DIR}/etc/profile.d/qt6.sh << "EOF"
 export QT_PLUGIN_PATH=${QT_PLUGIN_PATH}:/usr/lib64/qt6/plugins

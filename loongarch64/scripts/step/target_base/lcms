@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=lcms
-export PACKAGE_VERSION=2.19
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/lcms/2.19/
-rm -rf ${BUILD_DIRECTORY}/lcms2-2.19
-tar xvf ${DOWNLOADDIR}/lcms2-2.19.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/lcms2-2.19
+export PACKAGE_VERSION=2.19.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/lcms/2.19.1/
+rm -rf ${BUILD_DIRECTORY}/lcms2-2.19.1
+tar xvf ${DOWNLOADDIR}/lcms2-2.19.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lcms2-2.19.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/lcms2-2.19
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/lcms2-2.19
+rm -rf ${BUILD_DIRECTORY}/lcms2-2.19.1

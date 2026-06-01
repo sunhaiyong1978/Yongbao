@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=gnupg
-export PACKAGE_VERSION=2.5.19
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gnupg/2.5.19/
-rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.19
-tar xvf ${DOWNLOADDIR}/gnupg-2.5.19.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gnupg-2.5.19
+export PACKAGE_VERSION=2.5.20
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gnupg/2.5.20/
+rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.20
+tar xvf ${DOWNLOADDIR}/gnupg-2.5.20.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gnupg-2.5.20
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/gnupg-2.5.19
 	 ./configure ${COMMON_CONFIG} GPG_ERROR_CONFIG=${CROSSTOOLS_DIR}/bin/gpg-error-config GPGRT_CONFIG=${CROSSTOOLS_DIR}/bin/gpgrt-config --disable-doc --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.19
+rm -rf ${BUILD_DIRECTORY}/gnupg-2.5.20

@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=wcslib
-export PACKAGE_VERSION=8.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wcslib/8.7/
-rm -rf ${BUILD_DIRECTORY}/wcslib-8.7
-tar xvf ${DOWNLOADDIR}/wcslib-8.7.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/wcslib-8.7
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/wcslib/8.7/patches/0001-wcslib-8.4-fix-for-cross-build.patch 
+export PACKAGE_VERSION=8.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/wcslib/8.8/
+rm -rf ${BUILD_DIRECTORY}/wcslib-8.8
+tar xvf ${DOWNLOADDIR}/wcslib-8.8.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/wcslib-8.8
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/wcslib/8.8/patches/0001-wcslib-8.4-fix-for-cross-build.patch 
 	 
         for config_i in $(find -name "config.sub")
         do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/wcslib-8.7
         make DESTDIR=${SYSROOT_DIR} install
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/wcslib-8.7
+rm -rf ${BUILD_DIRECTORY}/wcslib-8.8
