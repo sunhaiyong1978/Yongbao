@@ -43,8 +43,9 @@ declare WORLD_PARM=""
 declare AUTO_DOWNLOAD_OR_COPY=0
 declare SAVE_PROXY=""
 declare EMU_BROWSER=""
+declare DOWNLOAD_TIMEOUT=120
 
-while getopts 'gfuri:pswav:h' OPT; do
+while getopts 'gfuri:pswat:v:h' OPT; do
     case $OPT in
 	g)  
 	    GIT_ONLY=TRUE
@@ -79,6 +80,9 @@ while getopts 'gfuri:pswav:h' OPT; do
 	a)
 	    AUTO_DOWNLOAD_OR_COPY=1
 	    ;;
+	t)
+	    DOWNLOAD_TIMEOUT=$OPTARG
+	    ;;
 	v)
 	    VERSION_INDEX=$OPTARG
 	    ;;
@@ -104,6 +108,7 @@ while getopts 'gfuri:pswav:h' OPT; do
 	    echo "    -v <版本名>: 指定下载“版本名”对应的软件包，部分软件包可提供多个“版本名”，该参数设置后将仅下载存在该指定“版本名”的软件包。
 	    echo "    -w: 强制使用主线环境中的下载地址，不指定该参数将使用 current_branch 中指定的分支环境中的下载地址，若不存在 current_branch 文件则默认使用主线环境。
 	    echo "    -a: 自动根据下载协议决定下载到的位置，存在 current_branch 文件指定版本名时该参数会根据下载文件的类型而自动选择存放的目录，GIT类型协议的文件下载到分支环境的目录中，而普通文件则下载到主线环境的目录中，若不存在 current_branch 文件则全部下载在主线环境的目录中。"
+	    echo "    -t <秒数>: 设置下载超时时间。"
             exit 0
             ;;
     esac
@@ -298,9 +303,9 @@ do
 						REPLACE_REAL_URL=$(replace_url "${URL}" "${SAVE_FILENAME}")
 # 						echo "EMU_BROWSER = ${EMU_BROWSER}"
 						if [ "x${EMU_BROWSER}" == "x" ]; then
-							wget -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+							wget --timeout=${DOWNLOAD_TIMEOUT} -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
 						else
-							wget -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
+							wget --timeout=${DOWNLOAD_TIMEOUT} -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
 						fi
 						if [ "x$?" != "x0" ]; then
 							if [ "${REPLACE_REAL_URL}" == "${URL}" ]; then
@@ -310,9 +315,9 @@ do
 								continue;
 							else
 								if [ "x${EMU_BROWSER}" == "x" ]; then
-									wget -c ${URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+									wget --timeout=${DOWNLOAD_TIMEOUT} -c ${URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
 								else
-									wget -c ${URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
+									wget --timeout=${DOWNLOAD_TIMEOUT} -c ${URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
 								fi
 								if [ "x$?" != "x0" ]; then
 									echo "${URL} 与 ${REPLACE_REAL_URL} 均下载失败！"
@@ -393,10 +398,25 @@ do
 					echo "开始克隆..."
 					${BASE_DIR}/tools/git_clone.sh ${WORLD_PARM} -d "${NEW_BASE_DIR}/downloads/sources/files/" "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}" "${PKG_GIT_FORMAT}"
 					if [ "x$?" != "x0" ]; then
-						echo "${URL} 克隆失败！"
-						echo "克隆 ${URL} 失败！" >> ${NEW_BASE_DIR}/logs/download_fail.log
-						((FAIL_COUNT++))
-						continue;
+						REPLACE_REAL_URL=$(replace_url "${URL}" "${SAVE_FILENAME}")
+						if [ "${REPLACE_REAL_URL}" == "${URL}" ]; then
+							echo "${URL} 克隆失败！"
+							echo "克隆 ${URL} 失败！" >> ${NEW_BASE_DIR}/logs/download_fail.log
+							((FAIL_COUNT++))
+							continue;
+						else
+							if [ "x${EMU_BROWSER}" == "x" ]; then
+								wget --timeout=${DOWNLOAD_TIMEOUT} -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+							else
+								wget --timeout=${DOWNLOAD_TIMEOUT} -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
+							fi
+							if [ "x$?" != "x0" ]; then
+								echo "${URL} 与 ${REPLACE_REAL_URL} 均下载失败！"
+								echo "下载 ${URL} ( 替换下载地址：${REPLACE_REAL_URL} ) 均下载失败！" >> logs/download_fail.log
+								((FAIL_COUNT++))
+								continue;
+							fi
+						fi
 					fi
 					if [ -f ${NEW_BASE_DIR}/downloads/sources/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ]; then
 						echo "创建md5sum校验文件... ${NEW_BASE_DIR}/downloads/sources/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash"
@@ -434,10 +454,25 @@ do
 				echo ${BASE_DIR}/tools/git_clone.sh ${WORLD_PARM} -d "${NEW_BASE_DIR}/downloads/sources/files/" "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}" "${PKG_GIT_FORMAT}"
 				${BASE_DIR}/tools/git_clone.sh ${WORLD_PARM} -d "${NEW_BASE_DIR}/downloads/sources/files/" "${PKG_NAME}" "${PKG_VERSION}" "${URL}" "${PKG_GIT_BRANCH}" "${PKG_GIT_COMMIT}" "${PKG_GIT_SUBMODULE}" "${PKG_GIT_FORMAT}"
 				if [ "x$?" != "x0" ]; then
-					echo "${URL} 克隆失败！"
-					echo "克隆 ${URL} 失败！" >> ${NEW_BASE_DIR}/logs/download_fail.log
-					((FAIL_COUNT++))
-					continue;
+					REPLACE_REAL_URL=$(replace_url "${URL}" "${SAVE_FILENAME}")
+					if [ "${REPLACE_REAL_URL}" == "${URL}" ]; then
+						echo "${URL} 克隆失败！"
+						echo "克隆 ${URL} 失败！" >> ${NEW_BASE_DIR}/logs/download_fail.log
+						((FAIL_COUNT++))
+						continue;
+					else
+						if [ "x${EMU_BROWSER}" == "x" ]; then
+							wget --timeout=${DOWNLOAD_TIMEOUT} -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME}
+						else
+							wget --timeout=${DOWNLOAD_TIMEOUT} -c ${REPLACE_REAL_URL} -O ${NEW_BASE_DIR}/downloads/sources/files/${SAVE_FILENAME} --no-check-certificate
+						fi
+						if [ "x$?" != "x0" ]; then
+							echo "${URL} 与 ${REPLACE_REAL_URL} 均下载失败！"
+							echo "下载 ${URL} ( 替换下载地址：${REPLACE_REAL_URL} ) 均下载失败！" >> logs/download_fail.log
+							((FAIL_COUNT++))
+							continue;
+						fi
+					fi
 				fi
 				if [ -f ${NEW_BASE_DIR}/downloads/sources/files/${PKG_NAME}-${PKG_VERSION}_git.tar.gz ]; then
 					echo "创建md5sum校验文件... ${NEW_BASE_DIR}/downloads/sources/hash/${PKG_NAME}-${PKG_VERSION}_git.tar.gz.hash"
@@ -560,9 +595,9 @@ ${i} 没有下载路径，请检查。"
 									if [ -f ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME} ]; then
 										rm -f ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
 									fi
-# 									wget -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
+# 									wget --timeout=${DOWNLOAD_TIMEOUT} -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
 									REPLACE_REAL_RESOURCES_URL=$(replace_url "${RESOURCES_URL}" "${RESOURCES_FILENAME}")
-									wget -c ${REPLACE_REAL_RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
+									wget --timeout=${DOWNLOAD_TIMEOUT} -c ${REPLACE_REAL_RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
 									if [ "x$?" != "x0" ]; then
 										if [ "${REPLACE_REAL_RESOURCES_URL}" == "${RESOURCES_URL}" ]; then
 											echo "${RESOURCES_URL} 下载失败！"
@@ -570,7 +605,7 @@ ${i} 没有下载路径，请检查。"
 											((FAIL_COUNT++))
 											continue;
 										else
-											wget -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
+											wget --timeout=${DOWNLOAD_TIMEOUT} -c ${RESOURCES_URL} -O ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${RESOURCES_FILENAME}
 											if [ "x$?" != "x0" ]; then
 												echo "${RESOURCES_URL} 与 ${REPLACE_REAL_RESOURCES_URL} 均下载失败！"
 												echo "下载 ${i} 的资源文件 ${RESOURCES_URL} ( 替换下载地址：${REPLACE_REAL_RESOURCES_URL} ) 均下载失败！" >> logs/download_fail.log
@@ -641,9 +676,9 @@ ${i} 没有下载路径，请检查。"
 								echo "从${LIST_URL}下载${LIST_FILENAME}中的文件..."
 								mkdir -p ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/{files,hash}/
 								mkdir -p ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir
-# 								wget -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
+# 								wget --timeout=${DOWNLOAD_TIMEOUT} -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
 								REPLACE_REAL_LIST_URL=$(replace_url "${LIST_URL}" "")
-								wget -c -B ${REPLACE_REAL_LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
+								wget --timeout=${DOWNLOAD_TIMEOUT} -c -B ${REPLACE_REAL_LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
 								if [ "x$?" != "x0" ]; then
 									if [ "${REPLACE_REAL_LIST_URL}" == "${LIST_URL}" ]; then
 										echo "从 ${LIST_URL} 下载资源组文件 ${LIST_FILENAME} 失败！"
@@ -651,7 +686,7 @@ ${i} 没有下载路径，请检查。"
 										((FAIL_COUNT++))
 										continue;
 									else
-										wget -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
+										wget --timeout=${DOWNLOAD_TIMEOUT} -c -B ${LIST_URL} -i ${NEW_BASE_DIR}/files/step/${i}/${PKG_VERSION}/${LIST_FILENAME} -P ${NEW_BASE_DIR}/downloads/files/step/${i}/${PKG_VERSION}/files/${LIST_NAME}_dir/
 										if [ "x$?" != "x0" ]; then
 											echo "从 ${LIST_URL} 与 ${REPLACE_REAL_LIST_URL} 下载资源组文件 ${LIST_FILENAME} 均失败！"
 											echo "${i} 从 ${LIST_URL} ( 替换下载地址：${REPLACE_REAL_LIST_URL} ) 下载资源组文件 ${LIST_FILENAME} 均失败！" >> logs/download_fail.log

@@ -140,7 +140,7 @@ if [ -d ${STRIP_DIR} ]; then
 			if [ -f ${NEW_TARGET_SYSDIR}/overlaydir/${FIX_STEP_NAME}.dist ]; then
 				source ${NEW_TARGET_SYSDIR}/overlaydir/${FIX_STEP_NAME}.dist
 			fi
-			for dir_i in $(find -type d -name "lib" -o -type d -name "lib64" -o -tyep d -name "lib32" -o -type d-name "share")
+			for dir_i in $(find -type d -name "lib" -o -type d -name "lib64" -o -tyep d -name "lib32" -o -type d -name "share")
 			do
 				if [ -d ${dir_i} ]; then
 # 					echo "find ${dir_i} -type f -name \*.a -exec ${CROSS_TARGET}-strip --strip-debug {} ';'" >> ${NEW_TARGET_SYSDIR}/logs/strip/strip_${STRIP_STEP_NAME}.log

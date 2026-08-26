@@ -1,1 +1,1 @@
-gongju/bin/pack_os.sh
+../gongju/bin/pack_os.sh

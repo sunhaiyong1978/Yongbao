@@ -230,9 +230,9 @@ if [ "x${KERNEL_ONLY}" != "xTRUE" ]; then
 			fi
 		done
 	else
-		for i in $(ls ${LIVE_DIRECTORY}/images/*.squashfs | sed "s@${LIVE_DIRECTORY}/images/@@g" | grep "\.${DISTRO_ARCH}\.squashfs" | sed "s@\.${DISTRO_ARCH}\.squashfs@@g" | awk -F'.' '{ print $1 }')
+		for i in $(ls ${LIVE_DIRECTORY}/images/*.squashfs | sed "s@${LIVE_DIRECTORY}/images/@@g" | grep "\.${DISTRO_ARCH}\.squashfs" | sed "s@\.${DISTRO_ARCH}\.squashfs@@g")
 		do
-			if [ "x${i}" == "xboot" ] || [ "x${i}" == "xsysroot" ] || [ "x${i:0:7}" == "xkernel_" ]; then
+			if [ "x${i}" == "xboot" ] || [ "x${i:0:5}" == "xboot." ] || [ "x${i}" == "xsysroot" ] || [ "x${i:0:8}" == "xsysroot." ] || [ "x${i:0:7}" == "xkernel_" ]; then
 				continue
 			fi
 			echo "# ${IMAGE_INDEX} ${i}.${DISTRO_ARCH}" >> ${LIVE_DIRECTORY}/images/images.list

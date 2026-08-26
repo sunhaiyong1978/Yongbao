@@ -812,7 +812,8 @@ function check_gnu_Makefile
 	touch foo
 # 	GREP_RETURN_STR="$(grep -r -e " \/usr\/lib${LIB_SUFF}\/lib" -e " \-L\/usr\/lib${LIB_SUFF}" $(find -name "Makefile") foo || true)"
 # 	GREP_RETURN_STR="$(grep -r -e " \/usr\/lib\(\|64\|32\)\/lib" -e " \-L\/usr\/lib\(\|64\|32\)" -e "\-rpath\(,\| \)\/usr\/lib" $(find -name "Makefile") foo || true)"
-	GREP_RETURN_STR="$(grep -r -e "^[^#].* \/usr\/lib\(\|64\|32\)\/lib.*\.\(so\|\a\)" -e "^[^#].* \-L\/usr\/lib\(\|64\|32\)" -e "^[^#].*\-Wl,\-rpath\(,\|=\)\/usr\/lib" $(find -name "Makefile") foo || true)"
+# 	GREP_RETURN_STR="$(grep -r -e "^[^#].* \/usr\/lib\(\|64\|32\)\/lib.*\.\(so\|\a\)" -e "^[^#].* \-L\/usr\/lib\(\|64\|32\)" -e "^[^#].*\-Wl,\-rpath\(,\|=\)\/usr\/lib" -e "^[^#].*\-Wl,\-R\/usr\/lib" $(find -name "Makefile") foo || true)"
+	GREP_RETURN_STR="$(grep -r -e "^[^#].* \/usr\/lib\(\|64\|32\)\/lib.*\.\(so\|\a\)" -e "^[^#].* \-L\/usr\/lib\(\|64\|32\)" -e "^[^#].*\-Wl,\-rpath-link\(,\|=\)\/usr\/lib" $(find -name "Makefile") foo || true)"
 	if [ "x${GREP_RETURN_STR}" != "x" ]; then
 		echo "配置过程可能使用了主系统的库，请检查。"
 		echo "${GREP_RETURN_STR}"

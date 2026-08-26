@@ -165,6 +165,14 @@ if [ -d ${FINAL_FIX_DIR} ]; then
 								set +x
 								;;
 							d)
+								if [ "x${FINAL_FIX_SET_COMMAND_DIST}" != "x" ]; then
+									RUN_COMMAND="find ${PWD}/./${FINAL_FIX_SET_DIRECTORY} -type d -name '"${FINAL_FIX_SET_COMMAND_DIST}"' -exec rm -rv '{}' ';'"
+									set -x
+									eval "${RUN_COMMAND}"
+									set +x
+								else
+									echo "没有指定删除目录的名称，无法进行删除。"
+								fi
 								;;
 							*)
 								echo "追加修复操作码“${FINAL_FIX_SET_COMMAND_OPT}”对类型“${FINAL_FIX_SET_FILES_TYPE}”设置无法操作，请使用 f(文件) 、d(目录) 及 l(链接)。"
