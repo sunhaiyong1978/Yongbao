@@ -3,12 +3,13 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=webkitgtk
-export PACKAGE_VERSION=2.53.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.53.1/
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.53.1
-tar xvf ${DOWNLOADDIR}/webkitgtk-2.53.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/webkitgtk-2.53.1
-    
+export PACKAGE_VERSION=2.53.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/webkitgtk/2.53.4/
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.53.4
+tar xvf ${DOWNLOADDIR}/webkitgtk-2.53.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/webkitgtk-2.53.4
+    patch -Np1 -i ${SYSDIR}/files/base_support/webkitgtk/2.53.4/patches/0001-fix-build-error-for-gstreamer-for-GL.patch 
+	 
 
 
     export JOBS=$(($(nproc)*1))
@@ -68,15 +69,13 @@ fi
 	      -DUSE_SYSTEM_MALLOC=ON \
 	      -DUSE_LIBBACKTRACE=OFF -DENABLE_SPEECH_SYNTHESIS=OFF -DUSE_SYSTEM_SYSPROF_CAPTURE=OFF \
               -Wno-dev -G Ninja ..
-        sed -i "s@ /usr\(.*\)\(g-ir-compiler\|g-ir-scanner\)@ ${CROSSTOOLS_DIR}\1${CROSS_TARGET}-\2@g" build.ninja
         sed -i "s@${SYSROOT_DIR}/usr/bin/wayland-scanner@${CROSSTOOLS_DIR}/bin/wayland-scanner@g" build.ninja
 	sed -i "s@${SYSROOT_DIR}/usr/bin/gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 	sed -i "s@${HOST_TOOLS_DIR}/bin/gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
         sed -i "s@${SYSROOT_DIR}/usr/bin/glib-compile-resources@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-glib-compile-resources@g" build.ninja
-        sed -i -e "s@\(${SYSROOT_DIR}/\)usr\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja                                                         
-        sed -i -e "s@\(${CROSSTOOLS_DIR}/\)\(.*\)/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/\2/${CROSS_TARGET}-\3@g" build.ninja                                                         
+	sed -i.orig -e "s@${HOST_TOOLS_DIR}/bin/\(g-ir-compiler\|g-ir-scanner\|vapigen\)@${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-\1@g" build.ninja
 
 	eval ${NINJA_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.53.1
+rm -rf ${BUILD_DIRECTORY}/webkitgtk-2.53.4

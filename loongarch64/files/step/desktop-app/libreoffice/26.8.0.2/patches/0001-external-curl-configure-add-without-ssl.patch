@@ -1,0 +1,25 @@
+From db04d69e648ce313f58957e45ddcaf038e7c4dd8 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 12 Aug 2026 02:16:45 +0000
+Subject: [PATCH] external curl configure add --without-ssl.
+
+---
+ external/curl/ExternalProject_curl.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/external/curl/ExternalProject_curl.mk b/external/curl/ExternalProject_curl.mk
+index f31c671..0ec6de3 100644
+--- a/external/curl/ExternalProject_curl.mk
++++ b/external/curl/ExternalProject_curl.mk
+@@ -44,7 +44,7 @@ $(call gb_ExternalProject_get_state_target,curl,build):
+ 			--without-libssh2 --without-nghttp2 \
+ 			--without-libssh --without-brotli \
+ 			--without-ngtcp2 --without-quiche \
+-			--without-zstd --without-libgsasl \
++			--without-zstd --without-libgsasl --with-openssl \
+ 			$(if $(WITH_GSSAPI),--with-gssapi,--without-gssapi) \
+ 			--disable-ipfs --disable-mqtt --disable-ares \
+ 			--disable-dict --disable-file --disable-gopher --disable-imap \
+-- 
+2.31.1
+

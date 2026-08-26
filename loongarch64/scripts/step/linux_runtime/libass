@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libass
-export PACKAGE_VERSION=0.17.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libass/0.17.4/
-rm -rf ${BUILD_DIRECTORY}/libass-0.17.4
-tar xvf ${DOWNLOADDIR}/libass-0.17.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libass-0.17.4
+export PACKAGE_VERSION=0.17.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libass/0.17.5/
+rm -rf ${BUILD_DIRECTORY}/libass-0.17.5
+tar xvf ${DOWNLOADDIR}/libass-0.17.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libass-0.17.5
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/libass-0.17.4
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libass-0.17.4
+rm -rf ${BUILD_DIRECTORY}/libass-0.17.5

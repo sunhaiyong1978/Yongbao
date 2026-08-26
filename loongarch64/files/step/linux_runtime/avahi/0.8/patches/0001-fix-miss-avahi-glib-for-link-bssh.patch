@@ -1,0 +1,25 @@
+From 509f9b7eb70f65e4357d0ccd5caf95f743303169 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 6 Aug 2026 11:36:42 +0000
+Subject: [PATCH] fix miss avahi-glib for link bssh.
+
+---
+ avahi-ui/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/avahi-ui/Makefile.am b/avahi-ui/Makefile.am
+index 7e75b2c..aa1aefa 100644
+--- a/avahi-ui/Makefile.am
++++ b/avahi-ui/Makefile.am
+@@ -85,7 +85,7 @@ bssh_SOURCES = bssh.c
+ 
+ if HAVE_GTK3
+ bssh_CFLAGS = $(AM_CFLAGS) $(GTK30_CFLAGS)
+-bssh_LDADD = $(AM_LDADD) $(GTK30_LIBS) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la libavahi-ui-gtk3.la
++bssh_LDADD = $(AM_LDADD) $(GTK30_LIBS) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la ../avahi-glib/libavahi-glib.la libavahi-ui-gtk3.la
+ else
+ bssh_CFLAGS = $(AM_CFLAGS) $(GTK20_CFLAGS)
+ bssh_LDADD = $(AM_LDADD) $(GTK20_LIBS) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la libavahi-ui.la
+-- 
+2.31.1
+

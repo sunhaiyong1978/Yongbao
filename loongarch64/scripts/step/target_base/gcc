@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=gcc
-export PACKAGE_VERSION=16.1.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gcc/16.1.0/
-rm -rf ${BUILD_DIRECTORY}/gcc-16.1.0
-tar xvf ${DOWNLOADDIR}/gcc-16.1.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/gcc-16.1.0
+export PACKAGE_VERSION=16.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/gcc/16.2.0/
+rm -rf ${BUILD_DIRECTORY}/gcc-16.2.0
+tar xvf ${DOWNLOADDIR}/gcc-16.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gcc-16.2.0
 	 
 	sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 	mkdir -pv cross-build
@@ -29,4 +29,7 @@ pushd ${BUILD_DIRECTORY}/gcc-16.1.0
 		rm -fv ${SYSROOT_DIR}/lib${LIB_SUFF}/libssp{,_nonshared}.*
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/gcc-16.1.0
+rm -rf ${BUILD_DIRECTORY}/gcc-16.2.0
+
+set_split_conf "devel" "/usr/libexec/gcc"
+set_split_conf "devel" "/usr/lib64/gcc"

@@ -1,0 +1,33 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=gtk2
+export PACKAGE_VERSION=2.24.33
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/gtk2/2.24.33/
+rm -rf ${BUILD_DIRECTORY}/gtk+-2.24.33
+tar xvf ${DOWNLOADDIR}/gtk+-2.24.33.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/gtk+-2.24.33
+    cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
+    sed -i.orig -e "s@gtk-builder-convert@@g" \
+        -e "/\tgtk-update-icon-cache\$(EXEEXT)/s@gtk-update-icon-cache\$(EXEEXT)@@g" \
+        gtk/Makefile.in
+    export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types -Wno-implicit-int"
+    mkdir cross-prebuild
+    pushd cross-prebuild
+        ../configure ${COMMON_CONFIG} --disable-introspection \
+                     ac_cv_func_httpGetAuthString=yes ac_cv_func_mmap_fixed_mapped=yes \
+                     ac_cv_header_cups_cups_h=yes
+	check_gnu_Makefile
+	make -j${JOBS}
+        make DESTDIR=${LINUX_SYSROOT_DIR} install
+        rm -v ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/libg*-x11*.la
+    popd
+
+cat > ${LINUX_SYSROOT_DIR}/etc/gtk-2.0/gtkrc << "EOF"
+include "/usr/share/themes/Clearlooks/gtk-2.0/gtkrc"
+gtk-icon-theme-name = "elementary"
+EOF
+popd 
+rm -rf ${BUILD_DIRECTORY}/gtk+-2.24.33

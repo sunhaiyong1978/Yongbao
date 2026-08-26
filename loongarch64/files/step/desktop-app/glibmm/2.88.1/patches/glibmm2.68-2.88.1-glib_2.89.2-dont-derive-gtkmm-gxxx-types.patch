@@ -1,0 +1,72 @@
+From d26083c41219958e802d5da733d4b4d3c342ec89 Mon Sep 17 00:00:00 2001
+From: Kjell Ahlstedt <kjellahlstedt@gmail.com>
+Date: Sun, 5 Jul 2026 16:49:52 +0200
+Subject: [PATCH] Gio: Emblem and DBus::ActionGroup: Don't derive gtkmm__Gxxx
+ types
+
+GEmblem and GDBusActionGroup are declared G_DECLARE_FINAL_TYPE.
+Add _DO_NOT_DERIVE_GTYPE, _ABI_AS_WITH_DERIVED_GTYPE and _STRUCT_NOT_HIDDEN
+to the corresponding glibmm classes.
+---
+ gio/src/dbusactiongroup.hg | 14 ++++++++++++++
+ gio/src/emblem.hg          |  4 ++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/gio/src/dbusactiongroup.hg b/gio/src/dbusactiongroup.hg
+index fbc00f8..fe5c032 100644
+--- a/gio/src/dbusactiongroup.hg
++++ b/gio/src/dbusactiongroup.hg
+@@ -21,6 +21,18 @@
+ _DEFS(giomm,gio)
+ _PINCLUDE(glibmm/private/object_p.h)
+ 
++#ifndef DOXYGEN_SHOULD_SKIP_THIS
++// GDBusActionGroup was declared a final type between GLib 2.89.1 and 2.89.2.
++// Before that, GDBusActionGroupClass was not declared in GLib.
++// The preprocessor macro G_DBUS_ACTION_GROUP_CLASS was defined, though.
++#if !GLIB_CHECK_VERSION(2,89,1) || (!GLIB_CHECK_VERSION(2,89,2) && defined(G_DBUS_ACTION_GROUP_CLASS))
++  // glib < 2.89.1 or (glib == 2.89.1 and G_DBUS_ACTION_GROUP_CLASS is a preprocessor macro)
++  // GDBusActionGroup is not a final type,
++  // GDBusActionGroupClass is not declared in GLib.
++  using GDBusActionGroupClass = struct _GDBusActionGroupClass;
++#endif
++#endif /* DOXYGEN_SHOULD_SKIP_THIS */
++
+ namespace Gio
+ {
+ 
+@@ -43,6 +55,9 @@ class GIOMM_API ActionGroup
+   _CLASS_GOBJECT(ActionGroup, GDBusActionGroup, G_DBUS_ACTION_GROUP, Glib::Object, GObject, , , GIOMM_API)
+   _IMPLEMENTS_INTERFACE(Gio::ActionGroup)
+   _IMPLEMENTS_INTERFACE(Gio::RemoteActionGroup)
++  _DO_NOT_DERIVE_GTYPE dnl// GDBusActionGroup is a final type since glib 2.89.2
++  _ABI_AS_WITH_DERIVED_GTYPE dnl// Remove when we can break ABI
++  _STRUCT_NOT_HIDDEN
+ 
+ protected:
+   _CTOR_DEFAULT
+diff --git a/gio/src/emblem.hg b/gio/src/emblem.hg
+index e8e8cfb..2e6412f 100644
+--- a/gio/src/emblem.hg
++++ b/gio/src/emblem.hg
+@@ -16,6 +16,7 @@
+ 
+ #include <glibmm/object.h>
+ #include <giomm/icon.h>
++#include <gio/gio.h>
+ 
+ _DEFS(giomm,gio)
+ _PINCLUDE(glibmm/private/object_p.h)
+@@ -40,6 +41,9 @@ class GIOMM_API Emblem
+ {
+   _CLASS_GOBJECT(Emblem, GEmblem, G_EMBLEM, Glib::Object, GObject, , , GIOMM_API)
+   _IMPLEMENTS_INTERFACE(Icon)
++  _DO_NOT_DERIVE_GTYPE dnl// GEmblem is a final type since glib 2.89.2
++  _ABI_AS_WITH_DERIVED_GTYPE dnl// Remove when we can break ABI
++  _STRUCT_NOT_HIDDEN
+ 
+ public:
+   _WRAP_ENUM(Origin, GEmblemOrigin, NO_GTYPE, decl_prefix GIOMM_API)
+
+-- 
+GitLab

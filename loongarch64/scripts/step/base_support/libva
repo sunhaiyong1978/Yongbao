@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libva
-export PACKAGE_VERSION=2.23.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libva/2.23.0/
-rm -rf ${BUILD_DIRECTORY}/libva-2.23.0
-tar xvf ${DOWNLOADDIR}/libva-2.23.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libva-2.23.0
+export PACKAGE_VERSION=2.24.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libva/2.24.1/
+rm -rf ${BUILD_DIRECTORY}/libva-2.24.1
+tar xvf ${DOWNLOADDIR}/libva-2.24.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libva-2.24.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libva-2.23.0
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libva-2.23.0
+rm -rf ${BUILD_DIRECTORY}/libva-2.24.1

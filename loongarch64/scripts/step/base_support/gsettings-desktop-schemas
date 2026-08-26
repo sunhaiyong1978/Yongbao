@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/gsettings-desktop-sch
 rm -rf ${BUILD_DIRECTORY}/gsettings-desktop-schemas-50.1
 tar xvf ${DOWNLOADDIR}/gsettings-desktop-schemas-50.1.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/gsettings-desktop-schemas-50.1
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/gsettings-desktop-schemas/50.1/patches/0001-gsettings-desktop-schemas-fix-pc-file-for-cross-buil.patch 
+	 
 	mkdir cross-build
 	pushd cross-build
 		 meson ${MESON_CONFIG}  \

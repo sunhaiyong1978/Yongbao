@@ -1,0 +1,27 @@
+From c0dd1cc1160a51e5984ae1aaf1235965f232f05e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 13 Aug 2026 02:23:53 +0000
+Subject: [PATCH] firefox 153 fixed a judgment issue when libstdc++ has
+ multiple versions.
+
+---
+ build/moz.configure/toolchain.configure | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/build/moz.configure/toolchain.configure b/build/moz.configure/toolchain.configure
+index 7939243..1c1cc95 100644
+--- a/build/moz.configure/toolchain.configure
++++ b/build/moz.configure/toolchain.configure
+@@ -1170,7 +1170,8 @@ def sysroot(host_or_target, target_sysroot=None):
+             include = os.path.join(path, "usr/include/c++")
+             if os.path.isdir(include):
+                 with os.scandir(include) as d:
+-                    version = max(Version(e.name) for e in d if e.is_dir())
++                    version = max(Version(e.name) for e in d if e.is_dir() and (e.name[0] > '0' and e.name[0] < '9'))
++
+             log.info("Using %s sysroot in %s", host_or_target_str, path)
+         return namespace(
+             path=path,
+-- 
+2.31.1
+

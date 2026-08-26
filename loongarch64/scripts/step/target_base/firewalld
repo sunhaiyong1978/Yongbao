@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=firewalld
-export PACKAGE_VERSION=2.4.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/firewalld/2.4.1/
-rm -rf ${BUILD_DIRECTORY}/firewalld-2.4.1
-tar xvf ${DOWNLOADDIR}/firewalld-2.4.1.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firewalld-2.4.1
+export PACKAGE_VERSION=2.5.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/firewalld/2.5.0/
+rm -rf ${BUILD_DIRECTORY}/firewalld-2.5.0
+tar xvf ${DOWNLOADDIR}/firewalld-2.5.0.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firewalld-2.5.0
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/firewalld-2.4.1
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} PYTHON=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 --with-xml-catalog=${HOST_TOOLS_DIR}/etc/xml/catalog --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/firewalld-2.4.1
+rm -rf ${BUILD_DIRECTORY}/firewalld-2.5.0

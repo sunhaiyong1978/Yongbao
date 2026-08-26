@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/SPIRV-Tools-git_git
 	tar xvf ${DOWNLOADDIR}/SPIRV-Headers-$(get_package_version "SPIRV-Headers").tar.gz
         mkdir cross-build
         pushd cross-build
-                CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" CXXFLAGS="-Wno-error=switch" \
+                CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" CXXFLAGS="-Wno-error=switch -Wno-error=array-bounds" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
                       -DPKG_CONFIG_EXECUTABLE=${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-pkg-config \
                       -DCMAKE_SYSROOT=${LINUX_SYSROOT_DIR} \

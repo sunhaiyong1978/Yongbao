@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=ocl-icd
-export PACKAGE_VERSION=2.3.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ocl-icd/2.3.4/
-rm -rf ${BUILD_DIRECTORY}/ocl-icd-2.3.4
-tar xvf ${DOWNLOADDIR}/ocl-icd-2.3.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ocl-icd-2.3.4
+export PACKAGE_VERSION=2.3.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/ocl-icd/2.3.5/
+rm -rf ${BUILD_DIRECTORY}/ocl-icd-2.3.5
+tar xvf ${DOWNLOADDIR}/ocl-icd-2.3.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ocl-icd-2.3.5
         
 	sed -i "/SUBDIRS/s@doc @@g" Makefile.am
         for config_i in $(find -name "config.sub")
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/ocl-icd-2.3.4
         ./configure ${COMMON_CONFIG} --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/ocl-icd-2.3.4
+rm -rf ${BUILD_DIRECTORY}/ocl-icd-2.3.5

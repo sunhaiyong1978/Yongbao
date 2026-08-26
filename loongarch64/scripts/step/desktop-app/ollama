@@ -12,7 +12,7 @@ pushd ${BUILD_DIRECTORY}/ollama-git-default_git
 	patch -Np1 -i ${SYSDIR}/files/desktop-app/ollama/git-default/patches/0001-llama-fix-for-gcc-15.patch 
 	 
 	PATH=${CROSSTOOLS_DIR}/golang/bin:${PATH}
-	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ GOPROXY=https://goproxy.cn CGO_ENABLED=1 CGO_CFLAGS="-mlasx" GOOS=linux GOARCH=loong64 go build -trimpath -buildmode=pie -o ollama .
+	CC=${CROSS_TARGET}-gcc CXX=${CROSS_TARGET}-g++ GOPROXY=https://goproxy.cn CGO_ENABLED=1 CGO_CFLAGS="-mlasx" GOOS=linux GOARCH=loong64 GOMODCACHE=/tmp/gomodcache GOCACHE=${PWD}/gocache go build -trimpath -buildmode=pie -o ollama .
 	cp ollama ${SYSROOT_DIR}/usr/bin/
 popd 
 rm -rf ${BUILD_DIRECTORY}/ollama-git-default_git

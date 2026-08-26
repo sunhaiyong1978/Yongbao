@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=blender
-export PACKAGE_VERSION=5.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/5.1.1/
-rm -rf ${BUILD_DIRECTORY}/blender-5.1.1
-tar xvf ${DOWNLOADDIR}/blender-5.1.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/blender-5.1.1
-        patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/5.1.1/patches/0001-blender-5.1.1-fix-for-Eigen-3.4.patch 
+export PACKAGE_VERSION=5.2.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/blender/5.2.0/
+rm -rf ${BUILD_DIRECTORY}/blender-5.2.0
+tar xvf ${DOWNLOADDIR}/blender-5.2.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/blender-5.2.0
+        patch -Np1 -i ${SYSDIR}/files/desktop-app/blender/5.2.0/patches/0001-blender-5.1.1-fix-for-Eigen-3.4.patch 
 	 
 	sed -i "s@pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)@set(WAYLAND_SCANNER \"${CROSSTOOLS_DIR}/bin/wayland-scanner\")@g" build_files/cmake/platform/platform_unix.cmake
 	sed -i "s@COMMAND \"\$<TARGET_FILE:datatoc>@COMMAND qemu-loongarch64 \"${PWD}/cross-build/bin/datatoc@g" build_files/cmake/macros.cmake
@@ -25,7 +25,7 @@ ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/oslc \"\$@\"" > o
 	chmod +x oslc
         mkdir cross-build
         pushd cross-build
-                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" LDFLAGS="${LDFLAGS} -lfftw3 -lpcre" \
+                CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" LDFLAGS="${LDFLAGS} -lfftw3" \
 		CFLAGS="${CFLAGS} -fpermissive" CXXFLAGS="${CXXFLAGS} -fpermissive" \
                 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
                       -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 \
@@ -48,4 +48,4 @@ ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/oslc \"\$@\"" > o
 	rm -v ${SYSROOT_DIR}/usr/share/blender/*/python/bin/*
 	rm -r ${SYSROOT_DIR}/usr/share/blender/*/python/lib64/python$(cat ${COMMON_DIR}/Python3.version)/config-$(cat ${COMMON_DIR}/Python3.version)-*
 popd 
-rm -rf ${BUILD_DIRECTORY}/blender-5.1.1
+rm -rf ${BUILD_DIRECTORY}/blender-5.2.0

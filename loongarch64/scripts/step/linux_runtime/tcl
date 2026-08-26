@@ -12,7 +12,8 @@ pushd ${BUILD_DIRECTORY}/tcl8.6.13
     TCL_VERSION="${PACKAGE_VERSION%\.*}"
     SRCDIR=$(pwd)
     pushd unix
-	    ./configure ${COMMON_CONFIG} --mandir=/usr/share/man \
+	    ./configure --prefix=/usr --libdir=/usr/lib${LIB_SUFF} --mandir=/usr/share/man \
+                        --build=${CROSS_HOST} --host=${LINUX_HOST} \
 	                --enable-64bit
 	    check_gnu_Makefile
 	    make -j${JOBS} TCLSH_PROG=${HOST_TOOLS_DIR}/bin/tclsh
@@ -40,3 +41,9 @@ pushd ${BUILD_DIRECTORY}/tcl8.6.13
     popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/tcl8.6.13
+
+cat > ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-tclsh << EOF
+#!/bin/bash -e
+qemu-${QEMU_ARCH} ${LINUX_SYSROOT_DIR}/usr/bin/tclsh "\$@"
+EOF
+chmod +x ${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-tclsh

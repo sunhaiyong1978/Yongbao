@@ -1,0 +1,7 @@
+URL=https://gitlab.gnome.org/GNOME/glibmm.git
+FILENAME=glibmm24
+MODE=GIT
+GIT_BRANCH=glibmm-2-66
+GIT_COMMIT=
+GIT_SUBMODULE=0
+GIT_UPDATE_MODE=手工

@@ -1,0 +1,25 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=autogen
+export PACKAGE_VERSION=5.18.16
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/autogen/5.18.16/
+rm -rf ${BUILD_DIRECTORY}/autogen-5.18.16
+tar xvf ${DOWNLOADDIR}/autogen-5.18.16.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/autogen-5.18.16
+    
+    for config_i in $(find -name "config.sub")
+    do  
+	cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+    done
+
+    sed -i "/_guile_versions_to_search/s@\"2.2@\"3.0 2.2@g" configure
+    sed -i "s@203000@308000@g" agen5/guile-iface.h
+	CFLAGS="-Wno-error=unused-but-set-variable" \
+	./configure ${COMMON_CONFIG} \
+	            --disable-dependency-tracking
+	check_gnu_Makefile
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/autogen-5.18.16

@@ -8,8 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/NetworkManager/1.51.4
 rm -rf ${BUILD_DIRECTORY}/NetworkManager-1.51.4
 tar xvf ${DOWNLOADDIR}/NetworkManager-1.51.4.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/NetworkManager-1.51.4
-    patch -Np1 -i ${SYSDIR}/files/base_support/NetworkManager/1.51.4/patches/0001-NetworkManager-1.47.4-fix-policydir-define-for-cross.patch 
-	 
+    
     sed -i -e 's/Qt/&5/' meson.build
     sed -i -e 's/-qt4/-qt5/' -e 's/moc_location/host_bins/' examples/C/qt/meson.build 
     mkdir cross-build

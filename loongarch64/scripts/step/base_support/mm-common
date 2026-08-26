@@ -3,19 +3,22 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mm-common
-export PACKAGE_VERSION=1.0.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mm-common/1.0.7/
-rm -rf ${BUILD_DIRECTORY}/mm-common-1.0.7
-tar xvf ${DOWNLOADDIR}/mm-common-1.0.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mm-common-1.0.7
+export PACKAGE_VERSION=1.0.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mm-common/1.0.8/
+rm -rf ${BUILD_DIRECTORY}/mm-common-1.0.8
+tar xvf ${DOWNLOADDIR}/mm-common-1.0.8.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mm-common-1.0.8
 	
 	mkdir cross-build
 	pushd cross-build
-		 meson ${MESON_CONFIG}  \
-                      ..
+		meson ${MESON_CONFIG} \
+			..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/mm-common-1.0.7
+rm -rf ${BUILD_DIRECTORY}/mm-common-1.0.8
+
+cp -av ${SYSROOT_DIR}/usr/bin/mm-common-get ${CROSSTOOLS_DIR}/bin/
+sed -i "s@'/usr/share'@'${SYSROOT_DIR}/usr/share'@g" ${CROSSTOOLS_DIR}/bin/mm-common-get

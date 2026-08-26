@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=alsa-utils
-export PACKAGE_VERSION=1.2.15.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alsa-utils/1.2.15.2/
-rm -rf ${BUILD_DIRECTORY}/alsa-utils-1.2.15.2
-tar xvf ${DOWNLOADDIR}/alsa-utils-1.2.15.2.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/alsa-utils-1.2.15.2
+export PACKAGE_VERSION=1.2.16
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/alsa-utils/1.2.16/
+rm -rf ${BUILD_DIRECTORY}/alsa-utils-1.2.16
+tar xvf ${DOWNLOADDIR}/alsa-utils-1.2.16.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/alsa-utils-1.2.16
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/alsa-utils-1.2.15.2
 	 ./configure ${COMMON_CONFIG} --with-systemdsystemunitdir=/usr/lib/systemd/system --with-udev-rules-dir=/usr/lib/udev/rules.d --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/alsa-utils-1.2.15.2
+rm -rf ${BUILD_DIRECTORY}/alsa-utils-1.2.16

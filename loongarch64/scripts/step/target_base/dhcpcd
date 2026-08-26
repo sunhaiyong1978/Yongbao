@@ -17,7 +17,7 @@ pushd ${BUILD_DIRECTORY}/dhcpcd-10.3.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --disable-privsep --enable-malloc0returnsnull
+	CC=${CROSS_TARGET}-gcc ./configure ${COMMON_CONFIG}  --disable-privsep --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/dhcpcd-10.3.2

@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=socat
-export PACKAGE_VERSION=1.8.1.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/socat/1.8.1.1/
-rm -rf ${BUILD_DIRECTORY}/socat-1.8.1.1
-tar xvf ${DOWNLOADDIR}/socat-1.8.1.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/socat-1.8.1.1
-	patch -Np1 -i ${SYSDIR}/files/base_support/socat/1.8.1.1/patches/0001-socat-1.8.1.0-fix-build-error-for-glibc-2.43.patch 
+export PACKAGE_VERSION=1.8.1.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/socat/1.8.1.3/
+rm -rf ${BUILD_DIRECTORY}/socat-1.8.1.3
+tar xvf ${DOWNLOADDIR}/socat-1.8.1.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/socat-1.8.1.3
+	patch -Np1 -i ${SYSDIR}/files/base_support/socat/1.8.1.3/patches/0001-socat-1.8.1.0-fix-build-error-for-glibc-2.43.patch 
 	 
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/socat-1.8.1.1
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/socat-1.8.1.1
+rm -rf ${BUILD_DIRECTORY}/socat-1.8.1.3

@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/tar/1.35/
 rm -rf ${BUILD_DIRECTORY}/tar-1.35
 tar xvf ${DOWNLOADDIR}/tar-1.35.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/tar-1.35
-	
+	patch -Np1 -i ${SYSDIR}/files/target_base/tar/1.35/patches/0001-Avoid-acl_-prefix-for-functions.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		chmod 0644 $(dirname ${config_i})/config.{sub,guess}

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=findutils
-export PACKAGE_VERSION=4.10.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/findutils/4.10.0/
-rm -rf ${BUILD_DIRECTORY}/findutils-4.10.0
-tar xvf ${DOWNLOADDIR}/findutils-4.10.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/findutils-4.10.0
+export PACKAGE_VERSION=4.11.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/findutils/4.11.0/
+rm -rf ${BUILD_DIRECTORY}/findutils-4.11.0
+tar xvf ${DOWNLOADDIR}/findutils-4.11.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/findutils-4.11.0
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/findutils-4.10.0
 	 ./configure ${COMMON_CONFIG} --localstatedir=/var/lib/locate --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/findutils-4.10.0
+rm -rf ${BUILD_DIRECTORY}/findutils-4.11.0

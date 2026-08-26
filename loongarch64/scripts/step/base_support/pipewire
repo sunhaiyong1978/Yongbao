@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=pipewire
-export PACKAGE_VERSION=1.6.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pipewire/1.6.6/
-rm -rf ${BUILD_DIRECTORY}/pipewire-1.6.6
-tar xvf ${DOWNLOADDIR}/pipewire-1.6.6.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pipewire-1.6.6
-	patch -Np1 -i ${SYSDIR}/files/base_support/pipewire/1.6.6/patches/0001-pipewire-1.6.2-fix-for-glibc-2.43.patch 
+export PACKAGE_VERSION=1.6.8
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/pipewire/1.6.8/
+rm -rf ${BUILD_DIRECTORY}/pipewire-1.6.8
+tar xvf ${DOWNLOADDIR}/pipewire-1.6.8.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pipewire-1.6.8
+	patch -Np1 -i ${SYSDIR}/files/base_support/pipewire/1.6.8/patches/0001-pipewire-1.6.2-fix-for-glibc-2.43.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/pipewire-1.6.6
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib${LIB_SUFF}*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/pipewire-1.6.6
+rm -rf ${BUILD_DIRECTORY}/pipewire-1.6.8

@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=curl
-export PACKAGE_VERSION=8.20.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/curl/8.20.0/
-rm -rf ${BUILD_DIRECTORY}/curl-8.20.0
-tar xvf ${DOWNLOADDIR}/curl-8.20.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/curl-8.20.0
+export PACKAGE_VERSION=8.21.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/curl/8.21.0/
+rm -rf ${BUILD_DIRECTORY}/curl-8.21.0
+tar xvf ${DOWNLOADDIR}/curl-8.21.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/curl-8.21.0
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/curl-8.20.0
 	 ./configure ${COMMON_CONFIG} --with-openssl --enable-threaded-resolver --with-ca-path=/etc/ssl/certs --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/curl-8.20.0
+rm -rf ${BUILD_DIRECTORY}/curl-8.21.0

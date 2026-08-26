@@ -9,10 +9,12 @@ rm -rf ${BUILD_DIRECTORY}/libxml++-2.42.3
 tar xvf ${DOWNLOADDIR}/libxml++-2.42.3.tar.xz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libxml++-2.42.3
 	
+	mkdir -p subprojects/glibmm-2.4
+	tar xvf ${RESOURCEDIR}/files/libxml++2-glibmm24_git.tar.gz -C subprojects/glibmm-2.4 --strip-components=1
 	mkdir cross-build
 	pushd cross-build
 		meson ${MESON_CONFIG}  \
-                      ..
+			..
 		eval ${NINJA_AND_INSTALL}
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la

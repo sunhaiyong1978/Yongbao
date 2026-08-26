@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=simulate
 export STEP_PACKAGENAME=libguestfs
-export PACKAGE_VERSION=1.58.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/libguestfs/1.58.1/
-rm -rf ${BUILD_DIRECTORY}/libguestfs-1.58.1
-tar xvf ${DOWNLOADDIR}/libguestfs-1.58.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libguestfs-1.58.1
+export PACKAGE_VERSION=1.60.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/simulate/libguestfs/1.60.1/
+rm -rf ${BUILD_DIRECTORY}/libguestfs-1.60.1
+tar xvf ${DOWNLOADDIR}/libguestfs-1.60.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libguestfs-1.60.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libguestfs-1.58.1
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libguestfs-1.58.1
+rm -rf ${BUILD_DIRECTORY}/libguestfs-1.60.1

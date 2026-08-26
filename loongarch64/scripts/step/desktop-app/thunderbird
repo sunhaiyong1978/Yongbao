@@ -3,39 +3,16 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=desktop-app
 export STEP_PACKAGENAME=thunderbird
-export PACKAGE_VERSION=140.11.1esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/140.11.1esr/
-rm -rf ${BUILD_DIRECTORY}/thunderbird-140.11.1
-tar xvf ${DOWNLOADDIR}/thunderbird-140.11.1esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/thunderbird-140.11.1
-    mkdir -pv mozbuild/l10n-central
-    pushd mozbuild/l10n-central
-        unzip ${RESOURCEDIR}/files/tip.zip
-        mv comm-l10n-*/* ./
-    popd
-
-
-    find -name .cargo-checksum.json | \
-         xargs sed -ri 's|"[^"]*.gitmodules":"[^"]*",?||'
-
-    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.11.1esr/patches/firefox-140.9.0esr-glibc-2.43.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.11.1esr/patches/firefox-140.9.0esr-llvm_22-1.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.11.1esr/patches/firefox-140.9.0esr-python_3.14_fixes-1.patch 
-	patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/140.11.1esr/patches/0001-fixed-a-judgment-issue-when-libstdc-has-multiple-ver.patch 
+export PACKAGE_VERSION=153.0.3esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/thunderbird/153.0.3esr/
+rm -rf ${BUILD_DIRECTORY}/thunderbird-153.0.3
+tar xvf ${DOWNLOADDIR}/thunderbird-153.0.3esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/thunderbird-153.0.3
+    patch -Np1 -i ${SYSDIR}/files/desktop-app/thunderbird/153.0.3esr/patches/0001-firefox-153-fixed-a-judgment-issue-when-libstdc-has-.patch 
 	 
 
     sed -i "/assert_rust_compile(target/d" build/moz.configure/rust.configure
 
-    sed '/patch.crates-io/a glslopt={path="../third_party/rust/glslopt"}' \
-        -i comm/rust/Cargo.toml &&
-    sed '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' \
-        -i comm/rust/Cargo.lock
-
-    cat > comm/third_party/botan/src/build-data/arch/loongarch64.txt << "EOF"
-family loongarch
-endian little
-wordsize 64
-EOF
 
     cat > mozconfig << "EOF"
 ac_add_options --disable-necko-wifi
@@ -86,7 +63,6 @@ EOF
 
 
     HOST_CC=gcc HOST_CXX=g++ CC=clang CXX=clang++ \
-    CXXFLAGS="-fpermissive -Wnonnull -mno-lsx -mcmodel=medium" CFLAGS="-mno-lsx -mcmodel=medium" \
     MOZBUILD_STATE_PATH=${PWD}/mozbuild \
     ./mach build -j${JOBS}
 
@@ -122,4 +98,4 @@ ln -sfv /usr/lib64/thunderbird/chrome/icons/default/default256.png \
         ${SYSROOT_DIR}/usr/share/pixmaps/thunderbird.png
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/thunderbird-140.11.1
+rm -rf ${BUILD_DIRECTORY}/thunderbird-153.0.3

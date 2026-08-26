@@ -16,7 +16,7 @@ index b863807..b57e69a 100644
  
  if systemd_dep.found()
 -  systemd_user_unit_dir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir')
-+  systemd_user_unit_dir = systemd_dep.get_variable(pkgconfig: 'systemd_user_unit_dir')
++  systemd_user_unit_dir = systemd_dep.get_variable(pkgconfig: 'systemd_user_unit_dir', pkgconfig_define: [ 'prefix', get_option('prefix') ])
  else
    systemd_user_unit_dir = get_option('prefix') / 'lib' / 'systemd' / 'user'
  endif

@@ -1,0 +1,20 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=bubblewrap
+export PACKAGE_VERSION=0.11.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/bubblewrap/0.11.2/
+rm -rf ${BUILD_DIRECTORY}/bubblewrap-0.11.2
+tar xvf ${DOWNLOADDIR}/bubblewrap-0.11.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bubblewrap-0.11.2
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF}  \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/bubblewrap-0.11.2

@@ -1,0 +1,139 @@
+source env/desktop-app/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=desktop-app
+export STEP_PACKAGENAME=KDE6-kstars
+export PACKAGE_VERSION=
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/KDE6-kstars//
+touch ${TEMP_DIRECTORY}/strip-foo
+
+if [ -f ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc ]; then
+	sed -i.orig "s@pkgdatadir=\${datarootdir}/wayland@pkgdatadir=${SYSROOT_DIR}/usr/share/wayland@g"  ${SYSROOT_DIR}/usr/lib64/pkgconfig/wayland-scanner.pc
+fi
+
+for phonon_file in PhononTargets-release.cmake PhononExperimentalTargets-release.cmake Phonon4Qt6Config.cmake PhononTargets.cmake Phonon4Qt6ExperimentalConfig.cmake PhononExperimentalTargets.cmake
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/phonon4qt6/${phonon_file} ]; then
+		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" \
+			${SYSROOT_DIR}/usr/lib64/cmake/phonon4qt6/${phonon_file}
+	fi
+done
+
+for kf6_file in KF6Config/KF6ConfigCompilerTargets-release.cmake KF6Auth/KF6AuthToolsTargets-release.cmake KF6KCMUtils/KF6KCMUtilsToolingTargets-release.cmake
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file} ]; then
+		sed -i.orig "s@\"/usr/libexec@\"${CROSSTOOLS_DIR}/libexec@g" \
+			${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file}
+	fi
+done
+
+for kf6_file in KF6CoreAddons/KF6CoreAddonsToolingTargets-release.cmake KF6DocTools/KF6DocToolsToolsTargets-release.cmake KF6DesignerPlugin/KF6DesignerPluginTargets-release.cmake KF6Package/KF6PackageToolsTargets-release.cmake KDSoap/KDSoapTargets-release.cmake KDSoap-qt6/KDSoapTargets-release.cmake
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file} ]; then
+		sed -i.orig "s@\${_IMPORT_PREFIX}@${CROSSTOOLS_DIR}@g" \
+			${SYSROOT_DIR}/usr/lib64/cmake/${kf6_file}
+	fi
+done
+
+for kf6_file in $(grep -rl "\.so\." $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo ) \
+		${SYSROOT_DIR}/usr/lib64/cmake/Qca-qt6/Qca-qt6Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/PolkitQt6-1/PolkitQt6-1Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/utf8_range/utf8_range-targets-release.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/QGpgmeQt6/QGpgmeQt6Config.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/xapian/xapian-config.cmake \
+		${SYSROOT_DIR}/usr/share/cmake/opentime/OpenTimeTargets-release.cmake \
+		${SYSROOT_DIR}/usr/share/cmake/opentimelineio/OpenTimelineIOTargets-release.cmake \
+                ${SYSROOT_DIR}/usr/lib64/cmake/PySide6/PySide6Targets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/PySide6/PySide6Config.abi3.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Imath/ImathTargets-release.cmake
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${kf6_file}
+	fi
+done
+
+for kf6_file in $(grep -rl "\.a\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*-release.cmake") ${TEMP_DIRECTORY}/strip-foo)
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@\"/usr@\"${SYSROOT_DIR}/usr@g" ${kf6_file}
+	fi
+done
+
+
+for kf6_file in $(grep -rl "_IMPORT_PREFIX \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") $(find ${SYSROOT_DIR}/usr/share/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@_IMPORT_PREFIX \"/usr\"@_IMPORT_PREFIX \"${SYSROOT_DIR}/usr\"@g" ${kf6_file}
+	fi
+done
+
+for kf6_file in $(grep -rl "PACKAGE_PREFIX_DIR \"/usr\"" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@PACKAGE_PREFIX_DIR \"/usr\"@PACKAGE_PREFIX_DIR \"${SYSROOT_DIR}/usr\"@g" ${kf6_file}
+	fi
+done
+
+for kf6_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6ModemManagerQt/KF6ModemManagerQtTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/KSysGuard/KSysGuardLibraryTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/KPim6AkonadiSearch/KPim6AkonadiSearchTargets.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/QGpgmeQt6/QGpgmeQt6Config.cmake \
+		${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig "s@;/usr@;${SYSROOT_DIR}/usr@g" ${kf6_file}
+	fi
+done
+
+for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/Gpgmepp/GpgmeppConfig.cmake
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig "s@-L/usr@-L${SYSROOT_DIR}/usr@g" ${fix_file}
+	fi
+done
+
+for fix_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6Wallet/KF6WalletConfig.cmake
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig "/KWALLETD_BIN_PATH/s@\${PACKAGE_PREFIX_DIR}@/usr@g" ${fix_file}
+	fi
+done
+
+for fix_file in $(grep -rl "INTERFACE_LINK_LIBRARIES " $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig -e "/INTERFACE_LINK_LIBRARIES/s@ \"/usr@ \"${SYSROOT_DIR}/usr@g" \
+			    -e "/INTERFACE_LINK_LIBRARIES/s@;/usr@;${SYSROOT_DIR}/usr@g" \
+			 ${fix_file}
+	fi
+done
+
+for fix_file in $(grep -rl "INTERFACE_INCLUDE_DIRECTORIES " $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") $(find ${SYSROOT_DIR}/usr/share/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${fix_file} ]; then
+		sed -i.orig -e "/INTERFACE_INCLUDE_DIRECTORIES /s@ \"/usr@ \"${SYSROOT_DIR}/usr@g" \
+			    -e "/INTERFACE_INCLUDE_DIRECTORIES /s@;/usr@;${SYSROOT_DIR}/usr@g" \
+			 ${fix_file}
+	fi
+done
+
+for bin_file in lrelease qsb qtpaths qdbuscpp2xml qdbusxml2cpp
+do
+        if [ -f ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file} ]; then
+                mv ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}{,.orig}
+                echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}.orig \"\$@\"" > ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}
+                chmod +x ${SYSROOT_DIR}/usr/lib64/qt6/bin/${bin_file}
+        fi
+done
+
+for bin_file in moc uic rcc qmltyperegistrar qmlcachegen qtwaylandscanner cmake_automoc_parser
+do
+	if [ -f ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file} ]; then
+		mv ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}{,-qt6}
+		echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}-qt6 \"\$@\"" > ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}
+		chmod +x ${SYSROOT_DIR}/usr/lib64/qt6/libexec/${bin_file}
+	fi
+done

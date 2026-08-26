@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mozjs-115
-export PACKAGE_VERSION=115.36.0esr
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mozjs-115/115.36.0esr/
-rm -rf ${BUILD_DIRECTORY}/firefox-115.36.0
-tar xvf ${DOWNLOADDIR}/firefox-115.36.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/firefox-115.36.0
+export PACKAGE_VERSION=115.38.0esr
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mozjs-115/115.38.0esr/
+rm -rf ${BUILD_DIRECTORY}/firefox-115.38.0
+tar xvf ${DOWNLOADDIR}/firefox-115.38.0esr.source.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/firefox-115.38.0
     PATH=${HOST_TOOLS_DIR}/python3_13/bin:${PATH}
     
     sed -i "/assert_rust_compile(target/d" build/moz.configure/rust.configure
@@ -25,4 +25,4 @@ pushd ${BUILD_DIRECTORY}/firefox-115.36.0
         sed -i '/@NSPR_CFLAGS@/d' ${SYSROOT_DIR}/usr/bin/js115-config
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/firefox-115.36.0
+rm -rf ${BUILD_DIRECTORY}/firefox-115.38.0

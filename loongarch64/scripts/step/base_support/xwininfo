@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xwininfo
-export PACKAGE_VERSION=1.1.6
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xwininfo/1.1.6/
-rm -rf ${BUILD_DIRECTORY}/xwininfo-1.1.6
-tar xvf ${DOWNLOADDIR}/xwininfo-1.1.6.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xwininfo-1.1.6
+export PACKAGE_VERSION=1.1.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xwininfo/1.1.7/
+rm -rf ${BUILD_DIRECTORY}/xwininfo-1.1.7
+tar xvf ${DOWNLOADDIR}/xwininfo-1.1.7.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xwininfo-1.1.7
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/xwininfo-1.1.6
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/xwininfo-1.1.6
+rm -rf ${BUILD_DIRECTORY}/xwininfo-1.1.7

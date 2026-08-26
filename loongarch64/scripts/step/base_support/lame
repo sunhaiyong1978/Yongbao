@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=lame
-export PACKAGE_VERSION=3.100
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/lame/3.100/
-rm -rf ${BUILD_DIRECTORY}/lame-3.100
-tar xvf ${DOWNLOADDIR}/lame-3.100.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/lame-3.100
+export PACKAGE_VERSION=4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/lame/4.0/
+rm -rf ${BUILD_DIRECTORY}/lame-4.0
+tar xvf ${DOWNLOADDIR}/lame-4.0.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/lame-4.0
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -16,7 +16,7 @@ pushd ${BUILD_DIRECTORY}/lame-3.100
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-mp3rtp --enable-malloc0returnsnull
+	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -Wno-incompatible-pointer-types" ./configure ${COMMON_CONFIG}  --enable-mp3rtp --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/lame-3.100
+rm -rf ${BUILD_DIRECTORY}/lame-4.0

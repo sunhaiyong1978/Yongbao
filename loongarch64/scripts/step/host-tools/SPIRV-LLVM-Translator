@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=SPIRV-LLVM-Translator
-export PACKAGE_VERSION=22.1.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/SPIRV-LLVM-Translator/22.1.2/
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-22.1.2
-tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-22.1.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-22.1.2
+export PACKAGE_VERSION=22.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/SPIRV-LLVM-Translator/22.1.5/
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-22.1.5
+tar xvf ${DOWNLOADDIR}/SPIRV-LLVM-Translator-22.1.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-22.1.5
         
 	tar xvf ${RESOURCEDIR}/files/SPIRV-LLVM-Translator-headers_git.tar.gz
         mkdir -p build
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-22.1.2
                 eval ${MAKE_AND_INSTALL}
         popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-22.1.2
+rm -rf ${BUILD_DIRECTORY}/SPIRV-LLVM-Translator-22.1.5

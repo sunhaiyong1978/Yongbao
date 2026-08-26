@@ -19,16 +19,16 @@ rm -f ${SYSROOT_DIR}/usr/lib/rustlib/install.log
 
 
 
-if [ -d ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/ ]; then
-	find ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/ -type f -name "*.la" -exec rm '{}' ';'
-	find ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/ -type f -name "*.prl" -exec rm '{}' ';'
-fi
-if [ -d ${SYSROOT_DIR}/usr/lib/ ]; then
-	find ${SYSROOT_DIR}/usr/lib/ -type f -name "*.la" -exec rm '{}' ';'
-fi
-if [ -d ${SYSROOT_DIR}/usr/libexec/ ]; then
-	find ${SYSROOT_DIR}/usr/libexec/ -type f -name "*.la" -exec rm '{}' ';'
-fi
+set_final_fix_step "usr/lib/python3.*/" "D" "d" "__pycache__"
+set_final_fix_step "usr/lib${LIB_SUFF}/python3.*/" "D" "d" "__pycache__"
+
+
+set_final_fix_step "usr/lib${LIB_SUFF}/" "D" "f" "*.la"
+set_final_fix_step "usr/lib${LIB_SUFF}/" "D" "f" "*.prl"
+
+
+set_final_fix_step "usr/lib/" "D" "f" "*.la"
+set_final_fix_step "usr/libexec/" "D" "f" "*.la"
 
 if [ -f ${SYSROOT_DIR}/usr/sbin/ldconfig ]; then
 	if [ -f ${CROSSTOOLS_DIR}/bin/qemu-${ARCH_NAME} ]; then

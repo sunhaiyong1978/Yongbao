@@ -1,0 +1,22 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=xmlto
+export PACKAGE_VERSION=0.0.29
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/xmlto/0.0.29/
+rm -rf ${BUILD_DIRECTORY}/xmlto-0.0.29
+tar xvf ${DOWNLOADDIR}/xmlto-0.0.29.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xmlto-0.0.29
+	
+        for config_i in $(find -name "config.sub")
+        do
+                cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
+        done
+        if [ ! -f configure ]; then
+                autoreconf -ifv
+        fi
+	LINKS="/usr/bin/lynx" ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
+	eval ${MAKE_AND_INSTALL}
+popd 
+rm -rf ${BUILD_DIRECTORY}/xmlto-0.0.29

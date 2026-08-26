@@ -36,7 +36,7 @@ pushd ${BUILD_DIRECTORY}/gtk+-2.24.33
              INTROSPECTION_COMPILER=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-compiler \
              INTROSPECTION_MAKEFILE=${SYSROOT_DIR}/usr/share/gobject-introspection-1.0/Makefile.introspection \
              DESTDIR=${SYSROOT_DIR} install
-        rm -v ${SYSROOT_DIR}/usr/lib64/libg*-x11*.la
+        rm -v ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/libg*-x11*.la
     popd
 
 cat > ${SYSROOT_DIR}/etc/gtk-2.0/gtkrc << "EOF"

@@ -3,18 +3,19 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=appstream
-export PACKAGE_VERSION=1.1.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/appstream/1.1.2/
-rm -rf ${BUILD_DIRECTORY}/appstream-1.1.2
-tar xvf ${DOWNLOADDIR}/appstream-1.1.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/appstream-1.1.2
+export PACKAGE_VERSION=1.1.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/appstream/1.1.5/
+rm -rf ${BUILD_DIRECTORY}/appstream-1.1.5
+tar xvf ${DOWNLOADDIR}/appstream-1.1.5.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/appstream-1.1.5
     
+    sed -i 's/xsl-ns/xsl/' docs/meson.build
     mkdir -p native-build
     pushd native-build
-        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} -Dstemming=false -Ddocs=false -Dapidocs=false -Dgir=false -Dbash-completion=false \
-              --buildtype=release ..
+	meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} -Dstemming=false -Ddocs=false -Dapidocs=false -Dgir=false -Dbash-completion=false -Dsystemd=false \
+	      --buildtype=release ..
         ninja
         ninja install
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/appstream-1.1.2
+rm -rf ${BUILD_DIRECTORY}/appstream-1.1.5

@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libva
-export PACKAGE_VERSION=2.23.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libva/2.23.0/
-rm -rf ${BUILD_DIRECTORY}/libva-2.23.0
-tar xvf ${DOWNLOADDIR}/libva-2.23.0.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libva-2.23.0
+export PACKAGE_VERSION=2.24.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libva/2.24.1/
+rm -rf ${BUILD_DIRECTORY}/libva-2.24.1
+tar xvf ${DOWNLOADDIR}/libva-2.24.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libva-2.24.1
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/libva-2.23.0
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libva-2.23.0
+rm -rf ${BUILD_DIRECTORY}/libva-2.24.1

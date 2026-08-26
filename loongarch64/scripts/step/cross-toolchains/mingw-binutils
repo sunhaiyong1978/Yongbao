@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=mingw-binutils
-export PACKAGE_VERSION=2.46.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-binutils/2.46.0/
-rm -rf ${BUILD_DIRECTORY}/binutils-2.46.0
-tar xvf ${DOWNLOADDIR}/binutils-2.46.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/binutils-2.46.0
+export PACKAGE_VERSION=2.47
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/mingw-binutils/2.47/
+rm -rf ${BUILD_DIRECTORY}/binutils-2.47
+tar xvf ${DOWNLOADDIR}/binutils-2.47.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/binutils-2.47
 	MINGW_HOST=$(archname_to_triple "$(get_user_set_env target ${MINGW_HOST})" "${MINGW_HOST}")
 
 	rm -rf gdb* libdecnumber readline sim
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/binutils-2.46.0
 		make install-strip
 	popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/binutils-2.46.0
+rm -rf ${BUILD_DIRECTORY}/binutils-2.47

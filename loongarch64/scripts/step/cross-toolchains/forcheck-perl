@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=forcheck-perl
-export PACKAGE_VERSION=5.42.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-perl/5.42.2/
-rm -rf ${BUILD_DIRECTORY}/perl-5.42.2
-tar xvf ${DOWNLOADDIR}/perl-5.42.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/perl-5.42.2
+export PACKAGE_VERSION=5.44.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-perl/5.44.0/
+rm -rf ${BUILD_DIRECTORY}/perl-5.44.0
+tar xvf ${DOWNLOADDIR}/perl-5.44.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/perl-5.44.0
     export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
     sed -i "s@/usr/include@${PREFIX}/${LINUX_HOST}/include@g" ext/Errno/Errno_pm.PL
     CC=${LINUX_HOST}-gcc \
@@ -24,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/perl-5.42.2
     DEFAULT_CHECK_OPTION="test"
     eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/perl-5.42.2
+rm -rf ${BUILD_DIRECTORY}/perl-5.44.0

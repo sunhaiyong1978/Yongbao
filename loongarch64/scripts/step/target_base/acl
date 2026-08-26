@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=acl
-export PACKAGE_VERSION=2.3.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/acl/2.3.2/
-rm -rf ${BUILD_DIRECTORY}/acl-2.3.2
-tar xvf ${DOWNLOADDIR}/acl-2.3.2.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/acl-2.3.2
+export PACKAGE_VERSION=2.4.0
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/acl/2.4.0/
+rm -rf ${BUILD_DIRECTORY}/acl-2.4.0
+tar xvf ${DOWNLOADDIR}/acl-2.4.0.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/acl-2.4.0
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/acl-2.3.2
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/acl-2.3.2
+rm -rf ${BUILD_DIRECTORY}/acl-2.4.0

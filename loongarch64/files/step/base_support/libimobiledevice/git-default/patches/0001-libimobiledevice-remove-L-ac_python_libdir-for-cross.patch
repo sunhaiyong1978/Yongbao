@@ -1,0 +1,33 @@
+From c321605efade96ca6fb61a1bed9b891227f284b5 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 8 Jun 2026 08:36:40 +0000
+Subject: [PATCH] libimobiledevice remove -L$ac_python_libdir for cross build.
+
+---
+ m4/ax_python_devel.m4 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/m4/ax_python_devel.m4 b/m4/ax_python_devel.m4
+index 935056c..93daeef 100644
+--- a/m4/ax_python_devel.m4
++++ b/m4/ax_python_devel.m4
+@@ -306,14 +306,14 @@ EOD`
+ 		then
+ 			# use the official shared library
+ 			ac_python_library=`echo "$ac_python_library" | sed "s/^lib//"`
+-			PYTHON_LIBS="-L$ac_python_libdir -l$ac_python_library"
++			PYTHON_LIBS="-l$ac_python_library"
+ 		else
+ 			# old way: use libpython from python_configdir
+ 			ac_python_libdir=`$PYTHON -c \
+ 			  "from sysconfig import get_python_lib as f; \
+ 			  import os; \
+ 			  print (os.path.join(f(plat_specific=1, standard_lib=1), 'config'));"`
+-			PYTHON_LIBS="-L$ac_python_libdir -lpython$ac_python_version"
++			PYTHON_LIBS="-lpython$ac_python_version"
+ 		fi
+ 
+ 		if test -z "$PYTHON_LIBS"; then
+-- 
+2.31.1
+

@@ -11,7 +11,7 @@ pushd ${BUILD_DIRECTORY}/libcamera-git-default_git
 	
 	mkdir cross-build
 	pushd cross-build
-		CXXFLAGS="${CXXFLAGS} -Wno-error=cpp" meson ${MESON_CONFIG} -Ddocumentation=disabled \
+		CXXFLAGS="${CXXFLAGS} -Wno-error=cpp -Wno-error=array-bounds" meson ${MESON_CONFIG} -Ddocumentation=disabled -Dlc-compliance=disabled \
                       ..
 		sed -i "s@gi-docgen \(index\|generate\|gen-index\|gen-deps\|search\|check\|serve\) @& --add-include-path ${SYSROOT_DIR}/usr/share/gir-1.0/ @g" build.ninja
 		eval ${NINJA_AND_INSTALL}

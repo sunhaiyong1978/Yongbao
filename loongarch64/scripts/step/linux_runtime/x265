@@ -4,13 +4,12 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=x265
-export PACKAGE_VERSION=20240812
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/x265/20240812/
-rm -rf ${BUILD_DIRECTORY}/x265-20240812
-tar xvf ${DOWNLOADDIR}/x265-20240812.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/x265-20240812
-    patch -Np1 -i ${SYSDIR}/files/linux_runtime/x265/20240812/patches/0001-x265-20240812-fix-for-cmake-4.0.0.patch 
-	 
+export PACKAGE_VERSION=4.3
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/x265/4.3/
+rm -rf ${BUILD_DIRECTORY}/x265-4.3
+tar xvf ${DOWNLOADDIR}/x265-4.3.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/x265-4.3
+    
     mkdir cross-build
     pushd cross-build
         CC="${LINUX_HOST}-gcc" CXX="${LINUX_HOST}-g++" \
@@ -22,4 +21,4 @@ pushd ${BUILD_DIRECTORY}/x265-20240812
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/x265-20240812
+rm -rf ${BUILD_DIRECTORY}/x265-4.3

@@ -4,16 +4,16 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=libpsl
-export PACKAGE_VERSION=0.21.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libpsl/0.21.5/
-rm -rf ${BUILD_DIRECTORY}/libpsl-0.21.5
-tar xvf ${DOWNLOADDIR}/libpsl-0.21.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libpsl-0.21.5
+export PACKAGE_VERSION=0.23.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/libpsl/0.23.1/
+rm -rf ${BUILD_DIRECTORY}/libpsl-0.23.1
+tar xvf ${DOWNLOADDIR}/libpsl-0.23.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libpsl-0.23.1
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --with-libunistring-prefix=${LINUX_SYSROOT_DIR}/usr --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libpsl-0.21.5
+rm -rf ${BUILD_DIRECTORY}/libpsl-0.23.1

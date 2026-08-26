@@ -1,0 +1,24 @@
+From fa2698cdf6cd32189dff5cde6fbaea8419676243 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 17 Jul 2026 07:43:36 +0000
+Subject: [PATCH] Add include netrose/rose.h header file.
+
+---
+ lib/rose.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/rose.c b/lib/rose.c
+index 85df64b..ffbb818 100644
+--- a/lib/rose.c
++++ b/lib/rose.c
+@@ -35,6 +35,7 @@
+ #include "pathnames.h"
+ #include "intl.h"
+ #include "util.h"
++#include <netrose/rose.h>
+ 
+ #ifndef _NETROSE_ROSE_H
+ #include <linux/ax25.h>
+-- 
+2.31.1
+

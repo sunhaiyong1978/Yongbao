@@ -8,8 +8,13 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/pycairo/1.29.0/
 rm -rf ${BUILD_DIRECTORY}/pycairo-1.29.0
 tar xvf ${DOWNLOADDIR}/pycairo-1.29.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/pycairo-1.29.0
-	
-	${HOST_TOOLS_DIR}/bin/python3 setup.py build
-        ${HOST_TOOLS_DIR}/bin/python3 setup.py install
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF}  \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
 popd 
 rm -rf ${BUILD_DIRECTORY}/pycairo-1.29.0

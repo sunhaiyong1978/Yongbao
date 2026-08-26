@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=strace
-export PACKAGE_VERSION=7.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/strace/7.0/
-rm -rf ${BUILD_DIRECTORY}/strace-7.0
-tar xvf ${DOWNLOADDIR}/strace-7.0.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/strace-7.0
+export PACKAGE_VERSION=7.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/strace/7.1/
+rm -rf ${BUILD_DIRECTORY}/strace-7.1
+tar xvf ${DOWNLOADDIR}/strace-7.1.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/strace-7.1
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/strace-7.0
 	 ./configure ${COMMON_CONFIG} CFLAGS="${CFLAGS} -Wno-error=calloc-transposed-args -Wno-error=sign-compare" --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/strace-7.0
+rm -rf ${BUILD_DIRECTORY}/strace-7.1

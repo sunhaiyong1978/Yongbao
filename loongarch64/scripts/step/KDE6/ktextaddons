@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=ktextaddons
-export PACKAGE_VERSION=2.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/ktextaddons/2.0.2/
-rm -rf ${BUILD_DIRECTORY}/ktextaddons-v2.0.2
-tar xvf ${DOWNLOADDIR}/ktextaddons-v2.0.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/ktextaddons-v2.0.2
-        patch -Np1 -i ${SYSDIR}/files/KDE6/ktextaddons/2.0.2/patches/0001-ktextaddons-1.5.4-fix-for-qt-6.9.0.patch 
+export PACKAGE_VERSION=2.1.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/ktextaddons/2.1.2/
+rm -rf ${BUILD_DIRECTORY}/ktextaddons-v2.1.2
+tar xvf ${DOWNLOADDIR}/ktextaddons-v2.1.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/ktextaddons-v2.1.2
+        patch -Np1 -i ${SYSDIR}/files/KDE6/ktextaddons/2.1.2/patches/0001-ktextaddons-1.5.4-fix-for-qt-6.9.0.patch 
 	 
 	mkdir cross-build
 	pushd cross-build
@@ -26,4 +26,4 @@ pushd ${BUILD_DIRECTORY}/ktextaddons-v2.0.2
 	popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/ktextaddons-v2.0.2
+rm -rf ${BUILD_DIRECTORY}/ktextaddons-v2.1.2

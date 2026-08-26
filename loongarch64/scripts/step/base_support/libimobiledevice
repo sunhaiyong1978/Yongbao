@@ -8,7 +8,8 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libimobiledevice/git-
 rm -rf ${BUILD_DIRECTORY}/libimobiledevice-git-default_git
 tar xvf ${DOWNLOADDIR}/libimobiledevice-git-default_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/libimobiledevice-git-default_git
-	
+	patch -Np1 -i ${SYSDIR}/files/base_support/libimobiledevice/git-default/patches/0001-libimobiledevice-remove-L-ac_python_libdir-for-cross.patch 
+	 
 	for config_i in $(find -name "config.sub")
 	do
 		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/

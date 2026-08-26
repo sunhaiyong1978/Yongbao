@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xmodmap
-export PACKAGE_VERSION=1.0.11
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xmodmap/1.0.11/
-rm -rf ${BUILD_DIRECTORY}/xmodmap-1.0.11
-tar xvf ${DOWNLOADDIR}/xmodmap-1.0.11.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xmodmap-1.0.11
+export PACKAGE_VERSION=1.0.12
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xmodmap/1.0.12/
+rm -rf ${BUILD_DIRECTORY}/xmodmap-1.0.12
+tar xvf ${DOWNLOADDIR}/xmodmap-1.0.12.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xmodmap-1.0.12
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/xmodmap-1.0.11
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/xmodmap-1.0.11
+rm -rf ${BUILD_DIRECTORY}/xmodmap-1.0.12

@@ -12,14 +12,17 @@ pushd ${BUILD_DIRECTORY}/libpwquality-1.4.5
 	 
     cp -a -f $(automake --print-libdir)/config.{sub,guess} ./
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
+    _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     ./configure ${COMMON_CONFIG} --with-securedir=/usr/lib/security \
-                --with-python-binary=${CROSS_TARGET}-python3
+                --with-python-binary=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3
     check_gnu_Makefile
     CC=${CROSS_TARGET}-gcc \
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
+    _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     make -j${JOBS}
     CC=${CROSS_TARGET}-gcc \
     _PYTHON_HOST_PLATFORM=linux-loongarch64 \
+    _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     make DESTDIR=${SYSROOT_DIR} install
 popd 
 rm -rf ${BUILD_DIRECTORY}/libpwquality-1.4.5

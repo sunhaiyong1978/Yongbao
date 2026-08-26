@@ -15,6 +15,7 @@ pushd ${BUILD_DIRECTORY}/pyside-setup-everywhere-src-6.11.0
 	pushd sources/pyside6
 
 
+	export LC_ALL=POSIX
 	mkdir cross-build
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \

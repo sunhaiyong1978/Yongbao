@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=libpsl
-export PACKAGE_VERSION=0.21.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libpsl/0.21.5/
-rm -rf ${BUILD_DIRECTORY}/libpsl-0.21.5
-tar xvf ${DOWNLOADDIR}/libpsl-0.21.5.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libpsl-0.21.5
+export PACKAGE_VERSION=0.23.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libpsl/0.23.1/
+rm -rf ${BUILD_DIRECTORY}/libpsl-0.23.1
+tar xvf ${DOWNLOADDIR}/libpsl-0.23.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libpsl-0.23.1
 	
         for config_i in $(find -name "config.sub")
         do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libpsl-0.21.5
 	 ./configure --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF} 
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libpsl-0.21.5
+rm -rf ${BUILD_DIRECTORY}/libpsl-0.23.1

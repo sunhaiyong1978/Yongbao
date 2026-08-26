@@ -42,9 +42,9 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.1
                       -DINSTALL_MKSPECSDIR=/usr/lib64/qt6/mkspecs \
                       -DBUILD_SHARED_LIBS=ON \
 		      -DQT_HOST_PATH=${CROSSTOOLS_DIR}/qt6 -DQT_FORCE_BUILD_TOOLS=ON \
-		      -DQT_BUILD_SUBMODULES=qt3d\;qt5compat\;qtactiveqt\;qtbase\;qtcharts\;qtcoap\;qtconnectivity\;qtdatavis3d\;qtdeclarative\;qtdoc\;qthttpserver\;qtimageformats\;qtlanguageserver\;qtlocation\;qtlottie\;qtmqtt\;qtmultimedia\;qtnetworkauth\;qtopcua\;qtpositioning\;qtquick3d\;qtquickeffectmaker\;qtquicktimeline\;qtremoteobjects\;qtscxml\;qtsensors\;qtserialbus\;qtserialport\;qtshadertools\;qtspeech\;qtsvg\;qttools\;qttranslations\;qtvirtualkeyboard\;qtwayland\;qtwebchannel\;qtwebsockets\;qtwebview \
+		      -DQT_BUILD_SUBMODULES=qt3d\;qt5compat\;qtactiveqt\;qtbase\;qtcharts\;qtcoap\;qtconnectivity\;qtdatavis3d\;qtdeclarative\;qtdoc\;qthttpserver\;qtimageformats\;qtlanguageserver\;qtlocation\;qtlottie\;qtmqtt\;qtmultimedia\;qtnetworkauth\;qtopcua\;qtpositioning\;qtquick3d\;qtquickeffectmaker\;qtquicktimeline\;qtremoteobjects\;qtscxml\;qtsensors\;qtserialbus\;qtserialport\;qtshadertools\;qtspeech\;qtsvg\;qttools\;qttranslations\;qtvirtualkeyboard\;qtwayland\;qtwebchannel\;qtwebsockets\;qtwebview\;qtcanvaspainter \
 		      -DPKG_CONFIG_HOST_EXECUTABLE=/usr/bin/pkg-config \
-		      -DQT_FEATURE_use_lld_linker:BOOL=OFF \
+		      -DQT_FEATURE_use_lld_linker:BOOL=OFF -DQT_FEATURE_webview_webengine_plugin:BOOL=OFF \
 		      -DQT_GENERATE_SBOM=OFF \
                       -Wno-dev ..
                 eval ${MAKE_AND_INSTALL}

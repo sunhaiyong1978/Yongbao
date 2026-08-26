@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=fcitx5
-export PACKAGE_VERSION=5.1.19
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5/5.1.19/
-rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.19
-tar xvf ${DOWNLOADDIR}/fcitx5-5.1.19.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/fcitx5-5.1.19
+export PACKAGE_VERSION=5.1.21
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/fcitx5/5.1.21/
+rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.21
+tar xvf ${DOWNLOADDIR}/fcitx5-5.1.21.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/fcitx5-5.1.21
 	cp ${RESOURCEDIR}/files/* src/modules/spell/
 	mkdir -p third_party/yoga/yoga
 	tar xvf ${RESOURCEDIR}/files/fcitx5-yoga_git.tar.gz -C third_party/yoga/yoga --strip-components=1
@@ -25,4 +25,4 @@ pushd ${BUILD_DIRECTORY}/fcitx5-5.1.19
         popd
         rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.19
+rm -rf ${BUILD_DIRECTORY}/fcitx5-5.1.21

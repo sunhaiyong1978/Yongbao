@@ -24,7 +24,6 @@ pushd ${BUILD_DIRECTORY}/gimp-3.2.4
 		sed -i "s@COMMAND = ${PWD}/tools/gen-languages@COMMAND = qemu-${ARCH_NAME} ${PWD}/tools/gen-languages@g" build.ninja
 		eval ${NINJA_AND_INSTALL}
 	popd
-	convert https://www.gimp.org/news/2026/03/14/gimp-3-2-released/gimp-3.2-splash.jpg ${SYSROOT_DIR}/usr/share/gimp/3.0/images/gimp-splash.png
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/gimp-3.2.4

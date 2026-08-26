@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libXfont2
-export PACKAGE_VERSION=2.0.7
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libXfont2/2.0.7/
-rm -rf ${BUILD_DIRECTORY}/libXfont2-2.0.7
-tar xvf ${DOWNLOADDIR}/libXfont2-2.0.7.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libXfont2-2.0.7
+export PACKAGE_VERSION=2.0.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libXfont2/2.0.9/
+rm -rf ${BUILD_DIRECTORY}/libXfont2-2.0.9
+tar xvf ${DOWNLOADDIR}/libXfont2-2.0.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libXfont2-2.0.9
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libXfont2-2.0.7
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libXfont2-2.0.7
+rm -rf ${BUILD_DIRECTORY}/libXfont2-2.0.9

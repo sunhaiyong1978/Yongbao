@@ -82,6 +82,16 @@ do
 	fi
 done
 
+
+for kf6_file in $(grep -rl "/usr/include" $(find ${SYSROOT_DIR}/usr/lib64/cmake/ -name "*.cmake") ${TEMP_DIRECTORY}/strip-foo ) ${TEMP_DIRECTORY}/strip-foo
+do
+	if [ -f ${kf6_file} ]; then
+		sed -i.orig -e "s@\"/usr/include@\"${SYSROOT_DIR}/usr/include@g" \
+			-e "s@;/usr/include@;${SYSROOT_DIR}/usr/include@g" \
+		 ${kf6_file}
+	fi
+done
+
 for kf6_file in ${SYSROOT_DIR}/usr/lib64/cmake/KF6ModemManagerQt/KF6ModemManagerQtTargets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/KSysGuard/KSysGuardLibraryTargets.cmake \
 		${SYSROOT_DIR}/usr/lib64/cmake/KPim6AkonadiSearch/KPim6AkonadiSearchTargets.cmake \

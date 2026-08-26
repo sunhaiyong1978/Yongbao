@@ -1,0 +1,25 @@
+From 71b8ca04e813d5fc15d1f7483ccefcf05557fb2f Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 5 Aug 2026 03:06:17 +0000
+Subject: [PATCH] syntax-highlighting 6.28.1 fix fish.xml regex error.
+
+---
+ data/syntax/fish.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/data/syntax/fish.xml b/data/syntax/fish.xml
+index 3a82e84..ad5b658 100644
+--- a/data/syntax/fish.xml
++++ b/data/syntax/fish.xml
+@@ -283,7 +283,7 @@
+       <context name="CommandPart" attribute="CommandPath" lineEndContext="#pop#pop#pop" fallthroughContext="#pop!CommandName">
+         <IncludeRules context="CommandName"/>
+         <RegExpr String="&command_dir;" attribute="CommandPath"/>
+-        <RegExpr String="(?&lt;=^|/['&quot;]?)&simple_command;&is_end_of_simple_cmd;" lookAhead="1" context="CommandPartCommand"/>
++        <RegExpr String="(?&lt;=^|/[^&quot;?])&simple_command;&is_end_of_simple_cmd;" lookAhead="1" context="CommandPartCommand"/>
+       </context>
+       <context name="CommandPartCommand" attribute="Error">
+         <keyword String="unixcommands" attribute="UnixCommand" context="#pop#pop"/>
+-- 
+2.31.1
+

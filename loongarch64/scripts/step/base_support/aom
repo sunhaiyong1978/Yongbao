@@ -8,8 +8,7 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/aom/git/
 rm -rf ${BUILD_DIRECTORY}/aom-git_git
 tar xvf ${DOWNLOADDIR}/aom-git_git.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/aom-git_git
-        patch -Np1 -i ${SYSDIR}/files/base_support/aom/git/patches/aom-nostatic.patch 
-	 
+        
 	mkdir cross-build
 	pushd cross-build
         	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \

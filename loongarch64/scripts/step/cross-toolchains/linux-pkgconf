@@ -4,16 +4,35 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=linux-pkgconf
-export PACKAGE_VERSION=2.5.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-pkgconf/2.5.1/
-rm -rf ${BUILD_DIRECTORY}/pkgconf-2.5.1
-tar xvf ${DOWNLOADDIR}/pkgconf-2.5.1.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/pkgconf-2.5.1
+export PACKAGE_VERSION=3.0.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/linux-pkgconf/3.0.5/
+rm -rf ${BUILD_DIRECTORY}/pkgconf-3.0.5
+tar xvf ${DOWNLOADDIR}/pkgconf-3.0.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/pkgconf-3.0.5
         
         ./configure --prefix=${PREFIX}/${LINUX_HOST} --build=${CROSS_HOST} \
                 --host=${CROSS_HOST} --target=${LINUX_HOST}
         make -j${JOBS}
 	make install
-        cp -f ${PREFIX}/${LINUX_HOST}/bin/pkgconf ${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-pkg-config
 popd 
-rm -rf ${BUILD_DIRECTORY}/pkgconf-2.5.1
+rm -rf ${BUILD_DIRECTORY}/pkgconf-3.0.5
+
+rm -f ${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-pkg-config
+
+cat > ${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-pkg-config << EOF
+#!/bin/bash -e
+
+if echo "\$@" | grep -q "\--variable=" && \\
+ ! echo "\$@" | grep -q "variable=datadir vapigen" && \\
+ ! echo "\$@" | grep -q "variable=datadir gobject-introspection" && \\
+ ! echo "\$@" | grep -q "variable=pkgdatadir wayland" && \\
+ ! echo "\$@" | grep -q "variable=xcbincludedir xcb-proto" && \\
+ ! echo "\$@" | grep -q "variable=pythondir xcb-proto" && \\
+ ! echo "\$@" | grep -q "variable=libdir " && \\
+ ! echo "\$@" | grep -q "variable=includedir "; then
+    unset PKG_CONFIG_SYSROOT_DIR
+fi
+
+${PREFIX}/${LINUX_HOST}/bin/pkgconf "\$@"
+EOF
+chmod +x ${PREFIX}/${LINUX_HOST}/bin/${LINUX_HOST}-pkg-config

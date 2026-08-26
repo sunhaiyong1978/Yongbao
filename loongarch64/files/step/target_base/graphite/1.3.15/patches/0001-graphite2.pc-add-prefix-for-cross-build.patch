@@ -1,0 +1,24 @@
+From 48f5f411a1b48a5c2460e3220a17c62b9643bd24 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Mon, 15 Jun 2026 08:26:15 +0000
+Subject: [PATCH] graphite2.pc add prefix for cross build.
+
+---
+ graphite2.pc.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/graphite2.pc.in b/graphite2.pc.in
+index a4f19b3..2ccfb87 100644
+--- a/graphite2.pc.in
++++ b/graphite2.pc.in
+@@ -1,3 +1,7 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
+ 
+ Name: Graphite2
+ Description: Font rendering engine for Complex Scripts
+-- 
+2.51.0
+

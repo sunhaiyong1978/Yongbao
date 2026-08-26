@@ -14,7 +14,7 @@ pushd ${BUILD_DIRECTORY}/gnutls-3.8.13
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	 ./configure ${COMMON_CONFIG} --enable-openssl-compatibility --enable-ssl3-support --with-libz-prefix=${LINUX_SYSROOT_DIR}/usr --disable-guile --disable-doc --without-p11-kit --without-libcrypto-prefix --enable-malloc0returnsnull
+	 ./configure ${COMMON_CONFIG} --enable-openssl-compatibility --enable-ssl3-support --with-default-trust-store-pkcs11="pkcs11:" --with-libz-prefix=${LINUX_SYSROOT_DIR}/usr --disable-guile --disable-doc --without-libcrypto-prefix --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/gnutls-3.8.13

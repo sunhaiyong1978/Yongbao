@@ -3,37 +3,37 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libical
-export PACKAGE_VERSION=3.0.20
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libical/3.0.20/
+export PACKAGE_VERSION=4.0.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libical/4.0.4/
 EXTRA_PARM=-DLIBICAL_JAVA_BINDINGS=False
 
-rm -rf ${BUILD_DIRECTORY}/libical-3.0.20
-tar xvf ${DOWNLOADDIR}/libical-3.0.20.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libical-3.0.20
-    sed -i "s@COMMAND \${ical-glib-src-generator_EXE}@COMMAND qemu-${ARCH_NAME} ../../bin/ical-glib-src-generator@g" \
+rm -rf ${BUILD_DIRECTORY}/libical-4.0.4
+tar xvf ${DOWNLOADDIR}/libical-4.0.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libical-4.0.4
+    sed -i "/^[[:space:]]*COMMAND$/ { n; /^[[:space:]]*\${ical-glib-src-generator_EXE}/ s@^\([[:space:]]*\)@\1qemu-${ARCH_NAME} ${PWD}/cross-prebuild/bin/@; }" \
            src/libical-glib/CMakeLists.txt
     mkdir cross-prebuild
     pushd cross-prebuild
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_INSTALL_PREFIX=/usr \
-              -DICAL_BUILD_DOCS=false -DLIBICAL_JAVA_BINDINGS=False \
-              -DGOBJECT_INTROSPECTION=false \
-              -DICAL_GLIB_VAPI=false ..
+	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DICAL_BUILD_DOCS=false -DLIBICAL_JAVA_BINDINGS=False \
+		-DLIBICAL_GOBJECT_INTROSPECTION=false -DLIBICAL_GLIB_BUILD_DOCS=False -DLIBICAL_BUILD_EXAMPLES=false \
+		-DLIBICAL_GLIB_VAPI=false ..
 	eval ${MAKE_AND_INSTALL}
     popd
     mkdir cross-build
     pushd cross-build
-        CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
-        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_INSTALL_PREFIX=/usr \
-              -DICAL_BUILD_DOCS=false -DLIBICAL_JAVA_BINDINGS=False \
-              -DGObjectIntrospection_SCANNER=${CROSS_TARGET}-g-ir-scanner \
-              -DGObjectIntrospection_COMPILER=${CROSS_TARGET}-g-ir-compiler \
-              -DVAPIGEN=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-vapigen \
-              -DGOBJECT_INTROSPECTION=true \
-              -DICAL_GLIB_VAPI=true ..
+	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
+	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DLIBICAL_GOBJECT_INTROSPECTION=true \
+		-DLIBICAL_GLIB_BUILD_DOCS=False -DLIBICAL_JAVA_BINDINGS=False \
+		-DGObjectIntrospection_SCANNER=${CROSS_TARGET}-g-ir-scanner \
+		-DGObjectIntrospection_COMPILER=${CROSS_TARGET}-g-ir-compiler \
+		-DVAPIGEN=${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-vapigen \
+		-DLIBICAL_GLIB_VAPI=true ..
 	eval ${MAKE_AND_INSTALL}
     popd
 popd 
-rm -rf ${BUILD_DIRECTORY}/libical-3.0.20
+rm -rf ${BUILD_DIRECTORY}/libical-4.0.4

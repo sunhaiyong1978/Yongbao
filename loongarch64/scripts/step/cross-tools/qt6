@@ -21,7 +21,7 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-6.11.1
 		      -DICU_ROOT=${HOST_TOOLS_DIR} \
 		      -DQT_FEATURE_system_freetype=OFF \
 		      -DQT_BUILD_EXAMPLES_AS_EXTERNAL=ON \
-		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat\;qtopcua\;qtlottie \
+		      -DQT_BUILD_SUBMODULES=qtbase\;qtshadertools\;qtdeclarative\;qt3d\;qtquick3d\;qttools\;qtremoteobjects\;qtscxml\;qtwayland\;qtmultimedia\;qt5compat\;qtopcua\;qtlottie\;qtcanvaspainter \
 		      ..
 		eval ${MAKE_AND_INSTALL}
 	popd

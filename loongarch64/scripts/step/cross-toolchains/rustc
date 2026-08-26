@@ -4,15 +4,15 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=rustc
-export PACKAGE_VERSION=1.95.0
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/rustc/1.95.0/
+export PACKAGE_VERSION=1.97.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/rustc/1.97.1/
 if [ "x${LINUX_HOST}" == "x$(echo ${CROSS_HOST} | sed 's@cross@unknown@g')" ]; then
 	mkdir -p ${PREFIX}/${LINUX_HOST}/lib/rustlib/
 	cp -a ${HOST_TOOLS_DIR}/lib/rustlib/${LINUX_HOST} ${PREFIX}/${LINUX_HOST}/lib/rustlib
 else
-rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src
-tar xvf ${DOWNLOADDIR}/rustc-1.95.0-src.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/rustc-1.95.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.97.1-src
+tar xvf ${DOWNLOADDIR}/rustc-1.97.1-src.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/rustc-1.97.1-src
 	
 	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
 	./configure --target=${LINUX_HOST} \
@@ -29,7 +29,7 @@ pushd ${BUILD_DIRECTORY}/rustc-1.95.0-src
         make -j${JOBS}
         make -j${JOBS} install
 popd 
-rm -rf ${BUILD_DIRECTORY}/rustc-1.95.0-src
+rm -rf ${BUILD_DIRECTORY}/rustc-1.97.1-src
 
 save_package_version cross-toolchains_rustc "${PACKAGE_VERSION}-dev"
 

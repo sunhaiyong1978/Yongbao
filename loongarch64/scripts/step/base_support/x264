@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=x264
-export PACKAGE_VERSION=20250815
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/x264/20250815/
-rm -rf ${BUILD_DIRECTORY}/x264-20250815
-tar xvf ${DOWNLOADDIR}/x264-20250815.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/x264-20250815
+export PACKAGE_VERSION=0.165.r3222
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/x264/0.165.r3222/
+rm -rf ${BUILD_DIRECTORY}/x264-0.165.r3222
+tar xvf ${DOWNLOADDIR}/x264-0.165.r3222.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/x264-0.165.r3222
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/x264-20250815
 	 ./configure ${COMMON_CONFIG} --cross-prefix=${CROSS_TARGET}- --sysroot=${SYSROOT_DIR} --enable-shared --bashcompletionsdir=/usr/share/bash-completion/completions --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/x264-20250815
+rm -rf ${BUILD_DIRECTORY}/x264-0.165.r3222

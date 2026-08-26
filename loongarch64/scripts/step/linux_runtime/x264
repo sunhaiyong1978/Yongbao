@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=x264
-export PACKAGE_VERSION=20250815
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/x264/20250815/
-rm -rf ${BUILD_DIRECTORY}/x264-20250815
-tar xvf ${DOWNLOADDIR}/x264-20250815.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/x264-20250815
+export PACKAGE_VERSION=0.165.r3222
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/x264/0.165.r3222/
+rm -rf ${BUILD_DIRECTORY}/x264-0.165.r3222
+tar xvf ${DOWNLOADDIR}/x264-0.165.r3222.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/x264-0.165.r3222
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/x264-20250815
 	 ./configure ${COMMON_CONFIG} --cross-prefix=${LINUX_HOST}- --sysroot=${LINUX_SYSROOT_DIR} --enable-shared --disable-cli --enable-pic --enable-lto --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/x264-20250815
+rm -rf ${BUILD_DIRECTORY}/x264-0.165.r3222

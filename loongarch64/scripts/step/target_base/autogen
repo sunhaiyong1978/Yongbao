@@ -29,4 +29,4 @@ pushd ${BUILD_DIRECTORY}/autogen-5.18.16
 popd 
 rm -rf ${BUILD_DIRECTORY}/autogen-5.18.16
 
-set_final_fix_step "/usr/share/autogen/" "F" "g" "text executable"
+set_final_fix_step "usr/share/autogen/" "F" "g" "text executable"

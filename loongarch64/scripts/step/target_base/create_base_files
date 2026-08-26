@@ -80,4 +80,5 @@ set_split_conf "devel" "/usr/share/pkgconfig"
 
 set_split_conf "docs" "/usr/share/doc"
 set_split_conf "docs" "/usr/share/man"
+set_split_conf "docs" "/usr/share/info"
 set_split_conf "docs" "/usr/share/gtk-doc/html/"

@@ -1,0 +1,14 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=libcap
+export PACKAGE_VERSION=2.78
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libcap/2.78/
+rm -rf ${BUILD_DIRECTORY}/libcap-2.78
+tar xvf ${DOWNLOADDIR}/libcap-2.78.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libcap-2.78
+	make -j${JOBS} prefix=${PREFIX} lib=lib${LIB_SUFF}
+	make prefix=${PREFIX} lib=lib${LIB_SUFF} install
+popd 
+rm -rf ${BUILD_DIRECTORY}/libcap-2.78

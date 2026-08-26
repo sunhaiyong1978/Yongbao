@@ -1,0 +1,25 @@
+From b31e5dfa5068ee56d1efeab0ab30d3848e9e474e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Tue, 16 Jun 2026 10:49:47 +0000
+Subject: [PATCH] gsettings-desktop-schemas fix pc file for cross build.
+
+---
+ gsettings-desktop-schemas.pc.in | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/gsettings-desktop-schemas.pc.in b/gsettings-desktop-schemas.pc.in
+index d611dc1..bd7f45d 100644
+--- a/gsettings-desktop-schemas.pc.in
++++ b/gsettings-desktop-schemas.pc.in
+@@ -1,6 +1,7 @@
+ prefix=@prefix@
++includedir=@includedir@
+ 
+ Name: gsettings-desktop-schemas
+ Description: Shared GSettings schemas for the desktop, including helper headers
+ Version: @VERSION@
+-Cflags: -I@includedir@/gsettings-desktop-schemas
++Cflags: -I${includedir}/gsettings-desktop-schemas
+-- 
+2.51.0
+

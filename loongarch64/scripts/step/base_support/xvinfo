@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=xvinfo
-export PACKAGE_VERSION=1.1.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xvinfo/1.1.5/
-rm -rf ${BUILD_DIRECTORY}/xvinfo-1.1.5
-tar xvf ${DOWNLOADDIR}/xvinfo-1.1.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/xvinfo-1.1.5
+export PACKAGE_VERSION=1.1.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/xvinfo/1.1.6/
+rm -rf ${BUILD_DIRECTORY}/xvinfo-1.1.6
+tar xvf ${DOWNLOADDIR}/xvinfo-1.1.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/xvinfo-1.1.6
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/xvinfo-1.1.5
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/xvinfo-1.1.5
+rm -rf ${BUILD_DIRECTORY}/xvinfo-1.1.6

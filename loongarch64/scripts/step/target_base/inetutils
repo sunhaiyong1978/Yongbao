@@ -8,11 +8,12 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/inetutils/2.8/
 rm -rf ${BUILD_DIRECTORY}/inetutils-2.8
 tar xvf ${DOWNLOADDIR}/inetutils-2.8.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/inetutils-2.8
- 	sed -i "/PATH_PROCNET_DEV/s@no@/proc/net/dev@g" paths
+	sed -i "/PATH_PROCNET_DEV/s@no@/proc/net/dev@g" paths
+	CFLAGS="${CFLAGS} -Wno-implicit-function-declaration" \
 	./configure --prefix=/usr --build=${CROSS_HOST} --host=${CROSS_TARGET} \
-	            --disable-logger --disable-whois --disable-rcp \
-	            --disable-rexec --disable-rlogin --disable-rsh \
-	            --disable-servers
+		--disable-logger --disable-whois --disable-rcp \
+		--disable-rexec --disable-rlogin --disable-rsh \
+		--disable-servers
 	eval ${MAKE_AND_INSTALL}
 	mv -v ${SYSROOT_DIR}/usr/{,s}bin/ifconfig
 	chmod -v +x ${SYSROOT_DIR}/usr/bin/{ping{,6},traceroute}

@@ -19,6 +19,7 @@ EDK2_PLATFORMS_DIRNAME=qemu-edk2-edk2-platforms_git
 
 patch -Np1 -i ${SYSDIR}/files/simulate/qemu-edk2/1.0-default/patches/0001-qemu-edk2-platform-add-VirtNorFlashDeviceLib-for-loo.patch -d qemu-edk2-edk2-platforms_git 
 	patch -Np1 -i ${SYSDIR}/files/simulate/qemu-edk2/1.0-default/patches/0001-qemu-edk2-add-gcc-CFLAGS-for-LoongArch64.patch -d qemu-edk2-edk2_git 
+	patch -Np1 -i ${SYSDIR}/files/simulate/qemu-edk2/1.0-default/patches/0001-qemu-edk2-add-gcc-CFLAGS-for-gcc-16.patch 
 	 
 
 pushd ${EDK2_DIRNAME}

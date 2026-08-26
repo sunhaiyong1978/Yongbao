@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=systemd
-export PACKAGE_VERSION=260.1
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/systemd/260.1/
-rm -rf ${BUILD_DIRECTORY}/systemd-260.1
-tar xvf ${DOWNLOADDIR}/systemd-260.1.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/systemd-260.1
+export PACKAGE_VERSION=261.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/systemd/261.2/
+rm -rf ${BUILD_DIRECTORY}/systemd-261.2
+tar xvf ${DOWNLOADDIR}/systemd-261.2.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/systemd-261.2
 	
 	sed -i -e 's/GROUP="render"/GROUP="video"/' \
            -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/systemd-260.1
 
 	mkdir -p build
 	pushd build
-		meson ${MESON_CONFIG} \
+		meson ${MESON_CONFIG} -Dsplit-bin=true \
 		      -Ddefault-dnssec=no -Dfirstboot=false \
 		      -Dinstall-tests=false -Dldconfig=false -Dsysusers=false \
 		      -Drpmmacrosdir=no -Dhomed=false -Duserdb=false -Dman=false -Dmode=release -Dlogind=true \
@@ -29,7 +29,7 @@ pushd ${BUILD_DIRECTORY}/systemd-260.1
 	rm -f ${SYSROOT_DIR}/usr/lib/systemd/system/systemd-networkd-wait-online.service
 
 popd 
-rm -rf ${BUILD_DIRECTORY}/systemd-260.1
+rm -rf ${BUILD_DIRECTORY}/systemd-261.2
 cat > ${SYSROOT_DIR}/usr/lib/systemd/system/rc-local.service << "EOF"
 [Unit]
 Description=/etc/rc.local Compatibility

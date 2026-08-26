@@ -25,5 +25,3 @@ popd
 rm -rf ${BUILD_DIRECTORY}/box64-git-default_git
 
 default_set_conf "x86_64-emu" "box64-standard" "Box64 无加速" "/usr/bin/x86-emu" "/usr/bin/box64-standard"
-default_set_conf "x86_64-emu" "box64-loongarch64" "Box64 Loongarch64 加速版" "/usr/bin/x86-emu" "/usr/bin/box64"
-default_set_conf "x86-emu" "box32" "BOX32 二进制翻译" "/usr/bin/x86-emu" "/usr/bin/box64"

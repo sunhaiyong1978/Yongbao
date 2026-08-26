@@ -47,3 +47,16 @@ set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/lib${LIB_SUFF}/" "0" "*.a" "--strip-d
 set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/lib${LIB_SUFF}/" "0" "*.so*" "--strip-unneeded" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
 set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/lib/systemd/" "0" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
 set_strip_step "${RUNTIME_SYSROOT_DIR}/usr/lib/udev/" "0" "*" "--strip-all" "${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-strip"
+
+
+set_split_conf "devel" "${RUNTIME_SYSROOT_DIR}/usr/include"
+set_split_conf "devel" "${RUNTIME_SYSROOT_DIR}/usr/lib${LIB_SUFF}" "*.a"
+set_split_conf "devel" "${RUNTIME_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig"
+set_split_conf "devel" "${RUNTIME_SYSROOT_DIR}/usr/share/pkgconfig"
+
+set_split_conf "docs" "${RUNTIME_SYSROOT_DIR}/usr/share/doc"
+set_split_conf "docs" "${RUNTIME_SYSROOT_DIR}/usr/share/man"
+set_split_conf "docs" "${RUNTIME_SYSROOT_DIR}/usr/share/gtk-doc/html/"
+
+set_split_conf "bins" "${RUNTIME_SYSROOT_DIR}/usr/bin"
+set_split_conf "bins" "${RUNTIME_SYSROOT_DIR}/usr/sbin"

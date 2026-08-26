@@ -21,3 +21,7 @@ pushd ${BUILD_DIRECTORY}/desktop-file-utils-0.28
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/desktop-file-utils-0.28
+
+echo "#!/bin/bash -e
+qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/update-desktop-database \"\$@\"" > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-update-desktop-database
+chmod +x ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-update-desktop-database

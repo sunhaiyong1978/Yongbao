@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=host-tools
 export STEP_PACKAGENAME=cbindgen
-export PACKAGE_VERSION=0.29.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/cbindgen/0.29.2/
-rm -rf ${BUILD_DIRECTORY}/cbindgen-0.29.2
-tar xvf ${DOWNLOADDIR}/cbindgen-0.29.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/cbindgen-0.29.2
+export PACKAGE_VERSION=0.29.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/cbindgen/0.29.4/
+rm -rf ${BUILD_DIRECTORY}/cbindgen-0.29.4
+tar xvf ${DOWNLOADDIR}/cbindgen-0.29.4.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/cbindgen-0.29.4
     cargo build --release
     install -Dm755 target/release/cbindgen ${PREFIX}/bin/
 popd 
-rm -rf ${BUILD_DIRECTORY}/cbindgen-0.29.2
+rm -rf ${BUILD_DIRECTORY}/cbindgen-0.29.4

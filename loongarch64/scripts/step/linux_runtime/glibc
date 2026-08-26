@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=glibc
-export PACKAGE_VERSION=2.43
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glibc/2.43/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.43
-tar xvf ${DOWNLOADDIR}/glibc-2.43.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.43
+export PACKAGE_VERSION=2.44
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/glibc/2.44/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.44
+tar xvf ${DOWNLOADDIR}/glibc-2.44.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.44
     
     ARCH_PARM_STR=""
     case "${ARCH_NAME}" in
@@ -23,7 +23,7 @@ pushd ${BUILD_DIRECTORY}/glibc-2.43
     esac
     mkdir -p build-${ARCH_NAME}
     pushd build-${ARCH_NAME}
-	CFLAGS="${BASE_CFLAGS}"
+	CFLAGS="${BASE_CFLAGS} -fno-link-libatomic"
 	CXXFLAGS="${BASE_CFLAGS}"
         BUILD_CC="gcc" CC="${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-gcc ${CFLAGS}" \
         CXX="${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-gcc ${CXXFLAGS}" \
@@ -32,10 +32,11 @@ pushd ${BUILD_DIRECTORY}/glibc-2.43
 	                 --libdir=/usr/lib${LIB_SUFF} --libexecdir=/usr/lib${LIB_SUFF}/glibc \
 	                 --with-headers=${LINUX_SYSROOT_DIR}/usr/include \
 	                 --enable-add-ons ${ARCH_PARM_STR} \
+			 --enable-kernel=5.19 \
 	                 --disable-werror libc_cv_slibdir=/usr/lib${LIB_SUFF}
 		make -j${JOBS}
 		make DESTDIR=${LINUX_SYSROOT_DIR} install
     popd
     mkdir -p ${LINUX_SYSROOT_DIR}/usr/lib
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.43
+rm -rf ${BUILD_DIRECTORY}/glibc-2.44

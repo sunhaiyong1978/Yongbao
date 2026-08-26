@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=libevent
-export PACKAGE_VERSION=2.1.12
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libevent/2.1.12/
-rm -rf ${BUILD_DIRECTORY}/libevent-2.1.12-stable
-tar xvf ${DOWNLOADDIR}/libevent-2.1.12-stable.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libevent-2.1.12-stable
+export PACKAGE_VERSION=2.1.13
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/libevent/2.1.13/
+rm -rf ${BUILD_DIRECTORY}/libevent-2.1.13-stable
+tar xvf ${DOWNLOADDIR}/libevent-2.1.13-stable.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libevent-2.1.13-stable
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/libevent-2.1.12-stable
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libevent-2.1.12-stable
+rm -rf ${BUILD_DIRECTORY}/libevent-2.1.13-stable

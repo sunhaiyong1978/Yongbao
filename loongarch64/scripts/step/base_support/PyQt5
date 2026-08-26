@@ -15,7 +15,8 @@ pushd ${BUILD_DIRECTORY}/PyQt5-5.15.10
     sed -i "s,@MinimumSipVersion@,4.19.25," configure.py
     sed -i "s@dbus.mainloop.__path__\[0\]@'/usr/lib/python$(get_package_version Python3)/site-packages/dbus/mainloop'@g" configure.py
 
-
+    _PYTHON_HOST_PLATFORM=linux-loongarch64 \
+    _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_${CROSS_TARGET} \
     ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-python3 ./configure.py --confirm-license \
               --bindir=/usr/bin --sipdir=/usr/share/sip/PyQt5 \
               --destdir=/usr/lib64/python$(get_package_version Python3)/site-packages \

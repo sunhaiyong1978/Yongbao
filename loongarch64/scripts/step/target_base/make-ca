@@ -12,6 +12,7 @@ pushd ${BUILD_DIRECTORY}/make-ca-1.16.1
 	install -vdm755 ${SYSROOT_DIR}/etc/ssl/local
 	cp ${SYSROOT_DIR}/usr/sbin/make-ca ${CROSSTOOLS_DIR}/bin/
 	sed -i "/MAKE_CA_CONF/s@\"/etc@\"${SYSROOT_DIR}/etc@g" ${CROSSTOOLS_DIR}/bin/make-ca
+	sed -i "/OPENSSL=/s@\"/usr/bin@\"${HOST_TOOLS_DIR}/bin@g" ${CROSSTOOLS_DIR}/bin/make-ca
 	cp ${RESOURCEDIR}/files/certdata.txt ./
 	cp ${RESOURCEDIR}/files/root.crt ./
 	cp ${RESOURCEDIR}/files/class3.crt ./

@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=shared-mime-info
-export PACKAGE_VERSION=2.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/shared-mime-info/2.4/
-rm -rf ${BUILD_DIRECTORY}/shared-mime-info-2.4
-tar xvf ${DOWNLOADDIR}/shared-mime-info-2.4.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/shared-mime-info-2.4
+export PACKAGE_VERSION=2.5.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/shared-mime-info/2.5.1/
+rm -rf ${BUILD_DIRECTORY}/shared-mime-info-2.5.1
+tar xvf ${DOWNLOADDIR}/shared-mime-info-2.5.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/shared-mime-info-2.5.1
     mkdir cross-build
     pushd cross-build
         CFLAGS="${CFLAGS} -Wno-implicit-function-declaration -Wno-int-conversion" \
@@ -19,4 +19,4 @@ echo "qemu-${ARCH_NAME} ${SYSROOT_DIR}/usr/bin/update-mime-database \"\$@\"" \
                 > ${CROSSTOOLS_DIR}/bin/update-mime-database
 chmod +x ${CROSSTOOLS_DIR}/bin/update-mime-database
 popd 
-rm -rf ${BUILD_DIRECTORY}/shared-mime-info-2.4
+rm -rf ${BUILD_DIRECTORY}/shared-mime-info-2.5.1

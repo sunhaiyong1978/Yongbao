@@ -30,6 +30,7 @@ fi
 mkdir -p ${CROSSTOOLS_DIR}/bin
 cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-g-ir-scanner << EOF
 #!/bin/bash -e
+CC=${CROSS_TARGET}-gcc \
 ${HOST_TOOLS_DIR}/bin/g-ir-scanner \
       --add-include-path=${SYSROOT_DIR}/usr/share/gir-1.0 \
       --use-binary-wrapper=${CROSSTOOLS_DIR}/bin/qemu-${YONGBAO_TARGET_ARCH} \

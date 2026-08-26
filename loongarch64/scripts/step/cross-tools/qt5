@@ -21,7 +21,6 @@ pushd ${BUILD_DIRECTORY}/qt-everywhere-src-5.15.19
 		-confirm-license -opensource \
                 -openssl-linked -system-harfbuzz -system-sqlite \
                 -nomake examples \
-                -journald \
 		ICU_PREFIX=${CROSSTOOLS_DIR} ICU_LIBS="-licui18n -licuuc -licudata" \
                 -skip qtwebengine
         make -j${JOBS}

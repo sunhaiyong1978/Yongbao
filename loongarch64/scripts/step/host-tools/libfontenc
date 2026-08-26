@@ -1,0 +1,20 @@
+source env/host-tools/config
+source env/distro.info
+source env/function.sh
+export STEP_BUILDNAME=host-tools
+export STEP_PACKAGENAME=libfontenc
+export PACKAGE_VERSION=1.1.9
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/host-tools/libfontenc/1.1.9/
+rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.9
+tar xvf ${DOWNLOADDIR}/libfontenc-1.1.9.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libfontenc-1.1.9
+    
+    mkdir -p native-build
+    pushd native-build
+        meson --prefix=${PREFIX} --libdir=${PREFIX}/lib${LIB_SUFF}  \
+              --buildtype=release ..
+        ninja
+        ninja install
+    popd
+popd 
+rm -rf ${BUILD_DIRECTORY}/libfontenc-1.1.9

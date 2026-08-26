@@ -13,7 +13,7 @@ pushd ${BUILD_DIRECTORY}/slang-2.3.3
             cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
     done
 
-    ./configure ${COMMON_CONFIG} --with-readline=gnu
+    ./configure ${COMMON_CONFIG} --with-readline=gnu --without-pcre
     check_gnu_Makefile
     make -j1
     make DESTDIR=${SYSROOT_DIR} install

@@ -3,13 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=zsh
-export PACKAGE_VERSION=5.9
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/zsh/5.9/
-rm -rf ${BUILD_DIRECTORY}/zsh-5.9
-tar xvf ${DOWNLOADDIR}/zsh-5.9.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/zsh-5.9
-	patch -Np1 -i ${SYSDIR}/files/base_support/zsh/5.9/patches/0007-zsh-configure-c99.patch 
-	 
+export PACKAGE_VERSION=5.9.2
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/zsh/5.9.2/
+rm -rf ${BUILD_DIRECTORY}/zsh-5.9.2
+tar xvf ${DOWNLOADDIR}/zsh-5.9.2.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zsh-5.9.2
+	
 	for config_i in $(find -name "config.sub")
 	do
 		cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
@@ -20,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/zsh-5.9
 	 ./configure ${COMMON_CONFIG} --sysconfdir=/etc/zsh --enable-etcdir=/etc/zsh --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/zsh-5.9
+rm -rf ${BUILD_DIRECTORY}/zsh-5.9.2

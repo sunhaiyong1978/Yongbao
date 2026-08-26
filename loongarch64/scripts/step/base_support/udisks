@@ -14,7 +14,7 @@ pushd ${BUILD_DIRECTORY}/udisks-2.11.1
                 cp -a -f $(automake --print-libdir)/config.{sub,guess} $(dirname ${config_i})/
         done
 
-        sed -i "/INTROSPECTION_/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
+        sed -i "/INTROSPECTION_MAKEFILE/s@\$PKG_CONFIG_SYSROOT_DIR\`\$PKG_CONFIG@\`\$PKG_CONFIG@g" configure
 	sed -i -e 's/ntfs_drivers=ntfs3,ntfs/ntfs_drivers=ntfs,ntfs3/' data/builtin_mount_options.conf
 
         ./configure ${COMMON_CONFIG} --enable-introspection=yes \

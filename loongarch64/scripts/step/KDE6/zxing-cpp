@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=KDE6
 export STEP_PACKAGENAME=zxing-cpp
-export PACKAGE_VERSION=3.0.2
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/zxing-cpp/3.0.2/
-rm -rf ${BUILD_DIRECTORY}/zxing-cpp-3.0.2
-tar xvf ${DOWNLOADDIR}/zxing-cpp-3.0.2.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/zxing-cpp-3.0.2
+export PACKAGE_VERSION=3.1.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/KDE6/zxing-cpp/3.1.1/
+rm -rf ${BUILD_DIRECTORY}/zxing-cpp-3.1.1
+tar xvf ${DOWNLOADDIR}/zxing-cpp-3.1.1.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/zxing-cpp-3.1.1
 	
 	pushd core
 	mkdir cross-build
@@ -24,4 +24,4 @@ pushd ${BUILD_DIRECTORY}/zxing-cpp-3.0.2
 	popd
 	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
-rm -rf ${BUILD_DIRECTORY}/zxing-cpp-3.0.2
+rm -rf ${BUILD_DIRECTORY}/zxing-cpp-3.1.1

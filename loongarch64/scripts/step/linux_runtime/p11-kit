@@ -1,0 +1,37 @@
+source env/linux_runtime/config
+source env/distro.info
+source env/function.sh
+source env/linux_runtime/custom
+export STEP_BUILDNAME=linux_runtime
+export STEP_PACKAGENAME=p11-kit
+export PACKAGE_VERSION=0.26.4
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/p11-kit/0.26.4/
+rm -rf ${BUILD_DIRECTORY}/p11-kit-0.26.4
+tar xvf ${DOWNLOADDIR}/p11-kit-0.26.4.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/p11-kit-0.26.4
+        patch -Np1 -i ${SYSDIR}/files/linux_runtime/p11-kit/0.26.4/patches/0001-p11-kit-0.25.10-fix-systemd-user-unit-dir-for-cross-.patch 
+	 
+sed 's/if (gi/& \&\& gi != C_GetInterface/' \
+    -i p11-kit/modules.c
+
+sed '20,$ d' -i trust/trust-extract-compat &&
+cat >> trust/trust-extract-compat << "EOF"
+## Copy existing anchor modifications to /etc/ssl/local
+/usr/libexec/make-ca/copy-trust-modifications
+
+## Update trust stores
+/usr/sbin/make-ca -r
+EOF
+        mkdir cross-build
+        pushd cross-build
+                meson ${MESON_CONFIG} -Dtrust_paths=/etc/pki/anchors -Dbashcompdir=/usr/share/bash-completion/completions \
+                      ..
+                eval ${NINJA_AND_INSTALL}
+        popd
+	ln -sfv ${LINUX_SYSROOT_DIR}/usr/libexec/p11-kit/trust-extract-compat \
+        	${LINUX_SYSROOT_DIR}/usr/bin/update-ca-certificates
+	ln -sfv ./pkcs11/p11-kit-trust.so ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/libnssckbi.so
+
+        rm -f ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/*.la
+popd 
+rm -rf ${BUILD_DIRECTORY}/p11-kit-0.26.4

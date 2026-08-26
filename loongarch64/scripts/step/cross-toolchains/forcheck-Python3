@@ -4,11 +4,11 @@ source env/function.sh
 source env/cross-toolchains/custom
 export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=forcheck-Python3
-export PACKAGE_VERSION=3.14.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-Python3/3.14.5/
-rm -rf ${BUILD_DIRECTORY}/Python-3.14.5
-tar xvf ${DOWNLOADDIR}/Python-3.14.5.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/Python-3.14.5
+export PACKAGE_VERSION=3.14.6
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/forcheck-Python3/3.14.6/
+rm -rf ${BUILD_DIRECTORY}/Python-3.14.6
+tar xvf ${DOWNLOADDIR}/Python-3.14.6.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/Python-3.14.6
 	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
 	CFLAGS="${CFLAGS} -fPIC" LDFLAGS="${LDFLAGS} -lutil"
 	./configure --prefix=${PREFIX}/${LINUX_HOST} --with-platlibdir=lib \
@@ -17,4 +17,4 @@ pushd ${BUILD_DIRECTORY}/Python-3.14.5
 	            ac_cv_broken_sem_getvalue=yes
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/Python-3.14.5
+rm -rf ${BUILD_DIRECTORY}/Python-3.14.6

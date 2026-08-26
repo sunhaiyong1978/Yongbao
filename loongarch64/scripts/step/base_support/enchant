@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=enchant
-export PACKAGE_VERSION=2.8.16
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/enchant/2.8.16/
-rm -rf ${BUILD_DIRECTORY}/enchant-2.8.16
-tar xvf ${DOWNLOADDIR}/enchant-2.8.16.tar.gz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/enchant-2.8.16
-	patch -Np1 -i ${SYSDIR}/files/base_support/enchant/2.8.16/patches/0001-enchant-2.8.10-fix-install-error.patch 
+export PACKAGE_VERSION=2.8.19
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/enchant/2.8.19/
+rm -rf ${BUILD_DIRECTORY}/enchant-2.8.19
+tar xvf ${DOWNLOADDIR}/enchant-2.8.19.tar.gz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/enchant-2.8.19
+	patch -Np1 -i ${SYSDIR}/files/base_support/enchant/2.8.19/patches/0001-enchant-2.8.10-fix-install-error.patch 
 	 
 	for config_i in $(find -name "config.sub")
 	do
@@ -20,4 +20,4 @@ pushd ${BUILD_DIRECTORY}/enchant-2.8.16
 	 ./configure ${COMMON_CONFIG} --enable-relocatable --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/enchant-2.8.16
+rm -rf ${BUILD_DIRECTORY}/enchant-2.8.19

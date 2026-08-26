@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=bluez
-export PACKAGE_VERSION=5.66
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/bluez/5.66/
-rm -rf ${BUILD_DIRECTORY}/bluez-5.66
-tar xvf ${DOWNLOADDIR}/bluez-5.66.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/bluez-5.66
+export PACKAGE_VERSION=5.87
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/bluez/5.87/
+rm -rf ${BUILD_DIRECTORY}/bluez-5.87
+tar xvf ${DOWNLOADDIR}/bluez-5.87.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/bluez-5.87
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/bluez-5.66
 	 ./configure ${COMMON_CONFIG} --enable-library --with-systemdsystemunitdir=/usr/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd/user --with-dbusconfdir=/etc --with-dbussystembusdir=/usr/share/dbus-1/system-services --with-dbussessionbusdir=/usr/share/dbus-1/services --with-udevdir=/usr/lib/udev --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/bluez-5.66
+rm -rf ${BUILD_DIRECTORY}/bluez-5.87

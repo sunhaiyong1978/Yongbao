@@ -3,12 +3,12 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=target_base
 export STEP_PACKAGENAME=glibc_localedata
-export PACKAGE_VERSION=2.43
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc_localedata/2.43/
-rm -rf ${BUILD_DIRECTORY}/glibc-2.43
-tar xvf ${DOWNLOADDIR}/glibc-2.43.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/glibc-2.43
-	patch -Np1 -i ${SYSDIR}/files/target_base/glibc_localedata/2.43/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
+export PACKAGE_VERSION=2.44
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/target_base/glibc_localedata/2.44/
+rm -rf ${BUILD_DIRECTORY}/glibc-2.44
+tar xvf ${DOWNLOADDIR}/glibc-2.44.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/glibc-2.44
+	patch -Np1 -i ${SYSDIR}/files/target_base/glibc_localedata/2.44/patches/0001-glibc-add-C.UTF-8-to-localedata.patch 
 	 
         mkdir -p build-locale
         pushd build-locale
@@ -22,4 +22,4 @@ pushd ${BUILD_DIRECTORY}/glibc-2.43
 		patchelf --remove-rpath elf/ld.so
                 make -j${JOBS} DESTDIR=${SYSROOT_DIR} localedata/install-locales
 popd 
-rm -rf ${BUILD_DIRECTORY}/glibc-2.43
+rm -rf ${BUILD_DIRECTORY}/glibc-2.44

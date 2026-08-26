@@ -15,7 +15,7 @@ pushd ${BUILD_DIRECTORY}/libxcrypt-4.5.2
 	if [ ! -f configure ]; then
 		autoreconf -ifv
 	fi
-	CFLAGS="${BASE_CFLAGS} -Wno-error=stringop-overread" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
+	CC="${CROSS_TOOLS_PREFIX}/bin/${LINUX_HOST}-gcc -Wno-error=stringop-overread -fno-link-libatomic" CFLAGS="" CXXFLAGS="" ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
 rm -rf ${BUILD_DIRECTORY}/libxcrypt-4.5.2

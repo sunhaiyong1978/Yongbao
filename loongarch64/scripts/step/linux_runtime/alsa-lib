@@ -4,11 +4,11 @@ source env/function.sh
 source env/linux_runtime/custom
 export STEP_BUILDNAME=linux_runtime
 export STEP_PACKAGENAME=alsa-lib
-export PACKAGE_VERSION=1.2.15.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/alsa-lib/1.2.15.3/
-rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.15.3
-tar xvf ${DOWNLOADDIR}/alsa-lib-1.2.15.3.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.15.3
+export PACKAGE_VERSION=1.2.16.1
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/linux_runtime/alsa-lib/1.2.16.1/
+rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.16.1
+tar xvf ${DOWNLOADDIR}/alsa-lib-1.2.16.1.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.16.1
 	
 	if [ ! -f configure ]; then
 		autoreconf -ifv
@@ -16,4 +16,4 @@ pushd ${BUILD_DIRECTORY}/alsa-lib-1.2.15.3
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.15.3
+rm -rf ${BUILD_DIRECTORY}/alsa-lib-1.2.16.1

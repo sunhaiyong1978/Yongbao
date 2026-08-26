@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=mpg123
-export PACKAGE_VERSION=1.33.5
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mpg123/1.33.5/
-rm -rf ${BUILD_DIRECTORY}/mpg123-1.33.5
-tar xvf ${DOWNLOADDIR}/mpg123-1.33.5.tar.bz2 -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/mpg123-1.33.5
+export PACKAGE_VERSION=1.33.7
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/mpg123/1.33.7/
+rm -rf ${BUILD_DIRECTORY}/mpg123-1.33.7
+tar xvf ${DOWNLOADDIR}/mpg123-1.33.7.tar.bz2 -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/mpg123-1.33.7
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/mpg123-1.33.5
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/mpg123-1.33.5
+rm -rf ${BUILD_DIRECTORY}/mpg123-1.33.7

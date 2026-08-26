@@ -3,11 +3,11 @@ source env/distro.info
 source env/function.sh
 export STEP_BUILDNAME=base_support
 export STEP_PACKAGENAME=libass
-export PACKAGE_VERSION=0.17.4
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libass/0.17.4/
-rm -rf ${BUILD_DIRECTORY}/libass-0.17.4
-tar xvf ${DOWNLOADDIR}/libass-0.17.4.tar.xz -C ${BUILD_DIRECTORY} 
-pushd ${BUILD_DIRECTORY}/libass-0.17.4
+export PACKAGE_VERSION=0.17.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/base_support/libass/0.17.5/
+rm -rf ${BUILD_DIRECTORY}/libass-0.17.5
+tar xvf ${DOWNLOADDIR}/libass-0.17.5.tar.xz -C ${BUILD_DIRECTORY} 
+pushd ${BUILD_DIRECTORY}/libass-0.17.5
 	
 	for config_i in $(find -name "config.sub")
 	do
@@ -19,4 +19,4 @@ pushd ${BUILD_DIRECTORY}/libass-0.17.4
 	 ./configure ${COMMON_CONFIG}  --enable-malloc0returnsnull
 	eval ${MAKE_AND_INSTALL}
 popd 
-rm -rf ${BUILD_DIRECTORY}/libass-0.17.4
+rm -rf ${BUILD_DIRECTORY}/libass-0.17.5

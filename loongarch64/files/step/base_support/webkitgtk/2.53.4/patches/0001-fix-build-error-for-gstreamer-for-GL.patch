@@ -1,0 +1,25 @@
+From 13140edfd62b391f194eeed8ef36f182f7ff40e1 Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Wed, 22 Jul 2026 09:45:34 +0000
+Subject: [PATCH] fix build error for gstreamer for GL.
+
+---
+ Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h b/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h
+index a085d31..63d3a85 100644
+--- a/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h
++++ b/Source/WebCore/platform/graphics/gstreamer/GStreamerCommon.h
+@@ -36,7 +36,7 @@
+ #include <wtf/text/CStringView.h>
+ 
+ #if USE(GSTREAMER_GL)
+-#include "GraphicsTypesGL.h"
++#include "WebCore/GraphicsTypesGL.h"
+ #endif
+ 
+ namespace WTF {
+-- 
+2.51.0
+

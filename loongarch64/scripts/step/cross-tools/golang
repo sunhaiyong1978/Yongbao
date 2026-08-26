@@ -4,16 +4,19 @@ source env/function.sh
 source env/cross-tools/custom
 export STEP_BUILDNAME=cross-tools
 export STEP_PACKAGENAME=golang
-export PACKAGE_VERSION=1.26.3
-export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/golang/1.26.3/
+export PACKAGE_VERSION=1.26.5
+export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-tools/golang/1.26.5/
 rm -rf ${BUILD_DIRECTORY}/go
-tar xvf ${DOWNLOADDIR}/go1.26.3.src.tar.gz -C ${BUILD_DIRECTORY} 
+tar xvf ${DOWNLOADDIR}/go1.26.5.src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/go
     
+
+    mkdir gocache
+
     GO_ARCH_NAME=amd64
     pushd src
         GOROOT_BOOTSTRAP=${CROSSTOOLS_DIR}/go-bootstrap \
-        GOOS=linux GOARCH=${GO_ARCH_NAME} GO_LDFLAGS="-linkmode internal" \
+        GOOS=linux GOARCH=${GO_ARCH_NAME} GO_LDFLAGS="-linkmode internal" GOCACHE=${PWD}/gocache \
         ./make.bash -v
     popd
     mkdir -pv ${CROSSTOOLS_DIR}/golang
