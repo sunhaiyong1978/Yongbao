@@ -2183,7 +2183,7 @@
 %step/toolchain/mpc|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/zlib|g_opt+host-dist;%compat=?0;%host=?;%vendor=
 %step/toolchain/zstd|g_opt+host-dist;%compat=?0;%host=?;%vendor=
-%step/toolchain/qemu|g_opt+host-dist;%compat=?0;%host=?;%vendor=
+%step/toolchain/qemu|g_opt+host-dist;%compat=?0;%host=?;%vendor=;qemu
 %step/toolchain/NULL|g_opt+host-dist
 %step/toolchain/binutils|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?;!binutils_git
 %step/toolchain/binutils_git|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?;binutils_git
@@ -2207,7 +2207,7 @@
 %step/toolchain/mpc|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/zlib|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
 %step/toolchain/zstd|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
-%step/toolchain/qemu|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?
+%step/toolchain/qemu|g_opt+host-dist;%target_compat=?0;%target=?;%vendor=?;qemu
 %step/toolchain/NULL|g_opt+host-dist
 %step/toolchain/llvm-project|g_opt+host-dist;%vendor=?;llvm
 %step/toolchain/NULL|g_opt+host-dist
