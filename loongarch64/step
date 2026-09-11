@@ -1537,7 +1537,7 @@
 %step/desktop-app/gegl|g_opt+desk-app;design
 %step/desktop-app/gexiv2|g_opt+desk-app;design
 %step/desktop-app/libmypaint|g_opt+desk-app;design
-%step/desktop-app/mypaint-brushes|g_opt+desk-app;design
+%step/desktop-app/mypaint-brushes-1|g_opt+desk-app;design
 %step/desktop-app/gimp|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
 %step/desktop-app/NULL|g_opt+desk-app;design
@@ -1547,6 +1547,7 @@
 %step/desktop-app/granite-6|g_opt+desk-app;design
 %step/desktop-app/Coin4|g_opt+desk-app;design
 %step/desktop-app/pivy|g_opt+desk-app;design
+%step/desktop-app/libraqm|g_opt+desk-app;design
 %step/desktop-app/matplotlib|g_opt+desk-app;design
 %step/desktop-app/GSL|g_opt+desk-app;design
 %step/desktop-app/pcl|g_opt+desk-app;design
@@ -2133,7 +2134,7 @@
 %step/simulate/virt-manager|g_opt;emu;libvirt
 %step/simulate/virt-viewer|g_opt;emu;libvirt
 %step/simulate/gtk-vnc|g_opt;emu;libvirt
-%step/simulate/qemu-edk2|g_opt;emu;libvirt
+%step/simulate/qemu-edk2|g_opt;emu;libvirt;bad
 %step/simulate/NULL|g_opt;emu
 %step/simulate/fuseiso|g_opt;emu
 %step/simulate/icoutils|g_opt;emu
@@ -2146,8 +2147,8 @@
 %step/simulate/libguestfs|g_opt;emu;f_simulate_libguestfs_bad
 %step/simulate/NULL|g_opt;emu
 %step/simulate/latx|g_opt;emu
-%step/simulate/box64|g_opt;emu;deprecated
-%step/simulate/box64-la|g_opt;emu
+%step/simulate/box64-standard|g_opt;emu;deprecated
+%step/simulate/box64|g_opt;emu
 %step/simulate/lata|g_opt;emu;f_simulate_lata_bad
 %step/simulate/NULL|g_opt;emu
 %step/simulate/liblasx2lsx|g_opt;emu
