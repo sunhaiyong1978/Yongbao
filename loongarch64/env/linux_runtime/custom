@@ -6,6 +6,7 @@ export QEMU_ARCH=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "QE
 export LINUX_NAME=$(archname_to_linuxname "$(get_user_set_env target "x86_64")" "${ARCH_FAMILY}")
 export ARCH_BIT=$(archname_to_archbit "$(get_user_set_env target "x86_64")" "${ARCH_BIT}")
 export LD_LINUXFILE=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "LD_LINUXFILE" "ld-unknown.so.1")
+export RUST_ARCHNAME=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "RUST_ARCHNAME" "x86_64-unknown-linux-gnu")
 
 export PREFIX=/usr
 export RUNTIME_SYSROOT_DIR=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "RUNTIME_SYSROOT_DIR" "/usr/lib/x86_64/sys-root")

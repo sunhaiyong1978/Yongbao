@@ -8,3 +8,4 @@ export LD_LINUXFILE=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" 
 export LIB_SUFF=$(archname_to_lib_suff "$(get_user_set_env target "x86_64")" "64")
 export HOST_LIB_SUFF=$(archname_to_lib_suff "${CROSS_HOST}" "64")
 export LINUX_SYSROOT_DIR="${SYSROOT_DIR}${RUNTIME_SYSROOT_DIR}"
+export RUST_ARCHNAME=$(archname_to_anyparm "$(get_user_set_env target "x86_64")" "RUST_ARCHNAME" "x86_64-unknown-linux-gnu")
