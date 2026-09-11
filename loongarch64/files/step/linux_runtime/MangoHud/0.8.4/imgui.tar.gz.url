@@ -1,0 +1,5 @@
+# URL=https://github.com/mesonbuild/wrapdb/releases/download/imgui_1.89.9-1/imgui-1.89.9.tar.gz
+# FILENAME=imgui-1.89.9.tar.gz
+URL=https://github.com/ocornut/imgui/archive/refs/tags/v1.91.6.tar.gz
+FILENAME=imgui.tar.gz
+MODE=FILE

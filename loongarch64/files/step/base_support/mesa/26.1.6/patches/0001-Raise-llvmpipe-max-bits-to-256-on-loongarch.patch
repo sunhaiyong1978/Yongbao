@@ -1,0 +1,43 @@
+From 40ba4b5c059c85366168d24c70180526822c2e4d Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Thu, 10 Sep 2026 09:28:28 +0000
+Subject: [PATCH] Raise llvmpipe max bits to 256 on loongarch.
+
+On loongarch64, when using Mesa's llvmpipe driver,
+the reported vector width is 128 bits,
+even though the current machine already supports 256-bit LASX.
+
+e.g.:
+glxinfo | grep llvmpipe
+     Device: llvmpipe (LLVM 22.1.8, 128 bits) (0xffffffff)
+OpenGL renderer string: llvmpipe (LLVM 22.1.8, 128 bits)
+
+By adding a runtime check for the loongarch64 architecture
+to check_max_vector_bits using util_cpu_caps.has_lasx,
+the vector width is raised to 256 bits.
+
+Reported-by: liuan <liuan@sgcc.com.cn>
+Signed-off-by: Sun Haiyong <sunhaiyong@zdbr.net>
+---
+ src/util/u_cpu_detect.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/util/u_cpu_detect.c b/src/util/u_cpu_detect.c
+index 451881d..37f512f 100644
+--- a/src/util/u_cpu_detect.c
++++ b/src/util/u_cpu_detect.c
+@@ -759,6 +759,11 @@ void check_max_vector_bits(void)
+       util_cpu_caps.max_vector_bits = 256;
+    }
+ #endif
++#if DETECT_ARCH_LOONGARCH64
++   if (util_cpu_caps.has_lasx) {
++      util_cpu_caps.max_vector_bits = 256;
++   }
++#endif
+ }
+ 
+ void _util_cpu_detect_once(void);
+-- 
+2.31.1
+

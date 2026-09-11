@@ -6,24 +6,24 @@ export STEP_BUILDNAME=cross-toolchains
 export STEP_PACKAGENAME=rustc
 export PACKAGE_VERSION=1.97.1
 export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/cross-toolchains/rustc/1.97.1/
-if [ "x${LINUX_HOST}" == "x$(echo ${CROSS_HOST} | sed 's@cross@unknown@g')" ]; then
+if [ "x${RUST_ARCHNAME}" == "x$(echo ${CROSS_HOST} | sed 's@cross@unknown@g')" ]; then
 	mkdir -p ${PREFIX}/${LINUX_HOST}/lib/rustlib/
-	cp -a ${HOST_TOOLS_DIR}/lib/rustlib/${LINUX_HOST} ${PREFIX}/${LINUX_HOST}/lib/rustlib
+	cp -a ${HOST_TOOLS_DIR}/lib/rustlib/${RUST_ARCHNAME} ${PREFIX}/${LINUX_HOST}/lib/rustlib
 else
 rm -rf ${BUILD_DIRECTORY}/rustc-1.97.1-src
 tar xvf ${DOWNLOADDIR}/rustc-1.97.1-src.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/rustc-1.97.1-src
 	
 	export PATH=${PREFIX}/${LINUX_HOST}/bin:${PATH}
-	./configure --target=${LINUX_HOST} \
+	./configure --target=${RUST_ARCHNAME} \
 	            --prefix=${PREFIX}/${LINUX_HOST} --sysconfdir=${PREFIX}/${LINUX_HOST}/etc \
 	            --local-rust-root=${HOST_TOOLS_DIR} \
 	            --enable-extended --enable-vendor --release-channel=dev \
 		    --disable-docs --disable-debug --disable-compiler-docs --disable-optimize-tests --disable-verbose-tests --disable-dist-src \
-		    --set=target.${LINUX_HOST}.linker="${LINUX_HOST}-gcc" \
-		    --set=target.${LINUX_HOST}.cc="${LINUX_HOST}-gcc" \
-		    --set=target.${LINUX_HOST}.cxx="${LINUX_HOST}-g++" \
-		    --set=target.${LINUX_HOST}.llvm-config="${LINUX_HOST}-llvm-config" \
+		    --set=target.${RUST_ARCHNAME}.linker="${LINUX_HOST}-gcc" \
+		    --set=target.${RUST_ARCHNAME}.cc="${LINUX_HOST}-gcc" \
+		    --set=target.${RUST_ARCHNAME}.cxx="${LINUX_HOST}-g++" \
+		    --set=target.${RUST_ARCHNAME}.llvm-config="${LINUX_HOST}-llvm-config" \
 	            --disable-codegen-tests --experimental-targets="" --enable-llvm-static-stdcpp --enable-profiler
 
         make -j${JOBS}

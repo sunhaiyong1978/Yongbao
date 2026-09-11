@@ -10,6 +10,8 @@ tar xvf ${DOWNLOADDIR}/latx-git_git.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/latx-git_git
 	patch -Np1 -i ${SYSDIR}/files/simulate/latx/git/patches/0001-fix-interp_prefix-to-latx-M.patch 
 	patch -Np1 -i ${SYSDIR}/files/simulate/latx/git/patches/0001-fix-test-amdgpu-for-cross-build.patch 
+	patch -Np1 -i ${SYSDIR}/files/simulate/latx/git/patches/461.diff 
+	patch -Np1 -i ${SYSDIR}/files/simulate/latx/git/patches/477.diff 
 	 
 	sed -i "s/qemu-ARCH_NAME/qemu-${ARCH_NAME}/g" configure
 	git init
@@ -19,6 +21,7 @@ pushd ${BUILD_DIRECTORY}/latx-git_git
 			     --build=${CROSS_HOST} --host=${CROSS_TARGET} --cross-prefix=${CROSS_TARGET}- \
 			     --target-list=i386-linux-user \
 			     --enable-latx \
+			     --enable-latx-avx-opt \
 			     --optimize-O1 \
 			     --enable-guest-base-zero \
 			     --disable-debug-info --disable-docs \
@@ -33,6 +36,7 @@ pushd ${BUILD_DIRECTORY}/latx-git_git
 			     --build=${CROSS_HOST} --host=${CROSS_TARGET} --cross-prefix=${CROSS_TARGET}- \
 			     --target-list=x86_64-linux-user \
 			     --enable-latx \
+			     --enable-latx-avx-opt \
 			     --optimize-O1 \
 			     --enable-kzt \
 			     --disable-debug-info --disable-docs \
@@ -48,6 +52,8 @@ pushd ${BUILD_DIRECTORY}/latx-git_git
 			     --target-list=i386-linux-user \
 			     --enable-latx \
 			     --optimize-O1 \
+			     --enable-latx-avx-opt \
+			     --low_mem_mode0 \
 			     --enable-guest-base-zero \
 			     --disable-debug-info --disable-docs \
 			     --disable-werror \
@@ -64,6 +70,8 @@ pushd ${BUILD_DIRECTORY}/latx-git_git
 			     --target-list=x86_64-linux-user \
 			     --enable-latx \
 			     --optimize-O1 \
+			     --enable-latx-avx-opt \
+			     --low_mem_mode0 \
 			     --enable-kzt \
 			     --disable-debug-info --disable-docs \
 			     --disable-werror \
@@ -76,37 +84,14 @@ popd
 rm -rf ${BUILD_DIRECTORY}/latx-git_git
 
 mkdir -p ${SYSROOT_DIR}/etc/binfmt.d
-cp -a ${SYSROOT_DIR}/usr/bin/latx-i386{,.orig}
-cp -a ${SYSROOT_DIR}/usr/bin/latx-x86_64{,.orig}
-
-cat > ${SYSROOT_DIR}/usr/bin/latx-i386 << EOF
-#!/bin/bash -e
-LATX_ANONYM=1 /usr/bin/latx-i386.orig "\$@"
-EOF
 
 
-cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64 << EOF
-#!/bin/bash -e
-LATX_ANONYM=1 /usr/bin/latx-x86_64.orig "\$@"
-EOF
 
-cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_aot << EOF
-#!/bin/bash -e
-LATX_ANONYM=1 LATX_AOT=0 /usr/bin/latx-x86_64.orig "\$@"
-EOF
 
-cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_kzt << EOF
-#!/bin/bash -e
-LATX_ANONYM=1 LATX_KZT=0 /usr/bin/latx-x86_64.orig "\$@"
-EOF
 
-cat > ${SYSROOT_DIR}/usr/bin/latx-x86_64_no_aot_kzt << EOF
-#!/bin/bash -e
-LATX_ANONYM=1 LATX_AOT=0 LATX_KZT=0 /usr/bin/latx-x86_64.orig "\$@"
-EOF
 
-chmod +x ${SYSROOT_DIR}/usr/bin/latx-i386{,.orig}
-chmod +x ${SYSROOT_DIR}/usr/bin/latx-x86_64{,_no_aot,_no_kzt,_no_aot_kzt,.orig}
+
+chmod +x ${SYSROOT_DIR}/usr/bin/latx-{i386,x86_64}
 chmod +x ${SYSROOT_DIR}/usr/bin/latx-{i386,x86_64}_lowmem
 
 
@@ -119,9 +104,6 @@ if [ -f ${SYSROOT_DIR}/usr/bin/latx-i386 ]; then
 fi
 
 default_set_conf "x86_64-emu" "latx" "LATX x86_64 二进制翻译" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64"
-default_set_conf "x86_64-emu" "latx_no_aot" "LATX x86_64 二进制翻译 (禁用AOT)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot"
-default_set_conf "x86_64-emu" "latx_no_kzt" "LATX x86_64 二进制翻译 (禁用库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_kzt"
-default_set_conf "x86_64-emu" "latx_no_aot_kzt" "LATX x86_64 二进制翻译 (禁用AOT和库直通)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_no_aot_kzt"
 default_set_conf "x86_64-emu" "latx_64_lowmem" "LATX x86_64 二进制翻译 (低内存模式)" "/usr/bin/x86_64-emu" "/usr/bin/latx-x86_64_lowmem"
 default_set_conf "x86-emu" "latx" "LATX x86 二进制翻译" "/usr/bin/x86-emu" "/usr/bin/latx-i386"
 default_set_conf "x86-emu" "latx_32_lowmem" "LATX x86 二进制翻译 (低内存模式)" "/usr/bin/x86-emu" "/usr/bin/latx-i386_lowmem"

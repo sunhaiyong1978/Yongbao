@@ -1,0 +1,30 @@
+diff --git a/linux-user/syscall.c b/linux-user/syscall.c
+index 52d225705c..24b666f875 100644
+--- a/linux-user/syscall.c
++++ b/linux-user/syscall.c
+@@ -11141,9 +11141,12 @@ static int do_futex(CPUState *cpu, target_ulong uaddr, int op, int val,
+                              op, tswap32(val), pts, NULL, val3);
+ #ifdef TARGET_X86_64
+     case FUTEX_LOCK_PI:
++    case FUTEX_LOCK_PI2:
+         if (timeout) {
+             pts = &ts;
+-            target_to_host_timespec(pts, timeout);
++            if (target_to_host_timespec(pts, timeout)) {
++                return -TARGET_EFAULT;
++            }
+         } else {
+             pts = NULL;
+         }
+diff --git a/linux-user/syscall_defs.h b/linux-user/syscall_defs.h
+index 6d27adde59..38ea1172ca 100644
+--- a/linux-user/syscall_defs.h
++++ b/linux-user/syscall_defs.h
+@@ -3069,6 +3069,7 @@ struct target_drm_i915_getparam {
+ #define FUTEX_TRYLOCK_PI        8
+ #define FUTEX_WAIT_BITSET       9
+ #define FUTEX_WAKE_BITSET       10
++#define FUTEX_LOCK_PI2          13
+ 
+ #define FUTEX_PRIVATE_FLAG      128
+ #define FUTEX_CLOCK_REALTIME    256

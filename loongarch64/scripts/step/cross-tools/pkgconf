@@ -32,7 +32,7 @@ rm -f ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config
 cat > ${CROSSTOOLS_DIR}/bin/${CROSS_TARGET}-pkg-config << EOF
 #!/bin/bash -e
 
-if echo "\$@" | grep -q "\--variable=" && \\
+if (echo "\$@" | grep -q "\--variable=" || echo "\$@" | grep -q "\--variable " ) && \\
  ! echo "\$@" | grep -q "variable=datadir vapigen" && \\
  ! echo "\$@" | grep -q "variable=bindir Qt6Core" && \\
  ! echo "\$@" | grep -q "variable=libexecdir Qt6Core" && \\

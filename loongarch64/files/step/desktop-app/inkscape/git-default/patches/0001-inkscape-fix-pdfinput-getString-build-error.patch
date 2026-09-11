@@ -1,0 +1,33 @@
+From bbf8881dfe397a4157db09d139f48aa39788aa3e Mon Sep 17 00:00:00 2001
+From: Sun Haiyong <sunhaiyong@zdbr.net>
+Date: Fri, 4 Sep 2026 06:56:37 +0000
+Subject: [PATCH] inkscape fix pdfinput getString build error.
+
+---
+ src/extension/internal/pdfinput/poppler-utils.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/extension/internal/pdfinput/poppler-utils.h b/src/extension/internal/pdfinput/poppler-utils.h
+index 27675b7..e31e6ee 100644
+--- a/src/extension/internal/pdfinput/poppler-utils.h
++++ b/src/extension/internal/pdfinput/poppler-utils.h
+@@ -20,6 +20,7 @@
+ #include <unordered_set>
+ #include <vector>
+ #include <goo/GooString.h>
++#include <optional>
+ 
+ #include "poppler-transition-api.h"
+ 
+@@ -118,4 +119,8 @@ inline size_t get_goostring_length(const GooString& str) {
+ #endif
+ }
+ 
++inline std::string getString(const std::optional<std::string>& opt) {
++    return opt.value_or("");
++}
++
+ #endif /* POPPLER_UTILS_H */
+-- 
+2.31.1
+

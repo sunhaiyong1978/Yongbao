@@ -28,3 +28,17 @@ pushd ${BUILD_DIRECTORY}/bzip2-1.0.8
 	ln -sfv bzip2 ${LINUX_SYSROOT_DIR}/bin/bzcat
 popd 
 rm -rf ${BUILD_DIRECTORY}/bzip2-1.0.8
+
+cat > ${LINUX_SYSROOT_DIR}/usr/lib${LIB_SUFF}/pkgconfig/bzip2.pc << "EOF"
+prefix=/usr
+exec_prefix=/usr
+bindir=/usr/bin
+libdir=
+includedir=/usr/include
+
+Name: bzip2
+Description: A file compression library
+Version: 1.0.6
+Libs: -L${libdir} -lbz2
+Cflags: -I${includedir}
+EOF

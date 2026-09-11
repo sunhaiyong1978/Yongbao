@@ -10,10 +10,16 @@ tar xvf ${DOWNLOADDIR}/MangoHud-0.8.4.tar.gz -C ${BUILD_DIRECTORY}
 pushd ${BUILD_DIRECTORY}/MangoHud-0.8.4
         
 
-	tar xvf ${RESOURCEDIR}/files/vulkan-headers-1.2.158.tar.gz -C subprojects/
-	unzip ${RESOURCEDIR}/files/vulkan-headers-1.2.158-2-wrap.zip -d subprojects/
-	tar xvf ${RESOURCEDIR}/files/imgui-1.89.9.tar.gz -C subprojects/
-	unzip ${RESOURCEDIR}/files/imgui_1.89.9-1_patch.zip -d subprojects/
+	tar xvf ${RESOURCEDIR}/files/vulkan-headers.tar.gz -C subprojects/
+	cp subprojects/packagefiles/vulkan-headers/meson.build subprojects/Vulkan-Headers-*/
+
+	tar xvf ${RESOURCEDIR}/files/vulkan-utility-libraries.tar.gz -C subprojects/
+	cp subprojects/packagefiles/vulkan-utility-libraries/meson.build subprojects/Vulkan-Utility-Libraries-*/
+
+
+	tar xvf ${RESOURCEDIR}/files/imgui.tar.gz -C subprojects/
+	cp subprojects/packagefiles/imgui-*/meson* subprojects/imgui-*/
+
 	unzip ${RESOURCEDIR}/files/implot-0.16.zip -d subprojects/
 	unzip ${RESOURCEDIR}/files/implot_0.16-1_patch.zip -d subprojects/
 	tar xvf ${RESOURCEDIR}/files/spdlog-1.14.1.tar.gz -C subprojects/

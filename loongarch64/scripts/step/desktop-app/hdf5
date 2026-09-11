@@ -8,18 +8,20 @@ export RESOURCEDIR=${NEW_TARGET_SYSDIR}/files/desktop-app/hdf5/2.2.0/
 rm -rf ${BUILD_DIRECTORY}/hdf5-2.2.0
 tar xvf ${DOWNLOADDIR}/hdf5-2.2.0.tar.gz -C ${BUILD_DIRECTORY} 
 pushd ${BUILD_DIRECTORY}/hdf5-2.2.0
-        
+	
 	mkdir cross-build
 	pushd cross-build
-        	CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++"  \
+		CC="${CROSS_TARGET}-gcc" CXX="${CROSS_TARGET}-g++" \
 		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${COMMON_DIR}/cmake-cross.cmake \
 		      -DCMAKE_INSTALL_LIBDIR=/usr/lib64 -DLIB_SUFFIX=64 -DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
-       		      -DCMAKE_INSTALL_PREFIX=/usr \
+		      -DCMAKE_INSTALL_PREFIX=/usr \
 		      -DBUILD_SHARED_LIBS=ON \
 		      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-		       -Wno-dev ..
+		      -Wno-dev ..
 		eval ${MAKE_AND_INSTALL}
 	popd
-        rm -f ${SYSROOT_DIR}/usr/lib64/*.la
+	rm -f ${SYSROOT_DIR}/usr/lib64/*.la
 popd 
 rm -rf ${BUILD_DIRECTORY}/hdf5-2.2.0
+
+sed -i "s,\${PACKAGE_PREFIX_DIR}/\${PACKAGE_PREFIX_DIR},\${PACKAGE_PREFIX_DIR},g" ${SYSROOT_DIR}/usr/lib${LIB_SUFF}/cmake/hdf5/hdf5-config.cmake
